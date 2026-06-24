@@ -26,7 +26,7 @@ public class Login extends JFrame {
     private Container contenedor;
     private ImageIcon imagen1, imagen2;
     private JLabel titulo1, titulo2, titulo3, titulo4, descripcion, emoji1, emoji2, correofield, passwordfield;
-    private JButton bRegistar, bIngresar;
+    public JButton bRegistar, bIngresar;
     private JPanel panel1, panel2, panelbotones, paneltitulo, panelfield, panelTodotitulo;
 
     public Login() {

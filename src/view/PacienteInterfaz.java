@@ -44,7 +44,7 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
     private JLabel labelFotoPerfil;//Aqui creo JLabel que llevara la foto de perfil
     protected JButton btnCerrarSesion;//Aqui creo el boton cerrar sesion
     private JPanel cuerpo1;//Aqui creo el JPanel que va hacer el cuerpo1
-    private JPanel cuerpo2;//Aqui creo el JPanel que va hacer el cuerpo2
+    public JPanel cuerpo2;//Aqui creo el JPanel que va hacer el cuerpo2
     //Aqui creo los botones del Paciente
     public JButton btnMisCitas;
     public JButton btnHistorial;
@@ -85,7 +85,7 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
     public JPanel panelCalendario;
     public CalendarPanel calendario;
     public JPanel panelHorarios;
-
+    
     public PacienteInterfaz(String nombre, String nombreInterfaz, String rutaFotoP) {
         super(nombreInterfaz);//Asigno nombre de la ventana
 
@@ -527,12 +527,8 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
 
     //Aqui creo el metodo que permitiria vizualsar en el panel cuerpo2 el apartado de notificaciones
     public void mostrarVistaNotificaciones() {
-        if (cuerpo2.getComponentCount() > 0) {
-            this.cuerpo2.removeAll();
-        }
-        if (panelContenidoNotificaciones.getComponentCount() > 0) {
-            this.panelContenidoNotificaciones.removeAll();
-        }
+        vaciarPanel(cuerpo2);
+        vaciarPanel(panelContenidoNotificaciones);
         this.cuerpo2.setLayout(new BorderLayout());
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));//Padding propio de esta vista
         this.cuerpo2.add(panelContenidoNotificaciones);
@@ -548,12 +544,8 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
 
     //Aqui creo el metodo que me permitiria vizualisar el apartado para escoger el tipo de consulta
     public void mostrarVistaTipoConsulta(Titulo titulo) {
-        if (cuerpo2.getComponentCount() > 0) {
-            this.cuerpo2.removeAll();
-        }
-        if (panelSeleccionConsulta.getComponentCount() > 0) {
-            this.panelSeleccionConsulta.removeAll();
-        }
+        vaciarPanel(cuerpo2);
+        vaciarPanel(panelSeleccionConsulta);
 
         JLabel descripcion = new JLabel("Selecciona Tipo De Consulta Que Deseas Agendar");
         descripcion.setFont(new Font("Arial", Font.BOLD, 22));
@@ -587,12 +579,9 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
     }
 
     public void mostrarVistaSeleccionMedico(String[] medicos) {
-        if (cuerpo2.getComponentCount() > 0) {
-            this.cuerpo2.removeAll();
-        }
-        if (panelSeleccionConsulta.getComponentCount() > 0) {
-            this.panelSeleccionConsulta.removeAll();
-        }
+        vaciarPanel(cuerpo2);
+        vaciarPanel(panelSeleccionConsulta);
+        
         Titulo titulo = new Titulo("Agendamiento de ", "Cita");
         JLabel descripcion = new JLabel("Selecciona El Medico Con El Que Deseas Agendar");
         descripcion.setFont(new Font("Arial", Font.BOLD, 22));
@@ -605,8 +594,8 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
         this.panelSeleccionConsulta.add(descripcion);
         this.panelSeleccionConsulta.add(Box.createRigidArea(new Dimension(0, 25)));
         titulo = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo elimianr para ahorrar memoria o algo asi por el estilo creo
-        descripcion = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo elimianr para ahorrar memoria o algo asi por el estilo creo
-        panelTitulo = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo elimianr para ahorrar memoria o algo asi por el estilo creo
+        descripcion = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo eliminar para ahorrar memoria o algo asi por el estilo creo
+        panelTitulo = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo eliminar para ahorrar memoria o algo asi por el estilo creo
 
 //        JScrollPane scrollpanelBotonesDoc = new JScrollPane(panelSeleccionConsulta);
 //        scrollpanelBotonesDoc.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -632,15 +621,10 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
 
     //Aqui creo el metodo que me permitiria visualizar el apartado para terminar de agendar una cita 
     public void mostrarVistaAgendamientoCita(Titulo tituloAgendaMientoCita) {
-        if (cuerpo2.getComponentCount() > 0) {
-            this.cuerpo2.removeAll();
-        }
-        if (panelCalendario.getComponentCount() > 0) {
-            this.panelCalendario.removeAll();
-        }
-        if (panelHorarios.getComponentCount() > 0) {
-            this.panelHorarios.removeAll();
-        }
+        vaciarPanel(cuerpo2);
+        vaciarPanel(panelCalendario);
+        vaciarPanel(panelHorarios);
+
         this.cuerpo2.setLayout(new BorderLayout(5, 0));//Gap horizontal entre las dos tarjetas
         this.cuerpo2.setBorder(new EmptyBorder(20, 40, 40, 40));//Padding propio de esta vista
         JLabel descrip1 = new JLabel("Selecciona Fecha y Horario en el");
