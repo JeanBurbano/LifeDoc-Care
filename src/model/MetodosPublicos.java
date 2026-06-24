@@ -1,7 +1,6 @@
 package model;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 public interface MetodosPublicos {
 
@@ -15,11 +14,34 @@ public interface MetodosPublicos {
         panel.revalidate();//Recalcula el layout interno del panel
         panel.repaint();//Vuelve a dibujar el panel con los cambios
     }
+
     //Aqui creo el metodo para baciar panel si ya esta lleno
     default void vaciarPanel(JComponent componente) {
         if (componente.getComponentCount() > 0) {
             componente.removeAll();
             refrescarVentana(componente);
         }
+    }
+
+    default boolean validarUser(String user) {
+        final boolean hasAccess=false;
+        if (user.length() > 0 && user.length() < 11) {
+          
+        } else {
+//            hasAccess = false;
+        }
+        return hasAccess;
+    }
+    
+    default boolean validarCadena(byte longitud){
+         int c = 0;
+          for (int i = 0; i <longitud; i++) {
+                try {
+                    c++;
+                } catch (Exception e) {
+                    break;
+                }
+            }
+        return c == longitud? true:false;
     }
 }
