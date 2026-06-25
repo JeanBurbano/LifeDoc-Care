@@ -21,27 +21,5 @@ public interface MetodosPublicos {
             componente.removeAll();
             refrescarVentana(componente);
         }
-    }
-
-    default boolean validarUser(String user) {
-        final boolean hasAccess=false;
-        if (user.length() > 0 && user.length() < 11) {
-          
-        } else {
-//            hasAccess = false;
-        }
-        return hasAccess;
-    }
-    
-    default boolean validarCadena(byte longitud){
-         int c = 0;
-          for (int i = 0; i <longitud; i++) {
-                try {
-                    c++;
-                } catch (Exception e) {
-                    break;
-                }
-            }
-        return c == longitud? true:false;
-    }
+    }    
 }

@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
 
 public class Login extends JFrame {
 
-    private JTextField user;
+    private JTextField id;
     private JPasswordField password;
     private Container contenedor;
     private ImageIcon imagen1, imagen2;
@@ -41,10 +41,10 @@ public class Login extends JFrame {
         this.correofield = new JLabel("Correo Electronico *");//Aqui creo una etiqueta correo electronico
         this.correofield.setOpaque(true);
         this.correofield.setBackground(new Color(230, 247, 246));
-        this.user = new JTextField(30);//Creo JTextField para el correo del usuario.
-        this.user.setBackground(new Color(230, 247, 246));//Aqui agrego el color de fondo al JTextField
-        this.user.setBorder(new EmptyBorder(0, 0, 0, 0));//Aqui le quito los bordes al JTextField
-        this.user.setPreferredSize(new Dimension(WIDTH, 27));
+        this.id = new JTextField(30);//Creo JTextField para el correo del usuario.
+        this.id.setBackground(new Color(230, 247, 246));//Aqui agrego el color de fondo al JTextField
+        this.id.setBorder(new EmptyBorder(0, 0, 0, 0));//Aqui le quito los bordes al JTextField
+        this.id.setPreferredSize(new Dimension(WIDTH, 27));
         this.passwordfield = new JLabel("Password *");//Aqui creo una etiqueta password
         this.passwordfield.setOpaque(true);
         this.passwordfield.setBackground(new Color(230, 247, 246));
@@ -56,7 +56,7 @@ public class Login extends JFrame {
         this.panelfield.setLayout(new BoxLayout(panelfield, BoxLayout.Y_AXIS));
         this.panelfield.setBackground(Color.WHITE);
         this.panelfield.add(correofield);
-        this.panelfield.add(user);
+        this.panelfield.add(id);
         this.panelfield.add(new JLabel("  "));
         this.panelfield.add(passwordfield);
         this.panelfield.add(password);
@@ -116,15 +116,11 @@ public class Login extends JFrame {
         this.contenedor.add(panel1);
         this.contenedor.add(panel2);
     }
-    public void setUser(String user){
-        this.user.setText(user);
-    }
+    
     public String getUser(){
-        return this.user.getText();
+        return this.id.getText();
     }
-    public void setPassword(String password) {
-        this.password.setText(password);
-    }
+    
     public String getPassword(){
        return  this.password.getText();
     }
