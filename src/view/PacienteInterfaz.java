@@ -38,12 +38,12 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
     private static final Color COLOR_GRIS_SUBTITULO = new Color(100, 120, 130);
     //Aqui creo los componentes que basicamente llevara todo
     private JLabel fondoVentana;//Aqui creo el JLabel que se comportara como contendor y fondo.
-    private JPanel encabezado;//Aqui creo el JPanel que sera el encabezado
+    public JPanel encabezado;//Aqui creo el JPanel que sera el encabezado
     private JPanel panelBienvenida;//Aqui creo el JPanel de bienbenida ejemplo:Bienbenido alejo! lifedoccare
     private JPanel panelSesionUsuario;//Aqui creo el JPanel que lelva el boton cerrar sesion y foto de perfil
     private JLabel labelFotoPerfil;//Aqui creo JLabel que llevara la foto de perfil
     protected JButton btnCerrarSesion;//Aqui creo el boton cerrar sesion
-    private JPanel cuerpo1;//Aqui creo el JPanel que va hacer el cuerpo1
+    public JPanel cuerpo1;//Aqui creo el JPanel que va hacer el cuerpo1
     public JPanel cuerpo2;//Aqui creo el JPanel que va hacer el cuerpo2
     //Aqui creo los botones del Paciente
     public JButton btnMisCitas;
@@ -86,6 +86,9 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
     public CalendarPanel calendario;
     public JPanel panelHorarios;
     
+    public PacienteInterfaz(){
+        
+    }
     public PacienteInterfaz(String nombre, String nombreInterfaz, String rutaFotoP) {
         super(nombreInterfaz);//Asigno nombre de la ventana
 
@@ -597,13 +600,6 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
         descripcion = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo eliminar para ahorrar memoria o algo asi por el estilo creo
         panelTitulo = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo eliminar para ahorrar memoria o algo asi por el estilo creo
 
-//        JScrollPane scrollpanelBotonesDoc = new JScrollPane(panelSeleccionConsulta);
-//        scrollpanelBotonesDoc.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-//        scrollpanelBotonesDoc.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//        scrollpanelBotonesDoc.setOpaque(false);
-//        scrollpanelBotonesDoc.getViewport().setOpaque(false);
-//        scrollpanelBotonesDoc.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
-        this.listaBotonesMedicos.clear();//Limpio botones de medicos de una especialidad anterior
         for (String nombreMedico : medicos) {
             JButton botonMedico = new JButton("👤 " + nombreMedico);//Creo boton con el nombre del medico
             estilizarBoton(botonMedico, (byte) 4);//Agrego estilo al boton
@@ -682,7 +678,7 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
         refrescarVentana(cuerpo2);
     }
 
-    //Aqui creo el metido que me permitiria agregar compoenentes al panelHorarios
+    //Aqui creo el metodo que me permitiria agregar compoenentes al panelHorarios
     public void agregarAlPanelHorarios(JComponent c) {
         this.panelHorarios.add(c);
         refrescarVentana(panelHorarios);
