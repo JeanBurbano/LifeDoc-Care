@@ -21,5 +21,6 @@ public interface MetodosPublicos {
             componente.removeAll();
             refrescarVentana(componente);
         }
-    }    
+    }  
+   
 }

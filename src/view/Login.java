@@ -19,17 +19,18 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 public class Login extends JFrame {
-
+    
     private JTextField id;
     private JPasswordField password;
     private Container contenedor;
     private ImageIcon imagen1, imagen2;
-    private JLabel titulo1, titulo2, titulo3, titulo4, descripcion, emoji1, emoji2, correofield, passwordfield;
+    private JLabel fondo,titulo1, titulo2, titulo3, titulo4, descripcion, emoji1, emoji2, correofield, passwordfield;
     public JButton bRegistar, bIngresar;
     private JPanel panel1, panel2, panelbotones, paneltitulo, panelfield, panelTodotitulo;
 
     public Login() {
         super("Login");//Nombre de la ventana
+        this.fondo=new JLabel(new ImageIcon(""));
         this.contenedor = getContentPane();//Aqui a contenedor lo convierto en el contenido del JFrame
         this.contenedor.setLayout(new GridLayout(1, 2));//Aqui a contenedor le adigno una distribucion que seria gridlayout de una fila y dos columnas
         //Primer panel
@@ -38,7 +39,7 @@ public class Login extends JFrame {
         this.panel1.setLayout(new FlowLayout());//Aqui le asigno al panel1 la distribucion FlowLayout
         this.panel1.setBackground(Color.WHITE);//Aqui establesco el color de fondo del panel1
         this.titulo1 = new JLabel(new ImageIcon("logo.png"));//Aqui creo una etiqueta con la imagen
-        this.correofield = new JLabel("Correo Electronico *");//Aqui creo una etiqueta correo electronico
+        this.correofield = new JLabel("ID*");//Aqui creo una etiqueta correo electronico
         this.correofield.setOpaque(true);
         this.correofield.setBackground(new Color(230, 247, 246));
         this.id = new JTextField(30);//Creo JTextField para el correo del usuario.
@@ -117,7 +118,7 @@ public class Login extends JFrame {
         this.contenedor.add(panel2);
     }
     
-    public String getUser(){
+    public String getId(){
         return this.id.getText();
     }
     
