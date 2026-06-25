@@ -15,16 +15,8 @@ Sistema de control y agendamiento de citas médicas para consultorios, desarroll
 
 2. En NetBeans haz clic derecho en tu proyecto → Properties → Libraries
 3. Clic en el "+" de Classpath → Add JAR/Folder
-4. Selecciona el archivo descargado y haz clic en Abrir
-
-## Configuración de la Base de Datos
-
-1. Inicia XAMPP y enciende el servicio MySQL
-2. Abre phpMyAdmin en http://localhost/phpmyadmin
-3. Crea una base de datos nueva
-4. Importa el archivo `database.sql` que está en la raíz del proyecto
-5. Configura los datos de conexión en el código según tu usuario y contraseña de MySQL
-
+4. Selecciona el archivo descargado y haz clic en Abrir.
+   
 ## Tecnologías usadas
 
 - Java Swing (interfaz gráfica)
