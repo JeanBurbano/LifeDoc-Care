@@ -30,7 +30,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
 
-public class PacienteInterfaz extends JFrame implements MetodosPublicos {
+public class PacienteInterfaz extends JFrame{
 
     //Aqui creo los colores que mas vamos autilizar en la plantilla.
     private static final Color COLOR_AZUL_CORPORATIVO = new Color(0, 79, 124);
@@ -325,14 +325,14 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
     public void agregarBotonCuerpo1(JButton boton) {
         estilizarBoton(boton, (byte) 1);
         this.cuerpo1.add(boton);
-        refrescarVentana(cuerpo1);
+        MetodosPublicos.refrescarVentana(cuerpo1);
     }
 
     //Aqui creo el metodo que nos va a permitir agregar cualquier tipo de 
     //objeto que sea creado con una clase que hereda de JComponent para agregar al panel cuerpo1
     public void agregarComponenteCuerpo1(JComponent componente) {
         this.cuerpo1.add(componente);
-        refrescarVentana(cuerpo1);
+        MetodosPublicos.refrescarVentana(cuerpo1);
     }
 
     //Aqui creo metodo que me permitira cargar al cuerpo1 los botones del paciente
@@ -345,13 +345,13 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
         agregarBotonCuerpo1(btnHistorial);
         agregarBotonCuerpo1(btnComentarios);
         agregarBotonCuerpo1(btnNotificaciones);
-        refrescarVentana(cuerpo1);
+        MetodosPublicos.refrescarVentana(cuerpo1);
     }
 
     //Aqui creo el metodo que me permitiria vizualizar en el JPanel cuerpo2 el apartado de mis citas
     public void mostrarVistaMisCitas() {
-        vaciarPanel(cuerpo2);
-        vaciarPanel(panelInfoCitas);
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(panelInfoCitas);
         this.cuerpo2.setLayout(new BorderLayout(20, 20));//Esta vista necesita gap entre sus 4 zonas
         this.cuerpo2.setBorder(new EmptyBorder(0, 40, 20, 40));//Padding propio de esta vista
 
@@ -426,16 +426,16 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
         this.cuerpo2.add(panelContacto, BorderLayout.SOUTH);
         labelCitas = null;//Ya quedo agregado al cuerpo2 entonces libero memoria 
 
-        refrescarVentana(cuerpo2);
-        refrescarVentana(panelInfoCitas);
+        MetodosPublicos.refrescarVentana(cuerpo2);
+        MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
 
     //qui creo el metodo que me permitiria vizualizar en el JPanel cuerpo2 el apartado de historial
     public void mostrarVistaHistorial() {
-        vaciarPanel(cuerpo2);
-        vaciarPanel(panelListaHistorial);
-        vaciarPanel(panelBotonesLaterales);
-        vaciarPanel(panelFiltros);
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(panelListaHistorial);
+        MetodosPublicos.vaciarPanel(panelBotonesLaterales);
+        MetodosPublicos.vaciarPanel(panelFiltros);
 
         this.cuerpo2.setLayout(new BorderLayout());
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));//Padding propio de esta vista
@@ -467,15 +467,15 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
         this.cuerpo2.add(panelBotonesLaterales, BorderLayout.WEST);
         this.cuerpo2.add(panelHistorial, BorderLayout.CENTER);
 
-        refrescarVentana(cuerpo2);
-        refrescarVentana(panelListaHistorial);
-        refrescarVentana(panelBotonesLaterales);
-        refrescarVentana(panelFiltros);
+        MetodosPublicos.refrescarVentana(cuerpo2);
+        MetodosPublicos.refrescarVentana(panelListaHistorial);
+        MetodosPublicos.refrescarVentana(panelBotonesLaterales);
+        MetodosPublicos.refrescarVentana(panelFiltros);
     }
 
     //Aqui creo el metodo que me permitiria contruer el aprtado de comentarios para quejas y sujerencias
     protected void construirFormularioComentario() {
-        vaciarPanel(panelComentarios);
+        MetodosPublicos.vaciarPanel(panelComentarios);
         JLabel lblAsunto = new JLabel("Asunto");
         lblAsunto.setFont(new Font("Arial", Font.BOLD, 22));
         lblAsunto.setForeground(COLOR_AZUL_CORPORATIVO);
@@ -497,13 +497,13 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
         lblAsunto = null;//Ya quedaron dentro de panelComentarios
         lblDescripcion = null;
 
-        refrescarVentana(panelComentarios);
+        MetodosPublicos.refrescarVentana(panelComentarios);
     }
 
     //Aqui creo el metodo que me permitiria vizualizar en el JPanel cuerpo2 el apartado de comentarios
     public void mostrarVistaComentarios() {
-        vaciarPanel(cuerpo2);
-        vaciarPanel(panelBotonesLaterales);
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(panelBotonesLaterales);
         construirFormularioComentario();
 
         this.panelBotonesLaterales.add(btnSugerencias);
@@ -517,38 +517,38 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
         this.cuerpo2.add(panelBotonesLaterales, BorderLayout.WEST);
         this.cuerpo2.add(panelComentarios, BorderLayout.CENTER);
 
-        refrescarVentana(panelComentarios);
-        refrescarVentana(panelBotonesLaterales);
-        refrescarVentana(cuerpo2);
+        MetodosPublicos.refrescarVentana(panelComentarios);
+        MetodosPublicos.refrescarVentana(panelBotonesLaterales);
+        MetodosPublicos.refrescarVentana(cuerpo2);
     }
     //Aqui creo el metodo que me permitiria agregar componentes al panel comentarios
     public void agregarAlPanelComentarios(JComponent c) {
         this.panelComentarios.add(c);
         this.panelComentarios.add(Box.createRigidArea(new Dimension(0, 30)));
-        refrescarVentana(panelComentarios);
+        MetodosPublicos.refrescarVentana(panelComentarios);
     }
 
     //Aqui creo el metodo que permitiria vizualsar en el panel cuerpo2 el apartado de notificaciones
     public void mostrarVistaNotificaciones() {
-        vaciarPanel(cuerpo2);
-        vaciarPanel(panelContenidoNotificaciones);
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(panelContenidoNotificaciones);
         this.cuerpo2.setLayout(new BorderLayout());
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));//Padding propio de esta vista
         this.cuerpo2.add(panelContenidoNotificaciones);
 
-        refrescarVentana(cuerpo2);
-        refrescarVentana(panelContenidoNotificaciones);
+        MetodosPublicos.refrescarVentana(cuerpo2);
+        MetodosPublicos.refrescarVentana(panelContenidoNotificaciones);
     }
 
     public void agregarNotificaciones(JComponent c) {
         this.panelContenidoNotificaciones.add(c);
-        refrescarVentana(panelContenidoNotificaciones);
+        MetodosPublicos.refrescarVentana(panelContenidoNotificaciones);
     }
 
     //Aqui creo el metodo que me permitiria vizualisar el apartado para escoger el tipo de consulta
     public void mostrarVistaTipoConsulta(Titulo titulo) {
-        vaciarPanel(cuerpo2);
-        vaciarPanel(panelSeleccionConsulta);
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(panelSeleccionConsulta);
 
         JLabel descripcion = new JLabel("Selecciona Tipo De Consulta Que Deseas Agendar");
         descripcion.setFont(new Font("Arial", Font.BOLD, 22));
@@ -577,13 +577,13 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));
         this.cuerpo2.add(panelSeleccionConsulta, new GridBagConstraints());
 
-        refrescarVentana(panelSeleccionConsulta);
-        refrescarVentana(cuerpo2);
+        MetodosPublicos.refrescarVentana(panelSeleccionConsulta);
+        MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     public void mostrarVistaSeleccionMedico(String[] medicos) {
-        vaciarPanel(cuerpo2);
-        vaciarPanel(panelSeleccionConsulta);
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(panelSeleccionConsulta);
         
         Titulo titulo = new Titulo("Agendamiento de ", "Cita");
         JLabel descripcion = new JLabel("Selecciona El Medico Con El Que Deseas Agendar");
@@ -611,15 +611,15 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
         this.cuerpo2.setLayout(new GridBagLayout());
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));
         this.cuerpo2.add(panelSeleccionConsulta, new GridBagConstraints());
-        refrescarVentana(panelSeleccionConsulta);
-        refrescarVentana(cuerpo2);
+        MetodosPublicos.refrescarVentana(panelSeleccionConsulta);
+        MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     //Aqui creo el metodo que me permitiria visualizar el apartado para terminar de agendar una cita 
     public void mostrarVistaAgendamientoCita(Titulo tituloAgendaMientoCita) {
-        vaciarPanel(cuerpo2);
-        vaciarPanel(panelCalendario);
-        vaciarPanel(panelHorarios);
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(panelCalendario);
+        MetodosPublicos.vaciarPanel(panelHorarios);
 
         this.cuerpo2.setLayout(new BorderLayout(5, 0));//Gap horizontal entre las dos tarjetas
         this.cuerpo2.setBorder(new EmptyBorder(20, 40, 40, 40));//Padding propio de esta vista
@@ -673,15 +673,15 @@ public class PacienteInterfaz extends JFrame implements MetodosPublicos {
         tituloHorarioDisponibles = null;
         tituloAgendaMientoCita = null;
         settings = null;
-        refrescarVentana(panelCalendario);
-        refrescarVentana(panelHorarios);
-        refrescarVentana(cuerpo2);
+        MetodosPublicos.refrescarVentana(panelCalendario);
+        MetodosPublicos.refrescarVentana(panelHorarios);
+        MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     //Aqui creo el metodo que me permitiria agregar compoenentes al panelHorarios
     public void agregarAlPanelHorarios(JComponent c) {
         this.panelHorarios.add(c);
-        refrescarVentana(panelHorarios);
+        MetodosPublicos.refrescarVentana(panelHorarios);
     }
 
 }

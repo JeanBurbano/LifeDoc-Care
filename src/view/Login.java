@@ -2,11 +2,13 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,17 +24,22 @@ public class Login extends JFrame {
     
     private JTextField id;
     private JPasswordField password;
-    private Container contenedor;
     private ImageIcon imagen1, imagen2;
     private JLabel fondo,titulo1, titulo2, titulo3, titulo4, descripcion, emoji1, emoji2, correofield, passwordfield;
     public JButton bRegistar, bIngresar;
-    private JPanel panel1, panel2, panelbotones, paneltitulo, panelfield, panelTodotitulo;
+    private JPanel panel1, panel2, panelbotones, paneltitulo, panelfield, panelTodotitulo,panelLogin;
 
     public Login() {
         super("Login");//Nombre de la ventana
-        this.fondo=new JLabel(new ImageIcon(""));
-        this.contenedor = getContentPane();//Aqui a contenedor lo convierto en el contenido del JFrame
-        this.contenedor.setLayout(new GridLayout(1, 2));//Aqui a contenedor le adigno una distribucion que seria gridlayout de una fila y dos columnas
+        this.fondo=new JLabel(new ImageIcon("fondo2.png"));
+        this.fondo.setOpaque(true);
+        this.fondo.setLayout(new GridBagLayout());
+        this.setContentPane(fondo);
+        
+        this.panelLogin = new JPanel();
+        this.panelLogin.setLayout(new GridLayout(1, 2));
+        this.panelLogin.setPreferredSize(new Dimension(750,420));
+        this.panelLogin.setBorder(BorderFactory.createLineBorder(new Color(0, 194, 177)));
         //Primer panel
         this.panel1 = new JPanel();//Creo el panel1
         this.panel1.setBorder(new EmptyBorder(60, 40, 0, 40));//creo padding Arriba,Izquierda,Abajo,Derecha son los valores del padding
@@ -114,8 +121,9 @@ public class Login extends JFrame {
         this.panel2.add(emoji2);
         this.panel2.add(descripcion);
 
-        this.contenedor.add(panel1);
-        this.contenedor.add(panel2);
+        this.panelLogin.add(panel1);
+        this.panelLogin.add(panel2);
+        this.fondo.add(panelLogin,new GridBagConstraints());
     }
     
     public String getId(){
