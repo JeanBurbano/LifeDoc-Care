@@ -11,7 +11,7 @@ public class UsaVista {
         lg.setDefaultCloseOperation(EXIT_ON_CLOSE);
         lg.setExtendedState(MAXIMIZED_BOTH);
         LoginController clg = new LoginController(lg);
-//        Plantilla_Notificacion n = new Plantilla_Notificacion();
+//        PlantillFa_Notificacion n = new Plantilla_Notificacion();
     }
 
 }
