@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 import model.MetodosPublicos;
 import view.Login;
 
-public class LoginController implements ActionListener, MetodosPublicos {
+public class LoginController implements ActionListener {
 
     Login lg = new Login();
 
@@ -22,7 +22,8 @@ public class LoginController implements ActionListener, MetodosPublicos {
         if (e.getSource() == this.lg.bIngresar) {
             String id = this.lg.getId();
             String contrasena = this.lg.getPassword();
-            if ((!id.isEmpty() && !contrasena.isEmpty()) && id.matches("\\d{8,10}") && contrasena.matches("(?=.{8,10}$)[a-zA-Z0-9]+([/$#?!%][a-zA-Z0-9]*)*")) {
+            //[solo numeros]{minimo,maximo}(?= .*Almenos una mayuscula)(?=.*almenos uno de los simbolos permitidos)[A-Za-z0-9/$#?!%]{minimo,infinito}
+            if ((!id.isEmpty() && !contrasena.isEmpty()) && id.matches("[0-9 ]{8,10}") && contrasena.matches("(?=.*[A-Z])(?=.*[/$#?!%])[A-Za-z0-9/$#?!%]{8,}")) {
                 JOptionPane.showMessageDialog(lg, "sesion iniciada");
             } else if (id.isEmpty() && contrasena.isEmpty()) {
                 JOptionPane.showMessageDialog(lg, "Los dos campos son obligatorios");
@@ -32,20 +33,20 @@ public class LoginController implements ActionListener, MetodosPublicos {
                 } else if (contrasena.isEmpty()) {
                     JOptionPane.showMessageDialog(lg, "El Campo De Constrasena es obligario");
                 }
-                if (!id.isEmpty() && Pattern.compile("[^0-9]").matcher(id).find()) {
+                if (!MetodosPublicos.validarId(id)) {
                     JOptionPane.showMessageDialog(lg, "El campo id contiene caracteres no validos");
                 }
-                if (!id.isEmpty() && id.length() < 8 || id.length() > 10) {
+                if (MetodosPublicos.idValidarLongitud(id)) {
                     JOptionPane.showMessageDialog(lg, "El campo id no cumple con longitud de minimo como 8 y maximo como 10");
                 }
-                if (!contrasena.isEmpty() && Pattern.compile("[^a-zA-Z0-9/$#?!%]").matcher(contrasena).find()) {
+                if (MetodosPublicos.contrasenaCaracteresInvalidos(contrasena)) {
                     JOptionPane.showMessageDialog(lg, "La contrasena tiene caracteres no validos");
                 }
-                if (!contrasena.isEmpty() && Pattern.compile("[/$#?!%]{2}").matcher(contrasena).find()) {
-                    JOptionPane.showMessageDialog(lg, "La contrasena No se permiten simbolos consecutivos");
+                if (MetodosPublicos.validarLongitudCt(contrasena)) {
+                    JOptionPane.showMessageDialog(lg, "La contrasena debe ser como minimo 8 caracteres");
                 }
-                if (!contrasena.isEmpty() && contrasena.length() < 8 || contrasena.length() > 10) {
-                    JOptionPane.showMessageDialog(lg, "La contrasena debe ser como minimo 8 caracteres y maximo 10");
+                if (MetodosPublicos.validarObligatoriedad(contrasena)) {
+                    JOptionPane.showMessageDialog(lg, "La contrasena debe de cumplir con una minuscula una mayuscula un numero y un de los simbolos permitidos /$#?!%");
                 }
             }
         }
