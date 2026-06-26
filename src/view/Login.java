@@ -38,7 +38,7 @@ public class Login extends JFrame {
         
         this.panelLogin = new JPanel();
         this.panelLogin.setLayout(new GridLayout(1, 2));
-        this.panelLogin.setPreferredSize(new Dimension(800,500));
+        this.panelLogin.setPreferredSize(new Dimension(750,420));
         this.panelLogin.setBorder(BorderFactory.createLineBorder(new Color(0, 194, 177)));
         //Primer panel
         this.panel1 = new JPanel();//Creo el panel1
