@@ -42,7 +42,7 @@ public class PacienteInterfaz extends JFrame{
     private JPanel panelBienvenida;//Aqui creo el JPanel de bienbenida ejemplo:Bienbenido alejo! lifedoccare
     private JPanel panelSesionUsuario;//Aqui creo el JPanel que lelva el boton cerrar sesion y foto de perfil
     private JLabel labelFotoPerfil;//Aqui creo JLabel que llevara la foto de perfil
-    protected JButton btnCerrarSesion;//Aqui creo el boton cerrar sesion
+    public JButton btnCerrarSesion;//Aqui creo el boton cerrar sesion
     public JPanel cuerpo1;//Aqui creo el JPanel que va hacer el cuerpo1
     public JPanel cuerpo2;//Aqui creo el JPanel que va hacer el cuerpo2
     //Aqui creo los botones del Paciente
@@ -306,7 +306,7 @@ public class PacienteInterfaz extends JFrame{
     }
 
     //Aqui creo el metodo para habilitar o desabilitar botones del paciente.
-    protected void habilitarBotonesMenu(JButton botonActivo) {
+    public void habilitarBotonesMenu(JButton botonActivo) {
         if (botonActivo != btnMisCitas && !btnMisCitas.isEnabled()) {
             this.btnMisCitas.setEnabled(true);
         }
@@ -474,7 +474,7 @@ public class PacienteInterfaz extends JFrame{
     }
 
     //Aqui creo el metodo que me permitiria contruer el aprtado de comentarios para quejas y sujerencias
-    protected void construirFormularioComentario() {
+    public void construirFormularioComentario() {
         MetodosPublicos.vaciarPanel(panelComentarios);
         JLabel lblAsunto = new JLabel("Asunto");
         lblAsunto.setFont(new Font("Arial", Font.BOLD, 22));
