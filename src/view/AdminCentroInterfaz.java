@@ -4,7 +4,11 @@
  */
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,15 +27,18 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         super(nombrePersona, nombreInterfaz, url);
         this.btnPersonalCentro = new JButton("👥 Personal del Centro");
         this.btnregistrarUsuario = new JButton("Registrar Personal");
+        super.estilizarBoton(btnregistrarUsuario, (byte)5);
         this.btnInventarioMedicamentos = new JButton("💊 Inventario de Medicamentos");
         super.agregarBotonCuerpo1(btnPersonalCentro);
-        super.agregarBotonCuerpo1(btnregistrarUsuario);
         super.agregarBotonCuerpo1(btnInventarioMedicamentos);
+        this.personalC = new JPanel();
+        this.personalC.setLayout(new FlowLayout(FlowLayout.LEFT));
+        personalC.setOpaque(false);
 
     }
 
-    @Override
-    protected void habilitarBotonesMenu(JButton botonActivo) {
+    
+    public void habilitarBotones(JButton botonActivo) {
         if (botonActivo != btnPersonalCentro && !btnPersonalCentro.isEnabled()) {
             this.btnPersonalCentro.setEnabled(true);
         }
@@ -45,9 +52,17 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         MetodosPublicos.vaciarPanel(personalC);
         
         JLabel tituloPersonalRegistrado = new JLabel("Personal del Centro Registrado");
+        
         tituloPersonalRegistrado.setFont(new Font("arial", Font.BOLD, 20));
         tituloPersonalRegistrado.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
         this.personalC.add(tituloPersonalRegistrado);
+        this.personalC.add(Box.createHorizontalStrut(10));
+        this.personalC.add(btnregistrarUsuario);
+            personalC.setPreferredSize(new Dimension(Short.MAX_VALUE,50));
+        super.cuerpo2.add(personalC, BorderLayout.WEST);
+        MetodosPublicos.refrescarVentana(personalC);
+        MetodosPublicos.refrescarVentana(cuerpo2);
+        
     }
 
 }
