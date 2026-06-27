@@ -20,7 +20,15 @@ public class MetodosPublicos {
     }
 
     public static boolean validarId(String id) {
-        if (id.matches("[0-9 ]{8,10}")) {
+        if (id.matches("[0-9]{8,10}")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public static boolean validarQueseanumeros(String id){
+        if (!id.matches("[0-9]")) {
             return true;
         } else {
             return false;
