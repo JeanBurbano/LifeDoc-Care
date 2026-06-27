@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import model.MetodosPublicos;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MedicoInterfaz extends PacienteInterfaz {
@@ -34,9 +36,13 @@ public class MedicoInterfaz extends PacienteInterfaz {
         super.agregarBotonCuerpo1(btnNotificaciones);
         super.agregarBotonCuerpo1(btnMiAgenda);
         super.agregarBotonCuerpo1(btnConsultorio);
+        
+        panelPrincipal = new JPanel();
+        panelPrincipal.setLayout(new FlowLayout());
     }
 
-    protected void habilitarBotonesMenu(JButton botonActivo) {
+    @Override
+    public void habilitarBotonesMenu(JButton botonActivo) {
         if (botonActivo != btnMisCitas && !btnMisCitas.isEnabled()) {
             this.btnMisCitas.setEnabled(true);
         }
@@ -56,5 +62,41 @@ public class MedicoInterfaz extends PacienteInterfaz {
             this.btnConsultorio.setEnabled(true);
         }
     }
-
+    
+    @Override
+    public void mostrarVistaMisCitas(){        
+        super.mostrarVistaMisCitas();
+    }
+    @Override
+    public void mostrarVistaHistorial(){
+        super.mostrarVistaHistorial();   
+    }
+    @Override
+    public void mostrarVistaComentarios(){
+        super.mostrarVistaComentarios();
+    }
+    @Override
+    public void mostrarVistaNotificaciones(){
+        super.mostrarVistaNotificaciones();
+    }
+    public void mostrarVistaMiAgenda(){
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(panelPrincipal);
+        panelPrincipal.setOpaque(false);
+        
+        JLabel tituloMiAgenda = new JLabel("Citas programadas vigentes");
+        tituloMiAgenda.setFont(new Font("arial", Font.BOLD, 28));
+        tituloMiAgenda.setForeground(COLOR_AZUL_CORPORATIVO);
+        this.panelPrincipal.add(tituloMiAgenda);
+        
+        JScrollPane scrollCitas = new JScrollPane(panelPrincipal);
+        scrollCitas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollCitas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        
+        MetodosPublicos.refrescarVentana(panelPrincipal);
+        MetodosPublicos.refrescarVentana(super.cuerpo2);
+    }
+    public void mostrarVistaConsultorio(){
+        
+    }
 }
