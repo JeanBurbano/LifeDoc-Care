@@ -19,59 +19,39 @@ public class MetodosPublicos {
         }
     }
 
-    public static boolean validarId(String id) {
-        if (id.matches("[0-9]{8,10}")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    public static boolean validarQueseanumeros(String id){
-        if (!id.matches("[0-9]")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public static boolean idValidarLongitud(String id) {
-        if (!id.isEmpty() && id.length() < 8 || id.length() > 10) {
-            return true;
-        } else {
-            return false;
-        }
+        return !id.isEmpty() && (id.length() < 8 || id.length() > 10);
     }
 
-    public static boolean validarContrasena(String contrasena) {
-        if (contrasena.matches("(?=.*[A-Z])(?=.*[/$#?!%])[A-Za-z0-9/$#?!%]{8,}")) {
-            return true;
-        } else {
-            return false;
+    public static boolean validarId(String id) {
+        int c = 0;
+        for (int i = 0; i < id.length(); i++) {
+            try {
+                Integer.parseInt(String.valueOf(id.charAt(i)));
+                System.out.println("caracter: "+id.charAt(i));
+                c=c+1;
+                System.out.println("c: "+c);
+            } catch (Exception e) {
+                System.out.println("caracter en la posicion " + i + " de la cadena id inavalido \n" + e);
+                i=id.length();
+            }
         }
-    }
-
-    public static boolean contrasenaCaracteresInvalidos(String contrasena) {
-        if (!contrasena.isEmpty() && Pattern.compile("[^A-Za-z0-9/$#?!%]").matcher(contrasena).find()) {
-            return true;
-        } else {
-            return false;
-        }
+        return !idValidarLongitud(id) && c == id.length() ? true : false;
     }
 
     public static boolean validarLongitudCt(String contrasena) {
-        if (!contrasena.isEmpty() && contrasena.length() < 8) {
-            return true;
-        } else {
-            return false;
-        }
+        return !contrasena.isEmpty() && contrasena.length() < 8;
+    }
+
+    public static boolean validarContrasena(String contrasena) {
+        return !contrasena.isEmpty() && (!validarLongitudCt(contrasena) && contrasena.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[/$#?!%])[A-Za-z0-9/$#?!%]"));
+    }
+
+    public static boolean contrasenaCaracteresInvalidos(String contrasena) {
+        return !contrasena.isEmpty() && Pattern.compile("[^A-Za-z0-9/\\$#?!%]").matcher(contrasena).find();
     }
 
     public static boolean validarObligatoriedad(String contrasena) {
-        if (!contrasena.isEmpty() && !contrasena.matches("!contrasena.matches(\"(?=.*[a-z])(?=.*[A-Z])(?=.*[/$#?!%])(?=.*[0-9]).+\")")) {
-           return true;
-        }else{
-            return false;
-        }
+        return !contrasena.isEmpty() && !contrasena.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[/$#?!%])(?=.*[0-9]).+");
     }
 }

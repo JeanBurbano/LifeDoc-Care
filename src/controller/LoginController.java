@@ -22,8 +22,7 @@ public class LoginController implements ActionListener {
         if (e.getSource() == this.lg.bIngresar) {
             String id = this.lg.getId();
             String contrasena = this.lg.getPassword();
-            //[solo numeros]{minimo,maximo}(?= .*Almenos una mayuscula)(?=.*almenos uno de los simbolos permitidos)[A-Za-z0-9/$#?!%]{minimo,infinito}
-            if ((!id.isEmpty() && !contrasena.isEmpty()) && id.matches("[0-9 ]{8,10}") && contrasena.matches("(?=.*[A-Z])(?=.*[/$#?!%])[A-Za-z0-9/$#?!%]{8,}")) {
+            if (MetodosPublicos.validarId(id) && MetodosPublicos.validarContrasena(contrasena)) {
                 JOptionPane.showMessageDialog(lg, "sesion iniciada");
             } else if (id.isEmpty() && contrasena.isEmpty()) {
                 JOptionPane.showMessageDialog(lg, "Los dos campos son obligatorios");
@@ -33,18 +32,23 @@ public class LoginController implements ActionListener {
                 } else if (contrasena.isEmpty()) {
                     JOptionPane.showMessageDialog(lg, "El Campo De Constrasena es obligario");
                 }
-                if (MetodosPublicos.validarQueseanumeros(id)) {
+                
+                if (!MetodosPublicos.validarId(id)) {
                     JOptionPane.showMessageDialog(lg, "El campo id contiene caracteres no validos");
                 }
+
                 if (MetodosPublicos.idValidarLongitud(id)) {
                     JOptionPane.showMessageDialog(lg, "El campo id no cumple con longitud de minimo como 8 y maximo como 10");
                 }
+                
                 if (MetodosPublicos.contrasenaCaracteresInvalidos(contrasena)) {
                     JOptionPane.showMessageDialog(lg, "La contrasena tiene caracteres no validos");
                 }
+                
                 if (MetodosPublicos.validarLongitudCt(contrasena)) {
                     JOptionPane.showMessageDialog(lg, "La contrasena debe ser como minimo 8 caracteres");
                 }
+                
                 if (MetodosPublicos.validarObligatoriedad(contrasena)) {
                     JOptionPane.showMessageDialog(lg, "La contrasena debe de cumplir con una minuscula una mayuscula un numero y un de los simbolos permitidos /$#?!%");
                 }
