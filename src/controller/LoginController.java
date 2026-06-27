@@ -9,7 +9,7 @@ import view.Login;
 
 public class LoginController implements ActionListener {
 
-    Login lg = new Login();
+    Login lg;
 
     public LoginController(Login lg) {
         this.lg = lg;
@@ -33,7 +33,7 @@ public class LoginController implements ActionListener {
                 } else if (contrasena.isEmpty()) {
                     JOptionPane.showMessageDialog(lg, "El Campo De Constrasena es obligario");
                 }
-                if (!MetodosPublicos.validarId(id)) {
+                if (MetodosPublicos.validarQueseanumeros(id)) {
                     JOptionPane.showMessageDialog(lg, "El campo id contiene caracteres no validos");
                 }
                 if (MetodosPublicos.idValidarLongitud(id)) {

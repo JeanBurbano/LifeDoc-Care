@@ -3,15 +3,22 @@ package view;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import controller.LoginController;
+import controller.PacienteController;
+
 public class UsaVista {
 
     public static void main(String[] args) {
-        Login lg = new Login();
-        lg.setVisible(true);
-        lg.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        lg.setExtendedState(MAXIMIZED_BOTH);
-        LoginController clg = new LoginController(lg);
+//        Login lg = new Login();
+//        lg.setVisible(true);
+//        lg.setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        lg.setExtendedState(MAXIMIZED_BOTH);
+//        LoginController clg = new LoginController(lg);
 //        PlantillFa_Notificacion n = new Plantilla_Notificacion();
+        PacienteInterfaz p = new PacienteInterfaz("Alejandro Vanegas", "Paciente","anonymous.png");
+        p.setVisible(true);
+        p.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        p.setExtendedState(MAXIMIZED_BOTH);
+        PacienteController clg = new PacienteController(p);
     }
 
 }
