@@ -4,8 +4,12 @@
  */
 package view;
 
+import java.awt.Color;
+import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import model.MetodosPublicos;
 
 /**
  *
@@ -14,6 +18,7 @@ import javax.swing.JPanel;
 public class AdminCentroInterfaz extends PacienteInterfaz {
 
     public JButton btnPersonalCentro, btnInventarioMedicamentos, btnregistrarUsuario;
+    public JPanel personalC, InventarioM;
 
     public AdminCentroInterfaz(String nombrePersona, String nombreInterfaz, String url) {
         super(nombrePersona, nombreInterfaz, url);
@@ -37,7 +42,12 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
     }
 
     public void mostrarVistaPersonalCentro() {
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(personalC);
         
+        JLabel tituloPersonalRegistrado = new JLabel("Personal del Centro Registrado");
+        tituloPersonalRegistrado.setFont(new Font("arial", Font.BOLD, 20));
+        tituloPersonalRegistrado.setForeground(Color.red);
     }
 
 }
