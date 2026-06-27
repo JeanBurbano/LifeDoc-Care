@@ -33,9 +33,9 @@ import model.MetodosPublicos;
 public class PacienteInterfaz extends JFrame{
 
     //Aqui creo los colores que mas vamos autilizar en la plantilla.
-    private static final Color COLOR_AZUL_CORPORATIVO = new Color(0, 79, 124);
-    private static final Color COLOR_VERDE_ACENTO = new Color(0, 194, 177);
-    private static final Color COLOR_GRIS_SUBTITULO = new Color(100, 120, 130);
+    public static final Color COLOR_AZUL_CORPORATIVO = new Color(0, 79, 124);
+    public static final Color COLOR_VERDE_ACENTO = new Color(0, 194, 177);
+    public static final Color COLOR_GRIS_SUBTITULO = new Color(100, 120, 130);
     //Aqui creo los componentes que basicamente llevara todo
     private JLabel fondoVentana;//Aqui creo el JLabel que se comportara como contendor y fondo.
     public JPanel encabezado;//Aqui creo el JPanel que sera el encabezado
