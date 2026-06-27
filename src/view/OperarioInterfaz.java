@@ -1,9 +1,18 @@
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 import static model.MetodosPublicos.refrescarVentana;
+import static model.MetodosPublicos.vaciarPanel;
 
 
 public class OperarioInterfaz extends PacienteInterfaz{
@@ -29,7 +38,7 @@ public class OperarioInterfaz extends PacienteInterfaz{
         
         inicializarComponentesOperario();
         agregarBotonesMenuOperario();
-//        
+        
 //        Vista inicial
         mostrarVistaPrincipalOperario();
         
@@ -70,7 +79,54 @@ public class OperarioInterfaz extends PacienteInterfaz{
     }
     
     public void mostrarVistaPrincipalOperario(){
+        vaciarPanel(cuerpo2);
+        cuerpo2.setLayout(new BorderLayout(20, 20));
+        cuerpo2.setBorder(new EmptyBorder(0, 40, 20, 40));
         
+        JLabel labelCitas = new JLabel("Citas programadas vigentes");
+        labelCitas.setFont(new Font("arial", Font.BOLD, 28));
+        labelCitas.setForeground(COLOR_AZUL_CORPORATIVO);
+        
+//        Panel donde se agregaran las citas
+        vaciarPanel(panelInfoCitas);
+        
+        JScrollPane scrollCitas = new JScrollPane(panelInfoCitas);
+        scrollCitas.setOpaque(false);
+        scrollCitas.getViewport().setOpaque(false);
+        scrollCitas.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
+        
+        JPanel panelAgenda = crearPanelAgenda();
+        JPanel panelContacto = crearPanelContacto();
+        
+        cuerpo2.add(labelCitas, BorderLayout.NORTH);
+        cuerpo2.add(scrollCitas, BorderLayout.CENTER);
+        cuerpo2.add(panelAgenda, BorderLayout.EAST);
+        cuerpo2.add(panelContacto, BorderLayout.SOUTH);
+             
+        refrescarVentana(cuerpo2);
+    }
+    
+    public void agregarCita(String tipo, String fecha, String hora, String medico){
+        JPanel panelCita = new JPanel();
+        panelCita.setLayout(new BoxLayout(panelCita, BoxLayout.X_AXIS));
+        panelCita.setOpaque(false);
+        panelCita.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)));
+        
+        JLabel lblTipo = new JLabel(tipo);
+        lblTipo.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTipo.setForeground(COLOR_AZUL_CORPORATIVO);
+        
+        panelCita.add(lblTipo);
+        panelCita.add(new JLabel("Fecha: " + fecha));
+        panelCita.add(new JLabel("Hora: " + hora));
+        panelCita.add(new JLabel("Médico: " + medico));
+        
+        panelInfoCitas.add(panelCita);
+        panelInfoCitas.add(Box.createRigidArea(new Dimension(0, 12)));
+        
+        refrescarVentana(panelInfoCitas);
     }
     
 }
