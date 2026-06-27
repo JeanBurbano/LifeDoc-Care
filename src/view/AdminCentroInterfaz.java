@@ -4,7 +4,6 @@
  */
 package view;
 
-import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -47,7 +46,8 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         
         JLabel tituloPersonalRegistrado = new JLabel("Personal del Centro Registrado");
         tituloPersonalRegistrado.setFont(new Font("arial", Font.BOLD, 20));
-        tituloPersonalRegistrado.setForeground(Color.red);
+        tituloPersonalRegistrado.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
+        this.personalC.add(tituloPersonalRegistrado);
     }
 
 }
