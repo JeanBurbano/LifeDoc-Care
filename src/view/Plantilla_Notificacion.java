@@ -2,83 +2,73 @@ package view;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.border.EmptyBorder;
+
+import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class Plantilla_Notificacion extends JFrame {
 
-    private Container contenedor;
-    private JPanel panel1, panel2, panelTitulo, primerPanelCompleto, segundoPanelCompleto;
-    private JLabel titulo1, titulo2, titulo3;
+    private JPanel panelSuperior, panelContenido;
+    private JLabel fondo;
     private JButton flecha;
 
     public Plantilla_Notificacion() {
-        contenedor = getContentPane();//A contenedor se asigno el contenido de la ventana
-        contenedor.setLayout(new FlowLayout());//Le asigno el flowlayout
-        contenedor.setBackground(Color.WHITE);//Color de fonde del contenedor
+        super("Recuperacion Contrasena");//Nombre de la ventana
+        this.fondo = new JLabel(new ImageIcon("fondo2.png"));
+        this.fondo.setOpaque(true);
+        this.fondo.setLayout(new GridBagLayout());
+        this.setContentPane(fondo);
 
-        this.panel1 = new JPanel();
-        this.panel1.setLayout(new FlowLayout());
-        this.panel1.setBackground(Color.WHITE);
+        this.panelSuperior = new JPanel();
+        this.panelSuperior.setLayout(new FlowLayout(FlowLayout.LEFT));
+        this.panelSuperior.setOpaque(false);
+        this.panelSuperior.setPreferredSize(new Dimension(50, 90));
 
         this.flecha = new JButton("←");
-        this.flecha.setFont(new Font("arial", Font.BOLD, 25));
-        this.flecha.setBackground(Color.WHITE);
-        this.flecha.setForeground(new Color(0, 194, 177));
-        this.flecha.setBorder(null);
+        JLabel titulo1 = new JLabel("Cambiar Contrasena");
+        titulo1.setFont(new Font("arial", Font.BOLD, 25));
 
-        this.titulo1 = new JLabel("Cambiar Contrasena");
-        this.titulo1.setFont(new Font("arial", Font.BOLD, 25));
+        Titulo titulo2 = new Titulo("LifeDoc", "Care");
 
-        this.panel1.add(flecha);
-        this.panel1.add(titulo1);
+        this.panelSuperior.add(flecha);
+        this.panelSuperior.add(titulo1);
+        this.panelSuperior.add(titulo2.getPanelTitulo());
+        titulo2 = null;
+        titulo1 = null;
 
-        this.panel2 = new JPanel();
-        this.panel2.setLayout(new FlowLayout());
-        this.panel2.setBackground(Color.WHITE);
+        this.panelContenido = new JPanel();
+        this.panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
+        this.panelContenido.setBackground(Color.WHITE);
+        this.panelContenido.setPreferredSize(new Dimension(600, 400));
+        this.panelContenido.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
 
-        this.titulo2 = new JLabel("LifeDoc");//Creo etiqueta con texto LifeDoc titulo2
-        this.titulo2.setFont(new Font(("arial"), Font.BOLD, 20));//A la etiqueta titulo2 le pongo tipo arial con negrita tamano 30
-        this.titulo2.setForeground(new Color(0, 79, 124));//Aqui pongo la letra de la etiqueta titulo2 en blanco
-
-        this.titulo3 = new JLabel("Care");
-        this.titulo3.setForeground(new Color(0, 194, 177));
-        this.titulo3.setFont(new Font(("arial"), Font.BOLD, 20));
-
-        this.panel2.add(titulo2);
-        this.panel2.add(titulo3);
-
-        this.panelTitulo = new JPanel();
-        this.panelTitulo.setLayout(new BoxLayout(panelTitulo, BoxLayout.Y_AXIS));
-        this.panelTitulo.setBackground(Color.WHITE);
-        this.panelTitulo.add(panel1);
-        this.panelTitulo.add(panel2);
-
-        this.primerPanelCompleto = new JPanel();
-        this.primerPanelCompleto.setBorder(new EmptyBorder(0, 0, 0, 260));//creo padding Arriba,Izquierda,Abajo,Derecha son los valores del padding
-        this.primerPanelCompleto.setLayout(new FlowLayout());
-        this.primerPanelCompleto.setBackground(Color.WHITE);
-        this.primerPanelCompleto.add(panelTitulo);
-
-        this.segundoPanelCompleto = new JPanel();
-        this.segundoPanelCompleto.add(new JTextArea(10, 45));
-        this.segundoPanelCompleto.setBorder(BorderFactory.createLineBorder(new Color(0, 79, 124)));
-
-        this.contenedor.add(primerPanelCompleto);
-        this.contenedor.add(segundoPanelCompleto);
-
-        setSize(600, 400);
-        setLocationRelativeTo(null);
-        setVisible(true);
-        setResizable(false);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        GridBagConstraints gbcSuperior = new GridBagConstraints();
+        gbcSuperior.gridx = 0;
+        gbcSuperior.gridy = 0;
+        gbcSuperior.anchor = GridBagConstraints.NORTHWEST; // arriba izquierda
+        gbcSuperior.weightx = 1.0; // que ocupe todo el ancho disponible
+        gbcSuperior.weighty = 0;   // altura minima
+        gbcSuperior.fill = GridBagConstraints.HORIZONTAL; // se estira horizontalmente
+        gbcSuperior.insets = new Insets(10, 10, 0, 0); // margen arriba e izquierda
+        this.fondo.add(panelSuperior, gbcSuperior);
+        GridBagConstraints gbcContenido = new GridBagConstraints();
+        gbcContenido.gridx = 0;
+        gbcContenido.gridy = 1;
+        gbcContenido.anchor = GridBagConstraints.CENTER; // centrado
+        gbcContenido.weightx = 1.0;
+        gbcContenido.weighty = 1.0; // que ocupe el resto del espacio vertical
+        this.fondo.add(panelContenido, gbcContenido);
     }
 }
