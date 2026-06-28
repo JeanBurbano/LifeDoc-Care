@@ -1,6 +1,5 @@
 package model;
 
-import java.util.regex.Pattern;
 import javax.swing.JComponent;
 
 public class MetodosPublicos {

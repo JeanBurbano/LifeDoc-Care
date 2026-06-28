@@ -43,12 +43,12 @@ public class LoginController implements ActionListener {
                     JOptionPane.showMessageDialog(lg, "Campo Contrasena es obligatorio");
                 } else {
                     if(!MetodosPublicos.validarTamano(contrasena, 8)){
-                        JOptionPane.showMessageDialog(lg, "Campo contrsena debe de ser como minimo 8 caracteres");
+                        JOptionPane.showMessageDialog(lg, "Campo contrasena debe de ser como minimo 8 caracteres");
                     }
                     if(!MetodosPublicos.validarContrasena(contrasena)){
                         JOptionPane.showMessageDialog(lg, "La contrasena deve de cumplir con estos parametros\n"
                                 + "Minimo 8 caacteres\n"
-                                + "1 Myuscula,\n"
+                                + "1 Mayuscula,\n"
                                 + "1 Minuscula\n"
                                 + "1 Numero\n"
                                 + "1 Simbolos de los permitidos @, #, $, %, &, *, -, _, !, ?");
