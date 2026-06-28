@@ -6,12 +6,14 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
@@ -37,8 +39,8 @@ public class MedicoInterfaz extends PacienteInterfaz {
         super.agregarBotonCuerpo1(btnMiAgenda);
         super.agregarBotonCuerpo1(btnConsultorio);
         
-        panelPrincipal = new JPanel();
-        panelPrincipal.setLayout(new FlowLayout());
+        this.panelPrincipal = new JPanel();
+        this.panelPrincipal.setOpaque(false);
     }
 
     @Override
@@ -81,22 +83,50 @@ public class MedicoInterfaz extends PacienteInterfaz {
     }
     public void mostrarVistaMiAgenda(){
         MetodosPublicos.vaciarPanel(cuerpo2);
-        MetodosPublicos.vaciarPanel(panelPrincipal);
-        panelPrincipal.setOpaque(false);
+        MetodosPublicos.vaciarPanel(panelPrincipal);     
         
-        JLabel tituloMiAgenda = new JLabel("Citas programadas vigentes");
-        tituloMiAgenda.setFont(new Font("arial", Font.BOLD, 28));
-        tituloMiAgenda.setForeground(COLOR_AZUL_CORPORATIVO);
-        this.panelPrincipal.add(tituloMiAgenda);
+        this.panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
+        this.panelPrincipal.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                BorderFactory.createEmptyBorder(0, 30, 5, 30)));       
+        this.panelPrincipal.setPreferredSize(new Dimension(1455, 563));
+        this.cuerpo2.setLayout(new BorderLayout());
+        this.cuerpo2.setBorder(new EmptyBorder(10, 40, 40, 40));
         
         JScrollPane scrollCitas = new JScrollPane(panelPrincipal);
         scrollCitas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollCitas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollCitas.setOpaque(false);
+        scrollCitas.getViewport().setOpaque(false);
+        scrollCitas.setBorder(null);
+        
+        JLabel tituloMiAgenda = new JLabel("Citas programadas vigentes");
+        tituloMiAgenda.setFont(new Font("arial",Font.BOLD,28));
+        tituloMiAgenda.setForeground(COLOR_AZUL_CORPORATIVO);
+        
+        this.cuerpo2.add(tituloMiAgenda, BorderLayout.NORTH);
+        this.cuerpo2.add(scrollCitas,BorderLayout.SOUTH);
         
         MetodosPublicos.refrescarVentana(panelPrincipal);
-        MetodosPublicos.refrescarVentana(super.cuerpo2);
+        MetodosPublicos.refrescarVentana(cuerpo2);
+        MetodosPublicos.refrescarVentana(scrollCitas);
     }
     public void mostrarVistaConsultorio(){
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(panelPrincipal);
         
+        this.cuerpo2.setBorder(new EmptyBorder(10, 40, 40, 40));
+        
+        JLabel tituloConsultorio = new JLabel("Atender Paciente");
+        tituloConsultorio.setFont(new Font("arial", Font.BOLD, 28));
+        tituloConsultorio.setForeground(COLOR_AZUL_CORPORATIVO);
+        this.cuerpo2.add(tituloConsultorio, BorderLayout.NORTH);
+        
+        JTextField id = new JTextField(20);
+        this.panelPrincipal.add(id);
+        
+        
+        MetodosPublicos.refrescarVentana(panelPrincipal);
+        MetodosPublicos.refrescarVentana(cuerpo2);
     }
 }

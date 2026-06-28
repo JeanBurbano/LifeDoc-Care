@@ -23,6 +23,6 @@ public class UsaVistaMedico {
         m.setDefaultCloseOperation(EXIT_ON_CLOSE);
         m.setExtendedState(MAXIMIZED_BOTH);
         MedicoController clg = new MedicoController(m);
-    }
+    } 
     
 }

@@ -12,10 +12,11 @@ import view.MedicoInterfaz;
  *
  * @author Windows 10 PRO
  */
-public class MedicoController implements ActionListener{
+public class MedicoController implements ActionListener {
+
     MedicoInterfaz medico;
-    
-    public MedicoController(MedicoInterfaz medico){
+
+    public MedicoController(MedicoInterfaz medico) {
         this.medico = medico;
         this.medico.btnMisCitas.addActionListener(this);
         this.medico.btnMisCitas.doClick();
@@ -25,12 +26,12 @@ public class MedicoController implements ActionListener{
         this.medico.btnMiAgenda.addActionListener(this);
         this.medico.btnConsultorio.addActionListener(this);
     }
-    
+
     @Override
-    public void actionPerformed(ActionEvent e){
-        if(e.getSource()==this.medico.btnMisCitas){
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == this.medico.btnMisCitas) {
             this.medico.mostrarVistaMisCitas();
-            this.medico.btnMisCitas.setEnabled(true);
+            this.medico.btnMisCitas.setEnabled(false);
             this.medico.habilitarBotonesMenu(this.medico.btnMisCitas);
         }
         if (e.getSource() == this.medico.btnHistorial) {
@@ -57,6 +58,6 @@ public class MedicoController implements ActionListener{
             this.medico.mostrarVistaConsultorio();
             this.medico.btnConsultorio.setEnabled(false);
             this.medico.habilitarBotonesMenu(this.medico.btnConsultorio);
-        }       
+        }
     }
 }
