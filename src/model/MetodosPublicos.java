@@ -19,39 +19,23 @@ public class MetodosPublicos {
         }
     }
 
-    public static boolean idValidarLongitud(String id) {
-        return !id.isEmpty() && (id.length() < 8 || id.length() > 10);
+    public static boolean validarTamano(String cadena, int minimo, int maximo) {
+        return (cadena.length() >= minimo && cadena.length() <= maximo);
     }
 
-    public static boolean validarId(String id) {
-        int c = 0;
-        for (int i = 0; i < id.length(); i++) {
-            try {
-                Integer.parseInt(String.valueOf(id.charAt(i)));
-                System.out.println("caracter: "+id.charAt(i));
-                c=c+1;
-                System.out.println("c: "+c);
-            } catch (Exception e) {
-                System.out.println("caracter en la posicion " + i + " de la cadena id inavalido \n" + e);
-                i=id.length();
-            }
-        }
-        return !idValidarLongitud(id) && c == id.length() ? true : false;
+    public static boolean validarTamano(String cadena, int minimo) {
+        return cadena.length() >= minimo;
     }
 
-    public static boolean validarLongitudCt(String contrasena) {
-        return !contrasena.isEmpty() && contrasena.length() < 8;
+    public static boolean validarid(String cadena) {
+        return cadena.matches("[0-9]+");
     }
 
-    public static boolean validarContrasena(String contrasena) {
-        return !contrasena.isEmpty() && (!validarLongitudCt(contrasena) && contrasena.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[/$#?!%])[A-Za-z0-9/$#?!%]"));
+    public static boolean validarContrasena(String cadena) {
+        return (cadena.matches(".*[0-9].*")
+                && cadena.matches(".*[A-Z].*")
+                && cadena.matches(".*[a-z].*")
+                && cadena.matches(".*(\\$|@|#|%|&|\\*|-|_|!|\\?).*"));
     }
 
-    public static boolean contrasenaCaracteresInvalidos(String contrasena) {
-        return !contrasena.isEmpty() && Pattern.compile("[^A-Za-z0-9/\\$#?!%]").matcher(contrasena).find();
-    }
-
-    public static boolean validarObligatoriedad(String contrasena) {
-        return !contrasena.isEmpty() && !contrasena.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[/$#?!%])(?=.*[0-9]).+");
-    }
 }

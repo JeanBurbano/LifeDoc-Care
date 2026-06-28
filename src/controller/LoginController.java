@@ -2,55 +2,57 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import model.MetodosPublicos;
 import view.Login;
 
 public class LoginController implements ActionListener {
-
+    
     Login lg;
-
+    
     public LoginController(Login lg) {
         this.lg = lg;
         this.lg.bRegistar.addActionListener(this);
         this.lg.bIngresar.addActionListener(this);
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.lg.bIngresar) {
             String id = this.lg.getId();
             String contrasena = this.lg.getPassword();
-            if (MetodosPublicos.validarId(id) && MetodosPublicos.validarContrasena(contrasena)) {
-                JOptionPane.showMessageDialog(lg, "sesion iniciada");
-            } else if (id.isEmpty() && contrasena.isEmpty()) {
-                JOptionPane.showMessageDialog(lg, "Los dos campos son obligatorios");
+            final boolean validar = (MetodosPublicos.validarTamano(id, 8, 10) &&
+                    MetodosPublicos.validarid(id)) &&
+                    (MetodosPublicos.validarTamano(contrasena, 8) && 
+                    MetodosPublicos.validarContrasena(contrasena));
+            
+            if (validar) {
+                JOptionPane.showMessageDialog(lg, "iniciar sesion");
             } else {
                 if (id.isEmpty()) {
-                    JOptionPane.showMessageDialog(lg, "El Campo Id es obligatorio");
-                } else if (contrasena.isEmpty()) {
-                    JOptionPane.showMessageDialog(lg, "El Campo De Constrasena es obligario");
+                    JOptionPane.showMessageDialog(lg, "Campo id es obligatorio");
+                } else {
+                    if (!MetodosPublicos.validarTamano(id, 8, 10)) {
+                        JOptionPane.showMessageDialog(lg, "Campo id debe de ser de como minimo 8 y maximo 10 caracteres");
+                    }
+                    if (!MetodosPublicos.validarid(id)) {
+                        JOptionPane.showMessageDialog(lg, "Campo id contiene caracteres invalidos");
+                    }
                 }
-                
-                if (!MetodosPublicos.validarId(id)) {
-                    JOptionPane.showMessageDialog(lg, "El campo id contiene caracteres no validos");
-                }
-
-                if (MetodosPublicos.idValidarLongitud(id)) {
-                    JOptionPane.showMessageDialog(lg, "El campo id no cumple con longitud de minimo como 8 y maximo como 10");
-                }
-                
-                if (MetodosPublicos.contrasenaCaracteresInvalidos(contrasena)) {
-                    JOptionPane.showMessageDialog(lg, "La contrasena tiene caracteres no validos");
-                }
-                
-                if (MetodosPublicos.validarLongitudCt(contrasena)) {
-                    JOptionPane.showMessageDialog(lg, "La contrasena debe ser como minimo 8 caracteres");
-                }
-                
-                if (MetodosPublicos.validarObligatoriedad(contrasena)) {
-                    JOptionPane.showMessageDialog(lg, "La contrasena debe de cumplir con una minuscula una mayuscula un numero y un de los simbolos permitidos /$#?!%");
+                if (contrasena.isEmpty()) {
+                    JOptionPane.showMessageDialog(lg, "Campo Contrasena es obligatorio");
+                } else {
+                    if(!MetodosPublicos.validarTamano(contrasena, 8)){
+                        JOptionPane.showMessageDialog(lg, "Campo contrsena debe de ser como minimo 8 caracteres");
+                    }
+                    if(!MetodosPublicos.validarContrasena(contrasena)){
+                        JOptionPane.showMessageDialog(lg, "La contrasena deve de cumplir con estos parametros\n"
+                                + "Minimo 8 caacteres\n"
+                                + "1 Myuscula,\n"
+                                + "1 Minuscula\n"
+                                + "1 Numero\n"
+                                + "1 Simbolos de los permitidos @, #, $, %, &, *, -, _, !, ?");
+                    }
                 }
             }
         }
