@@ -19,7 +19,7 @@ import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MedicoInterfaz extends PacienteInterfaz {
 
-    public JButton btnMisCitas, btnHistorial, btnComentarios, btnNotificaciones, btnMiAgenda, btnConsultorio;
+    public JButton btnMisCitas, btnHistorial, btnComentarios, btnNotificaciones, btnMiAgenda, btnConsultorio, btnBuscar;
     public JPanel panelPrincipal;
 
     public MedicoInterfaz(String nombre, String nombreInterfaz, String rutaFotoP) {
@@ -31,6 +31,9 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.btnNotificaciones = new JButton("✉️ Notificaciones");
         this.btnMiAgenda = new JButton("📅 Mi Agenda");
         this.btnConsultorio = new JButton("❤️ Consultorio");
+        btnBuscar = new JButton(" Buscar");
+        
+        super.estilizarBoton(btnBuscar, (byte) 5);
         
         super.agregarBotonCuerpo1(btnMisCitas);
         super.agregarBotonCuerpo1(btnHistorial);
@@ -115,18 +118,34 @@ public class MedicoInterfaz extends PacienteInterfaz {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelPrincipal);
         
+        this.panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
+        this.panelPrincipal.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                BorderFactory.createEmptyBorder(10, 30, 5, 30)));       
+        this.panelPrincipal.setPreferredSize(new Dimension(1455, 500));
+        this.cuerpo2.setLayout(new BorderLayout());
         this.cuerpo2.setBorder(new EmptyBorder(10, 40, 40, 40));
+        
+        JScrollPane scrollCitas = new JScrollPane(panelPrincipal);
+        scrollCitas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollCitas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollCitas.setOpaque(false);
+        scrollCitas.getViewport().setOpaque(false);
+        scrollCitas.setBorder(null);
         
         JLabel tituloConsultorio = new JLabel("Atender Paciente");
         tituloConsultorio.setFont(new Font("arial", Font.BOLD, 28));
         tituloConsultorio.setForeground(COLOR_AZUL_CORPORATIVO);
+        
+        JTextField id = new JTextField(20);     
+        
         this.cuerpo2.add(tituloConsultorio, BorderLayout.NORTH);
-        
-        JTextField id = new JTextField(20);
-        this.panelPrincipal.add(id);
-        
+        this.cuerpo2.add(scrollCitas,BorderLayout.SOUTH);
+        this.cuerpo2.add(id,BorderLayout.WEST);
+        this.cuerpo2.add(btnBuscar);
         
         MetodosPublicos.refrescarVentana(panelPrincipal);
         MetodosPublicos.refrescarVentana(cuerpo2);
+        MetodosPublicos.refrescarVentana(scrollCitas);
     }
 }
