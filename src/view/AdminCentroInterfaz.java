@@ -34,10 +34,10 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         super(nombrePersona, nombreInterfaz, url);
         this.btnPersonalCentro = new JButton("👥 Personal del Centro");
         this.btnregistrarPersonal = new JButton("👤 Registrar Personal");
-        super.estilizarBoton(btnregistrarPersonal, (byte) 5);
+        MetodosPublicos.estilizarBoton(btnregistrarPersonal, (byte) 5);
         this.btnInventarioMedicamentos = new JButton("💊 Inventario de Medicamentos");
         this.btnAñadirMedicamento = new JButton("➕ Añadir Medicamento");
-        super.estilizarBoton(btnAñadirMedicamento, (byte) 5);
+        MetodosPublicos.estilizarBoton(btnAñadirMedicamento, (byte) 5);
         super.agregarBotonCuerpo1(btnPersonalCentro);
         super.agregarBotonCuerpo1(btnInventarioMedicamentos);
         this.personalC = new JPanel();
@@ -122,7 +122,7 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         //todo lo del titulo de medicamentos registrados 
         tituloMedicamentoRegistrado.setFont(new Font("arial", Font.BOLD, 20)); //se crea el titulo
         tituloMedicamentoRegistrado.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO); //se le añade un color
-        this.personalC.add(tituloMedicamentoRegistrado); //se agrega el titulo al panel del apartado
+        this.inventarioM.add(tituloMedicamentoRegistrado); //se agrega el titulo al panel del apartado
 
         //boton de añadir al lado del titulo
         this.inventarioM.add(Box.createHorizontalStrut(10)); //se da un espacio entre el titulo y el boton para separar
