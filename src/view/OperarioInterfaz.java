@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.BorderFactory;
@@ -44,25 +45,32 @@ public class OperarioInterfaz extends PacienteInterfaz{
         
     }
     
-    private void inicializarComponentesOperario(){
+    private void inicializarComponentesOperario() {
         this.panelInfoCitas = new JPanel();
-        this.panelInfoCitas.setLayout((new BoxLayout(panelInfoCitas, BoxLayout.Y_AXIS)));
+        this.panelInfoCitas.setLayout(new BoxLayout(panelInfoCitas, BoxLayout.Y_AXIS));
         this.panelInfoCitas.setOpaque(false);
-        
-        this.btnAgendarCitas = new JButton("❤️ Agendar Cita");
-        estilizarBoton(btnAgendar, (byte) 3);
-        
+
+        // Se crean los botones
+        this.btnAgendar = new JButton("❤️ Agendar una cita");
         this.btnAgendarCitas = new JButton("📅 Agendar Citas");
         this.btnPagos = new JButton("💰 Pagos");
         this.btnComentarios = new JButton("🗨️ Comentarios");
         this.btnMisCitas = new JButton("🫂 Mis Citas");
         this.btnNotificaciones = new JButton("✉️ Notificaciones");
         this.btnConsultas = new JButton("📋 Consultas");
-        
-        this.btnVerFactura = new JButton("📄 Ver factura");
+
+        this.btnVerFactura = new JButton("📄 Ver Factura");
         this.btnProcesarPago = new JButton("💳 Procesar Pago");
-        
-    } 
+
+        // Botones Estilizados
+        estilizarBoton(btnAgendar, (byte) 3);
+        estilizarBoton(btnAgendarCitas, (byte) 1);
+        estilizarBoton(btnPagos, (byte) 1);
+        estilizarBoton(btnComentarios, (byte) 1);
+        estilizarBoton(btnMisCitas, (byte) 1);
+        estilizarBoton(btnNotificaciones, (byte) 1);
+        estilizarBoton(btnConsultas, (byte) 1);
+    }
     
     private void agregarBotonesMenuOperario(){
         
@@ -129,4 +137,59 @@ public class OperarioInterfaz extends PacienteInterfaz{
         refrescarVentana(panelInfoCitas);
     }
     
+    public JPanel crearPanelAgenda(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setPreferredSize(new Dimension(520, 0));
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                BorderFactory.createEmptyBorder(70, 40, 40, 40)));
+        
+        JLabel lbl1 = new JLabel("¡Agenda una cita con nosotros!");
+        lbl1.setFont(new Font("arial", Font.BOLD, 20));
+        lbl1.setForeground(COLOR_AZUL_CORPORATIVO);
+        lbl1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        JLabel lbl2 = new JLabel("No dejes tu salud a último momento.");
+        lbl2.setFont(new Font("arial", Font.BOLD, 18));
+        lbl2.setForeground(COLOR_GRIS_SUBTITULO);
+        lbl2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        panel.add(lbl1);
+        panel.add(lbl2);
+        panel.add(Box.createRigidArea(new Dimension(0, 40)));
+        panel.add(btnAgendar);
+        
+        return panel;
+    }
+    
+    public JPanel crearPanelContacto(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                BorderFactory.createEmptyBorder(25, 40, 25, 40)));
+        
+        JLabel titulo = new JLabel("👤 Si tienes dificultades para agendar tu cita, ¡contáctanos!");
+        titulo.setFont(new Font("arial", Font.BOLD, 24));
+        titulo.setForeground(COLOR_AZUL_CORPORATIVO);
+        
+        JLabel sub = new JLabel("Llama al número de este operario para que podamos ayudarte!");
+        sub.setFont(new Font("arial", Font.BOLD, 18));
+        sub.setForeground(COLOR_AZUL_CORPORATIVO);
+        
+        JLabel telefono = new JLabel("📞 +57 316 127 3588");
+        telefono.setFont(new Font("arial", Font.BOLD, 28));
+        telefono.setForeground(COLOR_AZUL_CORPORATIVO);
+        
+        panel.add(titulo);
+        panel.add(sub);
+        panel.add(Box.createRigidArea(new Dimension(0, 12)));
+        panel.add(telefono);
+        
+        return panel;
+        
+    }
 }
