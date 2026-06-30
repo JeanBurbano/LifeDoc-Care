@@ -70,7 +70,7 @@ public class Login extends JFrame {
         this.panelfield.add(password);
         this.titulo2 = new JLabel("¿Olvidaste tu contrasena?", SwingConstants.CENTER);//Aqui creo una etiqueta con el texto olvidaste contrasena que va estar centrado en la etiqueta
         this.titulo2.setForeground(new Color(22, 197, 169));//Asigno color al olvidar contrasena
-        this.bRegistar = new JButton("Registar");//Creo boton registar 
+        this.bRegistar = new JButton("Registrar");//Creo boton registar 
         this.bRegistar.setBackground(new Color(0, 79, 124));//Aqui agrego fondo al boton registar
         this.bRegistar.setForeground(Color.WHITE);//Aqui agrego color a la letra del boton registar
         this.bRegistar.setFont(new Font(("arial"), Font.BOLD, 15));//Aqui le indico que la letra va hacer tipo arial con negrita y tamano 15
@@ -131,6 +131,6 @@ public class Login extends JFrame {
     }
     
     public String getPassword(){
-       return  this.password.getText();
+       return  String.valueOf(this.password.getPassword());
     }
 }
