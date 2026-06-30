@@ -28,7 +28,7 @@ public class RecuperacionContrasenaInterfaz extends JFrame {
 
     private JPanel panelSuperior, panelContenido;
     private JLabel fondo;
-    public JTextField field,contrasena;
+    public JTextField field, contrasena;
     public JPasswordField contrasenaVeri;
     private JButton flecha, btnCorreo, btnSms, btnContinuar;
 
@@ -132,80 +132,153 @@ public class RecuperacionContrasenaInterfaz extends JFrame {
     public void vistaRecuperacion(String cadena) {
         MetodosPublicos.vaciarPanel(panelContenido);
 
-        JLabel titulo = new JLabel("Recuperacion por " + cadena);
-        titulo.setFont(new Font("arial", Font.BOLD, 30));
+        JLabel titulo = new JLabel("Recuperacion por " + cadena),
+                subtitulo = new JLabel("Por favor ingrese un " + cadena + " activo"),
+                indicador = new JLabel(cadena);
+        titulo.setFont(new Font("arial", Font.BOLD, 28));
         titulo.setForeground(COLOR_AZUL_CORPORATIVO);
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);//Centrado horizontal en BoxLayout
+        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel subtitulo = new JLabel("Por favor ingrese un " + cadena + " activo");
-        subtitulo.setFont(new Font("arial", Font.BOLD, 15));
-        subtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);//Centrado horizontal en BoxLayout
+        subtitulo.setFont(new Font("arial", Font.BOLD, 14));
+        subtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel indicador = new JLabel(cadena);
-        indicador.setFont(new Font("arial", Font.BOLD, 10));
+        indicador.setFont(new Font("arial", Font.BOLD, 12));
+        indicador.setAlignmentX(Component.RIGHT_ALIGNMENT);//Alineado a la izquierda como un label de campo
+        JPanel filaIndicador = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        filaIndicador.setOpaque(false);//Transparente para no tapar el fondo blanco
+        filaIndicador.setMaximumSize(new Dimension(400, 20));//Mismo ancho que el campo
+        filaIndicador.add(indicador);
+        field.setAlignmentX(Component.CENTER_ALIGNMENT);
+        field.setMaximumSize(new Dimension(400, 35));//Ancho fijo, sin estirarse
+        field.setPreferredSize(new Dimension(400, 35));
+
+        btnContinuar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnContinuar.setMaximumSize(new Dimension(200, 40));
 
         this.panelContenido.add(Box.createVerticalGlue());
         this.panelContenido.add(titulo);
-        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 10)));
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 8)));
         this.panelContenido.add(subtitulo);
-        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 10)));
-        this.panelContenido.add(indicador);
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 20)));
+        this.panelContenido.add(filaIndicador);
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 5)));
         this.panelContenido.add(field);
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 20)));
         this.panelContenido.add(btnContinuar);
+        this.panelContenido.add(Box.createVerticalGlue());
+
+        titulo = null;
+        subtitulo = null;
+        indicador = null;
+        filaIndicador = null;
         MetodosPublicos.refrescarVentana(panelContenido);
     }
 
     public void codigoAutenticacion(String cadena1, String cadena2) {
         MetodosPublicos.vaciarPanel(panelContenido);
+
         JLabel titulo = new JLabel("Codigo de autenticacion");
-        titulo.setFont(new Font("arial", Font.BOLD, 30));
+        titulo.setFont(new Font("arial", Font.BOLD, 28));
         titulo.setForeground(COLOR_AZUL_CORPORATIVO);
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);//Centrado horizontal en BoxLayout
+        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JTextArea areaTexto = new JTextArea("Hemos enviado un codigo al " + cadena1
                 + " " + cadena2 + "\nPara verificar su identidad. Por favor digite el codigo\n"
-                + "Para seguir con el procedimiento");
-        areaTexto.setFont(new Font("arial", Font.BOLD, 20));
-        areaTexto.setEditable(false);       // No editable por el usuario
-        areaTexto.setCursor(null);         // Oculta el cursor de texto
-        areaTexto.setOpaque(false);        // Fondo transparente
-        areaTexto.setFocusable(false);     // No toma el foco
-        areaTexto.setLineWrap(true);       // Ajusta el texto al borde
+                + "para seguir con el procedimiento");
+        areaTexto.setFont(new Font("arial", Font.PLAIN, 14));
+        areaTexto.setEditable(false);
+        areaTexto.setCursor(null);
+        areaTexto.setOpaque(false);
+        areaTexto.setFocusable(false);
+        areaTexto.setLineWrap(true);
         areaTexto.setWrapStyleWord(true);
+        areaTexto.setAlignmentX(Component.CENTER_ALIGNMENT);
+        areaTexto.setMaximumSize(new Dimension(450, 80));//Ancho fijo para que no se estire
+        areaTexto.setPreferredSize(new Dimension(450, 80));
+
+        field.setAlignmentX(Component.CENTER_ALIGNMENT);
+        field.setMaximumSize(new Dimension(400, 35));
+        field.setPreferredSize(new Dimension(400, 35));
+
+        btnContinuar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnContinuar.setMaximumSize(new Dimension(200, 40));
 
         this.panelContenido.add(Box.createVerticalGlue());
         this.panelContenido.add(titulo);
-        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 10)));
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 15)));
         this.panelContenido.add(areaTexto);
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 20)));
         this.panelContenido.add(field);
-        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 10)));
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 20)));
         this.panelContenido.add(btnContinuar);
+        this.panelContenido.add(Box.createVerticalGlue());
+
+        titulo = null;
+        areaTexto = null;
         MetodosPublicos.refrescarVentana(panelContenido);
     }
 
     public void vistaCambiarContrasena() {
         MetodosPublicos.vaciarPanel(panelContenido);
+
         JLabel titulo = new JLabel("Nueva Contrasena"),
-                subtitulo = new JLabel("Por favor ingresa la nueva contrasena "),
+                subtitulo = new JLabel("Por favor ingresa la nueva contrasena"),
                 indicador1 = new JLabel("Contrasena"),
                 indicador2 = new JLabel("Confirmar Contrasena");
-        titulo.setFont(new Font("arial", Font.BOLD, 30));
+
+        titulo.setFont(new Font("arial", Font.BOLD, 28));
         titulo.setForeground(COLOR_AZUL_CORPORATIVO);
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);//Centrado horizontal en BoxLayout
-        subtitulo.setFont(new Font("arial", Font.BOLD, 15));
-        subtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);//Centrado horizontal en BoxLayout
-        indicador1.setFont(new Font("arial", Font.BOLD, 10));
-        indicador2.setFont(new Font("arial", Font.BOLD, 10));
+        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        subtitulo.setFont(new Font("arial", Font.BOLD, 14));
+        subtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        indicador1.setFont(new Font("arial", Font.BOLD, 12));
+        indicador1.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        JPanel filaIndicador1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        filaIndicador1.setOpaque(false);//Transparente para no tapar el fondo blanco
+        filaIndicador1.setMaximumSize(new Dimension(400, 20));//Mismo ancho que el campo
+        filaIndicador1.add(indicador1);
+
+        indicador2.setFont(new Font("arial", Font.BOLD, 12));
+        indicador2.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        JPanel filaIndicador2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        filaIndicador2.setOpaque(false);//Transparente para no tapar el fondo blanco
+        filaIndicador2.setMaximumSize(new Dimension(400, 20));//Mismo ancho que el campo
+        filaIndicador2.add(indicador2);
+        contrasena.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contrasena.setMaximumSize(new Dimension(400, 35));//Ancho fijo para que no se estire
+        contrasena.setPreferredSize(new Dimension(400, 35));
+
+        contrasenaVeri.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contrasenaVeri.setMaximumSize(new Dimension(400, 35));
+        contrasenaVeri.setPreferredSize(new Dimension(400, 35));
+
+        btnContinuar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnContinuar.setMaximumSize(new Dimension(200, 40));
+
         this.panelContenido.add(Box.createVerticalGlue());
         this.panelContenido.add(titulo);
-        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 10)));
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 8)));
         this.panelContenido.add(subtitulo);
-        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 10)));
-        this.panelContenido.add(indicador1);
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 25)));
+        this.panelContenido.add(filaIndicador1);
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 5)));
         this.panelContenido.add(contrasena);
-        this.panelContenido.add(indicador2);
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 15)));
+        this.panelContenido.add(filaIndicador2);
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 5)));
         this.panelContenido.add(contrasenaVeri);
+        this.panelContenido.add(Box.createRigidArea(new Dimension(0, 25)));
         this.panelContenido.add(btnContinuar);
+        this.panelContenido.add(Box.createVerticalGlue());
+
+        titulo = null;
+        subtitulo = null;
+        indicador1 = null;
+        indicador2 = null;
+        filaIndicador1 = null;
+        filaIndicador2 = null;
         MetodosPublicos.refrescarVentana(panelContenido);
     }
 }

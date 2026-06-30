@@ -72,7 +72,7 @@ public class MetodosPublicos {
     }
 
     public static boolean validarTamano(String cadena, int minimo, int maximo) {
-        return (cadena.length() >= minimo && cadena.length() <= maximo);
+        return cadena.length() == minimo || cadena.length() == maximo;
     }
 
     public static boolean validarTamano(String cadena, int minimo) {

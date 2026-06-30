@@ -28,12 +28,13 @@ public class LoginController implements ActionListener {
             
             if (validar) {
                 JOptionPane.showMessageDialog(lg, "iniciar sesion");
+                contrasena=null;
             } else {
                 if (id.isEmpty()) {
                     JOptionPane.showMessageDialog(lg, "Campo id es obligatorio");
                 } else {
                     if (!MetodosPublicos.validarTamano(id, 8, 10)) {
-                        JOptionPane.showMessageDialog(lg, "Campo id debe de ser de como minimo 8 y maximo 10 caracteres");
+                        JOptionPane.showMessageDialog(lg, "Campo id debe contener 8 o 10 caracteres");
                     }
                     if (!MetodosPublicos.validarid(id)) {
                         JOptionPane.showMessageDialog(lg, "Campo id contiene caracteres invalidos");
@@ -43,15 +44,15 @@ public class LoginController implements ActionListener {
                     JOptionPane.showMessageDialog(lg, "Campo Contrasena es obligatorio");
                 } else {
                     if(!MetodosPublicos.validarTamano(contrasena, 8)){
-                        JOptionPane.showMessageDialog(lg, "Campo contrasena debe de ser como minimo 8 caracteres");
+                        JOptionPane.showMessageDialog(lg, "El campo contrasena debe dcontener como minimo 8 caracteres");
                     }
                     if(!MetodosPublicos.validarContrasena(contrasena)){
-                        JOptionPane.showMessageDialog(lg, "La contrasena deve de cumplir con estos parametros\n"
-                                + "Minimo 8 caacteres\n"
+                        JOptionPane.showMessageDialog(lg, "La contrasena debe de cumplir con estos parametros\n"
+                                + "Minimo 8 caracteres\n"
                                 + "1 Mayuscula,\n"
                                 + "1 Minuscula\n"
                                 + "1 Numero\n"
-                                + "1 Simbolos de los permitidos @, #, $, %, &, *, -, _, !, ?");
+                                + "1 Simbolos permitidos @, #, $, %, &, *, -, _, !, ?");
                     }
                 }
             }

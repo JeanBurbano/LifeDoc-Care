@@ -14,13 +14,17 @@ public class UsaVista {
         lg.setExtendedState(MAXIMIZED_BOTH);
         LoginController clg = new LoginController(lg);
 //        RecuperacionContrasenaInterfaz p = new RecuperacionContrasenaInterfaz();
-////        PacienteInterfaz p = new PacienteInterfaz("Alejandro Vanegas", "Paciente","anonymous.png");
-////        p.vistaMetodoDerecuperacion();
-////        p.vistaRecuperacion("Correo");
+//        PacienteInterfaz p = new PacienteInterfaz("Alejandro Vanegas", "Paciente","anonymous.png");
+//        p.vistaMetodoDerecuperacion();
+//        p.vistaRecuperacion("Correo");
+//        p.vistaCambiarContrasena();
+//        p.vistaCambiarContrasena();
 //        p.vistaCambiarContrasena();
 //        p.setVisible(true);
 //        p.setDefaultCloseOperation(EXIT_ON_CLOSE);
 //        p.setExtendedState(MAXIMIZED_BOTH);
+    
+
 ////        PacienteController clg = new PacienteController(p);
     }
 
