@@ -30,7 +30,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
 
-public class PacienteInterfaz extends JFrame{
+public class PacienteInterfaz extends JFrame {
 
     //Aqui creo los colores que mas vamos autilizar en la plantilla.
     public static final Color COLOR_AZUL_CORPORATIVO = new Color(0, 79, 124);
@@ -85,10 +85,11 @@ public class PacienteInterfaz extends JFrame{
     public JPanel panelCalendario;
     public CalendarPanel calendario;
     public JPanel panelHorarios;
-    
-    public PacienteInterfaz(){
-        
+
+    public PacienteInterfaz() {
+
     }
+
     public PacienteInterfaz(String nombre, String nombreInterfaz, String rutaFotoP) {
         super(nombreInterfaz);//Asigno nombre de la ventana
 
@@ -156,7 +157,7 @@ public class PacienteInterfaz extends JFrame{
         this.panelInfoCitas.setPreferredSize(new Dimension(0, 345));
 
         this.btnAgendar = new JButton("❤️Agendar una cita");
-        estilizarBoton(btnAgendar, (byte) 3);
+        MetodosPublicos.estilizarBoton(btnAgendar, (byte) 3);
 
         this.panelHistorial = new JPanel();
         this.panelHistorial.setLayout(new BorderLayout());
@@ -182,15 +183,15 @@ public class PacienteInterfaz extends JFrame{
         this.btnHistorialMedico = new JButton(" 👤 Historial Medico ");
         this.btnHistorialCitas = new JButton(" 👥 Historial de Citas");
         this.btnDescargar = new JButton(" ⬇️ Descargar Historial Medico");
-        estilizarBoton(btnHistorialMedico, (byte) 2);
-        estilizarBoton(btnHistorialCitas, (byte) 2);
+        MetodosPublicos.estilizarBoton(btnHistorialMedico, (byte) 2);
+        MetodosPublicos.estilizarBoton(btnHistorialCitas, (byte) 2);
 
         this.cmbFecha = new JComboBox();
         this.cmbMedico = new JComboBox();
         this.cmbEspecialidad = new JComboBox();
-        estilizarComboBox(cmbFecha);
-        estilizarComboBox(cmbMedico);
-        estilizarComboBox(cmbEspecialidad);
+        MetodosPublicos.estilizarComboBox(cmbFecha);
+        MetodosPublicos.estilizarComboBox(cmbMedico);
+        MetodosPublicos.estilizarComboBox(cmbEspecialidad);
 
         this.campoAsunto = new JTextField();
         this.campoAsunto.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -215,10 +216,10 @@ public class PacienteInterfaz extends JFrame{
         this.btnQuejas = new JButton(" ❌ Quejas ");
         this.btnForo = new JButton(" ✉️ Foro ");
         this.btnEnviar = new JButton(" 📤 Enviar ");
-        estilizarBoton(btnQuejas, (byte) 4);
-        estilizarBoton(btnSugerencias, (byte) 4);
-        estilizarBoton(btnForo, (byte) 4);
-        estilizarBoton(btnEnviar, (byte) 5);
+        MetodosPublicos.estilizarBoton(btnQuejas, (byte) 4);
+        MetodosPublicos.estilizarBoton(btnSugerencias, (byte) 4);
+        MetodosPublicos.estilizarBoton(btnForo, (byte) 4);
+        MetodosPublicos.estilizarBoton(btnEnviar, (byte) 5);
 
         this.panelContenidoNotificaciones = new JPanel();
         this.panelContenidoNotificaciones.setLayout(new BoxLayout(panelContenidoNotificaciones, BoxLayout.Y_AXIS));
@@ -230,9 +231,9 @@ public class PacienteInterfaz extends JFrame{
         this.btnOdontologia = new JButton("❤️ Odontologia");
         this.btnDermatologia = new JButton("❤️ Dermatologia");
         this.btnMedicoGeneral = new JButton("❤️ Medico General");
-        estilizarBoton(btnOdontologia, (byte) 4);
-        estilizarBoton(btnDermatologia, (byte) 4);
-        estilizarBoton(btnMedicoGeneral, (byte) 4);
+        MetodosPublicos.estilizarBoton(btnOdontologia, (byte) 4);
+        MetodosPublicos.estilizarBoton(btnDermatologia, (byte) 4);
+        MetodosPublicos.estilizarBoton(btnMedicoGeneral, (byte) 4);
         this.listaBotonesMedicos = new ArrayList<JButton>();
 
         this.panelSeleccionConsulta = new JPanel();
@@ -259,52 +260,6 @@ public class PacienteInterfaz extends JFrame{
         this.panelHorarios.setOpaque(false);
     }
 
-    //Aqui creo un funcion para estilizar el boton
-    public void estilizarBoton(JButton boton, byte estilo) {
-        switch (estilo) {
-            case 1://Botones del menu cuerpo1
-                boton.setFont(new Font("Arial", Font.BOLD, 15));
-                boton.setBackground(new Color(232, 249, 248));
-                boton.setForeground(new Color(0, 75, 121));
-                break;
-            case 2://Botones laterales tipo Historial Medico/Historial de Citas
-                boton.setFont(new Font("Arial", Font.BOLD, 30));
-                boton.setBackground(Color.WHITE);
-                boton.setForeground(new Color(0, 75, 121));
-                break;
-            case 3://Boton Agendar una cita
-                boton.setFont(new Font("arial", Font.BOLD, 20));
-                boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                boton.setBackground(Color.WHITE);
-                boton.setForeground(COLOR_AZUL_CORPORATIVO);
-                break;
-            case 4://Botones de tipo de consulta / sugerencias / quejas / foro
-                boton.setFont(new Font("Arial", Font.BOLD, 30));
-                boton.setBackground(Color.WHITE);
-                boton.setForeground(new Color(0, 75, 121));
-                break;
-            case 5://Boton Enviar resaltado en azul solido
-                boton.setFont(new Font("Arial", Font.BOLD, 20));
-                boton.setBackground(new Color(0, 75, 121));
-                boton.setForeground(Color.WHITE);
-                boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                break;
-        }
-    }
-
-    //Aqui creo la funcion para etilizar un Combobox
-    public void estilizarComboBox(JComboBox combo) {
-        combo.setFont(new Font("Arial", Font.BOLD, 16));
-        combo.setForeground(new Color(0, 75, 121));
-    }
-
-    //Aqui creo la funcion para establecerele algunos parametros al boton
-    public void prepararBotonTarjeta(JButton boton, int ancho, int alto) {
-        boton.setAlignmentX(Component.CENTER_ALIGNMENT);//Centrado dentro del BoxLayout vertical
-        boton.setMaximumSize(new Dimension(ancho, alto));//Evito que el BoxLayout lo estire de mas
-        boton.setPreferredSize(new Dimension(ancho, alto));//Mismo ancho para todos los botones de la tarjeta
-    }
-
     //Aqui creo el metodo para habilitar o desabilitar botones del paciente.
     public void habilitarBotonesMenu(JButton botonActivo) {
         if (botonActivo != btnMisCitas && !btnMisCitas.isEnabled()) {
@@ -323,7 +278,7 @@ public class PacienteInterfaz extends JFrame{
 
     //Aqui creo el metodo que nos va a servir para agregar un JButton al cuerpo1 que seria el panel para los botones
     public void agregarBotonCuerpo1(JButton boton) {
-        estilizarBoton(boton, (byte) 1);
+        MetodosPublicos.estilizarBoton(boton, (byte) 1);
         this.cuerpo1.add(boton);
         MetodosPublicos.refrescarVentana(cuerpo1);
     }
@@ -521,6 +476,7 @@ public class PacienteInterfaz extends JFrame{
         MetodosPublicos.refrescarVentana(panelBotonesLaterales);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
+
     //Aqui creo el metodo que me permitiria agregar componentes al panel comentarios
     public void agregarAlPanelComentarios(JComponent c) {
         this.panelComentarios.add(c);
@@ -558,9 +514,9 @@ public class PacienteInterfaz extends JFrame{
         JPanel panelTitulo = titulo.getPanelTitulo();
         panelTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        prepararBotonTarjeta(btnOdontologia, 380, 55);
-        prepararBotonTarjeta(btnDermatologia, 380, 55);
-        prepararBotonTarjeta(btnMedicoGeneral, 380, 55);
+        MetodosPublicos.prepararBotonTarjeta(btnOdontologia, 380, 55);
+        MetodosPublicos.prepararBotonTarjeta(btnDermatologia, 380, 55);
+        MetodosPublicos.prepararBotonTarjeta(btnMedicoGeneral, 380, 55);
 
         this.panelSeleccionConsulta.add(panelTitulo);
         this.panelSeleccionConsulta.add(descripcion);
@@ -584,7 +540,7 @@ public class PacienteInterfaz extends JFrame{
     public void mostrarVistaSeleccionMedico(String[] medicos) {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelSeleccionConsulta);
-        
+
         Titulo titulo = new Titulo("Agendamiento de ", "Cita");
         JLabel descripcion = new JLabel("Selecciona El Medico Con El Que Deseas Agendar");
         descripcion.setFont(new Font("Arial", Font.BOLD, 22));
@@ -602,8 +558,8 @@ public class PacienteInterfaz extends JFrame{
 
         for (String nombreMedico : medicos) {
             JButton botonMedico = new JButton("👤 " + nombreMedico);//Creo boton con el nombre del medico
-            estilizarBoton(botonMedico, (byte) 4);//Agrego estilo al boton
-            prepararBotonTarjeta(botonMedico, 380, 55);//Agrego tamano estable 
+            MetodosPublicos.estilizarBoton(botonMedico, (byte) 4);//Agrego estilo al boton
+            MetodosPublicos.prepararBotonTarjeta(botonMedico, 380, 55);//Agrego tamano estable 
             this.listaBotonesMedicos.add(botonMedico);
             this.panelSeleccionConsulta.add(botonMedico);
             this.panelSeleccionConsulta.add(Box.createRigidArea(new Dimension(0, 10)));
