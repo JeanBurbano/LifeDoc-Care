@@ -13,8 +13,13 @@ public class UsaVista {
 //        lg.setDefaultCloseOperation(EXIT_ON_CLOSE);
 //        lg.setExtendedState(MAXIMIZED_BOTH);
 //        LoginController clg = new LoginController(lg);
-//        PlantillFa_Notificacion n = new Plantilla_Notificacion();
+//        RecuperacionContrasenaInterfaz p = new RecuperacionContrasenaInterfaz();
         PacienteInterfaz p = new PacienteInterfaz("Alejandro Vanegas", "Paciente","anonymous.png");
+//        p.vistaMetodoDerecuperacion();
+//        p.vistaRecuperacion("Correo");
+//        p.vistaCambiarContrasena();
+//        p.vistaCambiarContrasena();
+//        p.vistaCambiarContrasena();
         p.setVisible(true);
         p.setDefaultCloseOperation(EXIT_ON_CLOSE);
         p.setExtendedState(MAXIMIZED_BOTH);
