@@ -6,9 +6,12 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+
 import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.Box;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,11 +27,12 @@ import model.MetodosPublicos;
  */
 public class AdminCentroInterfaz extends PacienteInterfaz {
 
-    public JButton btnPersonalCentro, btnInventarioMedicamentos, btnregistrarPersonal, btnAñadirMedicamento;
-    public JPanel personalC, inventarioM;
-    public JTable tablaPersonalR, tablaMedicamentoR;
-    private JScrollPane miscrollListaPersonal, miscrollListaMedicamento;
-    public DefaultTableModel listaPersonalR, listaMedicamentoR;
+    public JButton btnPersonalCentro, btnInventarioMedicamentos, btnregistrarPersonal, 
+            btnAñadirMedicamento, btnHorarioMedico, btnCrearHorario;
+    public JPanel personalC, inventarioM, horarioM, AsignarHorario;
+    public JTable tablaPersonalR, tablaMedicamentoR, tablaHorarioM;
+    private JScrollPane miscrollListaPersonal, miscrollListaMedicamento, miscrollListaHorarioM;
+    public DefaultTableModel listaPersonalR, listaMedicamentoR, listaHorarioM;
 
     public AdminCentroInterfaz(String nombrePersona, String nombreInterfaz, String url) {
         super(nombrePersona, nombreInterfaz, url);
@@ -38,14 +42,24 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         this.btnInventarioMedicamentos = new JButton("💊 Inventario de Medicamentos");
         this.btnAñadirMedicamento = new JButton("➕ Añadir Medicamento");
         MetodosPublicos.estilizarBoton(btnAñadirMedicamento, (byte) 5);
+        this.btnHorarioMedico = new JButton("🗓️ Horarios Médicos");
+        this.btnCrearHorario = new JButton("📍 Crear Nuevo Horario");
+        btnCrearHorario.setFont(new Font("Arial", Font.BOLD, 20));
+        btnCrearHorario.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
+        btnCrearHorario.setForeground(Color.WHITE);
+        btnCrearHorario.setAlignmentX(Component.CENTER_ALIGNMENT);
         super.agregarBotonCuerpo1(btnPersonalCentro);
         super.agregarBotonCuerpo1(btnInventarioMedicamentos);
+        super.agregarBotonCuerpo1(btnHorarioMedico);
         this.personalC = new JPanel();
         this.inventarioM = new JPanel();
+        this.horarioM = new JPanel();
         this.personalC.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.inventarioM.setLayout(new FlowLayout(FlowLayout.LEFT));
+        this.horarioM.setLayout(new FlowLayout(FlowLayout.LEFT));
         personalC.setOpaque(false);
         inventarioM.setOpaque(false);
+        horarioM.setOpaque(false);
 
     }
 
@@ -55,6 +69,9 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         }
         if (botonActivo != btnInventarioMedicamentos && !btnInventarioMedicamentos.isEnabled()) {
             this.btnInventarioMedicamentos.setEnabled(true);
+        }
+        if (botonActivo != btnHorarioMedico && !btnHorarioMedico.isEnabled()) {
+            this.btnHorarioMedico.setEnabled(true);
         }
     }
 
@@ -139,11 +156,10 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         listaMedicamentoR.addColumn("STOCK");
         listaMedicamentoR.addColumn("ULTIMA ACTUALIZACIÓN");
         listaMedicamentoR.addColumn("  ");
-        //detallesListaPersonalR = new JPanel(); //panel que va a contener la lista
-        //grid = new GridLayout(1,1);
+        
         tablaMedicamentoR = new JTable(listaMedicamentoR);
         miscrollListaMedicamento = new JScrollPane(tablaMedicamentoR);
-        //miscrollLista.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
+        
         //se visualiza todo el tiempo
         miscrollListaMedicamento.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         miscrollListaMedicamento.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -154,10 +170,10 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         cuerpo2.add(miscrollListaMedicamento, BorderLayout.CENTER);
 
         //diseño para las columnas de la tabla
-        JTableHeader diseñoColumnaT = tablaMedicamentoR.getTableHeader();
-        diseñoColumnaT.setFont(new Font("arial", Font.BOLD, 14));
-        diseñoColumnaT.setForeground(Color.WHITE); //color del texto
-        diseñoColumnaT.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO); //color de fondo de la columna
+        JTableHeader diseñoColumnaTa = tablaMedicamentoR.getTableHeader();
+        diseñoColumnaTa.setFont(new Font("arial", Font.BOLD, 14));
+        diseñoColumnaTa.setForeground(Color.WHITE); //color del texto
+        diseñoColumnaTa.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO); //color de fondo de la columna
 
         //diseño para las filas en general
         tablaMedicamentoR.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -166,8 +182,56 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
 
         MetodosPublicos.refrescarVentana(inventarioM);
         MetodosPublicos.refrescarVentana(cuerpo2);
-
+    }
     
+    
+    public void mostrarVistaHorarioMedico(){
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(horarioM);
+
+        JLabel tituloHorarioCreado = new JLabel("Lista de Horarios Creados");
+        //todo lo del titulo de horarios creados 
+        tituloHorarioCreado.setFont(new Font("arial", Font.BOLD, 20)); //se crea el titulo
+        tituloHorarioCreado.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO); //se le añade un color
+        this.horarioM.add(tituloHorarioCreado); //se agrega el titulo al panel del apartado
+
+        //boton de añadir al lado del titulo
+        this.horarioM.add(Box.createHorizontalStrut(10)); //se da un espacio entre el titulo y el boton para separar
+        this.horarioM.add(btnCrearHorario); //se agrega el boton al panel del apartado
+        
+
+        //lista de horario creado
+        listaHorarioM = new DefaultTableModel();
+        listaHorarioM.addColumn("ETIQUETA");
+        listaHorarioM.addColumn("NOMBRE");
+        listaHorarioM.addColumn("FECHA CREACIÓN");
+        
+        
+        tablaHorarioM = new JTable(listaHorarioM);
+        miscrollListaHorarioM = new JScrollPane(tablaHorarioM);
+        
+        //se visualiza todo el tiempo
+        miscrollListaHorarioM.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        miscrollListaHorarioM.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        //se agrega todo lo anterior al cuerpo dos
+        cuerpo2.setLayout(new BorderLayout());
+        cuerpo2.add(horarioM, BorderLayout.NORTH);
+        cuerpo2.add(miscrollListaHorarioM, BorderLayout.CENTER);
+
+        //diseño para las columnas de la tabla
+        JTableHeader diseñoColumnaTab = tablaHorarioM.getTableHeader();
+        diseñoColumnaTab.setFont(new Font("arial", Font.BOLD, 14));
+        diseñoColumnaTab.setForeground(Color.WHITE); //color del texto
+        diseñoColumnaTab.setBackground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO); //color de fondo de la columna
+
+        //diseño para las filas en general
+        tablaHorarioM.setFont(new Font("Arial", Font.PLAIN, 13));
+        tablaHorarioM.setForeground(Color.DARK_GRAY);//color del texto filas
+        tablaHorarioM.setBackground(Color.WHITE);// fondo blanco
+
+        MetodosPublicos.refrescarVentana(horarioM);
+        MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
 }
