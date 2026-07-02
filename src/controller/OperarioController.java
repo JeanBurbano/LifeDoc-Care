@@ -18,9 +18,8 @@ public class OperarioController implements ActionListener {
         vista.btnAgendarCitas.addActionListener(this);
         vista.btnPagos.addActionListener(this);
         vista.btnConsultas.addActionListener(this);
-        
-        // Botones heredados de la plantilla
         vista.btnMisCitas.addActionListener(this);
+        
     }
 
     @Override
@@ -31,7 +30,6 @@ public class OperarioController implements ActionListener {
         else if (e.getSource() == vista.btnAgendarCitas) {
             // Abrir vista de Agendar Cita
             System.out.println("Abriendo vista Agendar Cita...");
-            // Aquí puedes abrir AgendarCitaOperarioVista
         } 
         else if (e.getSource() == vista.btnPagos) {
             System.out.println("Abriendo módulo de Pagos...");

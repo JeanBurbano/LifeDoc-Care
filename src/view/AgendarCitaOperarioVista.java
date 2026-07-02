@@ -52,6 +52,7 @@ public class AgendarCitaOperarioVista extends PacienteInterfaz {
 
     private void crearVistaAgendarCita() {
         vaciarPanel(cuerpo2);
+        cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout(15, 15));
         cuerpo2.setBorder(new EmptyBorder(20, 40, 20, 40));
 
@@ -79,6 +80,7 @@ public class AgendarCitaOperarioVista extends PacienteInterfaz {
         // === PANEL IZQUIERDO - Resumen del Paciente ===
         panelResumenPaciente = new JPanel();
         panelResumenPaciente.setLayout(new BoxLayout(panelResumenPaciente, BoxLayout.Y_AXIS));
+        panelResumenPaciente.setOpaque(false);
         panelResumenPaciente.setBorder(BorderFactory.createTitledBorder("Paciente Encontrado"));
         panelResumenPaciente.setPreferredSize(new Dimension(380, 400));
 
@@ -91,7 +93,12 @@ public class AgendarCitaOperarioVista extends PacienteInterfaz {
 
         // === PANEL DERECHO - Formulario ===
         JPanel panelFormulario = new JPanel(new GridBagLayout());
-        panelFormulario.setBorder(BorderFactory.createTitledBorder("Información del paciente"));
+        panelFormulario.setOpaque(false);
+        panelFormulario.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+                
+        ));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
