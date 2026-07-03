@@ -23,6 +23,7 @@ public class AdminCentroController implements ActionListener {
         this.personalCentro.btnInventarioMedicamentos.addActionListener(this);
         this.personalCentro.btnHorarioMedico.addActionListener(this);
         this.personalCentro.btnCrearHorario.addActionListener(this);
+        this.personalCentro.btnAñadirMedicamento.addActionListener(this);
         
    
     }
@@ -43,6 +44,13 @@ public class AdminCentroController implements ActionListener {
             System.out.println("hao");
         }
         
+        if (e.getSource() == this.personalCentro.btnAñadirMedicamento) {
+            this.personalCentro.mostrarAñadirMedicamento();
+            this.personalCentro.btnAñadirMedicamento.setEnabled(false);
+            this.personalCentro.habilitarBotones(this.personalCentro.btnAñadirMedicamento);
+            System.out.println("hyy");
+        }
+        
         if (e.getSource() == this.personalCentro.btnHorarioMedico) {
             this.personalCentro.mostrarVistaHorarioMedico();
             this.personalCentro.btnHorarioMedico.setEnabled(false);
@@ -53,7 +61,6 @@ public class AdminCentroController implements ActionListener {
         if (e.getSource() == this.personalCentro.btnCrearHorario) {
             this.personalCentro.mostrarFormularioCreacionHorario();
             this.personalCentro.btnCrearHorario.setEnabled(false);
-            this.personalCentro.habilitarBotones(this.personalCentro.btnCrearHorario);
             System.out.println("hayy");
         }
         
