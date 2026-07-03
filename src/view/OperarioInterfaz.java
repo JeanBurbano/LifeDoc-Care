@@ -2,22 +2,33 @@ package view;
 
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import controller.OperarioController;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.image.BufferedImage;
 import java.time.LocalDate;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import model.CalculadorPago;
+import model.MetodosPublicos;
 import static model.MetodosPublicos.estilizarBoton;
 import static model.MetodosPublicos.refrescarVentana;
 import static model.MetodosPublicos.vaciarPanel;
@@ -50,7 +61,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
         cuerpo1.removeAll();
 
-        this.btnAgendarCitas = new JButton("📅 Agendar Citas");
+        this.btnAgendarCitas = new JButton("📅 Paciente");
         this.btnPagos = new JButton("💰 Pagos");
         this.btnConsultas = new JButton("📋 Consultas");
 
@@ -94,9 +105,10 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelResumen = new JPanel();
         panelResumen.setLayout(new BoxLayout(panelResumen, BoxLayout.Y_AXIS));
         panelResumen.setOpaque(false);
+        panelResumen.setPreferredSize(new Dimension(380, 450));
         panelResumen.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
-            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
 
         lblIDPaciente = new JLabel("ID: ");
@@ -110,8 +122,8 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelFormulario = new JPanel(new GridBagLayout());
         panelFormulario.setOpaque(false);
         panelFormulario.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
-            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -130,7 +142,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         DatePickerSettings settings = new DatePickerSettings();
         settings.setAllowEmptyDates(false);
 
-        datePickerCita = new DatePicker(settings);   // ← Primero crear
+        datePickerCita = new DatePicker(settings);
 
         // Bloquear fechas pasadas (permitir hoy y futuro)
         settings.setVetoPolicy(date -> date.isAfter(LocalDate.now().minusDays(1)));
@@ -146,12 +158,14 @@ public class OperarioInterfaz extends PacienteInterfaz {
         addFormField(panelFormulario, gbc, "Fecha Nacimiento:", txtFechaNacimiento, 6);
         addFormField(panelFormulario, gbc, "Sexo:", txtSexo, 7);
 
-        gbc.gridx = 0; gbc.gridy = 8;
+        gbc.gridx = 0;
+        gbc.gridy = 8;
         panelFormulario.add(new JLabel("Fecha de la Cita:"), gbc);
         gbc.gridx = 1;
         panelFormulario.add(datePickerCita, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 9;
+        gbc.gridx = 0;
+        gbc.gridy = 9;
         panelFormulario.add(new JLabel("Hora (HH:mm):"), gbc);
         gbc.gridx = 1;
         panelFormulario.add(txtHoraCita, gbc);
@@ -170,17 +184,319 @@ public class OperarioInterfaz extends PacienteInterfaz {
     }
 
     private void addFormField(JPanel panel, GridBagConstraints gbc, String label, JTextField field, int row) {
-        gbc.gridx = 0; gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.gridy = row;
         panel.add(new JLabel(label), gbc);
         gbc.gridx = 1;
         panel.add(field, gbc);
     }
 
-    public void cargarDatosPaciente(String id, String nombreCompleto, String correo, 
-                                    String telefono, String fechaNac, String sexo) {
+    public void cargarDatosPaciente(String id, String nombreCompleto, String correo,
+            String telefono, String fechaNac, String sexo) {
         lblIDPaciente.setText("ID: " + id);
         lblNombrePaciente.setText("Nombre: " + nombreCompleto);
     }
+
+    public class PanelPagos {
+        public JPanel panelPagos;
+        public JButton btnAceptar;
+        public JComboBox cmbMetodoPago;
+
+        private String codigoFactura;
+        private String fechaHoraFactura;
+        private double valorConsulta;
+        private double montoSubsidio;
+        private double valorNeto;
+
+        public PanelPagos(String nombrePaciente, String identificacion, String grupoSisben,
+                String clasificacionSisben, String regimen, String condicionAtencion,
+                String especialidad, String nombreMedico, String fechaCita) {
+            this.codigoFactura = CalculadorPago.generarCodigoFactura();
+            this.fechaHoraFactura = CalculadorPago.obtenerFechaHoraActual();
+            this.valorConsulta = CalculadorPago.obtenerValorConsulta(especialidad);
+            this.montoSubsidio = CalculadorPago.calcularMontoSubsidio(valorConsulta, grupoSisben);
+            this.valorNeto = CalculadorPago.calcularValorNeto(valorConsulta, grupoSisben);
+
+            this.panelPagos = new JPanel();
+            this.panelPagos.setLayout(new BorderLayout(30, 0));
+            this.panelPagos.setOpaque(false);
+            this.panelPagos.setBorder(new EmptyBorder(20, 0, 0, 0));
+
+            JPanel panelFactura = construirPanelFactura(nombrePaciente, identificacion, grupoSisben,
+                    clasificacionSisben, regimen, condicionAtencion, especialidad, nombreMedico, fechaCita);
+            JPanel panelMetodosPago = construirPanelMetodosPago();
+
+            this.panelPagos.add(panelFactura, BorderLayout.CENTER);
+            this.panelPagos.add(panelMetodosPago, BorderLayout.EAST);
+        }
+
+        private JPanel construirPanelFactura(String nombrePaciente, String identificacion,
+                String grupoSisben, String clasificacionSisben, String regimen,
+                String condicionAtencion, String especialidad, String nombreMedico, String fechaCita) {
+            JPanel panelFactura = new JPanel();
+            panelFactura.setLayout(new BoxLayout(panelFactura, BoxLayout.Y_AXIS));
+            panelFactura.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                    BorderFactory.createEmptyBorder(20, 25, 20, 25)));
+            panelFactura.setOpaque(false);
+
+            JPanel panelEncabezadoFactura = new JPanel();
+            panelEncabezadoFactura.setLayout(new BoxLayout(panelEncabezadoFactura, BoxLayout.Y_AXIS));
+            panelEncabezadoFactura.setOpaque(false);
+            panelEncabezadoFactura.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            JLabel lblTituloFactura = new JLabel("Factura");
+            lblTituloFactura.setFont(new Font("Arial", Font.BOLD, 26));
+            lblTituloFactura.setForeground(COLOR_AZUL_CORPORATIVO);
+
+            JPanel panelNombreConsultorio = new JPanel();
+            panelNombreConsultorio.setLayout(new BoxLayout(panelNombreConsultorio, BoxLayout.X_AXIS));
+            panelNombreConsultorio.setOpaque(false);
+            panelNombreConsultorio.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JLabel lblLifeDoc = new JLabel("LifeDoc");
+            lblLifeDoc.setFont(new Font("Arial", Font.BOLD, 16));
+            lblLifeDoc.setForeground(COLOR_AZUL_CORPORATIVO);
+            JLabel lblCare = new JLabel(" Care");
+            lblCare.setFont(new Font("Arial", Font.BOLD, 16));
+            lblCare.setForeground(COLOR_VERDE_ACENTO);
+            panelNombreConsultorio.add(lblLifeDoc);
+            panelNombreConsultorio.add(lblCare);
+
+            JLabel lblCodigoFactura = new JLabel("Factura Digital de Servicio No: " + this.codigoFactura);
+            lblCodigoFactura.setFont(new Font("Arial", Font.PLAIN, 13));
+            lblCodigoFactura.setForeground(COLOR_GRIS_SUBTITULO);
+            lblCodigoFactura.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            JLabel lblFechaHora = new JLabel("Fecha/Hora Emisión: " + this.fechaHoraFactura);
+            lblFechaHora.setFont(new Font("Arial", Font.PLAIN, 13));
+            lblFechaHora.setForeground(COLOR_GRIS_SUBTITULO);
+            lblFechaHora.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            panelEncabezadoFactura.add(lblTituloFactura);
+            panelEncabezadoFactura.add(panelNombreConsultorio);
+            panelEncabezadoFactura.add(Box.createRigidArea(new Dimension(0, 5)));
+            panelEncabezadoFactura.add(lblCodigoFactura);
+            panelEncabezadoFactura.add(lblFechaHora);
+
+            JPanel separador1 = crearSeparador();
+
+            JPanel panelDatos = new JPanel();
+            panelDatos.setLayout(new BorderLayout(40, 0));
+            panelDatos.setOpaque(false);
+            panelDatos.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            JPanel columnasPaciente = new JPanel();
+            columnasPaciente.setLayout(new BoxLayout(columnasPaciente, BoxLayout.Y_AXIS));
+            columnasPaciente.setOpaque(false);
+            JLabel lblTituloPaciente = new JLabel("DATOS DEL PACIENTE");
+            lblTituloPaciente.setFont(new Font("Arial", Font.BOLD, 13));
+            lblTituloPaciente.setForeground(COLOR_GRIS_SUBTITULO);
+            agregarFilaDato(columnasPaciente, "Nombre:", nombrePaciente);
+            agregarFilaDato(columnasPaciente, "Identificación:", identificacion);
+            agregarFilaDato(columnasPaciente, "Régimen:", regimen);
+            columnasPaciente.add(Box.createRigidArea(new Dimension(0, 10)));
+            JLabel lblClasifSisben = new JLabel("Clasificación SISBÉN: " + grupoSisben);
+            lblClasifSisben.setFont(new Font("Arial", Font.BOLD, 13));
+            lblClasifSisben.setForeground(COLOR_AZUL_CORPORATIVO);
+            JLabel lblCondicion = new JLabel("Condición de Atención: " + condicionAtencion + "");
+            lblCondicion.setFont(new Font("Arial", Font.PLAIN, 13));
+            lblCondicion.setForeground(new Color(60, 60, 60));
+            columnasPaciente.add(lblTituloPaciente);
+            columnasPaciente.add(Box.createRigidArea(new Dimension(0, 5)));
+            columnasPaciente.add(lblClasifSisben);
+            columnasPaciente.add(Box.createRigidArea(new Dimension(0, 5)));
+            columnasPaciente.add(lblCondicion);
+
+            JPanel columnasCita = new JPanel();
+            columnasCita.setLayout(new BoxLayout(columnasCita, BoxLayout.Y_AXIS));
+            columnasCita.setOpaque(false);
+            JLabel lblTituloCita = new JLabel("DETALLE DE LA CITA");
+            lblTituloCita.setFont(new Font("Arial", Font.BOLD, 13));
+            lblTituloCita.setForeground(COLOR_GRIS_SUBTITULO);
+            columnasCita.add(lblTituloCita);
+            columnasCita.add(Box.createRigidArea(new Dimension(0, 5)));
+            agregarFilaDato(columnasCita, "Especialidad:", especialidad);
+            agregarFilaDato(columnasCita, "Médico Asignado:", nombreMedico);
+            agregarFilaDato(columnasCita, "Fecha y Hora:", fechaCita + ", " + CalculadorPago.obtenerHoraActual());
+
+            panelDatos.add(columnasPaciente, BorderLayout.WEST);
+            panelDatos.add(columnasCita, BorderLayout.CENTER);
+
+            JPanel separador2 = crearSeparador();
+
+            JPanel panelLiquidacion = new JPanel();
+            panelLiquidacion.setLayout(new BoxLayout(panelLiquidacion, BoxLayout.Y_AXIS));
+            panelLiquidacion.setOpaque(false);
+            panelLiquidacion.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JLabel lblTituloLiquidacion = new JLabel("LIQUIDACIÓN DEL COBRO");
+            lblTituloLiquidacion.setFont(new Font("Arial", Font.BOLD, 13));
+            lblTituloLiquidacion.setForeground(COLOR_GRIS_SUBTITULO);
+
+            agregarFilaDato(panelLiquidacion, "Valor Base de la Consulta:",
+                    CalculadorPago.formatearPesos(valorConsulta));
+            agregarFilaDato(panelLiquidacion, "Subsidio Entidad (Régimen " + clasificacionSisben + "):",
+                    CalculadorPago.formatearPesos(montoSubsidio));
+            agregarFilaDato(panelLiquidacion, "Cuota Moderadora / Copago Paciente:",
+                    CalculadorPago.formatearPesos(valorNeto));
+            panelLiquidacion.add(lblTituloLiquidacion);
+
+            JPanel separador3 = crearSeparador();
+
+            JPanel panelValorNeto = new JPanel();
+            panelValorNeto.setLayout(new BoxLayout(panelValorNeto, BoxLayout.X_AXIS));
+            panelValorNeto.setOpaque(false);
+            panelValorNeto.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JLabel lblEtiquetaNeto = new JLabel("VALOR NETO A PAGAR PACIENTE: ");
+            lblEtiquetaNeto.setFont(new Font("Arial", Font.BOLD, 16));
+            lblEtiquetaNeto.setForeground(COLOR_AZUL_CORPORATIVO);
+            JLabel lblValorNeto = new JLabel(CalculadorPago.formatearPesos(valorNeto));
+            lblValorNeto.setFont(new Font("Arial", Font.BOLD, 18));
+            lblValorNeto.setForeground(COLOR_AZUL_CORPORATIVO);
+            panelValorNeto.add(lblEtiquetaNeto);
+            panelValorNeto.add(lblValorNeto);
+
+            panelFactura.add(panelEncabezadoFactura);
+            panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
+            panelFactura.add(separador1);
+            panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
+            panelFactura.add(panelDatos);
+            panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
+            panelFactura.add(separador2);
+            panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
+            panelFactura.add(panelLiquidacion);
+            panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
+            panelFactura.add(separador3);
+            panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
+            panelFactura.add(panelValorNeto);
+
+            return panelFactura;
+        }
+
+        private JPanel construirPanelMetodosPago() {
+            JPanel panelMetodosPago = new JPanel();
+            panelMetodosPago.setLayout(new BoxLayout(panelMetodosPago, BoxLayout.Y_AXIS));
+            panelMetodosPago.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                    BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+            panelMetodosPago.setOpaque(false);
+            panelMetodosPago.setPreferredSize(new Dimension(280, 0));
+
+            JLabel lblTituloMetodos = new JLabel("Métodos de Pago");
+            lblTituloMetodos.setFont(new Font("Arial", Font.BOLD, 20));
+            lblTituloMetodos.setForeground(COLOR_AZUL_CORPORATIVO);
+            lblTituloMetodos.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            JLabel labelQR = generarImagenQR(this.codigoFactura, 200, 200);
+            labelQR.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            JLabel lblEscanea = new JLabel("Escanéame");
+            lblEscanea.setFont(new Font("Arial", Font.BOLD, 15));
+            lblEscanea.setForeground(COLOR_GRIS_SUBTITULO);
+            lblEscanea.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            JPanel separadorQR = crearSeparador();
+            separadorQR.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            JLabel lblMetodo = new JLabel("Método de pago empleado");
+            lblMetodo.setFont(new Font("Arial", Font.PLAIN, 13));
+            lblMetodo.setForeground(COLOR_GRIS_SUBTITULO);
+            lblMetodo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            this.cmbMetodoPago = new JComboBox(new String[]{"Efectivo", "Tarjeta débito", "Tarjeta crédito", "Transferencia"});
+            MetodosPublicos.estilizarComboBox(cmbMetodoPago);
+            this.cmbMetodoPago.setAlignmentX(Component.CENTER_ALIGNMENT);
+            this.cmbMetodoPago.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+
+            this.btnAceptar = new JButton("✔ Aceptar");
+            MetodosPublicos.estilizarBoton(btnAceptar, (byte) 5);
+            this.btnAceptar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+            this.btnAceptar.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            panelMetodosPago.add(lblTituloMetodos);
+            panelMetodosPago.add(Box.createRigidArea(new Dimension(0, 15)));
+            panelMetodosPago.add(labelQR);
+            panelMetodosPago.add(Box.createRigidArea(new Dimension(0, 5)));
+            panelMetodosPago.add(lblEscanea);
+            panelMetodosPago.add(Box.createRigidArea(new Dimension(0, 15)));
+            panelMetodosPago.add(separadorQR);
+            panelMetodosPago.add(Box.createRigidArea(new Dimension(0, 15)));
+            panelMetodosPago.add(lblMetodo);
+            panelMetodosPago.add(Box.createRigidArea(new Dimension(0, 8)));
+            panelMetodosPago.add(cmbMetodoPago);
+            panelMetodosPago.add(Box.createRigidArea(new Dimension(0, 20)));
+            panelMetodosPago.add(btnAceptar);
+
+            return panelMetodosPago;
+        }
+
+        private void agregarFilaDato(JPanel panel, String etiqueta, String valor) {
+            JPanel fila = new JPanel();
+            fila.setLayout(new BoxLayout(fila, BoxLayout.X_AXIS));
+            fila.setOpaque(false);
+            fila.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JLabel lblEtiqueta = new JLabel(etiqueta + " ");
+            lblEtiqueta.setFont(new Font("Arial", Font.BOLD, 13));
+            lblEtiqueta.setForeground(new Color(60, 60, 60));
+            JLabel lblValor = new JLabel(valor);
+            lblValor.setFont(new Font("Arial", Font.PLAIN, 13));
+            lblValor.setForeground(new Color(60, 60, 60));
+            fila.add(lblEtiqueta);
+            fila.add(lblValor);
+            panel.add(fila);
+            panel.add(Box.createRigidArea(new Dimension(0, 4)));
+        }
+
+        private JPanel crearSeparador() {
+            JPanel separador = new JPanel();
+            separador.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+            separador.setPreferredSize(new Dimension(0, 1));
+            separador.setBackground(new Color(200, 210, 220));
+            separador.setAlignmentX(Component.LEFT_ALIGNMENT);
+            return separador;
+        }
+
+        private JLabel generarImagenQR(String contenido, int ancho, int alto) {
+            JLabel labelQR = new JLabel();
+            try {
+                BitMatrix matrix = new MultiFormatWriter().encode(
+                        contenido,
+                        BarcodeFormat.QR_CODE,
+                        ancho, alto
+                );
+                BufferedImage imagenQR = MatrixToImageWriter.toBufferedImage(matrix);
+                labelQR.setIcon(new ImageIcon(imagenQR));
+            } catch (Exception e) {
+                labelQR.setText("[Error al generar QR]");
+                labelQR.setForeground(Color.RED);
+            }
+            return labelQR;
+        }
+
+        public String getCodigoFactura() {
+            return codigoFactura;
+        }
+
+        public double getValorNeto() {
+            return valorNeto;
+        }
+    }
     
     
+    public void habilitarBotonesMenu(JButton botonActivo) {
+        if (btnAgendarCitas != null) {
+            btnAgendarCitas.setEnabled(true);
+        }
+        if (btnPagos != null) {
+            btnPagos.setEnabled(true);
+        }
+        if (btnConsultas != null) {
+            btnConsultas.setEnabled(true);
+        }
+
+        if (botonActivo != null) {
+            botonActivo.setEnabled(false);
+
+        }
+    }
+
 }
