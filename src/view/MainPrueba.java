@@ -1,21 +1,22 @@
 package view;
 
-import controller.AgendarCitaController;
+
+import controller.OperarioController;
 
 public class MainPrueba {
-    
+
     public static void main(String[] args) {
-        
+
         // Crear la vista de Agendar Cita
-        AgendarCitaOperarioVista vista = new AgendarCitaOperarioVista(
-            "Juanita Velasquez", 
-            "Agendar Cita - Operario", 
-            "anonymous.png"
+        OperarioInterfaz vista = new OperarioInterfaz(
+                "Juanita Velasquez",
+                "Agendar Cita - Operario",
+                "anonymous.png"
         );
-        
+
         // Crear el controlador y conectarlo
-        AgendarCitaController controller = new AgendarCitaController(vista);
-        
+        OperarioController controller = new OperarioController(vista);
+
         // Configuración de la ventana
         vista.setSize(1250, 850);
         vista.setLocationRelativeTo(null);

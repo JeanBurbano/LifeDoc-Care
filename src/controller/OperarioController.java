@@ -14,28 +14,15 @@ public class OperarioController implements ActionListener {
     }
 
     private void agregarListeners() {
-        // Botones principales del Operario
-        vista.btnAgendarCitas.addActionListener(this);
-        vista.btnPagos.addActionListener(this);
-        vista.btnConsultas.addActionListener(this);
-        vista.btnMisCitas.addActionListener(this);
-        
+        if (vista.btnAgendarCitas != null) {
+            vista.btnAgendarCitas.addActionListener(this);
+        }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == vista.btnMisCitas) {
-            vista.mostrarVistaPrincipalOperario();
-        } 
-        else if (e.getSource() == vista.btnAgendarCitas) {
-            // Abrir vista de Agendar Cita
-            System.out.println("Abriendo vista Agendar Cita...");
-        } 
-        else if (e.getSource() == vista.btnPagos) {
-            System.out.println("Abriendo módulo de Pagos...");
-        } 
-        else if (e.getSource() == vista.btnConsultas) {
-            System.out.println("Abriendo módulo de Consultas...");
+        if (e.getSource() == vista.btnAgendarCitas) {
+            vista.AgendarCita();   // Carga el formulario en la misma ventana
         }
     }
 }
