@@ -18,7 +18,7 @@ public class PruebaAdminCentro {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        AdminCentroInterfaz i = new AdminCentroInterfaz("alejandra cossio", "Administrador del Centro", "anonymous.png");
+        AdministradorCentroInterfaz i = new AdministradorCentroInterfaz("alejandra cossio", "Administrador del Centro", "anonymous.png");
         i.setVisible(true);
         i.setDefaultCloseOperation(EXIT_ON_CLOSE);
         i.setExtendedState(MAXIMIZED_BOTH);

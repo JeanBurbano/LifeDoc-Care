@@ -15,6 +15,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import model.MetodosPublicos;
 import view.PacienteInterfaz;
 
 /**
@@ -106,15 +107,15 @@ public class ConstructorFilaHorario {
         fila.add(diaSemana[indiceDia]);
         fila.add(lblDia);
         fila.add(sep);
-        fila.add(EstiloFormulario.crearMiniEtiqueta("Inicio"));
+        fila.add(MetodosPublicos.crearMiniEtiqueta("Inicio"));
         fila.add(horaInicio[indiceDia]);
-        fila.add(EstiloFormulario.crearMiniEtiqueta("Fin"));
+        fila.add(MetodosPublicos.crearMiniEtiqueta("Fin"));
         fila.add(horaFin[indiceDia]);
-        fila.add(EstiloFormulario.crearMiniEtiqueta("Almuerzo"));
+        fila.add(MetodosPublicos.crearMiniEtiqueta("Almuerzo"));
         fila.add(almuerzoIni[indiceDia]);
-        fila.add(EstiloFormulario.crearMiniEtiqueta("→"));
+        fila.add(MetodosPublicos.crearMiniEtiqueta("→"));
         fila.add(almuerzoFin[indiceDia]);
-        fila.add(EstiloFormulario.crearMiniEtiqueta("Horas Lab."));
+        fila.add(MetodosPublicos.crearMiniEtiqueta("Horas Lab."));
         fila.add(lblHoras[indiceDia]);
 
         // Si el día está inactivo desde el inicio (ej. Sábado), se inhabilita toda la fila
