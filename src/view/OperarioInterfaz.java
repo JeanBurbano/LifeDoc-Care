@@ -207,10 +207,12 @@ public class OperarioInterfaz extends PacienteInterfaz {
         private double valorConsulta;
         private double montoSubsidio;
         private double valorNeto;
+        private String identificacion;
 
         public PanelPagos(String nombrePaciente, String identificacion, String grupoSisben,
                 String clasificacionSisben, String regimen, String condicionAtencion,
                 String especialidad, String nombreMedico, String fechaCita) {
+            
             this.codigoFactura = CalculadorPago.generarCodigoFactura();
             this.fechaHoraFactura = CalculadorPago.obtenerFechaHoraActual();
             this.valorConsulta = CalculadorPago.obtenerValorConsulta(especialidad);
@@ -385,7 +387,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
             lblTituloMetodos.setFont(new Font("Arial", Font.BOLD, 20));
             lblTituloMetodos.setForeground(COLOR_AZUL_CORPORATIVO);
             lblTituloMetodos.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+            
             JLabel labelQR = generarImagenQR(this.codigoFactura, 200, 200);
             labelQR.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -411,7 +413,11 @@ public class OperarioInterfaz extends PacienteInterfaz {
             MetodosPublicos.estilizarBoton(btnAceptar, (byte) 5);
             this.btnAceptar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
             this.btnAceptar.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+            
+            this.btnAceptar.addActionListener(e -> {
+                OperarioInterfaz.this.mostrarFacturaDetallada();
+            });
+            
             panelMetodosPago.add(lblTituloMetodos);
             panelMetodosPago.add(Box.createRigidArea(new Dimension(0, 15)));
             panelMetodosPago.add(labelQR);
@@ -479,6 +485,209 @@ public class OperarioInterfaz extends PacienteInterfaz {
         public double getValorNeto() {
             return valorNeto;
         }
+    }
+    
+    public void mostrarFacturaDetallada() {
+        
+        vaciarPanel(cuerpo2);
+        cuerpo2.setOpaque(false);
+        cuerpo2.setLayout(new BorderLayout(25, 0));
+        cuerpo2.setBorder(new EmptyBorder(20, 40, 20, 40));
+
+        JPanel panelPrincipal = new JPanel(new BorderLayout(25, 0));
+        panelPrincipal.setOpaque(false);
+
+        // === PANEL IZQUIERDO: FACTURA DETALLADA ===
+        JPanel panelFactura = new JPanel();
+        panelFactura.setLayout(new BoxLayout(panelFactura, BoxLayout.Y_AXIS));
+        panelFactura.setOpaque(false);
+        panelFactura.setPreferredSize(new Dimension(700, 0));
+        panelFactura.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
+
+        JLabel lblTitulo = new JLabel("Factura");
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 28));
+        lblTitulo.setForeground(COLOR_AZUL_CORPORATIVO);
+
+        panelFactura.add(lblTitulo);
+        panelFactura.add(new JLabel("LifeDoc Care"));
+        panelFactura.add(new JLabel("Factura Digital No: F-2026-9942"));
+        panelFactura.add(new JLabel("Fecha/Hora Emisión: 30 de Mayo de 2026 | 10:50 AM"));
+
+        panelFactura.add(Box.createRigidArea(new Dimension(0, 15)));
+        
+        // SEPARADOR
+        JPanel separador1 = new JPanel();
+        separador1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        separador1.setPreferredSize(new Dimension(0, 1));
+        separador1.setBackground(new Color(200, 210, 220));
+        panelFactura.add(separador1);
+        
+        panelFactura.add(new JLabel("DATOS DEL PACIENTE"));
+        panelFactura.add(new JLabel("Nombre: Jhon Alejandro Vanegas Morcillo"));
+        panelFactura.add(new JLabel("Identificación: 167894320"));
+        panelFactura.add(new JLabel("Régimen: Subsidiado"));
+        panelFactura.add(new JLabel("Clasificación SISBEN: Grupo B"));
+
+        panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
+        
+        // SEPARADOR
+        JPanel separador2 = new JPanel();
+        separador1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        separador1.setPreferredSize(new Dimension(0, 1));
+        separador1.setBackground(new Color(200, 210, 220));
+        panelFactura.add(separador2);
+        
+        panelFactura.add(new JLabel("DETALLE DE LA CITA"));
+        panelFactura.add(new JLabel("Especialidad: Medico General"));
+        panelFactura.add(new JLabel("Médico Asignado: Jhon Alex Palencia Morcillo"));
+        panelFactura.add(new JLabel("Fecha y Hora: 30 de Mayo de 2026 - 8:45 AM"));
+
+        panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
+        
+        // SEPARADOR
+        JPanel separador3 = new JPanel();
+        separador1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        separador1.setPreferredSize(new Dimension(0, 1));
+        separador1.setBackground(new Color(200, 210, 220));
+        panelFactura.add(separador3);
+        
+        panelFactura.add(new JLabel("LIQUIDACIÓN DEL COBRO"));
+        panelFactura.add(new JLabel("Valor Base de la Consulta: $65.000 COP"));
+        panelFactura.add(new JLabel("Subsidio Entidad (Régimen Subsidiado): $60.500 COP"));
+        panelFactura.add(new JLabel("Cuota Moderadora / Copago Paciente: $4.500 COP"));
+
+        panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        JLabel lblValorNeto = new JLabel("VALOR NETO A PAGAR PACIENTE: $4.500 COP");
+        lblValorNeto.setFont(new Font("Arial", Font.BOLD, 18));
+        lblValorNeto.setForeground(COLOR_AZUL_CORPORATIVO);
+        panelFactura.add(lblValorNeto);
+
+        // === PANEL DERECHO: BOTONES DE PAGO ===
+        JPanel panelOpciones = new JPanel();
+        panelOpciones.setLayout(new BoxLayout(panelOpciones, BoxLayout.Y_AXIS));
+        panelOpciones.setOpaque(false);
+        panelOpciones.setPreferredSize(new Dimension(240, 0));
+        panelOpciones.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
+
+        JButton btnDebito = new JButton("💳 Tarjeta débito");
+        JButton btnCredito = new JButton("💳 Tarjeta crédito");
+        JButton btnTransferencia = new JButton("🏦 Transferencia");
+
+        estilizarBoton(btnDebito, (byte) 4);
+        estilizarBoton(btnCredito, (byte) 4);
+        estilizarBoton(btnTransferencia, (byte) 4);
+
+        btnDebito.setPreferredSize(new Dimension(240, 60));
+        btnCredito.setPreferredSize(new Dimension(240, 60));
+        btnTransferencia.setPreferredSize(new Dimension(240, 60));
+        
+        btnDebito.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnCredito.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnTransferencia.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        btnDebito.addActionListener(e -> mostrarModalTarjetaDebito());
+        btnCredito.addActionListener(e -> mostrarModalTarjetaCredito());
+        btnTransferencia.addActionListener(e -> mostrarModalTransferencia());
+
+        panelOpciones.add(btnDebito);
+        panelOpciones.add(Box.createRigidArea(new Dimension(0, 130)));
+        panelOpciones.add(btnCredito);
+        panelOpciones.add(Box.createRigidArea(new Dimension(0, 130)));
+        panelOpciones.add(btnTransferencia);
+
+        panelPrincipal.add(panelFactura, BorderLayout.WEST);
+        panelPrincipal.add(panelOpciones, BorderLayout.CENTER);
+
+        cuerpo2.add(panelPrincipal, BorderLayout.CENTER);
+
+        refrescarVentana(cuerpo2);
+    }
+
+    // Modales (Ventanas emergentes)
+    private void mostrarModalTarjetaDebito() {
+        JPanel modal = new JPanel(new GridBagLayout());
+        modal.setBorder(BorderFactory.createTitledBorder("Tarjeta débito"));
+        modal.setPreferredSize(new Dimension(400, 300));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new java.awt.Insets(10, 10, 10, 10);
+
+        JTextField txtNumero = new JTextField(20);
+        JTextField txtFecha = new JTextField(10);
+        JTextField txtCodigo = new JTextField(6);
+
+        JButton btnAceptar = new JButton("Aceptar");
+        estilizarBoton(btnAceptar, (byte) 5);
+
+        btnAceptar.addActionListener(e -> {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pago con tarjeta débito confirmado", "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        modal.add(new JLabel("Número de tarjeta"), gbc);
+        gbc.gridx = 1;
+        modal.add(txtNumero, gbc);
+        gbc.gridx = 0; gbc.gridy = 1;
+        modal.add(new JLabel("Fecha de vencimiento"), gbc);
+        gbc.gridx = 1;
+        modal.add(txtFecha, gbc);
+        gbc.gridx = 0; gbc.gridy = 2;
+        modal.add(new JLabel("Código de seguridad"), gbc);
+        gbc.gridx = 1;
+        modal.add(txtCodigo, gbc);
+        gbc.gridx = 0; gbc.gridy = 3;
+        modal.add(btnAceptar, gbc);
+
+        javax.swing.JOptionPane.showOptionDialog(this, modal, "Tarjeta Débito", 
+            javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+    }
+    
+    private void mostrarModalTarjetaCredito(){
+        mostrarModalTarjetaDebito();
+        
+    }
+    
+    private void mostrarModalTransferencia() {
+        JPanel modal = new JPanel(new GridBagLayout());
+        modal.setBorder(BorderFactory.createTitledBorder("Transferencia"));
+        modal.setPreferredSize(new Dimension(400, 300));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new java.awt.Insets(10, 10, 10, 10);
+
+        JComboBox cmbEntidad = new JComboBox(new String[]{"Bancolombia", "Davivienda", "BBVA"});
+        JComboBox cmbTipoCuenta = new JComboBox(new String[]{"Corriente", "Ahorros"});
+        JTextField txtNumeroCuenta = new JTextField(20);
+
+        JButton btnAceptar = new JButton("Aceptar");
+        estilizarBoton(btnAceptar, (byte) 5);
+
+        btnAceptar.addActionListener(e -> {
+            javax.swing.JOptionPane.showMessageDialog(this, "Transferencia confirmada", "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        modal.add(new JLabel("Entidad Bancaria"), gbc);
+        gbc.gridx = 1;
+        modal.add(cmbEntidad, gbc);
+        gbc.gridx = 0; gbc.gridy = 1;
+        modal.add(new JLabel("Tipo de cuenta"), gbc);
+        gbc.gridx = 1;
+        modal.add(cmbTipoCuenta, gbc);
+        gbc.gridx = 0; gbc.gridy = 2;
+        modal.add(new JLabel("Número de cuenta"), gbc);
+        gbc.gridx = 1;
+        modal.add(txtNumeroCuenta, gbc);
+        gbc.gridx = 0; gbc.gridy = 3;
+        modal.add(btnAceptar, gbc);
+
+        javax.swing.JOptionPane.showOptionDialog(this, modal, "Transferencia", 
+            javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
     }
     
     
