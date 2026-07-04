@@ -10,6 +10,7 @@ public class Prueba {
         i.setVisible(true);
         i.setDefaultCloseOperation(EXIT_ON_CLOSE);
         i.setExtendedState(MAXIMIZED_BOTH);
+       
     }
 
 }
