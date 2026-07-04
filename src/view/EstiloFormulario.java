@@ -4,16 +4,13 @@
  */
 package view;
 
-import com.github.lgooddatepicker.components.DatePicker;
-import com.github.lgooddatepicker.components.DatePickerSettings;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.time.LocalDate;
-import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -33,7 +30,7 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
 import view.PacienteInterfaz;
 
 /**
- * Clase utilitaria con métodos para crear y estilizar los componentes
+ * Clase con métodos para crear y estilizar los componentes
  * visuales que se repiten en distintos formularios de la aplicación
  * (campos de texto, combos, selectores de fecha, etiquetas, filas, etc.).
  * Todos los métodos son estáticos: no dependen de ninguna interfaz en
@@ -41,7 +38,7 @@ import view.PacienteInterfaz;
  */
 public class EstiloFormulario {
 
-    // Constructor privado: esta clase solo se usa por sus métodos estáticos, no se instancia
+    // Constructor privado ya esta clase solo se usa por sus métodos estáticos, no se instancia
     private EstiloFormulario() {
     }
 
@@ -52,11 +49,11 @@ public class EstiloFormulario {
      * @return el campo de texto estilizado
      */
     public static JTextField crearCampoTexto() {
-        JTextField campo = new JTextField(15); // campo con ancho preferido de 15 columnas
+        JTextField campo = new JTextField(15); // campo con ancho de 15 columnas
         campo.setFont(new Font("Arial", Font.PLAIN, 15)); // fuente Arial tamaño 15
         campo.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true), // borde verde redondeado
-                BorderFactory.createEmptyBorder(8, 10, 8, 10) // espacio interno para que el texto no quede pegado al borde
+                BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true), // borde verde
+                BorderFactory.createEmptyBorder(8, 10, 8, 10) //espacio interno para que el texto no quede pegado al borde
         ));
         return campo; // se retorna listo para agregarse al formulario
     }
@@ -65,21 +62,20 @@ public class EstiloFormulario {
      * Aplica estilo (fondo blanco, borde verde, fuente grande, flecha
      * personalizada) a un JComboBox YA EXISTENTE. No define ni modifica
      * las opciones/datos del combo, solo su apariencia — por eso sirve
-     * para cualquier combo, tenga o no datos precargados (por ejemplo,
-     * uno que se llena después con datos desde la base de datos).
+     * para cualquier combo, tenga o no datos precargados 
      *
      * @param combo el combo (ya creado, puede estar vacío) a estilizar
      */
     public static void crearComboEstilizado(JComboBox combo) {
         combo.setPreferredSize(new Dimension(200, 35)); // tamaño fijo para que combine con los demás campos
         combo.setFont(new Font("Arial", Font.PLAIN, 15)); // misma fuente que los JTextField
-        combo.setBackground(Color.WHITE); // fondo blanco (el L&F del sistema lo pintaría gris por defecto)
-        combo.setFocusable(false); // evita que el combo robe el foco al usar Tab
+        combo.setBackground(Color.WHITE); //fondo blanco para qutarle el gris por defecto
+        combo.setFocusable(false); // evita que el combo robe el foco al usar Tab en el teclado
         combo.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true), // borde verde
                 BorderFactory.createEmptyBorder(2, 8, 2, 2) // pequeño espacio interno
         ));
-        combo.setUI(new BasicComboBoxUI() { // se reemplaza el UI del sistema para poder pintar la flecha manualmente
+        combo.setUI(new BasicComboBoxUI() { // se reemplaza el UI del sistema (el diseño predeterinado de java) para poder pintar la flecha manualmente
             @Override
             protected JButton createArrowButton() {
                 JButton boton = new JButton("▼"); // botón con el ícono de flecha
@@ -93,6 +89,7 @@ public class EstiloFormulario {
         });
         combo.setRenderer(new DefaultListCellRenderer() { // controla el estilo de cada opción en la lista desplegable
             @Override
+            //crea el renderizado estándar de esa opción, para después modificarle el estilo encima.
             public Component getListCellRendererComponent(JList list, Object value, int index,
                     boolean isSelected, boolean cellHasFocus) {
                 Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
@@ -104,45 +101,7 @@ public class EstiloFormulario {
         });
     }
 
-    /**
-     * Crea un selector de fecha (DatePicker de LGoodDatePicker) ya
-     * estilizado y restringido para solo permitir fechas desde hoy en
-     * adelante (útil para fechas de vencimiento, citas, etc.).
-     *
-     * @return el DatePicker listo para usarse
-     */
-    public static DatePicker crearDatePickerEstilizado() {
-        DatePickerSettings settings = new DatePickerSettings(new Locale("es")); // configuración en español
-        settings.setFormatForDatesCommonEra("yyyy-MM-dd"); // formato de fecha mostrado al usuario
-        settings.setAllowKeyboardEditing(false); // solo se puede elegir la fecha con el calendario, no escribirla
-        settings.setVisibleDateTextField(true); // se muestra el campo de texto junto al botón de calendario
-
-        // Colores para que combine con el resto del formulario
-        settings.setColor(DatePickerSettings.DateArea.BackgroundOverallCalendarPanel, Color.WHITE); // fondo del panel del calendario
-        settings.setColor(DatePickerSettings.DateArea.CalendarBackgroundNormalDates, Color.WHITE); // fondo de los días normales
-        settings.setColor(DatePickerSettings.DateArea.CalendarBackgroundSelectedDate, PacienteInterfaz.COLOR_VERDE_ACENTO); // día seleccionado en verde
-        settings.setColorBackgroundWeekdayLabels(Color.WHITE, false); // fondo blanco para los nombres de los días
-        settings.setFontValidDate(new Font("Arial", Font.PLAIN, 13)); // fuente de los días válidos
-
-        DatePicker datePicker = new DatePicker(settings); // se construye el DatePicker con la configuración anterior
-
-        // El rango de fechas solo puede aplicarse DESPUÉS de construir el DatePicker
-        LocalDate hoy = LocalDate.now(); // fecha actual del sistema
-        settings.setDateRangeLimits(hoy, null); // solo permite seleccionar desde hoy en adelante (sin límite superior)
-
-        // Estilo del campo de texto y el botón de calendario
-        datePicker.getComponentDateTextField().setFont(new Font("Arial", Font.PLAIN, 15));
-        datePicker.getComponentDateTextField().setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
-                BorderFactory.createEmptyBorder(6, 8, 6, 8)
-        ));
-        datePicker.getComponentDateTextField().setBackground(Color.WHITE);
-        datePicker.getComponentToggleCalendarButton().setBackground(Color.WHITE);
-        datePicker.getComponentToggleCalendarButton().setBorder(
-                BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true));
-
-        return datePicker; // listo para agregarse al formulario
-    }
+    
 
     /**
      * Envuelve un campo (JTextField, JComboBox, DatePicker, JScrollPane,
@@ -216,7 +175,7 @@ public class EstiloFormulario {
         lbl.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO); // color corporativo azul
         JSeparator sep = new JSeparator(); // línea horizontal
         sep.setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO); // línea en color verde
-        panelSep.add(lbl, BorderLayout.CENTER); // (se mantiene igual que el original: ambos en CENTER)
+        panelSep.add(lbl, BorderLayout.CENTER); 
         panelSep.add(sep, BorderLayout.CENTER);
         return panelSep;
     }
@@ -230,7 +189,7 @@ public class EstiloFormulario {
      */
     public static JLabel crearMiniEtiqueta(String texto) {
         JLabel etiqueta = new JLabel(texto); // etiqueta pequeña
-        etiqueta.setFont(new Font("SansSerif", Font.PLAIN, 11)); // fuente pequeña
+        etiqueta.setFont(new Font("Arial", Font.PLAIN, 11)); // fuente pequeña
         etiqueta.setForeground(Color.GRAY); // color gris
         return etiqueta;
     }
