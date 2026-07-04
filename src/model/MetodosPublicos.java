@@ -70,7 +70,8 @@ public class MetodosPublicos {
             refrescarVentana(componente);
         }
     }
-
+    
+    //validar campos para id y contrasena
     public static boolean validarTamano(String cadena, int minimo, int maximo) {
         return cadena.length() == minimo || cadena.length() == maximo;
     }

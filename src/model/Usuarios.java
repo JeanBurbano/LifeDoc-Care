@@ -4,15 +4,15 @@ import java.time.LocalDate;
 
 public class Usuarios {
 
-    private String idUsuario, tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
+    private String id_rol, tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
             correoElectronico, contrasena, sexoBiologico, numeroTelefonico, sisben;
     private LocalDate fechaNacimiento;
     private byte edad;
 
-    public Usuarios(String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+    public Usuarios(String id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
             String correoElectronico, String contrasena, String sexoBiologico, String numeroTelefonico, String sisben,
             LocalDate fechaNacimiento, byte edad) {
-
+        this.id_rol = id_rol;
         this.tipoId = tipoId;
         this.numeroId = numeroId;
         this.primerNombre = primerNombre;
@@ -28,12 +28,30 @@ public class Usuarios {
         this.edad = edad;
     }
 
+    public Usuarios(String id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String sexoBiologico, String numeroTelefonico, String sisben,
+            LocalDate fechaNacimiento, byte edad) {
+        
+        this.id_rol = id_rol;
+        this.tipoId = tipoId;
+        this.numeroId = numeroId;
+        this.primerNombre = primerNombre;
+        this.segundoNombre = segundoNombre;
+        this.primerApellido = primerApellido;
+        this.segundoApellido = segundoApellido;
+        this.sexoBiologico = sexoBiologico;
+        this.numeroTelefonico = numeroTelefonico;
+        this.sisben = sisben;
+        this.fechaNacimiento = fechaNacimiento;
+        this.edad = edad;
+    }
+
     public String getIdUsuario() {
-        return idUsuario;
+        return id_rol;
     }
 
     public void setIdUsuario(String idUsuario) {
-        this.idUsuario = idUsuario;
+        this.id_rol = idUsuario;
     }
 
     public String getTipoId() {
