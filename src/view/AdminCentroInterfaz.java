@@ -4,6 +4,8 @@
  */
 package view;
 
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -20,8 +22,10 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -42,7 +46,9 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import model.MetodosPublicos;
@@ -55,11 +61,12 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
 
     //interfaces principales (basico)
     public JButton btnPersonalCentro, btnInventarioMedicamentos, btnregistrarPersonal,
-            btnAñadirMedicamento, btnHorarioMedico, btnCrearHorario, btnVolver;
-    public JPanel personalC, inventarioM, horarioM, asignarHorario, añadirM;
+            btnAñadirMedicamento, btnHorarioMedico, btnCrearHorario, btnVolver, btnGuardarMedicamento, btnSeleccionar;
+    public JPanel personalC, inventarioM, horarioM, asignarHorario, añadirM, panel;
     public JTable tablaPersonalR, tablaMedicamentoR, tablaHorarioM;
     private JScrollPane miscrollListaPersonal, miscrollListaMedicamento, miscrollListaHorarioM;
     public DefaultTableModel listaPersonalR, listaMedicamentoR, listaHorarioM;
+    public DatePicker datePickerCita;
 
     //colores para horarios (etiqueta)
     private static final Color ETIQ_AZUL = new Color(0x1B, 0x6B, 0x7B);
@@ -86,7 +93,8 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
     public JComboBox[] almuerzoIni = new JComboBox[6];
     public JComboBox[] almuerzoFin = new JComboBox[6];
     public JLabel[] lblHoras = new JLabel[6];
-
+    
+    //constructor
     public AdminCentroInterfaz(String nombrePersona, String nombreInterfaz, String url) {
         super(nombrePersona, nombreInterfaz, url);
         this.btnPersonalCentro = new JButton("👥 Personal del Centro");
@@ -94,7 +102,11 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         MetodosPublicos.estilizarBoton(btnregistrarPersonal, (byte) 5);
         this.btnInventarioMedicamentos = new JButton("💊 Inventario de Medicamentos");
         this.btnAñadirMedicamento = new JButton("➕ Añadir Medicamento");
+        this.btnGuardarMedicamento = new JButton("➕ Guardar Medicamento");
+        this.btnSeleccionar = new JButton("Seleccionar Medicamento");
+        MetodosPublicos.estilizarBoton(btnGuardarMedicamento, (byte) 5);
         MetodosPublicos.estilizarBoton(btnAñadirMedicamento, (byte) 5);
+        MetodosPublicos.estilizarBoton(btnSeleccionar, (byte) 5);
         this.btnHorarioMedico = new JButton("🗓️ Horarios Médicos");
         this.btnCrearHorario = new JButton("📍 Crear Nuevo Horario");
         btnCrearHorario.setFont(new Font("Arial", Font.BOLD, 20));
@@ -138,7 +150,7 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         }
     }
 
-    public void mostrarVistaPersonalCentro() {
+    public void mostrarVistaPersonalCentroApartado() {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(personalC);
 
@@ -194,7 +206,7 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
 
     }
 
-    public void mostrarVistaInventarioMedicamento() {
+    public void mostrarVistaInventarioMedicamentoApartado() {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(inventarioM);
 
@@ -247,28 +259,27 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
-    public void mostrarAñadirMedicamento() {
+    public void mostrarAñadirMedicamentoApartado() {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(añadirM);
-
         añadirM.setLayout(new BorderLayout());
-        añadirM.setOpaque(false); //sin fondo
+        añadirM.setOpaque(false);
 
-        //Título
         JLabel tituloAñadir = new JLabel("Añadir Nuevo Medicamento");
         tituloAñadir.setFont(new Font("Arial", Font.BOLD, 20));
         tituloAñadir.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
         tituloAñadir.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         añadirM.add(tituloAñadir, BorderLayout.NORTH);
+        
+        
+        
 
-        // Panel contenedor (formulario + imagen)
         JPanel contenido = new JPanel(new BorderLayout(20, 0));
         contenido.setOpaque(false);
         contenido.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        //Formulario con GridBagLayout
         JPanel formuM = new JPanel(new GridBagLayout());
-        formuM.setOpaque(false); // 1. sin fondo
+        formuM.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -276,11 +287,17 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
 
         JTextField campoNRS = crearCampoTexto();
         JTextField campoNombreM = crearCampoTexto();
-        JTextField campoFechaVencimiento = crearCampoTexto();
         JTextField campoCantidad = crearCampoTexto();
-        JTextField campoTipoM = crearCampoTexto();
+        JComboBox<String> campoTipoM = crearComboEstilizado(new String[]{
+            "Tableta", "Jarabe", "Inyectable", "Cápsula", "Crema"
+        });
+
+        // ---- DatePicker de LGoodDatePicker ----
+        DatePicker campoFechaVencimiento = crearDatePickerEstilizado();
+        campoFechaVencimiento.setPreferredSize(new Dimension(200,35));
+
         JTextArea descrip = new JTextArea(5, 20);
-        descrip.setFont(new Font("Arial", Font.PLAIN, 13));
+        descrip.setFont(new Font("Arial", Font.PLAIN, 15));
         descrip.setLineWrap(true);
         descrip.setWrapStyleWord(true);
         descrip.setBorder(BorderFactory.createCompoundBorder(
@@ -290,7 +307,7 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         JScrollPane scrollDescrip = new JScrollPane(descrip);
         scrollDescrip.setBorder(BorderFactory.createEmptyBorder());
 
-        // Fila 0: NRS | Nombre
+        // Fila 0
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -298,19 +315,19 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         gbc.gridx = 1;
         formuM.add(crearCampoConEtiqueta("Nombre:", campoNombreM), gbc);
 
-        // Fila 1: Fecha | Cantidad
+        // Fila 1
         gbc.gridx = 0;
         gbc.gridy = 1;
         formuM.add(crearCampoConEtiqueta("Fecha de Vencimiento:", campoFechaVencimiento), gbc);
         gbc.gridx = 1;
         formuM.add(crearCampoConEtiqueta("Cantidad:", campoCantidad), gbc);
 
-        // Fila 2: Tipo (solo una columna, o puedes dejarla sola)
+        // Fila 2
         gbc.gridx = 0;
         gbc.gridy = 2;
         formuM.add(crearCampoConEtiqueta("Tipo de Medicamento:", campoTipoM), gbc);
 
-        // Fila 3: Descripción ocupando las 2 columnas y más alta
+        // Fila 3
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
@@ -320,12 +337,10 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
 
         contenido.add(formuM, BorderLayout.CENTER);
 
-        //Panel lateral para adjuntar imagen
         JPanel panelImagen = crearPanelImagen();
         contenido.add(panelImagen, BorderLayout.EAST);
 
         añadirM.add(contenido, BorderLayout.CENTER);
-
         cuerpo2.setLayout(new BorderLayout());
         cuerpo2.add(añadirM, BorderLayout.CENTER);
 
@@ -333,17 +348,89 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
-    // Métodos auxiliares para el formulario de medicamento
+// ---------- Campo de texto (fuente más grande) ----------
     private JTextField crearCampoTexto() {
         JTextField campo = new JTextField(15);
-        campo.setFont(new Font("Arial", Font.PLAIN, 13));
+        campo.setFont(new Font("Arial", Font.PLAIN, 15)); // antes 13
         campo.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
-                BorderFactory.createEmptyBorder(6, 10, 6, 10)
+                BorderFactory.createEmptyBorder(8, 10, 8, 10) // un poco más de espacio para que respire el texto grande
         ));
         return campo;
     }
 
+// ---------- Combobox estilizado (fondo blanco, borde verde, fuente más grande) ----------
+    private JComboBox<String> crearComboEstilizado(String[] opciones) {
+        JComboBox<String> combo = new JComboBox<>(opciones);
+        combo.setPreferredSize(new Dimension(200,35));
+        combo.setFont(new Font("Arial", Font.PLAIN, 15)); // antes 13
+        combo.setBackground(Color.WHITE);
+        combo.setFocusable(false);
+        combo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
+                BorderFactory.createEmptyBorder(2, 8, 2, 2)
+        ));
+        combo.setUI(new BasicComboBoxUI() {
+            @Override
+            protected JButton createArrowButton() {
+                JButton boton = new JButton("▼");
+                boton.setBorder(BorderFactory.createEmptyBorder());
+                boton.setBackground(Color.WHITE);
+                boton.setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO);
+                boton.setFocusPainted(false);
+                boton.setContentAreaFilled(false);
+                return boton;
+            }
+        });
+        combo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index,
+                    boolean isSelected, boolean cellHasFocus) {
+                Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                c.setBackground(isSelected ? PacienteInterfaz.COLOR_VERDE_ACENTO : Color.WHITE);
+                c.setForeground(isSelected ? Color.WHITE : Color.BLACK);
+                c.setFont(new Font("Arial", Font.PLAIN, 15));
+                return c;
+            }
+        });
+        return combo;
+    }
+
+// ---------- DatePicker de LGoodDatePicker, estilizado y restringido a hoy en adelante ----------
+    private DatePicker crearDatePickerEstilizado() {
+        DatePickerSettings settings = new DatePickerSettings(new Locale("es"));
+        settings.setFormatForDatesCommonEra("yyyy-MM-dd");
+        settings.setAllowKeyboardEditing(false);
+        settings.setVisibleDateTextField(true);
+
+        // Colores para que combine con el resto del formulario
+        settings.setColor(DatePickerSettings.DateArea.BackgroundOverallCalendarPanel, Color.WHITE);
+        settings.setColor(DatePickerSettings.DateArea.CalendarBackgroundNormalDates, Color.WHITE);
+        settings.setColor(DatePickerSettings.DateArea.CalendarBackgroundSelectedDate, PacienteInterfaz.COLOR_VERDE_ACENTO);
+        settings.setColorBackgroundWeekdayLabels(Color.WHITE, false);
+        settings.setFontValidDate(new Font("Arial", Font.PLAIN, 13));
+
+        // ---- Primero se construye el DatePicker con las settings ----
+        DatePicker datePicker = new DatePicker(settings);
+
+        // ---- Ahora sí se puede aplicar el rango de fechas ----
+        LocalDate hoy = LocalDate.now();
+        settings.setDateRangeLimits(hoy, null);
+
+        datePicker.getComponentDateTextField().setFont(new Font("Arial", Font.PLAIN, 15));
+        datePicker.getComponentDateTextField().setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
+                BorderFactory.createEmptyBorder(6, 8, 6, 8)
+        ));
+        datePicker.getComponentDateTextField().setBackground(Color.WHITE);
+        datePicker.getComponentToggleCalendarButton().setBackground(Color.WHITE);
+        datePicker.getComponentToggleCalendarButton().setBorder(
+                BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true));
+
+        return datePicker;
+    }
+
+    // Métodos auxiliares para el formulario de medicamento
     // Nombre arriba del campo
     private JPanel crearCampoConEtiqueta(String texto, JComponent campo) {
         JPanel panel = new JPanel();
@@ -351,7 +438,7 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JLabel etiqueta = new JLabel(texto);
-        etiqueta.setFont(new Font("Arial", Font.BOLD, 13));
+        etiqueta.setFont(new Font("Arial", Font.BOLD, 17));
         etiqueta.setForeground(new Color(60, 60, 60));
         etiqueta.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -370,7 +457,7 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
     // Panel para adjuntar imagen
     private JPanel crearPanelImagen() {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
-        panel.setPreferredSize(new Dimension(220, 0));
+        panel.setPreferredSize(new Dimension(320, 0));
         panel.setOpaque(false);
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
@@ -378,7 +465,8 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         ));
 
         JLabel etiqueta = new JLabel("Imagen del Medicamento:", SwingConstants.CENTER);
-        etiqueta.setFont(new Font("Arial", Font.BOLD, 13));
+        etiqueta.setFont(new Font("Arial", Font.BOLD, 20));
+        etiqueta.setBorder(new EmptyBorder(90, 0, 0, 0));
 
         JLabel previsualizacion = new JLabel("Sin imagen", SwingConstants.CENTER);
         previsualizacion.setPreferredSize(new Dimension(180, 180));
@@ -386,24 +474,6 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         previsualizacion.setOpaque(true);
         previsualizacion.setBackground(Color.WHITE);
         previsualizacion.setHorizontalAlignment(SwingConstants.CENTER);
-
-        JButton btnSeleccionar = new JButton("Seleccionar Imagen");
-        btnSeleccionar.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
-                    "Imágenes", "jpg", "jpeg", "png", "gif"));
-            int resultado = fileChooser.showOpenDialog(panel);
-            if (resultado == JFileChooser.APPROVE_OPTION) {
-                try {
-                    ImageIcon icono = new ImageIcon(fileChooser.getSelectedFile().getAbsolutePath());
-                    Image img = icono.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
-                    previsualizacion.setIcon(new ImageIcon(img));
-                    previsualizacion.setText("");
-                } catch (Exception ex) {
-                    previsualizacion.setText("Error al cargar");
-                }
-            }
-        });
 
         JPanel centro = new JPanel();
         centro.setOpaque(false);
@@ -420,7 +490,7 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         return panel;
     }
 
-    public void mostrarVistaHorarioMedico() {
+    public void mostrarVistaHorarioMedicoApartado() {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(horarioM);
 
@@ -467,7 +537,7 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
-    public JPanel mostrarFormularioCreacionHorario() {
+    public JPanel mostrarFormularioCreacionHorarioApartado() {
         JPanel formulario = new JPanel(new BorderLayout(0, 12));
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(formulario);
@@ -709,7 +779,7 @@ public class AdminCentroInterfaz extends PacienteInterfaz {
 
     private JComboBox buildComboHora() {
         JComboBox cb = new JComboBox<>(HORAS);
-        cb.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        cb.setFont(new Font("Arial", Font.PLAIN, 12));
         cb.setPreferredSize(new Dimension(76, 28));
         return cb;
     }

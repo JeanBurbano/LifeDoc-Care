@@ -4,8 +4,11 @@
  */
 package controller;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import view.AdminCentroInterfaz;
 
 /**
@@ -24,6 +27,7 @@ public class AdminCentroController implements ActionListener {
         this.personalCentro.btnHorarioMedico.addActionListener(this);
         this.personalCentro.btnCrearHorario.addActionListener(this);
         this.personalCentro.btnAñadirMedicamento.addActionListener(this);
+        this.personalCentro.btnSeleccionar.addActionListener(this);
         
    
     }
@@ -64,6 +68,9 @@ public class AdminCentroController implements ActionListener {
             System.out.println("hayy");
         }
         
+        if(e.getSource() == this.personalCentro.btnSeleccionar){
+            
+        }
 
     }
     
