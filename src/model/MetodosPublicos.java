@@ -133,6 +133,7 @@ public class MetodosPublicos {
      * @param combo el combo (ya creado, puede estar vacío) a estilizar
      */
     public static void crearComboEstilizado(JComboBox combo) {
+        
         combo.setPreferredSize(new Dimension(200, 35)); // tamaño fijo para que combine con los demás campos
         combo.setFont(new Font("Arial", Font.PLAIN, 15)); // misma fuente que los JTextField
         combo.setBackground(Color.WHITE); //fondo blanco para qutarle el gris por defecto
