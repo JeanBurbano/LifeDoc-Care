@@ -4,14 +4,28 @@ import java.time.LocalDate;
 
 public class Usuarios {
 
-    private String id_rol, tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
-            correoElectronico, contrasena, sexoBiologico, numeroTelefonico, sisben;
+    private String tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
+            correoElectronico, contrasena, sexoBiologico, numeroTelefonico, sisben, fotoPerfil, especialidad;
     private LocalDate fechaNacimiento;
-    private byte edad;
+    private byte id_rol,edad, nConsultorio;
+    private int id_usuario;
 
-    public Usuarios(String id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
-            String correoElectronico, String contrasena, String sexoBiologico, String numeroTelefonico, String sisben,
+    public Usuarios() {
+
+    }
+
+    public Usuarios(int id_usuario, byte id_rol, String primer_nombre, String url) {
+        this.id_usuario = id_usuario;
+        this.id_rol = id_rol;
+        this.primerNombre = primer_nombre;
+        this.fotoPerfil = url;
+    }
+
+    public Usuarios(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String correoElectronico, String contrasena, String sexoBiologico, String numeroTelefonico, String sisben, String fotoPerfil,
             LocalDate fechaNacimiento, byte edad) {
+
+        this.id_usuario = id_usuario;
         this.id_rol = id_rol;
         this.tipoId = tipoId;
         this.numeroId = numeroId;
@@ -24,14 +38,16 @@ public class Usuarios {
         this.sexoBiologico = sexoBiologico;
         this.numeroTelefonico = numeroTelefonico;
         this.sisben = sisben;
+        this.fotoPerfil = fotoPerfil;
         this.fechaNacimiento = fechaNacimiento;
         this.edad = edad;
     }
 
-    public Usuarios(String id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
-            String sexoBiologico, String numeroTelefonico, String sisben,
-            LocalDate fechaNacimiento, byte edad) {
-        
+    public Usuarios(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String correoElectronico, String contrasena, String sexoBiologico, String numeroTelefonico, String sisben, String fotoPerfil, String especialidad,
+            LocalDate fechaNacimiento, byte edad, byte nConsultorio) {
+
+        this.id_usuario = id_usuario;
         this.id_rol = id_rol;
         this.tipoId = tipoId;
         this.numeroId = numeroId;
@@ -39,19 +55,40 @@ public class Usuarios {
         this.segundoNombre = segundoNombre;
         this.primerApellido = primerApellido;
         this.segundoApellido = segundoApellido;
+        this.correoElectronico = correoElectronico;
+        this.contrasena = contrasena;
         this.sexoBiologico = sexoBiologico;
         this.numeroTelefonico = numeroTelefonico;
         this.sisben = sisben;
+        this.fotoPerfil = fotoPerfil;
+        this.especialidad = especialidad;
         this.fechaNacimiento = fechaNacimiento;
         this.edad = edad;
+        this.nConsultorio = nConsultorio;
     }
 
-    public String getIdUsuario() {
+    public byte getId_rol() {
         return id_rol;
     }
 
-    public void setIdUsuario(String idUsuario) {
-        this.id_rol = idUsuario;
+    public void setId_rol(byte id_rol) {
+        this.id_rol = id_rol;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
+    }
+
+    public int getIdUsuario() {
+        return id_usuario;
+    }
+
+    public void setIdUsuario(int id_usuario) {
+        this.id_usuario = id_usuario;
     }
 
     public String getTipoId() {
@@ -156,6 +193,22 @@ public class Usuarios {
 
     public void setEdad(byte edad) {
         this.edad = edad;
+    }
+
+    public byte getnConsultorio() {
+        return nConsultorio;
+    }
+
+    public void setnConsultorio(byte nConsultorio) {
+        this.nConsultorio = nConsultorio;
+    }
+
+    public String getEspecialidad() {
+        return especialidad;
+    }
+
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
     }
 
 }

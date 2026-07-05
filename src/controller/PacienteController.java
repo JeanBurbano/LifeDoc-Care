@@ -6,7 +6,7 @@ import model.MetodosPublicos;
 import view.PacienteInterfaz;
 import view.Titulo;
 
-public class PacienteController implements ActionListener{
+public class PacienteController implements ActionListener {
 
     PacienteInterfaz pacienteI = new PacienteInterfaz("Alejandro", "", "");
 
@@ -30,8 +30,10 @@ public class PacienteController implements ActionListener{
         this.pacienteI.btnOdontologia.addActionListener(this);
         this.pacienteI.btnDermatologia.addActionListener(this);
         this.pacienteI.btnMedicoGeneral.addActionListener(this);
+//        this.pacienteI.listaBotonesMedicos
     }
-     @Override
+
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.pacienteI.btnMisCitas) {
             this.pacienteI.mostrarVistaMisCitas();
@@ -44,23 +46,17 @@ public class PacienteController implements ActionListener{
             this.pacienteI.habilitarBotonesMenu(this.pacienteI.btnHistorial);
         }
         if (e.getSource() == this.pacienteI.btnCerrarSesion) {
-       
+
         }
         if (e.getSource() == this.pacienteI.btnComentarios) {
             this.pacienteI.mostrarVistaComentarios();
             this.pacienteI.btnComentarios.setEnabled(false);
             this.pacienteI.habilitarBotonesMenu(this.pacienteI.btnComentarios);
         }
-        if (e.getSource() == this.pacienteI.btnForo) {
-            MetodosPublicos.vaciarPanel(this.pacienteI.panelComentarios);
-        }
         if (e.getSource() == this.pacienteI.btnNotificaciones) {
             this.pacienteI.mostrarVistaNotificaciones();
             this.pacienteI.btnNotificaciones.setEnabled(false);
             this.pacienteI.habilitarBotonesMenu(this.pacienteI.btnNotificaciones);
-        }
-        if (e.getSource() == this.pacienteI.btnQuejas) {
-            this.pacienteI.construirFormularioComentario();
         }
         if (e.getSource() == this.pacienteI.btnAgendar) {
             this.pacienteI.mostrarVistaTipoConsulta(new Titulo("Agendamiento de ", "Cita"));
@@ -69,6 +65,15 @@ public class PacienteController implements ActionListener{
             String[] medicos = new String[]{"Jean", "cepeda", "petro", "luna", "tovar", "otero"};
             this.pacienteI.mostrarVistaSeleccionMedico(medicos);
 //            mostrarVistaAgendamientoCita(new Titulo("Agendamiento de", " Cita"));
+        }
+        if (e.getSource() == this.pacienteI.btnSugerencias) {
+            this.pacienteI.construirFormularioComentario();
+        }
+        if (e.getSource() == this.pacienteI.btnQuejas) {
+            this.pacienteI.construirFormularioComentario();
+        }
+        if (e.getSource() == this.pacienteI.btnForo) {
+            MetodosPublicos.vaciarPanel(this.pacienteI.panelComentarios);
         }
     }
 }

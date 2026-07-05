@@ -1,0 +1,87 @@
+package model;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class UsuarioDao {
+
+    public static Conexion conectar = new Conexion();
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
+
+    public UsuarioDao() {
+
+    }
+
+    public Usuarios login(String id, String contrasena) {
+        Usuarios usu = null;
+        String sql = "SELECT u.id_usuario, u.id_rol, u.primer_nombre, f.url_foto_perfil "
+                + "FROM usuario AS u "
+                + "LEFT JOIN fotos_perfil AS f "
+                + "     ON f.id_usuario = u.id_usuario AND f.es_actual = 1 "
+                + "WHERE u.numero_identificacion = ? AND u.contrasena = ?";
+
+        try {
+            this.con = conectar.getConection();
+            this.ps = con.prepareStatement(sql);
+            this.ps.setString(1, id);
+            this.ps.setString(2, contrasena);
+            this.rs = ps.executeQuery();
+
+            if (rs.next()) {
+                usu = new Usuarios(
+                        rs.getInt("id_usuario"),
+                        rs.getByte("id_rol"),
+                        rs.getString("primer_nombre"),
+                        rs.getString("url_foto_perfil")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    this.rs.close();
+                }
+                if (ps != null) {
+                    this.ps.close();
+                }
+                if (con != null) {
+                    this.con.close();
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return usu;
+    }
+
+    public boolean validarCampoIdBs(String id) {
+        boolean valor = false;
+        String sql = "SELECT EXISTS ("
+                + "    SELECT 1 "
+                + "    FROM usuario "
+                + "    WHERE numero_identificacion = ? "
+                + ") AS existe";
+
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    valor = rs.getBoolean("existe");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return valor;
+    }
+}
