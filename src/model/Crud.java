@@ -12,6 +12,4 @@ public interface Crud<T> {
 
     public int setEliminar(int id);
     
-    public T getCualUsuario();
-    
 }

@@ -47,7 +47,7 @@ public class LoginController implements ActionListener {
                             PacienteController clg = new PacienteController(p);
                             break;
                         default:
-                            System.out.println("se produjo un error tol no valido");
+                            System.out.println("se produjo un error rol no valido");
                             break;
                     }
                 } else {

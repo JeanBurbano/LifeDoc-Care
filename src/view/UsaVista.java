@@ -8,11 +8,11 @@ import controller.PacienteController;
 public class UsaVista {
 
     public static void main(String[] args) {
-//        Login lg = new Login();
-//        lg.setVisible(true);
-//        lg.setDefaultCloseOperation(EXIT_ON_CLOSE);
-//        lg.setExtendedState(MAXIMIZED_BOTH);
-//        LoginController clg = new LoginController(lg);
+        Login lg = new Login();
+        lg.setVisible(true);
+        lg.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        lg.setExtendedState(MAXIMIZED_BOTH);
+        LoginController clg = new LoginController(lg);
 //        RecuperacionContrasenaInterfaz p = new RecuperacionContrasenaInterfaz();
         PacienteInterfaz p = new PacienteInterfaz("Alejandro Vanegas", "Paciente","anonymous.png");
 //        p.vistaMetodoDerecuperacion();
@@ -20,10 +20,10 @@ public class UsaVista {
 //        p.vistaCambiarContrasena();
 //        p.vistaCambiarContrasena();
 //        p.vistaCambiarContrasena();
-        p.setVisible(true);
-        p.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        p.setExtendedState(MAXIMIZED_BOTH);
-        PacienteController clg = new PacienteController(p);
+//        p.setVisible(true);
+//        p.setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        p.setExtendedState(MAXIMIZED_BOTH);
+//        PacienteController clg = new PacienteController(p);
     }
 
 }
