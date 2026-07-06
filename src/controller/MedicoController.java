@@ -31,6 +31,11 @@ public class MedicoController implements ActionListener {
         this.medico.btnNoAsistio.addActionListener(this);
         this.medico.btnGuardarFicha.addActionListener(this);
         this.medico.btnAceptarFicha.addActionListener(this);
+        this.medico.btnVerDetalles.addActionListener(this);
+        this.medico.btnVolverVerDetalles.addActionListener(this);
+        this.medico.btnReagendarCita.addActionListener(this);
+        this.medico.btnActReagendar.addActionListener(this);
+        this.medico.btnNoReagendar.addActionListener(this);
 
         this.medico.pruebaFicha.addActionListener(this);
     }
@@ -57,7 +62,7 @@ public class MedicoController implements ActionListener {
             this.medico.btnNotificaciones.setEnabled(false);
             this.medico.habilitarBotonesMenu(this.medico.btnNotificaciones);
         }
-        if (e.getSource() == this.medico.btnMiAgenda) {
+        if (e.getSource() == this.medico.btnMiAgenda || e.getSource() == this.medico.btnVolverVerDetalles || e.getSource() == this.medico.btnNoReagendar) {
             this.medico.mostrarVistaMiAgenda();
             this.medico.citaVistaMiAgenda();
             this.medico.btnMiAgenda.setEnabled(false);
@@ -100,6 +105,23 @@ public class MedicoController implements ActionListener {
             this.medico.mostrarVistaConsultorio();
             this.medico.btnConsultorio.setEnabled(false);
             this.medico.habilitarBotonesMenu(this.medico.btnConsultorio);
+        }
+        if (e.getSource() == this.medico.btnVerDetalles) {
+            this.medico.mostrarDetallesCita();
+            this.medico.btnMiAgenda.setEnabled(false);
+            this.medico.habilitarBotonesMenu(this.medico.btnMiAgenda);
+        }
+        if (e.getSource() == this.medico.btnReagendarCita) {
+            this.medico.mostrarVistaConfirmacionReagendar();
+            this.medico.btnMisCitas.setEnabled(false);
+            this.medico.btnHistorial.setEnabled(false);
+            this.medico.btnComentarios.setEnabled(false);
+            this.medico.btnNotificaciones.setEnabled(false);
+            this.medico.btnMiAgenda.setEnabled(false);
+            this.medico.btnConsultorio.setEnabled(false);
+        }
+        if (e.getSource() == this.medico.btnActReagendar) {
+            
         }
     }
 }
