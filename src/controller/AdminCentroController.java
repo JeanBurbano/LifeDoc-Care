@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import view.ConstructorFilaHorario;
 import view.AdministradorCentroInterfaz;
@@ -38,6 +39,7 @@ public class AdminCentroController implements ActionListener {
         this.adminI.btnSeleccionar.addActionListener(this);
         this.adminI.btnCrearHorario.addActionListener(this);
         this.adminI.btnVolver.addActionListener(this);
+        this.adminI.btnHorarioMedico.addActionListener(this);
         
 
         //Vista inicial al abrir la interfaz: Personal del Centro
@@ -120,6 +122,14 @@ public class AdminCentroController implements ActionListener {
                     || e.getSource() == adminI.almuerzoIni[i] || e.getSource() == adminI.almuerzoFin[i]) {
                 calcularHorasLaborales(i);
             }
+        }
+        
+        if (e.getSource() == adminI.btnHorarioMedico) {
+            adminI.mostrarVistaHorarioMedicoApartado();
+            adminI.btnHorarioMedico.setEnabled(false);
+            adminI.habilitarBotonesMenu(adminI.btnHorarioMedico);
+            poblarHorariosPrueba();
+            agregarListenerBotonAsignar(); // conecta el clic en la columna "Asignar" (tabla nueva cada vez)
         }
     }
 
@@ -263,6 +273,45 @@ public class AdminCentroController implements ActionListener {
         adminI.btnHorarioMedico.setEnabled(false);
         adminI.habilitarBotonesMenu(adminI.btnHorarioMedico);
     }
+    
+    /**
+     * Llena la tabla de horarios con filas de prueba, solo para poder
+     * ver y probar el botón "Asignar" mientras no hay conexión a la
+     * base de datos. Cuando exista esa conexión, este método se
+     * reemplaza por una consulta real (ej. ModeloHorario.obtenerTodos()).
+     */
+    private void poblarHorariosPrueba() {
+        // Se agrega una fila por cada horario de prueba: {ETIQUETA, NOMBRE, FECHA CREACIÓN, columna del botón}
+        adminI.listaHorarioM.addRow(new Object[]{"Azul", "Horario Mañana", "2026-07-01", ""});
+        adminI.listaHorarioM.addRow(new Object[]{"Verde", "Horario Tarde", "2026-07-02", ""});
+        adminI.listaHorarioM.addRow(new Object[]{"Naranja", "Horario Fin de Semana", "2026-07-03", ""});
+    }
+    
+    /**
+     * Detecta el clic sobre la columna del botón "Asignar" en la
+     * tabla de horarios (la tabla se recrea cada vez que se muestra
+     * la vista, así que este listener se agrega de nuevo cada vez).
+     */
+    private void agregarListenerBotonAsignar() {
+        adminI.tablaHorarioM.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                JTable tabla = adminI.tablaHorarioM;
+                int fila = tabla.rowAtPoint(e.getPoint());
+                int columna = tabla.columnAtPoint(e.getPoint());
+                int columnaBoton = tabla.getColumnCount() - 1; // la última columna es la del botón
+
+                if (fila >= 0 && columna == columnaBoton) {
+                    String nombreHorario = String.valueOf(adminI.listaHorarioM.getValueAt(fila, 1)); // columna NOMBRE
+                    adminI.mostrarAsignacionHorarioMedicoApartado(nombreHorario, fila);
+                    adminI.btnConfirmarAsignacion.addActionListener(AdminCentroController.this);
+                    adminI.btnCancelarAsignacion.addActionListener(AdminCentroController.this);
+                }
+            }
+        });
+    }
+
+    
 }
     
 

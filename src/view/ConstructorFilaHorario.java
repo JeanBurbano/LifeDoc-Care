@@ -114,7 +114,7 @@ public class ConstructorFilaHorario {
         fila.add(horaInicio[indiceDia]);
         fila.add(MetodosPublicos.crearMiniEtiqueta("Fin"));
         fila.add(horaFin[indiceDia]);
-        fila.add(MetodosPublicos.crearMiniEtiqueta("Almuerzo"));
+        fila.add(MetodosPublicos.crearMiniEtiqueta("Descanso"));
         fila.add(almuerzoIni[indiceDia]);
         fila.add(MetodosPublicos.crearMiniEtiqueta("→"));
         fila.add(almuerzoFin[indiceDia]);

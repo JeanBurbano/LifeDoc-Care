@@ -126,7 +126,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     public JButton btnCancelarAsignacion; // cierra la ventana sin asignar
     public JLabel lblHorarioSeleccionado; // muestra qué horario se está asignando
     public int filaHorarioSeleccionada; // fila de la tabla que se está asignando actualmente
-    public JButton btnAsignarFila;
+    
 
     public AdministradorCentroInterfaz(String nombrePersona, String nombreInterfaz, String url) {
         super(nombrePersona, nombreInterfaz, url);
@@ -444,12 +444,11 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         listaHorarioM.addColumn("FECHA CREACIÓN");
         listaHorarioM.addColumn("  "); //columna reservada para el botón "Asignar" en cada fila
         
-        //Tabla y scroll
+        // Tabla y scroll
         tablaHorarioM = new JTable(listaHorarioM);
-        //Columna de acción de botón "Asignar" en cada fila
-        tablaHorarioM.setRowHeight(36); // un poco más alta para que el botón se vea cómodo
-        //tablaHorarioM.getColumnModel().getColumn(3).setCellRenderer(new BotonAsignarRenderer());
-        tablaHorarioM.getColumnModel().getColumn(3).setCellEditor(new BotonAsignarEditor());
+        // Columna de acción: solo se pinta como botón, el clic lo maneja el Controlador
+        tablaHorarioM.setRowHeight(36);
+        tablaHorarioM.getColumnModel().getColumn(3).setCellRenderer(new BotonAsignarRenderer());
         miscrollListaHorarioM = new JScrollPane(tablaHorarioM);
         miscrollListaHorarioM.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         miscrollListaHorarioM.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -486,7 +485,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         tituloFormulario.setFont(new Font("Arial", Font.BOLD, 20));
         tituloFormulario.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
 
-        //Fila superior: botón "Volver" + título
+        //Fila superior: botón "Volver" 
         JPanel volver = new JPanel(new BorderLayout());
         volver.setOpaque(false);
         btnVolver.setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO);
@@ -495,7 +494,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // Panel izquierdo: botón "Volver" + título, uno al lado del otro
-        JPanel izquierda = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 0));
+        JPanel izquierda = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         izquierda.setOpaque(false);
         izquierda.add(btnVolver);
         izquierda.add(tituloFormulario);
@@ -558,7 +557,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         tituloSeccion2.setFont(new Font("Arial", Font.BOLD, 18));
         tituloSeccion2.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
         JLabel nota = new JLabel("Máx. 8h laborales + 1h almuerzo por día  ");
-        nota.setFont(new Font("Arial", Font.PLAIN, 11));
+        nota.setFont(new Font("Arial", Font.PLAIN, 13));
         nota.setForeground(Color.GRAY);
         JSeparator sepDias = new JSeparator();
         sepDias.setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO);
@@ -645,7 +644,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         contenido.add(lblHorarioSeleccionado);
         contenido.add(Box.createVerticalStrut(20));
 
-        // Combo vacío: el Controlador lo llena después de llamar a este método (igual que campoTipoM)
+        
         comboMedicoAsignar = new JComboBox();
         MetodosPublicos.crearComboEstilizado(comboMedicoAsignar);
         JPanel filaMedico = MetodosPublicos.crearFila("Médico:", comboMedicoAsignar);
@@ -658,12 +657,14 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
         btnCancelarAsignacion = new JButton("Cancelar");
         btnCancelarAsignacion.setFont(new Font("Arial", Font.PLAIN, 13));
+        btnCancelarAsignacion.setBackground(Color.RED);
+        btnCancelarAsignacion.setForeground(Color.WHITE);
 
         btnConfirmarAsignacion = new JButton("Confirmar Asignación");
         btnConfirmarAsignacion.setFont(new Font("Arial", Font.BOLD, 13));
         btnConfirmarAsignacion.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
         btnConfirmarAsignacion.setForeground(Color.WHITE);
-        // Nota: NO se agrega ningún ActionListener aquí — el Controlador lo hace desde afuera
+        
 
         filaBotones.add(btnCancelarAsignacion);
         filaBotones.add(btnConfirmarAsignacion);
@@ -674,34 +675,27 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     }
     
     
-    private class BotonAsignarEditor extends javax.swing.DefaultCellEditor {
-        private int filaActual; // fila que Swing le pide editar (mecánica propia de JTable)
-
-        public BotonAsignarEditor() {
-            super(new JCheckBox());
-            btnAsignarFila = new JButton("Asignar"); // se crea UNA vez y se guarda como campo público
-            btnAsignarFila.setFont(new Font("Arial", Font.BOLD, 12));
-            btnAsignarFila.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
-            btnAsignarFila.setForeground(Color.WHITE);
-            btnAsignarFila.setFocusPainted(false);
-            // Este listener SOLO hace lo que Swing exige (cerrar la edición de la celda
-            // y guardar qué fila se pulsó); no decide nada de negocio.
-            btnAsignarFila.addActionListener(ev -> {
-                fireEditingStopped();
-                filaHorarioSeleccionada = filaActual;
-            });
+   
+    /**
+     * Dibuja el botón "Asignar" en la columna de acción de la tabla
+     * de horarios.
+     */
+    private class BotonAsignarRenderer extends JButton implements javax.swing.table.TableCellRenderer {
+        public BotonAsignarRenderer() {
+            setText("Asignar");
+            setFont(new Font("Arial", Font.BOLD, 16));
+            setBackground(Color.WHITE);
+            setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO);
+            setFocusPainted(false);
+            setBorderPainted(false);
+            setOpaque(true);
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // manito al pasar el mouse
         }
 
         @Override
-        public java.awt.Component getTableCellEditorComponent(JTable table, Object value,
-                boolean isSelected, int row, int column) {
-            filaActual = row;
-            return btnAsignarFila;
-        }
-
-        @Override
-        public Object getCellEditorValue() {
-            return "Asignar";
+        public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            return this; // se reutiliza el mismo botón para pintar cualquier fila
         }
     }
     
