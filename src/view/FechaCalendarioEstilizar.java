@@ -17,10 +17,11 @@ import javax.swing.BorderFactory;
  * @author lunaa
  */
 public class FechaCalendarioEstilizar {
+
     /**
-     * Crea un selector de fecha (DatePicker de LGoodDatePicker) ya
-     * estilizado y restringido para solo permitir fechas desde hoy en
-     * adelante (útil para fechas de vencimiento, citas, etc.).
+     * Crea un selector de fecha (DatePicker de LGoodDatePicker) ya estilizado y
+     * restringido para solo permitir fechas desde hoy en adelante (útil para
+     * fechas de vencimiento, citas, etc.).
      *
      * @return el DatePicker listo para usarse
      */
@@ -55,5 +56,40 @@ public class FechaCalendarioEstilizar {
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true));
 
         return datePicker; // listo para agregarse al formulario
+    }
+
+    /**
+     * Crea un DatePicker estilizado igual que crearDatePickerEstilizado, pero
+     * restringido a fechas HASTA hoy (para fecha de nacimiento), en vez de
+     * desde hoy en adelante (que es para vencimientos).
+     */
+    public static DatePicker crearDatePickerNacimiento() {
+        DatePickerSettings settings = new DatePickerSettings(new Locale("es"));
+        settings.setFormatForDatesCommonEra("yyyy-MM-dd");
+        settings.setAllowKeyboardEditing(false);
+        settings.setVisibleDateTextField(true);
+
+        settings.setColor(DatePickerSettings.DateArea.BackgroundOverallCalendarPanel, Color.WHITE);
+        settings.setColor(DatePickerSettings.DateArea.CalendarBackgroundNormalDates, Color.WHITE);
+        settings.setColor(DatePickerSettings.DateArea.CalendarBackgroundSelectedDate, PacienteInterfaz.COLOR_VERDE_ACENTO);
+        settings.setColorBackgroundWeekdayLabels(Color.WHITE, false);
+        settings.setFontValidDate(new Font("Arial", Font.PLAIN, 13));
+
+        DatePicker datePicker = new DatePicker(settings);
+
+        LocalDate hoy = LocalDate.now();
+        settings.setDateRangeLimits(null, hoy); // <-- diferencia clave: solo permite fechas HASTA hoy, sin fecha mínima
+
+        datePicker.getComponentDateTextField().setFont(new Font("Arial", Font.PLAIN, 15));
+        datePicker.getComponentDateTextField().setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
+                BorderFactory.createEmptyBorder(6, 8, 6, 8)
+        ));
+        datePicker.getComponentDateTextField().setBackground(Color.WHITE);
+        datePicker.getComponentToggleCalendarButton().setBackground(Color.WHITE);
+        datePicker.getComponentToggleCalendarButton().setBorder(
+                BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true));
+
+        return datePicker;
     }
 }

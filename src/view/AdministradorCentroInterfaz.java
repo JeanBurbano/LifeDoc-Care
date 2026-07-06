@@ -348,7 +348,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         gbc.fill = GridBagConstraints.HORIZONTAL; // cada celda ocupa todo el ancho disponible
         gbc.weightx = 0.5; // ambas columnas se reparten el espacio por igual
 
-        //Se crean los campos y se guardan en los atributos de la clase
+        //Se crean los campos
         campoNRS = MetodosPublicos.crearCampoTexto(); // campo para el número de registro sanitario
         campoNombreM = MetodosPublicos.crearCampoTexto(); // campo para el nombre del medicamento
         campoCantidad = MetodosPublicos.crearCampoTexto(); // campo para la cantidad

@@ -86,7 +86,7 @@ public class MetodosPublicos {
             refrescarVentana(componente);
         }
     }
-    
+
     //validar campos para id y contrasena
     public static boolean validarTamano(String cadena, int minimo, int maximo) {
         return cadena.length() == minimo || cadena.length() == maximo;
@@ -106,11 +106,11 @@ public class MetodosPublicos {
                 && cadena.matches(".*[a-z].*")
                 && cadena.matches(".*(\\$|@|#|%|&|\\*|-|_|!|\\?).*"));
     }
-    
+
     //Aqui para estilizar formularios
     /**
-     * Crea un JTextField ya estilizado (fuente y borde verde) listo
-     * para usarse en cualquier formulario.
+     * Crea un JTextField ya estilizado (fuente y borde verde) listo para usarse
+     * en cualquier formulario.
      *
      * @return el campo de texto estilizado
      */
@@ -126,14 +126,14 @@ public class MetodosPublicos {
 
     /**
      * Aplica estilo (fondo blanco, borde verde, fuente grande, flecha
-     * personalizada) a un JComboBox YA EXISTENTE. No define ni modifica
-     * las opciones/datos del combo, solo su apariencia — por eso sirve
-     * para cualquier combo, tenga o no datos precargados 
+     * personalizada) a un JComboBox YA EXISTENTE. No define ni modifica las
+     * opciones/datos del combo, solo su apariencia — por eso sirve para
+     * cualquier combo, tenga o no datos precargados
      *
      * @param combo el combo (ya creado, puede estar vacío) a estilizar
      */
     public static void crearComboEstilizado(JComboBox combo) {
-        
+
         combo.setPreferredSize(new Dimension(200, 35)); // tamaño fijo para que combine con los demás campos
         combo.setFont(new Font("Arial", Font.PLAIN, 15)); // misma fuente que los JTextField
         combo.setBackground(Color.WHITE); //fondo blanco para qutarle el gris por defecto
@@ -168,13 +168,11 @@ public class MetodosPublicos {
         });
     }
 
-    
-
     /**
-     * Envuelve un campo (JTextField, JComboBox, DatePicker, JScrollPane,
-     * etc.) junto con una etiqueta arriba, en un solo JPanel vertical.
-     * Así el título del campo siempre queda arriba de él, sin importar
-     * el tipo de componente que sea.
+     * Envuelve un campo (JTextField, JComboBox, DatePicker, JScrollPane, etc.)
+     * junto con una etiqueta arriba, en un solo JPanel vertical. Así el título
+     * del campo siempre queda arriba de él, sin importar el tipo de componente
+     * que sea.
      *
      * @param texto texto de la etiqueta (ej. "Nombre:")
      * @param campo el componente que va debajo de la etiqueta
@@ -204,9 +202,9 @@ public class MetodosPublicos {
     }
 
     /**
-     * Crea una fila horizontal simple: una etiqueta en negrita a la
-     * izquierda y un componente al lado (usado, por ejemplo, para
-     * "Nombre del horario:" en el formulario de creación de horario).
+     * Crea una fila horizontal simple: una etiqueta en negrita a la izquierda y
+     * un componente al lado (usado, por ejemplo, para "Nombre del horario:" en
+     * el formulario de creación de horario).
      *
      * @param etiquetaTexto texto de la etiqueta
      * @param componente componente que va al lado de la etiqueta
@@ -225,9 +223,9 @@ public class MetodosPublicos {
     }
 
     /**
-     * Crea un separador de sección: un título a la izquierda y una
-     * línea horizontal que ocupa el resto del espacio (usado para
-     * dividir visualmente las secciones del formulario de horario).
+     * Crea un separador de sección: un título a la izquierda y una línea
+     * horizontal que ocupa el resto del espacio (usado para dividir visualmente
+     * las secciones del formulario de horario).
      *
      * @param texto título de la sección
      * @return el JPanel con el título y el separador
@@ -242,14 +240,14 @@ public class MetodosPublicos {
         lbl.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO); // color corporativo azul
         JSeparator sep = new JSeparator(); // línea horizontal
         sep.setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO); // línea en color verde
-        panelSep.add(lbl, BorderLayout.CENTER); 
+        panelSep.add(lbl, BorderLayout.CENTER);
         panelSep.add(sep, BorderLayout.CENTER);
         return panelSep;
     }
 
     /**
-     * Crea una etiqueta pequeña y gris, usada entre los combos de hora
-     * del formulario de horario (ej. "Inicio", "Fin", "Almuerzo").
+     * Crea una etiqueta pequeña y gris, usada entre los combos de hora del
+     * formulario de horario (ej. "Inicio", "Fin", "Almuerzo").
      *
      * @param texto texto de la mini etiqueta
      * @return el JLabel ya estilizado
@@ -262,49 +260,51 @@ public class MetodosPublicos {
     }
 
     /**
-     * Crea el panel lateral para adjuntar la imagen de un medicamento.
-     * Recibe el botón y la etiqueta de previsualización ya creados
-     * (normalmente atributos de la interfaz) para ubicarlos dentro del
-     * panel con el estilo correspondiente.
+     * Crea el panel lateral para adjuntar la imagen en un formulario. Recibe el
+     * botón y la etiqueta de previsualización ya creados (normalmente atributos
+     * de la interfaz) para ubicarlos dentro del panel con el estilo
+     * correspondiente.
      *
      * @param btnSeleccionar botón que abrirá el JFileChooser
-     * @param previsualizacionImagen etiqueta donde se mostrará la imagen elegida
+     * @param previsualizacionImagen etiqueta donde se mostrará la imagen
+     * elegida
      * @return el panel armado, listo para agregarse al formulario
      */
-    public static JPanel crearPanelImagen(JButton btnSeleccionar, JLabel previsualizacionImagen) {
-        JPanel panelImagen = new JPanel(new BorderLayout(0, 10)); // título arriba, contenido centrado abajo
-        panelImagen.setPreferredSize(new Dimension(320, 0)); // ancho fijo, alto libre
-        panelImagen.setOpaque(false); // sin fondo
+    public static JPanel crearPanelImagen(JButton btnSeleccionar, JLabel previsualizacionImagen, String tituloTexto) {
+        JPanel panelImagen = new JPanel(new BorderLayout(0, 10));
+        panelImagen.setOpaque(false);
         panelImagen.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
 
-        JLabel etiqueta = new JLabel("Imagen del Medicamento:", SwingConstants.CENTER); // título del panel
-        etiqueta.setFont(new Font("Arial", Font.BOLD, 20));
-        etiqueta.setBorder(new EmptyBorder(90, 0, 0, 0)); // empuja el título hacia abajo para centrar visualmente
+        JLabel etiqueta = new JLabel(tituloTexto, SwingConstants.CENTER);
+        etiqueta.setFont(new Font("Arial", Font.BOLD, 15));
 
-        // Estilo de la etiqueta de previsualización (recibida como parámetro)
-        previsualizacionImagen.setText("Sin imagen"); // texto inicial mientras no se elija ninguna imagen
+        previsualizacionImagen.setText("Sin imagen");
         previsualizacionImagen.setHorizontalAlignment(SwingConstants.CENTER);
-        previsualizacionImagen.setPreferredSize(new Dimension(180, 180)); // tamaño fijo del recuadro de previsualización
-        previsualizacionImagen.setBorder(BorderFactory.createDashedBorder(PacienteInterfaz.COLOR_VERDE_ACENTO)); // borde punteado
-        previsualizacionImagen.setOpaque(true); // necesita fondo propio para que se note el color blanco
+        previsualizacionImagen.setPreferredSize(new Dimension(130, 130));
+        previsualizacionImagen.setBorder(BorderFactory.createDashedBorder(PacienteInterfaz.COLOR_VERDE_ACENTO));
+        previsualizacionImagen.setOpaque(true);
         previsualizacionImagen.setBackground(Color.WHITE);
         previsualizacionImagen.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        btnSeleccionar.setAlignmentX(Component.CENTER_ALIGNMENT); // centra el botón dentro del panel vertical
+        btnSeleccionar.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPanel centro = new JPanel(); // contenedor de la previsualización + el botón
+        JPanel centro = new JPanel();
         centro.setOpaque(false);
-        centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS)); // apilados verticalmente
+        centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
         centro.add(previsualizacionImagen);
-        centro.add(Box.createVerticalStrut(10)); // espacio entre la imagen y el botón
+        centro.add(Box.createVerticalStrut(10));
         centro.add(btnSeleccionar);
 
-        panelImagen.add(etiqueta, BorderLayout.NORTH); // título arriba
-        panelImagen.add(centro, BorderLayout.CENTER); // contenido centrado
-
+        panelImagen.add(etiqueta, BorderLayout.NORTH);
+        panelImagen.add(centro, BorderLayout.CENTER);
         return panelImagen;
+    }
+
+    
+    public static JPanel crearPanelImagen(JButton btnSeleccionar, JLabel previsualizacionImagen) {
+        return crearPanelImagen(btnSeleccionar, previsualizacionImagen, "Imagen del Medicamento:");
     }
 }
