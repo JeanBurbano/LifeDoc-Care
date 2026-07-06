@@ -15,7 +15,7 @@ public class LoginController implements ActionListener {
 
     Login lg;
     UsuarioDao usuDao;
-    Usuarios usu;
+    private Usuarios usu;
 
     public LoginController(Login lg) {
         this.lg = lg;
@@ -37,7 +37,7 @@ public class LoginController implements ActionListener {
                 this.usuDao = new UsuarioDao();
                 this.usu = usuDao.login(id, contrasena);
                 contrasena = null;
-                if (usu != null) {
+                if (usu != null && usu.getEstado()) {
                     switch (usu.getId_rol()) {
                         case (byte) 5:
                             PacienteInterfaz p = new PacienteInterfaz(usu.getPrimerNombre(), "Paciente", usu.getFotoPerfil());

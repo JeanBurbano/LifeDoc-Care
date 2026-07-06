@@ -18,7 +18,7 @@ public class UsuarioDao {
 
     public Usuarios login(String id, String contrasena) {
         Usuarios usu = null;
-        String sql = "SELECT u.id_usuario, u.id_rol, u.primer_nombre, f.url_foto_perfil "
+        String sql = "SELECT u.id_usuario, u.id_rol, u.primer_nombre, u.estado f.url_foto_perfil "
                 + "FROM usuario AS u "
                 + "LEFT JOIN fotos_perfil AS f "
                 + "     ON f.id_usuario = u.id_usuario AND f.es_actual = 1 "
@@ -36,6 +36,7 @@ public class UsuarioDao {
                         rs.getInt("id_usuario"),
                         rs.getByte("id_rol"),
                         rs.getString("primer_nombre"),
+                        rs.getBoolean("estado"),
                         rs.getString("url_foto_perfil")
                 );
             }
@@ -83,5 +84,25 @@ public class UsuarioDao {
         }
 
         return valor;
+    }
+
+    public Usuarios getDatosUsu(int idUsu) {
+        Usuarios usu = null;
+        String sql = "SELECT primer_nombre,correo_electronico,numero_celular,sexo_biologico,fecha_nacimiento,sisben "
+                + "FROM usuarios where id_usuario = ?";
+        try {
+            this.con = conectar.getConection();
+            this.ps = con.prepareStatement(sql);
+            this.ps.setString(1, String.valueOf(idUsu));
+            this.rs = ps.executeQuery();
+            if (rs.next()) {
+//                usu = new Usuarios(rs.getString("primer_nombre"), MetodosPublicos.calcularEdad("2026", "07", "2008", "17"), rs.getString("correo_electronico"),
+//                        rs.getString("correo_electronico"), rs.getString("correo_electronico"),
+//                        rs.getDate("correo_electronico"), rs.getBoolean("correo_electronico"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return usu;
     }
 }

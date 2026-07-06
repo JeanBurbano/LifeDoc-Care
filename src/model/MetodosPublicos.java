@@ -27,6 +27,14 @@ import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MetodosPublicos {
 
+    public static byte calcularEdad(String anoActual, String mesActual, String anoNacimiento, String mesNacimiento) {
+        byte valor = (byte) (Integer.parseInt(anoActual.trim()) - Integer.parseInt(anoNacimiento.trim()));
+        if (Byte.parseByte(mesActual.trim()) < Byte.parseByte(mesNacimiento.trim())) {
+            valor--;
+        }
+        return valor;
+    }
+
     //Aqui creo un funcion para estilizar el boton
     public static void estilizarBoton(JButton boton, byte estilo) {
         switch (estilo) {
@@ -86,7 +94,7 @@ public class MetodosPublicos {
             refrescarVentana(componente);
         }
     }
-    
+
     //validar campos para id y contrasena
     public static boolean validarTamano(String cadena, int minimo, int maximo) {
         return cadena.length() == minimo || cadena.length() == maximo;
@@ -106,11 +114,11 @@ public class MetodosPublicos {
                 && cadena.matches(".*[a-z].*")
                 && cadena.matches(".*(\\$|@|#|%|&|\\*|-|_|!|\\?).*"));
     }
-    
+
     //Aqui para estilizar formularios
     /**
-     * Crea un JTextField ya estilizado (fuente y borde verde) listo
-     * para usarse en cualquier formulario.
+     * Crea un JTextField ya estilizado (fuente y borde verde) listo para usarse
+     * en cualquier formulario.
      *
      * @return el campo de texto estilizado
      */
@@ -126,9 +134,9 @@ public class MetodosPublicos {
 
     /**
      * Aplica estilo (fondo blanco, borde verde, fuente grande, flecha
-     * personalizada) a un JComboBox YA EXISTENTE. No define ni modifica
-     * las opciones/datos del combo, solo su apariencia — por eso sirve
-     * para cualquier combo, tenga o no datos precargados 
+     * personalizada) a un JComboBox YA EXISTENTE. No define ni modifica las
+     * opciones/datos del combo, solo su apariencia — por eso sirve para
+     * cualquier combo, tenga o no datos precargados
      *
      * @param combo el combo (ya creado, puede estar vacío) a estilizar
      */
@@ -167,13 +175,11 @@ public class MetodosPublicos {
         });
     }
 
-    
-
     /**
-     * Envuelve un campo (JTextField, JComboBox, DatePicker, JScrollPane,
-     * etc.) junto con una etiqueta arriba, en un solo JPanel vertical.
-     * Así el título del campo siempre queda arriba de él, sin importar
-     * el tipo de componente que sea.
+     * Envuelve un campo (JTextField, JComboBox, DatePicker, JScrollPane, etc.)
+     * junto con una etiqueta arriba, en un solo JPanel vertical. Así el título
+     * del campo siempre queda arriba de él, sin importar el tipo de componente
+     * que sea.
      *
      * @param texto texto de la etiqueta (ej. "Nombre:")
      * @param campo el componente que va debajo de la etiqueta
@@ -203,9 +209,9 @@ public class MetodosPublicos {
     }
 
     /**
-     * Crea una fila horizontal simple: una etiqueta en negrita a la
-     * izquierda y un componente al lado (usado, por ejemplo, para
-     * "Nombre del horario:" en el formulario de creación de horario).
+     * Crea una fila horizontal simple: una etiqueta en negrita a la izquierda y
+     * un componente al lado (usado, por ejemplo, para "Nombre del horario:" en
+     * el formulario de creación de horario).
      *
      * @param etiquetaTexto texto de la etiqueta
      * @param componente componente que va al lado de la etiqueta
@@ -224,9 +230,9 @@ public class MetodosPublicos {
     }
 
     /**
-     * Crea un separador de sección: un título a la izquierda y una
-     * línea horizontal que ocupa el resto del espacio (usado para
-     * dividir visualmente las secciones del formulario de horario).
+     * Crea un separador de sección: un título a la izquierda y una línea
+     * horizontal que ocupa el resto del espacio (usado para dividir visualmente
+     * las secciones del formulario de horario).
      *
      * @param texto título de la sección
      * @return el JPanel con el título y el separador
@@ -241,14 +247,14 @@ public class MetodosPublicos {
         lbl.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO); // color corporativo azul
         JSeparator sep = new JSeparator(); // línea horizontal
         sep.setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO); // línea en color verde
-        panelSep.add(lbl, BorderLayout.CENTER); 
+        panelSep.add(lbl, BorderLayout.CENTER);
         panelSep.add(sep, BorderLayout.CENTER);
         return panelSep;
     }
 
     /**
-     * Crea una etiqueta pequeña y gris, usada entre los combos de hora
-     * del formulario de horario (ej. "Inicio", "Fin", "Almuerzo").
+     * Crea una etiqueta pequeña y gris, usada entre los combos de hora del
+     * formulario de horario (ej. "Inicio", "Fin", "Almuerzo").
      *
      * @param texto texto de la mini etiqueta
      * @return el JLabel ya estilizado
@@ -261,13 +267,14 @@ public class MetodosPublicos {
     }
 
     /**
-     * Crea el panel lateral para adjuntar la imagen de un medicamento.
-     * Recibe el botón y la etiqueta de previsualización ya creados
-     * (normalmente atributos de la interfaz) para ubicarlos dentro del
-     * panel con el estilo correspondiente.
+     * Crea el panel lateral para adjuntar la imagen de un medicamento. Recibe
+     * el botón y la etiqueta de previsualización ya creados (normalmente
+     * atributos de la interfaz) para ubicarlos dentro del panel con el estilo
+     * correspondiente.
      *
      * @param btnSeleccionar botón que abrirá el JFileChooser
-     * @param previsualizacionImagen etiqueta donde se mostrará la imagen elegida
+     * @param previsualizacionImagen etiqueta donde se mostrará la imagen
+     * elegida
      * @return el panel armado, listo para agregarse al formulario
      */
     public static JPanel crearPanelImagen(JButton btnSeleccionar, JLabel previsualizacionImagen) {

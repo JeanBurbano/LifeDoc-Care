@@ -7,20 +7,28 @@ public class Usuarios {
     private String tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
             correoElectronico, contrasena, sexoBiologico, numeroTelefonico, sisben, fotoPerfil, especialidad;
     private LocalDate fechaNacimiento;
-    private byte id_rol,edad, nConsultorio;
+    private byte id_rol, edad, nConsultorio;
     private int id_usuario;
+    private boolean estado;
 
     public Usuarios() {
 
     }
 
-    public Usuarios(int id_usuario, byte id_rol, String primer_nombre, String url) {
+    //constructor para cargar vista
+    public Usuarios(int id_usuario, byte id_rol, String primer_nombre, boolean estado, String url) {
         this.id_usuario = id_usuario;
         this.id_rol = id_rol;
         this.primerNombre = primer_nombre;
         this.fotoPerfil = url;
+        this.estado = estado;
     }
 
+    public Usuarios(String primer_nombre, byte edad, String correo, String telefono, boolean estado, String sexo, String fechaNac, String sisben) {
+
+    }
+
+    //constructor paciente
     public Usuarios(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
             String correoElectronico, String contrasena, String sexoBiologico, String numeroTelefonico, String sisben, String fotoPerfil,
             LocalDate fechaNacimiento, byte edad) {
@@ -43,6 +51,7 @@ public class Usuarios {
         this.edad = edad;
     }
 
+    //constructor medico
     public Usuarios(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
             String correoElectronico, String contrasena, String sexoBiologico, String numeroTelefonico, String sisben, String fotoPerfil, String especialidad,
             LocalDate fechaNacimiento, byte edad, byte nConsultorio) {
@@ -209,6 +218,14 @@ public class Usuarios {
 
     public void setEspecialidad(String especialidad) {
         this.especialidad = especialidad;
+    }
+
+    public boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
     }
 
 }
