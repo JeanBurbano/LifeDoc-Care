@@ -65,8 +65,10 @@ public class LoginController implements ActionListener {
                             break;
                     }
                 } else {
-                    if (usu == null || !usuDao.validarCampoIdBs(id)) {
+                    if (usu == null && !usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {
                         JOptionPane.showMessageDialog(lg, "El usuario no existe");
+                    } else if (usu == null && usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {
+                        JOptionPane.showMessageDialog(lg, "La contrasena es incorrecta");
                     } else {
                         if (!usu.getEstado()) {
                             JOptionPane.showMessageDialog(lg, "El usuario esta inabilitado");

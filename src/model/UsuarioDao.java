@@ -86,15 +86,11 @@ public class UsuarioDao {
         return usu;
     }
 
-    public boolean validarCampoIdBs(String id) {
+    public boolean validarCampoIdBs(String valorComparar, String tabla, String campo) {
         boolean valor = false;
-        String sql = "SELECT EXISTS ("
-                + "    SELECT 1 "
-                + "    FROM usuario "
-                + "    WHERE numero_identificacion = ? "
-                + ") AS existe";
+        String sql = "SELECT EXISTS (SELECT 1 FROM " + tabla + " WHERE " + campo + " = ?) AS existe";
         try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, id);
+            ps.setString(1, valorComparar);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     valor = rs.getBoolean("existe");
@@ -105,4 +101,5 @@ public class UsuarioDao {
         }
         return valor;
     }
+
 }
