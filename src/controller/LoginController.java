@@ -3,6 +3,8 @@ package controller;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.MetodosPublicos;
@@ -10,17 +12,29 @@ import model.UsuarioDao;
 import model.Usuarios;
 import view.Login;
 import view.PacienteInterfaz;
+import view.RecuperacionContrasenaInterfaz;
 
 public class LoginController implements ActionListener {
 
+    RecuperacionContrasenaInterfaz rc;
     Login lg;
     UsuarioDao usuDao;
     private Usuarios usu;
 
-    public LoginController(Login lg) {
+    public LoginController(Login lg, RecuperacionContrasenaInterfaz recuperarC) {
         this.lg = lg;
+        this.rc = recuperarC;
         this.lg.bRegistar.addActionListener(this);
         this.lg.bIngresar.addActionListener(this);
+        this.lg.titulo2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                rc.setVisible(true);
+                rc.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                rc.setExtendedState(MAXIMIZED_BOTH);
+                RecuperarContrasenaController cRc = new RecuperarContrasenaController(rc);
+            }
+        });
     }
 
     @Override
@@ -51,10 +65,14 @@ public class LoginController implements ActionListener {
                             break;
                     }
                 } else {
-                    if (usuDao.validarCampoIdBs(id)) {
-                        JOptionPane.showMessageDialog(lg, "La contrasena es incorrecta");
-                    } else {
+                    if (usu == null || !usuDao.validarCampoIdBs(id)) {
                         JOptionPane.showMessageDialog(lg, "El usuario no existe");
+                    } else {
+                        if (!usu.getEstado()) {
+                            JOptionPane.showMessageDialog(lg, "El usuario esta inabilitado");
+                        } else {
+                            JOptionPane.showMessageDialog(lg, "La contrasena es incorrecta");
+                        }
                     }
                 }
                 this.usu = null;

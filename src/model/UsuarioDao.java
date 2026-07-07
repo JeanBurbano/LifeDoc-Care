@@ -4,8 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
-public class UsuarioDao {
+public class UsuarioDao implements Crud<Cita>{
 
     public static Conexion conectar = new Conexion();
     Connection con;
@@ -18,7 +19,7 @@ public class UsuarioDao {
 
     public Usuarios login(String id, String contrasena) {
         Usuarios usu = null;
-        String sql = "SELECT u.id_usuario, u.id_rol, u.primer_nombre, u.estado f.url_foto_perfil "
+        String sql = "SELECT u.id_usuario, u.id_rol, u.primer_nombre, u.estado, f.url_foto_perfil "
                 + "FROM usuario AS u "
                 + "LEFT JOIN fotos_perfil AS f "
                 + "     ON f.id_usuario = u.id_usuario AND f.es_actual = 1 "
@@ -53,7 +54,6 @@ public class UsuarioDao {
                 if (con != null) {
                     this.con.close();
                 }
-
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -68,21 +68,16 @@ public class UsuarioDao {
                 + "    FROM usuario "
                 + "    WHERE numero_identificacion = ? "
                 + ") AS existe";
-
         try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
-
             ps.setString(1, id);
-
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     valor = rs.getBoolean("existe");
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return valor;
     }
 
@@ -96,13 +91,49 @@ public class UsuarioDao {
             this.ps.setString(1, String.valueOf(idUsu));
             this.rs = ps.executeQuery();
             if (rs.next()) {
-//                usu = new Usuarios(rs.getString("primer_nombre"), MetodosPublicos.calcularEdad("2026", "07", "2008", "17"), rs.getString("correo_electronico"),
-//                        rs.getString("correo_electronico"), rs.getString("correo_electronico"),
-//                        rs.getDate("correo_electronico"), rs.getBoolean("correo_electronico"));
+                LocalDate fechaNacimiento = rs.getDate("fecha_nacimiento").toLocalDate();
+                usu = new Usuarios(rs.getString("primer_nombre"),
+                        MetodosPublicos.calcularEdad(String.valueOf(fechaNacimiento.getYear()), String.valueOf(fechaNacimiento.getMonthValue())),
+                        rs.getString("correo_electronico"), rs.getString("numero_celular"), rs.getString("sexo_biologico"),
+                        fechaNacimiento, rs.getString("sisben"));
+                fechaNacimiento = null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    this.rs.close();
+                }
+                if (ps != null) {
+                    this.ps.close();
+                }
+                if (con != null) {
+                    this.con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return usu;
     }
+    
+    @Override
+    public void listar(Cita lista){
+        
+    }
+    
+    @Override
+    public int setAgregar(Cita tr){
+        return 0;
+    }
+    @Override
+    public int setActualizar(Cita tr){
+        return 0;
+    }
+    @Override
+    public int setEliminar(int id){
+        return 0;
+    }
+    
 }

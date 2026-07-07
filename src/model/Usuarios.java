@@ -24,8 +24,15 @@ public class Usuarios {
         this.estado = estado;
     }
 
-    public Usuarios(String primer_nombre, byte edad, String correo, String telefono, boolean estado, String sexo, String fechaNac, String sisben) {
-
+    //constructor para editar perfil
+    public Usuarios(String primer_nombre, byte edad, String correo, String telefono, String sexo, LocalDate fechaNac, String sisben) {
+        this.primerNombre = primer_nombre;
+        this.edad = edad;
+        this.correoElectronico = correo;
+        this.numeroTelefonico = telefono;
+        this.sexoBiologico = sexo;
+        this.fechaNacimiento = fechaNac;
+        this.sisben = sisben;
     }
 
     //constructor paciente

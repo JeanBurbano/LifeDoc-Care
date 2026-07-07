@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.time.LocalDate;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,11 +28,13 @@ import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MetodosPublicos {
 
-    public static byte calcularEdad(String anoActual, String mesActual, String anoNacimiento, String mesNacimiento) {
-        byte valor = (byte) (Integer.parseInt(anoActual.trim()) - Integer.parseInt(anoNacimiento.trim()));
-        if (Byte.parseByte(mesActual.trim()) < Byte.parseByte(mesNacimiento.trim())) {
+    public static byte calcularEdad(String anoNacimiento, String mesNacimiento) {
+        LocalDate hoy = LocalDate.now();
+        byte valor = (byte) (hoy.getYear() - Integer.parseInt(anoNacimiento.trim()));
+        if (hoy.getMonthValue() < Byte.parseByte(mesNacimiento.trim())) {
             valor--;
         }
+        hoy = null;
         return valor;
     }
 

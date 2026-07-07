@@ -30,7 +30,7 @@ public class RecuperacionContrasenaInterfaz extends JFrame {
     private JLabel fondo;
     public JTextField field, contrasena;
     public JPasswordField contrasenaVeri;
-    private JButton flecha, btnCorreo, btnSms, btnContinuar;
+    public JButton flecha, btnCorreo, btnSms, btnContinuar;
 
     public RecuperacionContrasenaInterfaz() {
         super("Recuperacion Contrasena");//Nombre de la ventana
@@ -45,6 +45,7 @@ public class RecuperacionContrasenaInterfaz extends JFrame {
         this.panelSuperior.setPreferredSize(new Dimension(50, 90));
 
         this.flecha = new JButton("←");
+        MetodosPublicos.estilizarBoton(flecha, (byte) 1);
         JLabel titulo1 = new JLabel("Cambiar Contrasena");
         titulo1.setFont(new Font("arial", Font.BOLD, 25));
 
