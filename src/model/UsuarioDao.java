@@ -4,9 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
-public class UsuarioDao implements Crud<Cita>{
+public class UsuarioDao {
 
     public static Conexion conectar = new Conexion();
     Connection con;
@@ -17,9 +16,9 @@ public class UsuarioDao implements Crud<Cita>{
 
     }
 
-    public Usuarios login(String id, String contrasena) {
-        Usuarios usu = null;
-        String sql = "SELECT u.id_usuario, u.id_rol, u.primer_nombre, u.estado, f.url_foto_perfil "
+    public Paciente login(String id, String contrasena) {
+        Paciente usu = null;
+        String sql = "SELECT u.id_usuario, u.id_rol, u.id_tipo_identificacion, u.numero_identificacion, u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido, u.correo_electronico, u.fecha_nacimiento, u.sexo_biologico, u.numero_celular, u.edad, u.estado, u.sisben, f.url_foto_perfil "
                 + "FROM usuario AS u "
                 + "LEFT JOIN fotos_perfil AS f "
                 + "     ON f.id_usuario = u.id_usuario AND f.es_actual = 1 "
@@ -33,11 +32,37 @@ public class UsuarioDao implements Crud<Cita>{
             this.rs = ps.executeQuery();
 
             if (rs.next()) {
-                usu = new Usuarios(
+                String tipoIdentificacion;
+                switch (rs.getInt("id_tipo_identificacion")) {
+                    case 1:
+                        tipoIdentificacion = "Registro civil";
+                        break;
+                    case 2:
+                        tipoIdentificacion = "Tarjeta de identidad";
+                        break;
+                    case 3:
+                        tipoIdentificacion = "Cedula de ciudadania";
+                        break;
+                    default:
+                        tipoIdentificacion = "Tarjeta de identidad";
+                        break;
+                }
+                usu = new Paciente(
                         rs.getInt("id_usuario"),
                         rs.getByte("id_rol"),
+                        tipoIdentificacion,
+                        rs.getString("numero_identificacion"),
                         rs.getString("primer_nombre"),
+                        rs.getString("segundo_nombre"),
+                        rs.getString("primer_apellido"),
+                        rs.getString("segundo_apellido"),
+                        rs.getString("correo_electronico"),
+                        rs.getDate("fecha_nacimiento").toLocalDate(),
+                        rs.getString("sexo_biologico"),
+                        rs.getString("numero_celular"),
+                        rs.getByte("edad"),
                         rs.getBoolean("estado"),
+                        rs.getString("sisben"),
                         rs.getString("url_foto_perfil")
                 );
             }
@@ -80,60 +105,4 @@ public class UsuarioDao implements Crud<Cita>{
         }
         return valor;
     }
-
-    public Usuarios getDatosUsu(int idUsu) {
-        Usuarios usu = null;
-        String sql = "SELECT primer_nombre,correo_electronico,numero_celular,sexo_biologico,fecha_nacimiento,sisben "
-                + "FROM usuarios where id_usuario = ?";
-        try {
-            this.con = conectar.getConection();
-            this.ps = con.prepareStatement(sql);
-            this.ps.setString(1, String.valueOf(idUsu));
-            this.rs = ps.executeQuery();
-            if (rs.next()) {
-                LocalDate fechaNacimiento = rs.getDate("fecha_nacimiento").toLocalDate();
-                usu = new Usuarios(rs.getString("primer_nombre"),
-                        MetodosPublicos.calcularEdad(String.valueOf(fechaNacimiento.getYear()), String.valueOf(fechaNacimiento.getMonthValue())),
-                        rs.getString("correo_electronico"), rs.getString("numero_celular"), rs.getString("sexo_biologico"),
-                        fechaNacimiento, rs.getString("sisben"));
-                fechaNacimiento = null;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    this.rs.close();
-                }
-                if (ps != null) {
-                    this.ps.close();
-                }
-                if (con != null) {
-                    this.con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return usu;
-    }
-    
-    @Override
-    public void listar(Cita lista){
-        
-    }
-    
-    @Override
-    public int setAgregar(Cita tr){
-        return 0;
-    }
-    @Override
-    public int setActualizar(Cita tr){
-        return 0;
-    }
-    @Override
-    public int setEliminar(int id){
-        return 0;
-    }
-    
 }

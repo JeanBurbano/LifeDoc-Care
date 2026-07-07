@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.MetodosPublicos;
 import model.UsuarioDao;
-import model.Usuarios;
+import model.Paciente;
 import view.Login;
 import view.PacienteInterfaz;
 import view.RecuperacionContrasenaInterfaz;
@@ -19,7 +19,7 @@ public class LoginController implements ActionListener {
     RecuperacionContrasenaInterfaz rc;
     Login lg;
     UsuarioDao usuDao;
-    private Usuarios usu;
+    private Paciente usu;
 
     public LoginController(Login lg, RecuperacionContrasenaInterfaz recuperarC) {
         this.lg = lg;

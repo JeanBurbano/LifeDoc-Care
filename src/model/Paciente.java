@@ -2,43 +2,44 @@ package model;
 
 import java.time.LocalDate;
 
-public class Usuarios {
+public class Paciente {
 
-    private String tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
-            correoElectronico, contrasena, sexoBiologico, numeroTelefonico, sisben, fotoPerfil, especialidad;
-    private LocalDate fechaNacimiento;
-    private byte id_rol, edad, nConsultorio;
     private int id_usuario;
+    private String tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
+            correoElectronico, contrasena, sexoBiologico, numeroTelefonico, sisben, fotoPerfil;
+    private LocalDate fechaNacimiento;
+    private byte id_rol, edad;
     private boolean estado;
 
-    public Usuarios() {
+    public Paciente() {
 
     }
 
-    //constructor para cargar vista
-    public Usuarios(int id_usuario, byte id_rol, String primer_nombre, boolean estado, String url) {
+    //contructor datos seguros del paciente
+    public Paciente(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String correo, LocalDate fechaNacimiento, String sexoBiologico, String numeroTelefonico, byte edad, boolean estado, String sisben, String fotoPerfil) {
         this.id_usuario = id_usuario;
         this.id_rol = id_rol;
-        this.primerNombre = primer_nombre;
-        this.fotoPerfil = url;
-        this.estado = estado;
-    }
-
-    //constructor para editar perfil
-    public Usuarios(String primer_nombre, byte edad, String correo, String telefono, String sexo, LocalDate fechaNac, String sisben) {
-        this.primerNombre = primer_nombre;
-        this.edad = edad;
+        this.tipoId = tipoId;
+        this.numeroId = numeroId;
+        this.primerNombre = primerNombre;
+        this.segundoNombre = segundoNombre;
+        this.primerApellido = primerApellido;
+        this.segundoApellido = segundoApellido;
         this.correoElectronico = correo;
-        this.numeroTelefonico = telefono;
-        this.sexoBiologico = sexo;
-        this.fechaNacimiento = fechaNac;
+        this.fechaNacimiento = fechaNacimiento;
+        this.sexoBiologico = sexoBiologico;
+        this.numeroTelefonico = numeroTelefonico;
+        this.edad = edad;
+        this.estado = estado;
         this.sisben = sisben;
+        this.fotoPerfil = fotoPerfil;
     }
 
     //constructor paciente
-    public Usuarios(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+    public Paciente(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
             String correoElectronico, String contrasena, String sexoBiologico, String numeroTelefonico, String sisben, String fotoPerfil,
-            LocalDate fechaNacimiento, byte edad) {
+            LocalDate fechaNacimiento, byte edad, boolean estado) {
 
         this.id_usuario = id_usuario;
         this.id_rol = id_rol;
@@ -56,31 +57,7 @@ public class Usuarios {
         this.fotoPerfil = fotoPerfil;
         this.fechaNacimiento = fechaNacimiento;
         this.edad = edad;
-    }
-
-    //constructor medico
-    public Usuarios(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
-            String correoElectronico, String contrasena, String sexoBiologico, String numeroTelefonico, String sisben, String fotoPerfil, String especialidad,
-            LocalDate fechaNacimiento, byte edad, byte nConsultorio) {
-
-        this.id_usuario = id_usuario;
-        this.id_rol = id_rol;
-        this.tipoId = tipoId;
-        this.numeroId = numeroId;
-        this.primerNombre = primerNombre;
-        this.segundoNombre = segundoNombre;
-        this.primerApellido = primerApellido;
-        this.segundoApellido = segundoApellido;
-        this.correoElectronico = correoElectronico;
-        this.contrasena = contrasena;
-        this.sexoBiologico = sexoBiologico;
-        this.numeroTelefonico = numeroTelefonico;
-        this.sisben = sisben;
-        this.fotoPerfil = fotoPerfil;
-        this.especialidad = especialidad;
-        this.fechaNacimiento = fechaNacimiento;
-        this.edad = edad;
-        this.nConsultorio = nConsultorio;
+        this.estado = estado;
     }
 
     public byte getId_rol() {
@@ -209,22 +186,6 @@ public class Usuarios {
 
     public void setEdad(byte edad) {
         this.edad = edad;
-    }
-
-    public byte getnConsultorio() {
-        return nConsultorio;
-    }
-
-    public void setnConsultorio(byte nConsultorio) {
-        this.nConsultorio = nConsultorio;
-    }
-
-    public String getEspecialidad() {
-        return especialidad;
-    }
-
-    public void setEspecialidad(String especialidad) {
-        this.especialidad = especialidad;
     }
 
     public boolean getEstado() {
