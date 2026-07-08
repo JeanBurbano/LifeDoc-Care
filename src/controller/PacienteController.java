@@ -8,17 +8,17 @@ import view.Titulo;
 
 public class PacienteController implements ActionListener {
 
-    PacienteInterfaz pacienteI = new PacienteInterfaz("Alejandro", "", "");
+    protected PacienteInterfaz pacienteI;//protected para que el hijo lo acceda directo
 
     public PacienteController(PacienteInterfaz pacienteI) {
         this.pacienteI = pacienteI;
         this.pacienteI.agregarBotonesMenuPaciente();
         this.pacienteI.btnMisCitas.addActionListener(this);
         this.pacienteI.btnMisCitas.doClick();
-        this.pacienteI.btnMisCitas.addActionListener(this);
         this.pacienteI.btnHistorial.addActionListener(this);
         this.pacienteI.btnComentarios.addActionListener(this);
         this.pacienteI.btnNotificaciones.addActionListener(this);
+        this.pacienteI.btnCerrarSesion.addActionListener(this);
         this.pacienteI.btnAgendar.addActionListener(this);
         this.pacienteI.btnHistorialMedico.addActionListener(this);
         this.pacienteI.btnHistorialCitas.addActionListener(this);
@@ -30,50 +30,45 @@ public class PacienteController implements ActionListener {
         this.pacienteI.btnOdontologia.addActionListener(this);
         this.pacienteI.btnDermatologia.addActionListener(this);
         this.pacienteI.btnMedicoGeneral.addActionListener(this);
-//        this.pacienteI.listaBotonesMedicos
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == this.pacienteI.btnMisCitas) {
-            this.pacienteI.mostrarVistaMisCitas();
-            this.pacienteI.btnMisCitas.setEnabled(false);
-            this.pacienteI.habilitarBotonesMenu(this.pacienteI.btnMisCitas);
+        if (e.getSource() == pacienteI.btnMisCitas) {
+            pacienteI.mostrarVistaMisCitas();
+            pacienteI.btnMisCitas.setEnabled(false);
+            pacienteI.habilitarBotonesMenu(pacienteI.btnMisCitas);
         }
-        if (e.getSource() == this.pacienteI.btnHistorial) {
-            this.pacienteI.mostrarVistaHistorial();
-            this.pacienteI.btnHistorial.setEnabled(false);
-            this.pacienteI.habilitarBotonesMenu(this.pacienteI.btnHistorial);
+        if (e.getSource() == pacienteI.btnHistorial) {
+            pacienteI.mostrarVistaHistorial();
+            pacienteI.btnHistorial.setEnabled(false);
+            pacienteI.habilitarBotonesMenu(pacienteI.btnHistorial);
         }
-        if (e.getSource() == this.pacienteI.btnCerrarSesion) {
-
+        if (e.getSource() == pacienteI.btnComentarios) {
+            pacienteI.mostrarVistaComentarios();
+            pacienteI.btnComentarios.setEnabled(false);
+            pacienteI.habilitarBotonesMenu(pacienteI.btnComentarios);
         }
-        if (e.getSource() == this.pacienteI.btnComentarios) {
-            this.pacienteI.mostrarVistaComentarios();
-            this.pacienteI.btnComentarios.setEnabled(false);
-            this.pacienteI.habilitarBotonesMenu(this.pacienteI.btnComentarios);
+        if (e.getSource() == pacienteI.btnNotificaciones) {
+            pacienteI.mostrarVistaNotificaciones();
+            pacienteI.btnNotificaciones.setEnabled(false);
+            pacienteI.habilitarBotonesMenu(pacienteI.btnNotificaciones);
         }
-        if (e.getSource() == this.pacienteI.btnNotificaciones) {
-            this.pacienteI.mostrarVistaNotificaciones();
-            this.pacienteI.btnNotificaciones.setEnabled(false);
-            this.pacienteI.habilitarBotonesMenu(this.pacienteI.btnNotificaciones);
+        if (e.getSource() == pacienteI.btnAgendar) {
+            pacienteI.mostrarVistaTipoConsulta(new Titulo("Agendamiento de ", "Cita"));
         }
-        if (e.getSource() == this.pacienteI.btnAgendar) {
-            this.pacienteI.mostrarVistaTipoConsulta(new Titulo("Agendamiento de ", "Cita"));
-        }
-        if (e.getSource() == this.pacienteI.btnOdontologia) {
+        if (e.getSource() == pacienteI.btnOdontologia) {
             String[] medicos = new String[]{"Jean", "cepeda", "petro", "luna", "tovar", "otero"};
-            this.pacienteI.mostrarVistaSeleccionMedico(medicos);
-//            mostrarVistaAgendamientoCita(new Titulo("Agendamiento de", " Cita"));
+            pacienteI.mostrarVistaSeleccionMedico(medicos);
         }
-        if (e.getSource() == this.pacienteI.btnSugerencias) {
-            this.pacienteI.construirFormularioComentario();
+        if (e.getSource() == pacienteI.btnSugerencias) {
+            pacienteI.construirFormularioComentario();
         }
-        if (e.getSource() == this.pacienteI.btnQuejas) {
-            this.pacienteI.construirFormularioComentario();
+        if (e.getSource() == pacienteI.btnQuejas) {
+            pacienteI.construirFormularioComentario();
         }
-        if (e.getSource() == this.pacienteI.btnForo) {
-            MetodosPublicos.vaciarPanel(this.pacienteI.panelComentarios);
+        if (e.getSource() == pacienteI.btnForo) {
+            MetodosPublicos.vaciarPanel(pacienteI.panelComentarios);
         }
     }
 }

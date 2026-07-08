@@ -34,7 +34,7 @@ public class RecuperarContrasenaController implements ActionListener {
         if (e.getSource() == this.p.btnContinuar) {
             if (validador == 1) {
                 if (!p.field.getText().isEmpty()) {
-                    this.p.codigoAutenticacion("correo", this.p.field.getText());
+//                    this.p.codigoAutenticacion("correo", this.p.field.getText());
                     this.p.field.setText("");
                     this.validador = 3;
                 } else {

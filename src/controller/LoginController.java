@@ -10,6 +10,7 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.MetodosPublicos;
 import model.UsuarioDao;
 import model.Paciente;
+import view.AdministradorDelSistemaInterfaz;
 import view.Login;
 import view.PacienteInterfaz;
 import view.RecuperacionContrasenaInterfaz;
@@ -53,7 +54,14 @@ public class LoginController implements ActionListener {
                 contrasena = null;
                 if (usu != null && usu.getEstado()) {
                     switch (usu.getId_rol()) {
-                        case (byte) 5:
+                        case 1:
+                            AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz(usu.getPrimerNombre(), "Paciente", usu.getFotoPerfil());
+                            adminSistem.setVisible(true);
+                            adminSistem.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                            adminSistem.setExtendedState(MAXIMIZED_BOTH);
+                            AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
+                            break;
+                        case 5:
                             PacienteInterfaz p = new PacienteInterfaz(usu.getPrimerNombre(), "Paciente", usu.getFotoPerfil());
                             p.setVisible(true);
                             p.setDefaultCloseOperation(EXIT_ON_CLOSE);
