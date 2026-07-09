@@ -22,14 +22,15 @@ public class LoginController implements ActionListener {
     UsuarioDao usuDao;
     private Paciente usu;
 
-    public LoginController(Login lg, RecuperacionContrasenaInterfaz recuperarC) {
-        this.lg = lg;
+    public LoginController(Login lg1, RecuperacionContrasenaInterfaz recuperarC) {
+        this.lg = lg1;
         this.rc = recuperarC;
         this.lg.bRegistar.addActionListener(this);
         this.lg.bIngresar.addActionListener(this);
         this.lg.titulo2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                lg.dispose();
                 rc.setVisible(true);
                 rc.setDefaultCloseOperation(EXIT_ON_CLOSE);
                 rc.setExtendedState(MAXIMIZED_BOTH);
@@ -53,9 +54,10 @@ public class LoginController implements ActionListener {
                 this.usu = usuDao.login(id, contrasena);
                 contrasena = null;
                 if (usu != null && usu.getEstado()) {
+                    this.lg.dispose();
                     switch (usu.getId_rol()) {
                         case 1:
-                            AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz(usu.getPrimerNombre(), "Paciente", usu.getFotoPerfil());
+                            AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz(usu.getPrimerNombre(), "Paciente", "fotosPerfil/fotoDefecto.png");
                             adminSistem.setVisible(true);
                             adminSistem.setDefaultCloseOperation(EXIT_ON_CLOSE);
                             adminSistem.setExtendedState(MAXIMIZED_BOTH);

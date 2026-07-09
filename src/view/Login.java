@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -71,6 +72,7 @@ public class Login extends JFrame {
         this.panelfield.add(password);
         this.titulo2 = new JLabel("¿Olvidaste tu contrasena?", SwingConstants.CENTER);//Aqui creo una etiqueta con el texto olvidaste contrasena que va estar centrado en la etiqueta
         this.titulo2.setForeground(new Color(22, 197, 169));//Asigno color al olvidar contrasena
+        this.titulo2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         this.bRegistar = new JButton("Registrar");//Creo boton registar 
         this.bRegistar.setBackground(new Color(0, 79, 124));//Aqui agrego fondo al boton registar
         this.bRegistar.setForeground(Color.WHITE);//Aqui agrego color a la letra del boton registar

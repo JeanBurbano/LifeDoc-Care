@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 import model.MetodosPublicos;
 import view.PacienteInterfaz;
 import view.Titulo;
@@ -34,6 +35,9 @@ public class PacienteController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == pacienteI.btnCerrarSesion){
+            System.out.println("dasdadas");
+        }
         if (e.getSource() == pacienteI.btnMisCitas) {
             pacienteI.mostrarVistaMisCitas();
             pacienteI.btnMisCitas.setEnabled(false);

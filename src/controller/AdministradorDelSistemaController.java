@@ -16,10 +16,8 @@ public class AdministradorDelSistemaController extends PacienteController {
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e); // Primero dejo que PacienteController maneje sus botones
-
         // casteo el pacienteI heredado, que SIEMPRE está disponible.
         this.adminSistem = (AdministradorDelSistemaInterfaz) pacienteI;
-
         if (e.getSource() == adminSistem.btnRol) {
             adminSistem.vistaUsuarios();
             adminSistem.btnRol.setEnabled(false);
