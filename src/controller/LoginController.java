@@ -22,15 +22,14 @@ public class LoginController implements ActionListener {
     UsuarioDao usuDao;
     private Paciente usu;
 
-    public LoginController(Login lg1, RecuperacionContrasenaInterfaz recuperarC) {
-        this.lg = lg1;
+    public LoginController(Login lg, RecuperacionContrasenaInterfaz recuperarC) {
+        this.lg = lg;
         this.rc = recuperarC;
         this.lg.bRegistar.addActionListener(this);
         this.lg.bIngresar.addActionListener(this);
         this.lg.titulo2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                lg.dispose();
                 rc.setVisible(true);
                 rc.setDefaultCloseOperation(EXIT_ON_CLOSE);
                 rc.setExtendedState(MAXIMIZED_BOTH);

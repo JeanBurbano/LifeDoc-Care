@@ -35,8 +35,8 @@ public class PacienteController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == pacienteI.btnCerrarSesion){
-            System.out.println("dasdadas");
+        if (e.getSource() == pacienteI.btnCerrarSesion) {
+            this.pacienteI.dispose();
         }
         if (e.getSource() == pacienteI.btnMisCitas) {
             pacienteI.mostrarVistaMisCitas();
