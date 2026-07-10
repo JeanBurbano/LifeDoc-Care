@@ -42,26 +42,6 @@ public class MedicoController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == this.medico.btnMisCitas) {
-            this.medico.mostrarVistaMisCitas();
-            this.medico.btnMisCitas.setEnabled(false);
-            this.medico.habilitarBotonesMenu(this.medico.btnMisCitas);
-        }
-        if (e.getSource() == this.medico.btnHistorial) {
-            this.medico.mostrarVistaHistorial();
-            this.medico.btnHistorial.setEnabled(false);
-            this.medico.habilitarBotonesMenu(this.medico.btnHistorial);
-        }
-        if (e.getSource() == this.medico.btnComentarios) {
-            this.medico.mostrarVistaComentarios();
-            this.medico.btnComentarios.setEnabled(false);
-            this.medico.habilitarBotonesMenu(this.medico.btnComentarios);
-        }
-        if (e.getSource() == this.medico.btnNotificaciones) {
-            this.medico.mostrarVistaNotificaciones();
-            this.medico.btnNotificaciones.setEnabled(false);
-            this.medico.habilitarBotonesMenu(this.medico.btnNotificaciones);
-        }
         if (e.getSource() == this.medico.btnMiAgenda || e.getSource() == this.medico.btnVolverVerDetalles || e.getSource() == this.medico.btnNoReagendar) {
             this.medico.mostrarVistaMiAgenda();
             this.medico.citaVistaMiAgenda();

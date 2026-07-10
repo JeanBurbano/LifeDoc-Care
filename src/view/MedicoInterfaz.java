@@ -247,8 +247,6 @@ public class MedicoInterfaz extends PacienteInterfaz {
         panelBuscar.add(btnBuscar);
         this.cuerpo2.add(panelBuscar);
 
-        this.panelPrincipal.add(pruebaFicha);
-
         MetodosPublicos.refrescarVentana(panelPrincipal);
         MetodosPublicos.refrescarVentana(cuerpo2);
         MetodosPublicos.refrescarVentana(scrollCitas);
@@ -371,6 +369,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
         String listaIds[] = {"", "Registro civil", "Tarjeta de identidad", "Cédula"};
         JComboBox campoTipoId = new JComboBox(listaIds);
+        MetodosPublicos.crearComboEstilizado(campoTipoId);
         campoComboBox(18, 270, 35, campoTipoId);
 
         //datos del paciente en la columna derecha
@@ -402,6 +401,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
         String listaSB[] = {"", "Femenino", "Masculino"};
         JComboBox campoSexoBio = new JComboBox(listaSB);
+        MetodosPublicos.crearComboEstilizado(campoSexoBio);
         campoComboBox(18, 270, 35, campoSexoBio);
 
         JLabel numeroId = new JLabel("Número de identificación");
@@ -440,6 +440,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
         String listaMed[] = {""};
         JComboBox campoMedicamento = new JComboBox(listaMed);
+        MetodosPublicos.crearComboEstilizado(campoMedicamento);
         campoComboBox(18, 270, 35, campoMedicamento);
         campoMedicamento.setAlignmentX(Component.LEFT_ALIGNMENT);
 
