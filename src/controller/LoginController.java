@@ -1,34 +1,95 @@
 package controller;
 
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.MetodosPublicos;
+import model.UsuarioDao;
+import model.Paciente;
+import view.AdministradorDelSistemaInterfaz;
 import view.Login;
+import view.PacienteInterfaz;
+import view.RecuperacionContrasenaInterfaz;
 
 public class LoginController implements ActionListener {
-    
+
+    RecuperacionContrasenaInterfaz rc;
     Login lg;
-    
-    public LoginController(Login lg) {
-        this.lg = lg;
+    UsuarioDao usuDao;
+    private Paciente usu;
+
+    public LoginController(Login lg1, RecuperacionContrasenaInterfaz recuperarC) {
+        this.lg = lg1;
+        this.rc = recuperarC;
         this.lg.bRegistar.addActionListener(this);
         this.lg.bIngresar.addActionListener(this);
+        this.lg.titulo2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                lg.dispose();
+                rc.setVisible(true);
+                rc.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                rc.setExtendedState(MAXIMIZED_BOTH);
+                RecuperarContrasenaController cRc = new RecuperarContrasenaController(rc);
+            }
+        });
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.lg.bIngresar) {
             String id = this.lg.getId();
             String contrasena = this.lg.getPassword();
-            final boolean validar = (MetodosPublicos.validarTamano(id, 8, 10) &&
-                    MetodosPublicos.validarid(id)) &&
-                    (MetodosPublicos.validarTamano(contrasena, 8) && 
-                    MetodosPublicos.validarContrasena(contrasena));
-            
+            final boolean validar = (MetodosPublicos.validarTamano(id, 8, 10)
+                    && MetodosPublicos.validarid(id))
+                    && (MetodosPublicos.validarTamano(contrasena, 8)
+                    && MetodosPublicos.validarContrasena(contrasena));
+
             if (validar) {
-                JOptionPane.showMessageDialog(lg, "iniciar sesion");
-                contrasena=null;
+                this.usuDao = new UsuarioDao();
+                this.usu = usuDao.login(id, contrasena);
+                contrasena = null;
+                if (usu != null && usu.getEstado()) {
+                    this.lg.dispose();
+                    switch (usu.getId_rol()) {
+                        case 1:
+                            AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz(usu.getPrimerNombre(), "Paciente", "fotosPerfil/fotoDefecto.png");
+                            adminSistem.setVisible(true);
+                            adminSistem.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                            adminSistem.setExtendedState(MAXIMIZED_BOTH);
+                            AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
+                            break;
+                        case 5:
+                            PacienteInterfaz p = new PacienteInterfaz(usu.getPrimerNombre(), "Paciente", usu.getFotoPerfil());
+                            p.setVisible(true);
+                            p.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                            p.setExtendedState(MAXIMIZED_BOTH);
+                            PacienteController clg = new PacienteController(p);
+                            break;
+                        default:
+                            System.out.println("se produjo un error rol no valido");
+                            break;
+                    }
+                } else {
+                    if (usu == null && !usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {
+                        JOptionPane.showMessageDialog(lg, "El usuario no existe");
+                    } else if (usu == null && usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {
+                        JOptionPane.showMessageDialog(lg, "La contrasena es incorrecta");
+                    } else {
+                        if (!usu.getEstado()) {
+                            JOptionPane.showMessageDialog(lg, "El usuario esta inabilitado");
+                        } else {
+                            JOptionPane.showMessageDialog(lg, "La contrasena es incorrecta");
+                        }
+                    }
+                }
+                this.usu = null;
+                this.usuDao = null;
+                id = null;
             } else {
                 if (id.isEmpty()) {
                     JOptionPane.showMessageDialog(lg, "Campo id es obligatorio");
@@ -43,10 +104,10 @@ public class LoginController implements ActionListener {
                 if (contrasena.isEmpty()) {
                     JOptionPane.showMessageDialog(lg, "Campo Contrasena es obligatorio");
                 } else {
-                    if(!MetodosPublicos.validarTamano(contrasena, 8)){
+                    if (!MetodosPublicos.validarTamano(contrasena, 8)) {
                         JOptionPane.showMessageDialog(lg, "El campo contrasena debe dcontener como minimo 8 caracteres");
                     }
-                    if(!MetodosPublicos.validarContrasena(contrasena)){
+                    if (!MetodosPublicos.validarContrasena(contrasena)) {
                         JOptionPane.showMessageDialog(lg, "La contrasena debe de cumplir con estos parametros\n"
                                 + "Minimo 8 caracteres\n"
                                 + "1 Mayuscula,\n"

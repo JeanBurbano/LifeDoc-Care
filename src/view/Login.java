@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -21,24 +22,25 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 public class Login extends JFrame {
-    
+
     private JTextField id;
     private JPasswordField password;
     private ImageIcon imagen1, imagen2;
-    private JLabel fondo,titulo1, titulo2, titulo3, titulo4, descripcion, emoji1, emoji2, correofield, passwordfield;
+    private JLabel fondo, titulo1, titulo3, titulo4, descripcion, emoji1, emoji2, correofield, passwordfield;
+    public JLabel titulo2;
     public JButton bRegistar, bIngresar;
-    private JPanel panel1, panel2, panelbotones, paneltitulo, panelfield, panelTodotitulo,panelLogin;
+    private JPanel panel1, panel2, panelbotones, paneltitulo, panelfield, panelTodotitulo, panelLogin;
 
     public Login() {
         super("Login");//Nombre de la ventana
-        this.fondo=new JLabel(new ImageIcon("fondo2.png"));
+        this.fondo = new JLabel(new ImageIcon("fondo2.png"));
         this.fondo.setOpaque(true);
         this.fondo.setLayout(new GridBagLayout());
         this.setContentPane(fondo);
-        
+
         this.panelLogin = new JPanel();
         this.panelLogin.setLayout(new GridLayout(1, 2));
-        this.panelLogin.setPreferredSize(new Dimension(750,420));
+        this.panelLogin.setPreferredSize(new Dimension(750, 420));
         this.panelLogin.setBorder(BorderFactory.createLineBorder(new Color(0, 194, 177)));
         //Primer panel
         this.panel1 = new JPanel();//Creo el panel1
@@ -70,6 +72,7 @@ public class Login extends JFrame {
         this.panelfield.add(password);
         this.titulo2 = new JLabel("¿Olvidaste tu contrasena?", SwingConstants.CENTER);//Aqui creo una etiqueta con el texto olvidaste contrasena que va estar centrado en la etiqueta
         this.titulo2.setForeground(new Color(22, 197, 169));//Asigno color al olvidar contrasena
+        this.titulo2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         this.bRegistar = new JButton("Registrar");//Creo boton registar 
         this.bRegistar.setBackground(new Color(0, 79, 124));//Aqui agrego fondo al boton registar
         this.bRegistar.setForeground(Color.WHITE);//Aqui agrego color a la letra del boton registar
@@ -123,14 +126,14 @@ public class Login extends JFrame {
 
         this.panelLogin.add(panel1);
         this.panelLogin.add(panel2);
-        this.fondo.add(panelLogin,new GridBagConstraints());
+        this.fondo.add(panelLogin, new GridBagConstraints());
     }
-    
-    public String getId(){
+
+    public String getId() {
         return this.id.getText();
     }
-    
-    public String getPassword(){
-       return  String.valueOf(this.password.getPassword());
+
+    public String getPassword() {
+        return String.valueOf(this.password.getPassword());
     }
 }

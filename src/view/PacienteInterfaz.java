@@ -125,8 +125,11 @@ public class PacienteInterfaz extends JFrame {
         this.btnCerrarSesion.setForeground(COLOR_AZUL_CORPORATIVO);
         this.btnCerrarSesion.setFont(new Font("arial", Font.BOLD, 15));
 
+        Dimension tamanoFijo = new Dimension(64, 64);
         this.labelFotoPerfil = new JLabel(new ImageIcon(rutaFotoP));
-        this.labelFotoPerfil.setSize(150, 150);
+        this.labelFotoPerfil.setPreferredSize(tamanoFijo);
+        this.labelFotoPerfil.setMinimumSize(tamanoFijo);
+        this.labelFotoPerfil.setMaximumSize(tamanoFijo);
 
         this.panelSesionUsuario.add(btnCerrarSesion);
         this.panelSesionUsuario.add(labelFotoPerfil);
