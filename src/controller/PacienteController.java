@@ -2,7 +2,6 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 import model.MetodosPublicos;
 import view.PacienteInterfaz;
 import view.Titulo;
@@ -10,6 +9,7 @@ import view.Titulo;
 public class PacienteController implements ActionListener {
 
     protected PacienteInterfaz pacienteI;//protected para que el hijo lo acceda directo
+    public String[] medicos;
 
     public PacienteController(PacienteInterfaz pacienteI) {
         this.pacienteI = pacienteI;
@@ -62,7 +62,7 @@ public class PacienteController implements ActionListener {
             pacienteI.mostrarVistaTipoConsulta(new Titulo("Agendamiento de ", "Cita"));
         }
         if (e.getSource() == pacienteI.btnOdontologia) {
-            String[] medicos = new String[]{"Jean", "cepeda", "petro", "luna", "tovar", "otero"};
+//            String[] medicos = new String[]{"Jean", "cepeda", "petro", "luna", "tovar", "otero"};
             pacienteI.mostrarVistaSeleccionMedico(medicos);
         }
         if (e.getSource() == pacienteI.btnSugerencias) {

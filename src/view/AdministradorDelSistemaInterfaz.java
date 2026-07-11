@@ -11,7 +11,7 @@ import model.MetodosPublicos;
 public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
 
     public JPanel panelUsuarios;
-    public JButton btnRol, btnAsignarRol;
+    public JButton btnRol;
 
     public AdministradorDelSistemaInterfaz(String nombre, String nombreInterfaz, String rutaFotoP) {
         super(nombre, nombreInterfaz, rutaFotoP);
@@ -22,9 +22,7 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
                 BorderFactory.createEmptyBorder(0, 30, 5, 30)));
         this.panelUsuarios.setOpaque(false);
         this.btnRol = new JButton("Usuarios");
-        this.btnAsignarRol = new JButton("Asignar Rol");
         super.agregarBotonCuerpo1(btnRol);
-        super.agregarBotonCuerpo1(btnAsignarRol);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
@@ -41,9 +39,5 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
         if (botonActivo != btnRol && !btnRol.isEnabled()) {
             this.btnRol.setEnabled(true);
         }
-        if (botonActivo != btnAsignarRol && !btnAsignarRol.isEnabled()) {
-            this.btnAsignarRol.setEnabled(true);
-        }
     }
-
 }

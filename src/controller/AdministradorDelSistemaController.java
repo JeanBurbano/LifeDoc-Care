@@ -10,7 +10,6 @@ public class AdministradorDelSistemaController extends PacienteController {
     public AdministradorDelSistemaController(AdministradorDelSistemaInterfaz adminSistem) {
         super(adminSistem); // Registra todos los listeners del paciente automaticamente
         adminSistem.btnRol.addActionListener(this);
-        adminSistem.btnAsignarRol.addActionListener(this);
     }
 
     @Override
@@ -22,11 +21,6 @@ public class AdministradorDelSistemaController extends PacienteController {
             adminSistem.vistaUsuarios();
             adminSistem.btnRol.setEnabled(false);
             adminSistem.habilitarBotonesMenu(adminSistem.btnRol);
-        }
-        if (e.getSource() == adminSistem.btnAsignarRol) {
-            adminSistem.vistaUsuarios();
-            adminSistem.btnAsignarRol.setEnabled(false);
-            adminSistem.habilitarBotonesMenu(adminSistem.btnAsignarRol);
         }
     }
 }

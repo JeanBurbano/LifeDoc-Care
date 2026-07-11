@@ -21,6 +21,7 @@ public class LoginController implements ActionListener {
     Login lg;
     UsuarioDao usuDao;
     private Paciente usu;
+    private byte c;
 
     public LoginController(Login lg, RecuperacionContrasenaInterfaz recuperarC) {
         this.lg = lg;
@@ -36,6 +37,7 @@ public class LoginController implements ActionListener {
                 RecuperarContrasenaController cRc = new RecuperarContrasenaController(rc);
             }
         });
+        this.c = 0;
     }
 
     @Override
@@ -48,7 +50,7 @@ public class LoginController implements ActionListener {
                     && (MetodosPublicos.validarTamano(contrasena, 8)
                     && MetodosPublicos.validarContrasena(contrasena));
 
-            if (validar) {
+            if (validar && c < 6) {
                 this.usuDao = new UsuarioDao();
                 this.usu = usuDao.login(id, contrasena);
                 contrasena = null;
@@ -89,7 +91,23 @@ public class LoginController implements ActionListener {
                 this.usu = null;
                 this.usuDao = null;
                 id = null;
+            } else if (c == 5) {
+                JOptionPane.showMessageDialog(lg, "Los has intentado muchas veces por favor espera 5 minutos");
+                this.lg.bIngresar.setEnabled(false);
+                this.lg.bRegistar.setEnabled(false);
+                try {
+                    // Espera 5 minutos (5 * 60 * 1000 milisegundos)
+                    Thread.sleep(5 * 60 * 1000);
+                    System.out.println("Espera finalizada.");
+                } catch (InterruptedException ex) {
+                    // Manejar la interrupción del hilo
+                    Thread.currentThread().interrupt();
+                }
+                this.lg.bIngresar.setEnabled(true);
+                this.lg.bRegistar.setEnabled(true);
+                c = 0;
             } else {
+                this.c++;
                 if (id.isEmpty()) {
                     JOptionPane.showMessageDialog(lg, "Campo id es obligatorio");
                 } else {
