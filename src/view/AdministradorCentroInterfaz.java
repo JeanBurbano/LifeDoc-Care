@@ -31,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import model.MetodosPublicos;
+import model.Paciente;
 
 /**
  *
@@ -119,8 +120,8 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     // Se llenará en el constructor llamando a la clase  GeneradorHorarios()
     public static String[] HORAS;
 
-    public AdministradorCentroInterfaz(String nombrePersona, String nombreInterfaz, String url) {
-        super(nombrePersona, nombreInterfaz, url);
+    public AdministradorCentroInterfaz(String nombreInterfaz,Paciente usuario) {
+        super(nombreInterfaz, usuario);
 
         //Generar las horas disponibles para los combos de horario
         HORAS = GeneradorHorarios.generarHoras(); //

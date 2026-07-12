@@ -7,14 +7,15 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
+import model.Paciente;
 
 public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
 
     public JPanel panelUsuarios;
     public JButton btnRol;
 
-    public AdministradorDelSistemaInterfaz(String nombre, String nombreInterfaz, String rutaFotoP) {
-        super(nombre, nombreInterfaz, rutaFotoP);
+    public AdministradorDelSistemaInterfaz(String nombreInterfaz,Paciente usuario) {
+        super(nombreInterfaz, usuario);
         this.panelUsuarios = new JPanel();
         this.panelUsuarios.setLayout(new BoxLayout(panelUsuarios, BoxLayout.Y_AXIS));
         this.panelUsuarios.setBorder(BorderFactory.createCompoundBorder(

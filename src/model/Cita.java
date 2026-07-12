@@ -6,7 +6,7 @@ import java.time.LocalTime;
 public class Cita {
     
     private final int idCita;
-    private final String estado;
+    private final boolean estado;
     private final LocalTime horaCita;
     private final LocalDate fechaCita;
     private final int idUsuario;
@@ -15,8 +15,8 @@ public class Cita {
     private final String nombreMedico;
     private final int idUsuarioAgenda;
 
-    public Cita(int idCita, String estado, LocalTime horaCita, LocalDate fechaCita,
-            int idUsuario, String nombrePaciente, int idMedico, String nombreMedico, int idUsuarioAgenda) {
+    public Cita(byte idCita, boolean estado, LocalTime horaCita, LocalDate fechaCita,
+            byte idUsuario, String nombrePaciente, byte idMedico, String nombreMedico, byte idUsuarioAgenda) {
         this.idCita = idCita;
         this.estado = estado;
         this.horaCita = horaCita;
@@ -32,7 +32,7 @@ public class Cita {
         return idCita;
     }
 
-    public String getEstado() {
+    public boolean getEstado() {
         return estado;
     }
 

@@ -17,10 +17,10 @@ public class PruebaMedico {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        MedicoInterfaz i = new MedicoInterfaz("Maria Guzman", "Medico","anonymous.png");
-        i.setVisible(true);
-        i.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        i.setExtendedState(MAXIMIZED_BOTH);
+//        MedicoInterfaz i = new MedicoInterfaz("Maria Guzman", "Medico","anonymous.png");
+//        i.setVisible(true);
+//        i.setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        i.setExtendedState(MAXIMIZED_BOTH);
     }
     
 }

@@ -32,6 +32,7 @@ import model.MetodosPublicos;
 import static model.MetodosPublicos.estilizarBoton;
 import static model.MetodosPublicos.refrescarVentana;
 import static model.MetodosPublicos.vaciarPanel;
+import model.Paciente;
 
 public class OperarioInterfaz extends PacienteInterfaz {
 
@@ -56,8 +57,8 @@ public class OperarioInterfaz extends PacienteInterfaz {
     private JTextField txtHoraCita;
     private JButton btnAgendarCita;
 
-    public OperarioInterfaz(String nombrePersona, String nombreInterfaz, String url) {
-        super(nombrePersona, nombreInterfaz, url);
+    public OperarioInterfaz(String nombreInterfaz,Paciente usuario) {
+        super( nombreInterfaz, usuario);
 
         cuerpo1.removeAll();
 

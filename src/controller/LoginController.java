@@ -60,14 +60,14 @@ public class LoginController implements ActionListener {
                     this.lg.dispose();
                     switch (usu.getId_rol()) {
                         case 1:
-                            AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz(usu.getPrimerNombre(), "Paciente", "fotosPerfil/fotoDefecto.png");
+                            AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz("Administrador del sistema", usu);
                             adminSistem.setVisible(true);
                             adminSistem.setDefaultCloseOperation(EXIT_ON_CLOSE);
                             adminSistem.setExtendedState(MAXIMIZED_BOTH);
                             AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
                             break;
                         case 5:
-                            PacienteInterfaz p = new PacienteInterfaz(usu.getPrimerNombre(), "Paciente", usu.getFotoPerfil());
+                            PacienteInterfaz p = new PacienteInterfaz("Paciente", usu);
                             p.setVisible(true);
                             p.setDefaultCloseOperation(EXIT_ON_CLOSE);
                             p.setExtendedState(MAXIMIZED_BOTH);

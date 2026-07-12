@@ -2,6 +2,8 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import model.Cita;
+import model.CitaDao;
 import model.MetodosPublicos;
 import view.PacienteInterfaz;
 import view.Titulo;
@@ -10,12 +12,12 @@ public class PacienteController implements ActionListener {
 
     protected PacienteInterfaz pacienteI;//protected para que el hijo lo acceda directo
     public String[] medicos;
+    protected Cita[] citas;
 
     public PacienteController(PacienteInterfaz pacienteI) {
         this.pacienteI = pacienteI;
         this.pacienteI.agregarBotonesMenuPaciente();
         this.pacienteI.btnMisCitas.addActionListener(this);
-        this.pacienteI.btnMisCitas.doClick();
         this.pacienteI.btnHistorial.addActionListener(this);
         this.pacienteI.btnComentarios.addActionListener(this);
         this.pacienteI.btnNotificaciones.addActionListener(this);
@@ -31,6 +33,7 @@ public class PacienteController implements ActionListener {
         this.pacienteI.btnOdontologia.addActionListener(this);
         this.pacienteI.btnDermatologia.addActionListener(this);
         this.pacienteI.btnMedicoGeneral.addActionListener(this);
+        this.pacienteI.btnMisCitas.doClick();
     }
 
     @Override
@@ -39,9 +42,9 @@ public class PacienteController implements ActionListener {
             this.pacienteI.dispose();
         }
         if (e.getSource() == pacienteI.btnMisCitas) {
-            pacienteI.mostrarVistaMisCitas();
             pacienteI.btnMisCitas.setEnabled(false);
             pacienteI.habilitarBotonesMenu(pacienteI.btnMisCitas);
+            pacienteI.mostrarVistaMisCitas();
         }
         if (e.getSource() == pacienteI.btnHistorial) {
             pacienteI.mostrarVistaHistorial();

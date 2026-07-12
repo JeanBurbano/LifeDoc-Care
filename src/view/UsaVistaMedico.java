@@ -18,11 +18,11 @@ public class UsaVistaMedico {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        MedicoInterfaz m = new MedicoInterfaz("Maria Guzman", "Medico","anonymous.png");
-        m.setVisible(true);
-        m.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        m.setExtendedState(MAXIMIZED_BOTH);
-        MedicoController clg = new MedicoController(m);
+//        MedicoInterfaz m = new MedicoInterfaz("Maria Guzman", "Medico","anonymous.png");
+//        m.setVisible(true);
+//        m.setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        m.setExtendedState(MAXIMIZED_BOTH);
+//        MedicoController clg = new MedicoController(m);
     } 
     
 }

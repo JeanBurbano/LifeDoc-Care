@@ -29,9 +29,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
+import model.Paciente;
 
 public class PacienteInterfaz extends JFrame {
 
+    public Paciente usuario;
     //Aqui creo los colores que mas vamos autilizar en la plantilla.
     public static final Color COLOR_AZUL_CORPORATIVO = new Color(0, 79, 124);
     public static final Color COLOR_VERDE_ACENTO = new Color(0, 194, 177);
@@ -53,6 +55,8 @@ public class PacienteInterfaz extends JFrame {
     //Aqui creo todo para el apartado MisCitas
     public JPanel panelInfoCitas;
     public JButton btnAgendar;
+    public ArrayList<JButton> listaBotonesReagendar;
+    public ArrayList<JButton> listaBotonesCancelar;
     //Aqui creo todo para el apartado Historial
     public JButton btnHistorialMedico;
     public JButton btnHistorialCitas;
@@ -90,9 +94,9 @@ public class PacienteInterfaz extends JFrame {
 
     }
 
-    public PacienteInterfaz(String nombre, String nombreInterfaz, String rutaFotoP) {
+    public PacienteInterfaz(String nombreInterfaz, Paciente usuario) {
         super(nombreInterfaz);//Asigno nombre de la ventana
-
+        this.usuario = usuario;
         //Fondo de toda la ventana
         this.fondoVentana = new JLabel(new ImageIcon("Fondo1_watermark.jpeg"));//Imagen de marca de agua
         this.fondoVentana.setOpaque(true);//Necesario para que se vea la imagen de fondo
@@ -109,7 +113,7 @@ public class PacienteInterfaz extends JFrame {
         this.panelBienvenida.setLayout(new BorderLayout());
         this.panelBienvenida.setOpaque(false);
 
-        JLabel tituloBienvenida = new JLabel("Bienvenido, " + nombre + "!");
+        JLabel tituloBienvenida = new JLabel("Bienvenido, " + this.usuario.getPrimerNombre() + "!");
         tituloBienvenida.setFont(new Font("arial", Font.BOLD, 30));
 
         this.panelBienvenida.add(tituloBienvenida, BorderLayout.NORTH);
@@ -126,7 +130,7 @@ public class PacienteInterfaz extends JFrame {
         this.btnCerrarSesion.setFont(new Font("arial", Font.BOLD, 15));
 
         Dimension tamanoFijo = new Dimension(64, 64);
-        this.labelFotoPerfil = new JLabel(new ImageIcon(rutaFotoP));
+        this.labelFotoPerfil = new JLabel(new ImageIcon(this.usuario.getFotoPerfil()));
         this.labelFotoPerfil.setPreferredSize(tamanoFijo);
         this.labelFotoPerfil.setMinimumSize(tamanoFijo);
         this.labelFotoPerfil.setMaximumSize(tamanoFijo);
@@ -158,9 +162,11 @@ public class PacienteInterfaz extends JFrame {
         this.panelInfoCitas.setLayout(new BoxLayout(panelInfoCitas, BoxLayout.Y_AXIS));
         this.panelInfoCitas.setOpaque(false);
         this.panelInfoCitas.setPreferredSize(new Dimension(0, 345));
-
+        
         this.btnAgendar = new JButton("❤️Agendar una cita");
         MetodosPublicos.estilizarBoton(btnAgendar, (byte) 3);
+        this.listaBotonesCancelar = new ArrayList<JButton>();
+        this.listaBotonesReagendar=new ArrayList<JButton>();
 
         this.panelHistorial = new JPanel();
         this.panelHistorial.setLayout(new BorderLayout());
@@ -643,4 +649,32 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.refrescarVentana(panelHorarios);
     }
 
+    public void agregarAlPanelMiscitas(JPanel titulo, String fecha, String hora, String nombreMedico) {
+        JPanel c = new JPanel();
+        c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
+        c.setOpaque(false);
+        c.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY),
+                new EmptyBorder(10, 0, 10, 0)));
+
+        JButton btnReagendarCita = new JButton("Reagendar");
+        JButton btnCancelarCita = new JButton("Cancelar");
+        MetodosPublicos.estilizarBoton(btnReagendarCita, (byte) 2);
+        MetodosPublicos.estilizarBoton(btnCancelarCita, (byte) 2);
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        panelBotones.setOpaque(false);
+        panelBotones.add(btnReagendarCita);
+        panelBotones.add(btnCancelarCita);
+
+        c.add(titulo);
+        c.add(new JLabel(fecha));
+        c.add(new JLabel(hora));
+        c.add(new JLabel(nombreMedico));
+        c.add(panelBotones);
+
+        this.listaBotonesReagendar.add(btnReagendarCita);
+        this.listaBotonesCancelar.add(btnCancelarCita);
+        this.panelInfoCitas.add(c);
+    }
 }

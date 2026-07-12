@@ -9,42 +9,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CitaDao implements Crud<Cita> {
+
+    public CitaDao() {
+
+    }
     // setAgregar devuelve esto cuando el medico ya tiene otra cita en esa fecha/hora.
     public static final int CONFLICTO_HORARIO = -1;
 
     public static Conexion conectar = new Conexion();
 
-    @Override
-    public List<Cita> listar() {
+    public Cita[] listarPorUsuario(int idUsuario) {
         List<Cita> citas = new ArrayList<>();
         String sql = "SELECT c.id_cita, c.estado, c.hora_cita, c.fecha_cita, "
-                + "c.id_Usuario, CONCAT(up.primer_nombre, ' ', up.primer_apellido) AS nombre_paciente, "
-                + "c.id_Medico, CONCAT(um.primer_nombre, ' ', um.primer_apellido) AS nombre_medico, "
+                + "c.id_Usuario, up.primer_nombre, up.primer_apellido, "
+                + "c.id_Medico, um.primer_nombre AS medico_nombre, um.primer_apellido AS medico_apellido, "
                 + "c.id_usuario_agenda "
                 + "FROM cita c "
                 + "JOIN usuario up ON up.id_usuario = c.id_Usuario "
                 + "JOIN medico m ON m.id_medico = c.id_Medico "
                 + "JOIN usuario um ON um.id_usuario = m.id_usuario "
+                + "WHERE c.id_Usuario = ? AND c.estado = 1 "
                 + "ORDER BY c.fecha_cita, c.hora_cita";
-        try (Connection con = conectar.getConection();
-                PreparedStatement ps = con.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                citas.add(new Cita(
-                        rs.getInt("id_cita"),
-                        rs.getString("estado"),
-                        rs.getTime("hora_cita").toLocalTime(),
-                        rs.getDate("fecha_cita").toLocalDate(),
-                        rs.getInt("id_Usuario"),
-                        rs.getString("nombre_paciente"),
-                        rs.getInt("id_Medico"),
-                        rs.getString("nombre_medico"),
-                        rs.getInt("id_usuario_agenda")
-                ));
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String nombrePaciente = rs.getString("primer_nombre") + " " + rs.getString("primer_apellido");
+                    String nombreMedico = rs.getString("medico_nombre") + " " + rs.getString("medico_apellido");
+                    citas.add(new Cita(
+                            rs.getByte("id_cita"),
+                            rs.getBoolean("estado"),
+                            rs.getTime("hora_cita").toLocalTime(),
+                            rs.getDate("fecha_cita").toLocalDate(),
+                            rs.getByte("id_Usuario"),
+                            nombrePaciente,
+                            rs.getByte("id_Medico"),
+                            nombreMedico,
+                            rs.getByte("id_usuario_agenda")
+                    ));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return citas.toArray(new Cita[0]);
+    }
+
+    @Override
+    public List<Cita> listar() {
+        List<Cita> citas = new ArrayList<>();
         return citas;
     }
 
@@ -52,8 +65,7 @@ public class CitaDao implements Crud<Cita> {
     public int setAgregar(Cita tr) {
         String sql = "INSERT INTO cita (hora_cita, fecha_cita, id_Usuario, id_Medico, id_usuario_agenda) "
                 + "VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = conectar.getConection();
-                PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setObject(1, tr.getHoraCita());
             ps.setObject(2, tr.getFechaCita());
             ps.setInt(3, tr.getIdUsuario());
@@ -72,16 +84,7 @@ public class CitaDao implements Crud<Cita> {
 
     @Override
     public int setActualizar(Cita tr) {
-        String sql = "UPDATE cita SET estado = ? WHERE id_cita = ?";
-        try (Connection con = conectar.getConection();
-                PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, tr.getEstado());
-            ps.setInt(2, tr.getIdCita());
-            return ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
+        return 0;
     }
 
     @Override
@@ -89,8 +92,7 @@ public class CitaDao implements Crud<Cita> {
         // no se borra la cita: queda en la BD como 'Cancelada' para mantener
         // el historial (y para que los reportes del admin del centro cuadren).
         String sql = "UPDATE cita SET estado = 'Cancelada' WHERE id_cita = ?";
-        try (Connection con = conectar.getConection();
-                PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             return ps.executeUpdate();
         } catch (SQLException e) {

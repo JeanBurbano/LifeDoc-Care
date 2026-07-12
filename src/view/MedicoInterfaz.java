@@ -18,6 +18,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
+import model.Paciente;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MedicoInterfaz extends PacienteInterfaz {
@@ -29,8 +30,8 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
     ;
 
-    public MedicoInterfaz(String nombre, String nombreInterfaz, String rutaFotoP) {
-        super(nombre, nombreInterfaz, rutaFotoP);
+    public MedicoInterfaz(String nombreInterfaz,Paciente usuario) {
+        super(nombreInterfaz, usuario);
 
         this.btnMisCitas = new JButton("👥 Mis citas");
         this.btnHistorial = new JButton("☰ Historial");
