@@ -1,13 +1,10 @@
 package model;
 
+import java.util.List;
+
 public interface Crud<T> {
-
-    public void listar(T lista);
-
-    public int setAgregar(T tr);
-
-    public int setActualizar(T tr);
-
-    public int setEliminar(int id);
-
+    List<T> listar();
+    int setAgregar(T tr);
+    int setActualizar(T tr);
+    int setEliminar(int id);
 }

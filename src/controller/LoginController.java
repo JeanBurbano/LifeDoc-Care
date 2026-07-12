@@ -19,7 +19,7 @@ public class LoginController implements ActionListener {
 
     RecuperacionContrasenaInterfaz rc;
     Login lg;
-    UsuarioDao usuDao;
+    UsuarioDao usuDao = new UsuarioDao();
     private Paciente usu;
     private byte c;
 
@@ -42,6 +42,9 @@ public class LoginController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        this.lg.bIngresar.setEnabled(false);
+        this.lg.bRegistar.setEnabled(false);
+        this.lg.titulo2.setEnabled(false);
         if (e.getSource() == this.lg.bIngresar) {
             String id = this.lg.getId();
             String contrasena = this.lg.getPassword();
@@ -51,7 +54,6 @@ public class LoginController implements ActionListener {
                     && MetodosPublicos.validarContrasena(contrasena));
 
             if (validar && c < 6) {
-                this.usuDao = new UsuarioDao();
                 this.usu = usuDao.login(id, contrasena);
                 contrasena = null;
                 if (usu != null && usu.getEstado()) {
@@ -95,13 +97,9 @@ public class LoginController implements ActionListener {
                 JOptionPane.showMessageDialog(lg, "Los has intentado muchas veces por favor espera 5 minutos");
                 this.lg.bIngresar.setEnabled(false);
                 this.lg.bRegistar.setEnabled(false);
-                try {
-                    // Espera 5 minutos (5 * 60 * 1000 milisegundos)
-                    Thread.sleep(5 * 60 * 1000);
-                    System.out.println("Espera finalizada.");
-                } catch (InterruptedException ex) {
-                    // Manejar la interrupción del hilo
-                    Thread.currentThread().interrupt();
+                //deveria para y esperar 2 minutos por muchos intentos
+                for (int i = 1; i < 51; i++) {
+                    System.out.println("esperando...");
                 }
                 this.lg.bIngresar.setEnabled(true);
                 this.lg.bRegistar.setEnabled(true);
@@ -135,5 +133,8 @@ public class LoginController implements ActionListener {
                 }
             }
         }
+        this.lg.bIngresar.setEnabled(true);
+        this.lg.bRegistar.setEnabled(true);
+        this.lg.titulo2.setEnabled(true);
     }
 }
