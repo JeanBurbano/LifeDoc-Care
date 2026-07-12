@@ -14,29 +14,6 @@ public class MedicoDao implements Crud<Medico> {
     @Override
     public List<Medico> listar() {
         List<Medico> medicos = new ArrayList<>();
-        String sql = "SELECT m.id_medico, m.id_usuario, "
-                + "CONCAT(u.primer_nombre, ' ', u.primer_apellido) AS nombre_completo, "
-                + "e.id_especialidad, e.nombre_especialidad "
-                + "FROM medico m "
-                + "JOIN usuario u ON u.id_usuario = m.id_usuario "
-                + "JOIN especialidad e ON e.id_especialidad = m.id_especialidad "
-                + "WHERE u.estado = 1 "
-                + "ORDER BY nombre_completo";
-        try (Connection con = conectar.getConection();
-                PreparedStatement ps = con.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                medicos.add(new Medico(
-                        rs.getInt("id_medico"),
-                        rs.getInt("id_usuario"),
-                        rs.getString("nombre_completo"),
-                        rs.getInt("id_especialidad"),
-                        rs.getString("nombre_especialidad")
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return medicos;
     }
 

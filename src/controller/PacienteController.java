@@ -2,6 +2,9 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import javax.swing.JLabel;
 import model.Cita;
 import model.CitaDao;
 import model.MetodosPublicos;
@@ -10,11 +13,13 @@ import view.Titulo;
 
 public class PacienteController implements ActionListener {
 
+    private CitaDao citadao;
     protected PacienteInterfaz pacienteI;//protected para que el hijo lo acceda directo
     public String[] medicos;
     protected Cita[] citas;
 
     public PacienteController(PacienteInterfaz pacienteI) {
+        this.citadao = new CitaDao();
         this.pacienteI = pacienteI;
         this.pacienteI.agregarBotonesMenuPaciente();
         this.pacienteI.btnMisCitas.addActionListener(this);
@@ -45,11 +50,21 @@ public class PacienteController implements ActionListener {
             pacienteI.btnMisCitas.setEnabled(false);
             pacienteI.habilitarBotonesMenu(pacienteI.btnMisCitas);
             pacienteI.mostrarVistaMisCitas();
+            this.citas = citadao.listarPorUsuario(pacienteI.usuario.getIdUsuario());
+            if (citas == null) {
+                pacienteI.panelInfoCitas.add(new JLabel("No tienes citas"));
+            } else {
+                for (int i=0; i<5; i++) {
+                    pacienteI.agregarAlPanelMiscitas(new Titulo("Cita ", "Medica").getPanelTitulo(), "jj", "lll",
+                            "ee");
+
+                }
+            }
         }
         if (e.getSource() == pacienteI.btnHistorial) {
-            pacienteI.mostrarVistaHistorial();
             pacienteI.btnHistorial.setEnabled(false);
             pacienteI.habilitarBotonesMenu(pacienteI.btnHistorial);
+            pacienteI.mostrarVistaHistorial();
         }
         if (e.getSource() == pacienteI.btnComentarios) {
             pacienteI.mostrarVistaComentarios();

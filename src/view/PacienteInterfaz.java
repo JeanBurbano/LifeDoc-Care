@@ -652,10 +652,10 @@ public class PacienteInterfaz extends JFrame {
     public void agregarAlPanelMiscitas(JPanel titulo, String fecha, String hora, String nombreMedico) {
         JPanel c = new JPanel();
         c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
-        c.setOpaque(false);
-        c.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY),
-                new EmptyBorder(10, 0, 10, 0)));
+//        c.setOpaque(false);
+//        c.setBorder(BorderFactory.createCompoundBorder(
+//                BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY),
+//                new EmptyBorder(10, 0, 10, 0)));
 
         JButton btnReagendarCita = new JButton("Reagendar");
         JButton btnCancelarCita = new JButton("Cancelar");
@@ -676,5 +676,6 @@ public class PacienteInterfaz extends JFrame {
         this.listaBotonesReagendar.add(btnReagendarCita);
         this.listaBotonesCancelar.add(btnCancelarCita);
         this.panelInfoCitas.add(c);
+        MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
 }
