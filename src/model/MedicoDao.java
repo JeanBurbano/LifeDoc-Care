@@ -9,46 +9,28 @@ import java.util.List;
 
 public class MedicoDao implements Crud<Medico> {
 
-    public static Conexion conectar = new Conexion();
+    public Conexion conectar = new Conexion();
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
 
     public Medico[] listarPorEspecialidad(int idEspecialidad) {
         List<Medico> medicos = new ArrayList<>();
-        String sql = "SELECT u.id_usuario, u.id_rol, ti.nombre_tipo_identificacion, u.numero_identificacion, "
-                + "u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido, "
-                + "u.correo_electronico, u.fecha_nacimiento, u.sexo_biologico, u.numero_celular, "
-                + "u.edad, u.estado, u.sisben, "
-                + "COALESCE(f.url_foto_perfil, 'fotosPerfil/fotoDefecto.png') AS foto_perfil, "
-                + "esp.nombre_especialidad "
+        String sql = "SELECT m.id_medico, u.primer_nombre, u.primer_apellido "
                 + "FROM medico m "
                 + "JOIN usuario u ON u.id_usuario = m.id_usuario "
-                + "JOIN especialidad esp ON esp.id_especialidad = m.id_especialidad "
-                + "JOIN tipo_identificacion ti ON ti.id_tipo_identificacion = u.id_tipo_identificacion "
-                + "LEFT JOIN fotos_perfil f ON f.id_usuario = u.id_usuario AND f.es_actual = 1 "
-                + "WHERE m.id_especialidad = ? AND u.estado = 1 AND u.id_rol = 3 "
+                + "WHERE m.id_especialidad = ? AND u.estado = 1 "
                 + "ORDER BY u.primer_apellido, u.primer_nombre";
-
-        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+        try {
+            con = conectar.getConection();
+            ps = con.prepareStatement(sql);
             ps.setInt(1, idEspecialidad);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     medicos.add(new Medico(
-                            rs.getInt("id_usuario"),
-                            rs.getByte("id_rol"),
-                            rs.getString("nombre_tipo_identificacion"),
-                            rs.getString("numero_identificacion"),
+                            rs.getInt("id_medico"),
                             rs.getString("primer_nombre"),
-                            rs.getString("segundo_nombre"),
-                            rs.getString("primer_apellido"),
-                            rs.getString("segundo_apellido"),
-                            rs.getString("correo_electronico"),
-                            rs.getDate("fecha_nacimiento").toLocalDate(),
-                            rs.getString("sexo_biologico"),
-                            rs.getString("numero_celular"),
-                            rs.getByte("edad"),
-                            rs.getBoolean("estado"),
-                            rs.getString("sisben"),
-                            rs.getString("foto_perfil"),
-                            rs.getString("nombre_especialidad")
+                            rs.getString("primer_apellido")
                     ));
                 }
             }

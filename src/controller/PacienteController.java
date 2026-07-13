@@ -2,9 +2,13 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import model.Cita;
 import model.CitaDao;
+import model.Medico;
+import model.MedicoDao;
 import model.MetodosPublicos;
 import view.PacienteInterfaz;
 import view.Titulo;
@@ -12,12 +16,14 @@ import view.Titulo;
 public class PacienteController implements ActionListener {
 
     private CitaDao citadao;
+    private MedicoDao medicodao;
     protected PacienteInterfaz pacienteI;//protected para que el hijo lo acceda directo
-    public String[] medicos;
+    public Medico[] medicos;
     protected Cita[] citas;
 
     public PacienteController(PacienteInterfaz pacienteI) {
         this.citadao = new CitaDao();
+        this.medicodao = new MedicoDao();
         this.pacienteI = pacienteI;
         this.pacienteI.agregarBotonesMenuPaciente();
         this.pacienteI.btnMisCitas.addActionListener(this);
@@ -39,6 +45,13 @@ public class PacienteController implements ActionListener {
         this.pacienteI.btnMisCitas.doClick();
     }
 
+  public void actionListenerParaBotonesDeVectores(ArrayList<JButton> vectorBotones) {
+    for (JButton boton : vectorBotones) {
+        boton.addActionListener((ActionEvent e) -> {
+            pacienteI.mostrarVistaAgendamientoCita(new Titulo("Agendar una ", "cita",50));
+        });
+    }
+}
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == pacienteI.btnCerrarSesion) {
@@ -58,7 +71,7 @@ public class PacienteController implements ActionListener {
                 for (Cita clave : citas) {
                     pacienteI.agregarAlPanelMiscitas(new Titulo("Cita ", clave.getEspecialidad(), 30).getPanelTitulo(),
                             clave.getFechaCita().toString(), clave.getHoraCita().toString(),
-                            "Nombre Medico(a): "+clave.getNombreMedico());
+                            "Nombre Medico(a): " + clave.getNombreMedico());
                 }
             }
         }
@@ -82,8 +95,14 @@ public class PacienteController implements ActionListener {
             pacienteI.mostrarVistaTipoConsulta(new Titulo("Agendamiento de ", "Cita"));
         }
         if (e.getSource() == pacienteI.btnOdontologia) {
-//            String[] medicos = new String[]{"Jean", "cepeda", "petro", "luna", "tovar", "otero"};
-            pacienteI.mostrarVistaSeleccionMedico(medicos);
+            pacienteI.listaBotonesMedicos.clear();
+            medicos = medicodao.listarPorEspecialidad(2);
+            String[] nombreMedicos = new String[medicos.length];
+            for (int i = 0; i < medicos.length; i++) {
+                nombreMedicos[i] = medicos[i].getPrimerNombre() + " " + medicos[i].getPrimerApellido();
+            }
+            pacienteI.mostrarVistaSeleccionMedico(nombreMedicos);
+            actionListenerParaBotonesDeVectores(pacienteI.listaBotonesMedicos);
         }
         if (e.getSource() == pacienteI.btnSugerencias) {
             pacienteI.btnSugerencias.setEnabled(false);

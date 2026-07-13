@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class UsuarioDao {
 
-    public static Conexion conectar = new Conexion();
+    public  Conexion conectar = new Conexion();
     Connection con;
     PreparedStatement ps;
     ResultSet rs;

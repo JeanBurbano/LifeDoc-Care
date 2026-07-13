@@ -568,7 +568,7 @@ public class PacienteInterfaz extends JFrame {
         panelTitulo = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo eliminar para ahorrar memoria o algo asi por el estilo creo
 
         for (String nombreMedico : medicos) {
-            JButton botonMedico = new JButton("👤 " + nombreMedico);//Creo boton con el nombre del medico
+            JButton botonMedico = new JButton(nombreMedico,new ImageIcon("iconsP/avatar.png"));//Creo boton con el nombre del medico
             MetodosPublicos.estilizarBoton(botonMedico, (byte) 4);//Agrego estilo al boton
             MetodosPublicos.prepararBotonTarjeta(botonMedico, 380, 55);//Agrego tamano estable 
             this.listaBotonesMedicos.add(botonMedico);
