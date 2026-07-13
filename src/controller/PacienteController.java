@@ -56,9 +56,9 @@ public class PacienteController implements ActionListener {
                 MetodosPublicos.refrescarVentana(pacienteI.panelInfoCitas);
             } else {
                 for (Cita clave : citas) {
-                    pacienteI.agregarAlPanelMiscitas(new Titulo("Cita ", clave.getEspecialidad(), 40).getPanelTitulo(),
+                    pacienteI.agregarAlPanelMiscitas(new Titulo("Cita ", clave.getEspecialidad(), 30).getPanelTitulo(),
                             clave.getFechaCita().toString(), clave.getHoraCita().toString(),
-                            clave.getNombreMedico());
+                            "Nombre Medico(a): "+clave.getNombreMedico());
                 }
             }
         }
@@ -68,9 +68,10 @@ public class PacienteController implements ActionListener {
             pacienteI.mostrarVistaHistorial();
         }
         if (e.getSource() == pacienteI.btnComentarios) {
-            pacienteI.mostrarVistaComentarios();
             pacienteI.btnComentarios.setEnabled(false);
             pacienteI.habilitarBotonesMenu(pacienteI.btnComentarios);
+            pacienteI.mostrarVistaComentarios();
+            pacienteI.btnSugerencias.doClick();
         }
         if (e.getSource() == pacienteI.btnNotificaciones) {
             pacienteI.mostrarVistaNotificaciones();
@@ -85,12 +86,18 @@ public class PacienteController implements ActionListener {
             pacienteI.mostrarVistaSeleccionMedico(medicos);
         }
         if (e.getSource() == pacienteI.btnSugerencias) {
+            pacienteI.btnSugerencias.setEnabled(false);
+            pacienteI.btnQuejas.setEnabled(true);
             pacienteI.construirFormularioComentario();
         }
         if (e.getSource() == pacienteI.btnQuejas) {
+            pacienteI.btnQuejas.setEnabled(false);
+            pacienteI.btnSugerencias.setEnabled(true);
             pacienteI.construirFormularioComentario();
         }
         if (e.getSource() == pacienteI.btnForo) {
+            pacienteI.btnQuejas.setEnabled(true);
+            pacienteI.btnSugerencias.setEnabled(true);
             MetodosPublicos.vaciarPanel(pacienteI.panelComentarios);
         }
     }

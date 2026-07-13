@@ -1,38 +1,37 @@
 package model;
 
-public class Medico {
+import java.time.LocalDate;
 
-    private final int idMedico;
-    private final int idUsuario;
-    private final String nombreCompleto;
-    private final int idEspecialidad;
-    private final String especialidad;
+public class Medico extends Paciente {
 
-    public Medico(int idMedico, int idUsuario, String nombreCompleto, int idEspecialidad, String especialidad) {
-        this.idMedico = idMedico;
-        this.idUsuario = idUsuario;
-        this.nombreCompleto = nombreCompleto;
-        this.idEspecialidad = idEspecialidad;
+    private String especialidad;
+
+    public Medico(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String correo, LocalDate fechaNacimiento, String sexoBiologico, String numeroTelefonico, byte edad, boolean estado, String sisben, String fotoPerfil, String especialidad) {
+        super(id_usuario,
+                id_rol,
+                tipoId,
+                numeroId,
+                primerNombre,
+                segundoNombre,
+                primerApellido,
+                segundoApellido,
+                correo,
+                fechaNacimiento,
+                sexoBiologico,
+                numeroTelefonico,
+                edad,
+                estado,
+                sisben,
+                fotoPerfil);
         this.especialidad = especialidad;
     }
 
-    public int getIdMedico() {
-        return idMedico;
-    }
-
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public String getNombreCompleto() {
-        return nombreCompleto;
-    }
-
-    public int getIdEspecialidad() {
-        return idEspecialidad;
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
     }
 
     public String getEspecialidad() {
-        return especialidad;
+        return this.especialidad;
     }
 }

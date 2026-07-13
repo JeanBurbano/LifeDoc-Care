@@ -222,9 +222,9 @@ public class PacienteInterfaz extends JFrame {
         this.panelComentarios.setOpaque(false);
 
         this.btnSugerencias = new JButton("Sugerencias ", new ImageIcon("iconsP/happy-face.png"));
-        this.btnQuejas = new JButton(" ❌ Quejas ");
-        this.btnForo = new JButton(" ✉️ Foro ");
-        this.btnEnviar = new JButton(" 📤 Enviar ");
+        this.btnQuejas = new JButton("Quejas ",new ImageIcon("iconsP/quejas.png"));
+        this.btnForo = new JButton("Foro ",new ImageIcon("iconsP/communication.png"));
+        this.btnEnviar = new JButton("Enviar ",new ImageIcon("iconsP/descargar.png"));
         MetodosPublicos.estilizarBoton(btnQuejas, (byte) 4);
         MetodosPublicos.estilizarBoton(btnSugerencias, (byte) 4);
         MetodosPublicos.estilizarBoton(btnForo, (byte) 4);
@@ -322,10 +322,11 @@ public class PacienteInterfaz extends JFrame {
         JPanel panelAgenda = new JPanel();
         panelAgenda.setLayout(new BoxLayout(panelAgenda, BoxLayout.Y_AXIS));
         panelAgenda.setPreferredSize(new Dimension(600, 0));
+//        panelAgenda.set
         panelAgenda.setOpaque(false);
         panelAgenda.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(90, 0, 0, 0)));
+                BorderFactory.createEmptyBorder(110, 0, 95, 0)));
 
         JLabel lblTituloAgenda = new JLabel("¡Agenda una cita con nosotros!");
         lblTituloAgenda.setFont(new Font("arial", Font.BOLD, 20));
@@ -390,7 +391,7 @@ public class PacienteInterfaz extends JFrame {
         this.cuerpo2.add(scrollCitas, BorderLayout.CENTER);
         this.cuerpo2.add(panelContacto, BorderLayout.SOUTH);
         labelCitas = null;//Ya quedo agregado al cuerpo2 entonces libero memoria 
-
+        System.out.println(panelAgenda.getHeight());
         MetodosPublicos.refrescarVentana(cuerpo2);
         MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
@@ -441,13 +442,13 @@ public class PacienteInterfaz extends JFrame {
     //Aqui creo el metodo que me permitiria contruer el aprtado de comentarios para quejas y sujerencias
     public void construirFormularioComentario() {
         MetodosPublicos.vaciarPanel(panelComentarios);
-        JLabel lblAsunto = new JLabel("Asunto");
+        JLabel lblAsunto = new JLabel("Asunto *");
         lblAsunto.setFont(new Font("Arial", Font.BOLD, 22));
         lblAsunto.setForeground(COLOR_AZUL_CORPORATIVO);
         lblAsunto.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblAsunto.setBorder(new EmptyBorder(20, 0, 0, 0));
 
-        JLabel lblDescripcion = new JLabel("Descripción");
+        JLabel lblDescripcion = new JLabel("Descripción *");
         lblDescripcion.setFont(new Font("Arial", Font.BOLD, 22));
         lblDescripcion.setForeground(COLOR_AZUL_CORPORATIVO);
         lblDescripcion.setAlignmentX(Component.CENTER_ALIGNMENT);
