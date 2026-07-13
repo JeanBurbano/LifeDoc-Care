@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Cita {
-    
+
     private final int idCita;
     private final boolean estado;
     private final LocalTime horaCita;
@@ -13,10 +13,12 @@ public class Cita {
     private final String nombrePaciente;
     private final int idMedico;
     private final String nombreMedico;
+    private final String especialidad;
     private final int idUsuarioAgenda;
 
     public Cita(byte idCita, boolean estado, LocalTime horaCita, LocalDate fechaCita,
-            byte idUsuario, String nombrePaciente, byte idMedico, String nombreMedico, byte idUsuarioAgenda) {
+            byte idUsuario, String nombrePaciente, byte idMedico, String nombreMedico,
+            String especialidad, byte idUsuarioAgenda) {
         this.idCita = idCita;
         this.estado = estado;
         this.horaCita = horaCita;
@@ -25,6 +27,7 @@ public class Cita {
         this.nombrePaciente = nombrePaciente;
         this.idMedico = idMedico;
         this.nombreMedico = nombreMedico;
+        this.especialidad = especialidad;
         this.idUsuarioAgenda = idUsuarioAgenda;
     }
 
@@ -62,5 +65,9 @@ public class Cita {
 
     public int getIdUsuarioAgenda() {
         return idUsuarioAgenda;
+    }
+
+    public String getEspecialidad() {
+        return especialidad;
     }
 }

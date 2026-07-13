@@ -161,12 +161,12 @@ public class PacienteInterfaz extends JFrame {
         this.panelInfoCitas = new JPanel();
         this.panelInfoCitas.setLayout(new BoxLayout(panelInfoCitas, BoxLayout.Y_AXIS));
         this.panelInfoCitas.setOpaque(false);
-        this.panelInfoCitas.setPreferredSize(new Dimension(0, 345));
-        
-        this.btnAgendar = new JButton("❤️Agendar una cita");
+        this.panelInfoCitas.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        this.btnAgendar = new JButton("️Agendar una cita ", new ImageIcon("iconsP/heart.png"));
         MetodosPublicos.estilizarBoton(btnAgendar, (byte) 3);
         this.listaBotonesCancelar = new ArrayList<JButton>();
-        this.listaBotonesReagendar=new ArrayList<JButton>();
+        this.listaBotonesReagendar = new ArrayList<JButton>();
 
         this.panelHistorial = new JPanel();
         this.panelHistorial.setLayout(new BorderLayout());
@@ -189,8 +189,8 @@ public class PacienteInterfaz extends JFrame {
         this.panelBotonesLaterales.setPreferredSize(new Dimension(400, 0));
         this.panelBotonesLaterales.setOpaque(false);
 
-        this.btnHistorialMedico = new JButton(" 👤 Historial Medico ");
-        this.btnHistorialCitas = new JButton(" 👥 Historial de Citas");
+        this.btnHistorialMedico = new JButton("Historial Medico ", new ImageIcon("iconsP/avatar.png"));
+        this.btnHistorialCitas = new JButton("Historial de Citas", new ImageIcon("iconsP/friends.png"));
         this.btnDescargar = new JButton(" ⬇️ Descargar Historial Medico");
         MetodosPublicos.estilizarBoton(btnHistorialMedico, (byte) 2);
         MetodosPublicos.estilizarBoton(btnHistorialCitas, (byte) 2);
@@ -221,7 +221,7 @@ public class PacienteInterfaz extends JFrame {
                 BorderFactory.createEmptyBorder(0, 30, 5, 30)));
         this.panelComentarios.setOpaque(false);
 
-        this.btnSugerencias = new JButton(" 😄 Sugerencias ");
+        this.btnSugerencias = new JButton("Sugerencias ", new ImageIcon("iconsP/happy-face.png"));
         this.btnQuejas = new JButton(" ❌ Quejas ");
         this.btnForo = new JButton(" ✉️ Foro ");
         this.btnEnviar = new JButton(" 📤 Enviar ");
@@ -237,9 +237,9 @@ public class PacienteInterfaz extends JFrame {
                 BorderFactory.createEmptyBorder(0, 30, 5, 30)));
         this.panelContenidoNotificaciones.setOpaque(false);
 
-        this.btnOdontologia = new JButton("❤️ Odontologia");
-        this.btnDermatologia = new JButton("❤️ Dermatologia");
-        this.btnMedicoGeneral = new JButton("❤️ Medico General");
+        this.btnOdontologia = new JButton("Odontologia", new ImageIcon("iconsP/heart.png"));
+        this.btnDermatologia = new JButton("Dermatologia", new ImageIcon("iconsP/heart.png"));
+        this.btnMedicoGeneral = new JButton("Medico General", new ImageIcon("iconsP/heart.png"));
         MetodosPublicos.estilizarBoton(btnOdontologia, (byte) 4);
         MetodosPublicos.estilizarBoton(btnDermatologia, (byte) 4);
         MetodosPublicos.estilizarBoton(btnMedicoGeneral, (byte) 4);
@@ -301,10 +301,10 @@ public class PacienteInterfaz extends JFrame {
 
     //Aqui creo metodo que me permitira cargar al cuerpo1 los botones del paciente
     public void agregarBotonesMenuPaciente() {
-        this.btnMisCitas = new JButton("🫂Mis citas");
-        this.btnHistorial = new JButton("📚Historial");
-        this.btnComentarios = new JButton("🗨️Comentarios");
-        this.btnNotificaciones = new JButton("✉️Notificaciones");
+        this.btnMisCitas = new JButton("Mis citas", new ImageIcon("iconsP/heart.png"));
+        this.btnHistorial = new JButton("Historial", new ImageIcon("iconsP/file.png"));
+        this.btnComentarios = new JButton("️Comentarios", new ImageIcon("iconsP/chat-bubble.png"));
+        this.btnNotificaciones = new JButton("️Notificaciones", new ImageIcon("iconsP/bell.png"));
         agregarBotonCuerpo1(btnMisCitas);
         agregarBotonCuerpo1(btnHistorial);
         agregarBotonCuerpo1(btnComentarios);
@@ -351,7 +351,7 @@ public class PacienteInterfaz extends JFrame {
                 BorderFactory.createEmptyBorder(40, 40, 0, 0)));
         panelContacto.setPreferredSize(new Dimension(Short.MAX_VALUE, 200));
 
-        JLabel lblContactoTitulo = new JLabel("👤 Si tienes dificultades para agendar tu cita, ¡contáctanos!");
+        JLabel lblContactoTitulo = new JLabel("Si tienes dificultades para agendar tu cita, ¡contáctanos! ", new ImageIcon("iconsP/friends.png"), JLabel.CENTER);
         lblContactoTitulo.setFont(new Font("arial", Font.BOLD, 28));
         lblContactoTitulo.setForeground(COLOR_AZUL_CORPORATIVO);
         lblContactoTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -361,7 +361,7 @@ public class PacienteInterfaz extends JFrame {
         lblContactoSub.setForeground(COLOR_AZUL_CORPORATIVO);
         lblContactoSub.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel lblTelefono = new JLabel("📞+57 316 127 3588");
+        JLabel lblTelefono = new JLabel("+57 316 127 3588", new ImageIcon("iconsP/phone-call.png"), JLabel.CENTER);
         lblTelefono.setFont(new Font("arial", Font.BOLD, 30));
         lblTelefono.setForeground(COLOR_AZUL_CORPORATIVO);
         lblTelefono.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -378,6 +378,7 @@ public class PacienteInterfaz extends JFrame {
         labelCitas.setForeground(COLOR_AZUL_CORPORATIVO);
 
         JScrollPane scrollCitas = new JScrollPane(panelInfoCitas);
+        scrollCitas.setPreferredSize(new Dimension(600, 345));
         scrollCitas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollCitas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollCitas.setOpaque(false);
@@ -650,28 +651,44 @@ public class PacienteInterfaz extends JFrame {
     }
 
     public void agregarAlPanelMiscitas(JPanel titulo, String fecha, String hora, String nombreMedico) {
-        JPanel c = new JPanel();
-        c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
-//        c.setOpaque(false);
-//        c.setBorder(BorderFactory.createCompoundBorder(
-//                BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY),
-//                new EmptyBorder(10, 0, 10, 0)));
+        JPanel panelBotones = new JPanel(), panelContenido = new JPanel(), c = new JPanel();
+        panelBotones.setOpaque(false);
+        panelBotones.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        panelContenido.setOpaque(false);
+        panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
+        panelContenido.setAlignmentX(Component.LEFT_ALIGNMENT);
+        c.setLayout(new BorderLayout());
+        c.setOpaque(false);
+        c.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY),
+                new EmptyBorder(10, 0, 10, 0)));
+
+        JLabel lblFecha = new JLabel("Fecha: " + fecha);
+        lblFecha.setFont(new Font("Arial", Font.BOLD, 19));
+        JLabel lblHora = new JLabel("Hora: " + hora);
+        lblHora.setFont(new Font("Arial", Font.BOLD, 19));
+        JLabel lblMedico = new JLabel(nombreMedico);
+        lblMedico.setFont(new Font("Arial", Font.BOLD, 19));
+
+        titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblHora.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblMedico.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        panelContenido.add(titulo);
+        panelContenido.add(lblFecha);
+        panelContenido.add(lblHora);
+        panelContenido.add(lblMedico);
 
         JButton btnReagendarCita = new JButton("Reagendar");
         JButton btnCancelarCita = new JButton("Cancelar");
-        MetodosPublicos.estilizarBoton(btnReagendarCita, (byte) 2);
-        MetodosPublicos.estilizarBoton(btnCancelarCita, (byte) 2);
-
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        panelBotones.setOpaque(false);
-        panelBotones.add(btnReagendarCita);
+        MetodosPublicos.estilizarBoton(btnReagendarCita, (byte) 7);
+        MetodosPublicos.estilizarBoton(btnCancelarCita, (byte) 6);
         panelBotones.add(btnCancelarCita);
+        panelBotones.add(btnReagendarCita);
 
-        c.add(titulo);
-        c.add(new JLabel(fecha));
-        c.add(new JLabel(hora));
-        c.add(new JLabel(nombreMedico));
-        c.add(panelBotones);
+        c.add(panelContenido, BorderLayout.WEST);
+        c.add(panelBotones, BorderLayout.EAST);
 
         this.listaBotonesReagendar.add(btnReagendarCita);
         this.listaBotonesCancelar.add(btnCancelarCita);

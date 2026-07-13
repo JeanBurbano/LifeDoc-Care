@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.MetodosPublicos;
 import model.UsuarioDao;
@@ -17,11 +18,15 @@ import view.RecuperacionContrasenaInterfaz;
 
 public class LoginController implements ActionListener {
 
+    private static final byte MAX_INTENTOS = 5;
+    private static final int MINUTOS_BLOQUEO = 5;
+
     RecuperacionContrasenaInterfaz rc;
     Login lg;
     UsuarioDao usuDao = new UsuarioDao();
     private Paciente usu;
     private byte c;
+    private boolean bloqueado;
 
     public LoginController(Login lg, RecuperacionContrasenaInterfaz recuperarC) {
         this.lg = lg;
@@ -38,45 +43,79 @@ public class LoginController implements ActionListener {
             }
         });
         this.c = 0;
+        this.bloqueado = false;
+    }
+
+    private void estadoDeCosas(boolean estado) {
+        this.lg.bIngresar.setEnabled(estado);
+        this.lg.bRegistar.setEnabled(estado);
+        this.lg.titulo2.setEnabled(estado);
+    }
+
+    private boolean estadito(String id, String contrasena) {
+        return (MetodosPublicos.validarTamano(id, 8, 10)
+                && MetodosPublicos.validarid(id))
+                && (MetodosPublicos.validarTamano(contrasena, 8)
+                && MetodosPublicos.validarContrasena(contrasena));
+    }
+
+    //Metodo reutilizable abre la interfaz correspondiente segun el rol del usuario que inicio sesion
+    private void abrirInterfazSegunRol(Paciente usuario) {
+        switch (usuario.getId_rol()) {
+            case 1:
+                AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz("Administrador del sistema", usuario);
+                adminSistem.setVisible(true);
+                adminSistem.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                adminSistem.setExtendedState(MAXIMIZED_BOTH);
+                AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
+                break;
+            case 5:
+                PacienteInterfaz p = new PacienteInterfaz("Paciente", usuario);
+                p.setVisible(true);
+                p.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                p.setExtendedState(MAXIMIZED_BOTH);
+                PacienteController clg = new PacienteController(p);
+                break;
+            default:
+                System.out.println("se produjo un error rol no valido");
+                break;
+        }
+    }
+
+    //Metodo reutilizable bloquea el formulario 5 minutos sin congelar la interfaz
+    private void bloquearFormularioTemporalmente() {
+        this.bloqueado = true;
+        JOptionPane.showMessageDialog(lg, "Los has intentado muchas veces por favor espera " + MINUTOS_BLOQUEO + " minutos");
+        estadoDeCosas(false);
+        Timer temporizador = new Timer(MINUTOS_BLOQUEO * 60 * 1000, ev -> {
+            this.bloqueado = false;
+            this.c = 0;
+            estadoDeCosas(true);
+        });
+        temporizador.setRepeats(false);
+        temporizador.start();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.lg.bIngresar.setEnabled(false);
-        this.lg.bRegistar.setEnabled(false);
-        this.lg.titulo2.setEnabled(false);
         if (e.getSource() == this.lg.bIngresar) {
+
+            if (this.bloqueado) {
+                JOptionPane.showMessageDialog(lg, "Los has intentado muchas veces por favor espera " + MINUTOS_BLOQUEO + " minutos");
+                return;//Rompe si ya fue bloqueado
+            }
+
+            estadoDeCosas(false);
             String id = this.lg.getId();
             String contrasena = this.lg.getPassword();
-            final boolean validar = (MetodosPublicos.validarTamano(id, 8, 10)
-                    && MetodosPublicos.validarid(id))
-                    && (MetodosPublicos.validarTamano(contrasena, 8)
-                    && MetodosPublicos.validarContrasena(contrasena));
-
-            if (validar && c < 6) {
+            if (estadito(id, contrasena) && c < MAX_INTENTOS) {
+                estadoDeCosas(true);
                 this.usu = usuDao.login(id, contrasena);
                 contrasena = null;
                 if (usu != null && usu.getEstado()) {
+                    this.c = 0;
                     this.lg.dispose();
-                    switch (usu.getId_rol()) {
-                        case 1:
-                            AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz("Administrador del sistema", usu);
-                            adminSistem.setVisible(true);
-                            adminSistem.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                            adminSistem.setExtendedState(MAXIMIZED_BOTH);
-                            AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
-                            break;
-                        case 5:
-                            PacienteInterfaz p = new PacienteInterfaz("Paciente", usu);
-                            p.setVisible(true);
-                            p.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                            p.setExtendedState(MAXIMIZED_BOTH);
-                            PacienteController clg = new PacienteController(p);
-                            break;
-                        default:
-                            System.out.println("se produjo un error rol no valido");
-                            break;
-                    }
+                    abrirInterfazSegunRol(usu);
                 } else {
                     if (usu == null && !usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {
                         JOptionPane.showMessageDialog(lg, "El usuario no existe");
@@ -89,22 +128,15 @@ public class LoginController implements ActionListener {
                             JOptionPane.showMessageDialog(lg, "La contrasena es incorrecta");
                         }
                     }
+                    this.c++;
                 }
+                estadoDeCosas(true);
                 this.usu = null;
-                this.usuDao = null;
                 id = null;
-            } else if (c == 5) {
-                JOptionPane.showMessageDialog(lg, "Los has intentado muchas veces por favor espera 5 minutos");
-                this.lg.bIngresar.setEnabled(false);
-                this.lg.bRegistar.setEnabled(false);
-                //deveria para y esperar 2 minutos por muchos intentos
-                for (int i = 1; i < 51; i++) {
-                    System.out.println("esperando...");
-                }
-                this.lg.bIngresar.setEnabled(true);
-                this.lg.bRegistar.setEnabled(true);
-                c = 0;
+            } else if (c >= MAX_INTENTOS) {
+                bloquearFormularioTemporalmente();
             } else {
+                estadoDeCosas(true);
                 this.c++;
                 if (id.isEmpty()) {
                     JOptionPane.showMessageDialog(lg, "Campo id es obligatorio");
@@ -133,8 +165,5 @@ public class LoginController implements ActionListener {
                 }
             }
         }
-        this.lg.bIngresar.setEnabled(true);
-        this.lg.bRegistar.setEnabled(true);
-        this.lg.titulo2.setEnabled(true);
     }
 }

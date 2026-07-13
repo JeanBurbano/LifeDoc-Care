@@ -3,10 +3,10 @@ package model;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.time.LocalDate;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,17 +27,6 @@ import view.PacienteInterfaz;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MetodosPublicos {
-
-    public static byte calcularEdad(String anoNacimiento, String mesNacimiento) {
-        LocalDate hoy = LocalDate.now();
-        byte valor = (byte) (hoy.getYear() - Integer.parseInt(anoNacimiento.trim()));
-        if (hoy.getMonthValue() < Byte.parseByte(mesNacimiento.trim())) {
-            valor--;
-        }
-        hoy = null;
-        return valor;
-    }
-
     //Aqui creo un funcion para estilizar el boton
     public static void estilizarBoton(JButton boton, byte estilo) {
         switch (estilo) {
@@ -67,6 +56,28 @@ public class MetodosPublicos {
                 boton.setBackground(new Color(0, 75, 121));
                 boton.setForeground(Color.WHITE);
                 boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                break;
+            case 6://Boton cancelar
+                boton.setFont(new Font("Arial", Font.BOLD, 13));
+                boton.setBackground(new Color(248, 205, 205));
+                boton.setForeground(new Color(153, 45, 45));
+                boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                boton.setFocusPainted(false);
+                boton.setBorderPainted(false);
+                boton.setOpaque(true);
+                boton.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
+                boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                break;
+            case 7://Boton reagendar
+                boton.setFont(new Font("Arial", Font.BOLD, 13));
+                boton.setBackground(new Color(198, 230, 206));
+                boton.setForeground(new Color(35, 105, 60));
+                boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                boton.setFocusPainted(false);
+                boton.setBorderPainted(false);
+                boton.setOpaque(true);
+                boton.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
+                boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 break;
         }
     }

@@ -2,8 +2,6 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import javax.swing.JLabel;
 import model.Cita;
 import model.CitaDao;
@@ -50,14 +48,17 @@ public class PacienteController implements ActionListener {
             pacienteI.btnMisCitas.setEnabled(false);
             pacienteI.habilitarBotonesMenu(pacienteI.btnMisCitas);
             pacienteI.mostrarVistaMisCitas();
+            this.pacienteI.listaBotonesCancelar.clear();
+            this.pacienteI.listaBotonesReagendar.clear();
             this.citas = citadao.listarPorUsuario(pacienteI.usuario.getIdUsuario());
-            if (citas == null) {
+            if (citas == null || citas.length == 0) {
                 pacienteI.panelInfoCitas.add(new JLabel("No tienes citas"));
+                MetodosPublicos.refrescarVentana(pacienteI.panelInfoCitas);
             } else {
-                for (int i=0; i<5; i++) {
-                    pacienteI.agregarAlPanelMiscitas(new Titulo("Cita ", "Medica").getPanelTitulo(), "jj", "lll",
-                            "ee");
-
+                for (Cita clave : citas) {
+                    pacienteI.agregarAlPanelMiscitas(new Titulo("Cita ", clave.getEspecialidad(), 40).getPanelTitulo(),
+                            clave.getFechaCita().toString(), clave.getHoraCita().toString(),
+                            clave.getNombreMedico());
                 }
             }
         }
