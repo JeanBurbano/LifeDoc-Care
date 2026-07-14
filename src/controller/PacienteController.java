@@ -21,6 +21,7 @@ public class PacienteController implements ActionListener {
     protected PacienteInterfaz pacienteI;//protected para que el hijo lo acceda directo
     public Medico[] medicos;
     protected Cita[] citas;
+    private boolean verificador = false;
 
     public PacienteController(PacienteInterfaz pacienteI) {
         this.citadao = new CitaDao();
@@ -46,10 +47,10 @@ public class PacienteController implements ActionListener {
         this.pacienteI.btnMisCitas.doClick();
     }
 
-    public void actionListenerParaBotonesDeVectores(ArrayList<JButton> vectorBotones) {
+    public void actionListenerParaBotonesDeVectores(ArrayList<JButton> vectorBotones, String primero, String segundo) {
         for (JButton boton : vectorBotones) {
             boton.addActionListener((ActionEvent e) -> {
-                pacienteI.mostrarVistaAgendamientoCita(new Titulo("Agendar una ", "cita", 50));
+                pacienteI.mostrarVistaAgendamientoCita(new Titulo(primero, segundo, 50));
             });
         }
     }
@@ -104,7 +105,7 @@ public class PacienteController implements ActionListener {
                 nombreMedicos[i] = medicos[i].getPrimerNombre() + " " + medicos[i].getPrimerApellido();
             }
             pacienteI.mostrarVistaSeleccionMedico(nombreMedicos);
-            actionListenerParaBotonesDeVectores(pacienteI.listaBotonesMedicos);
+            actionListenerParaBotonesDeVectores(pacienteI.listaBotonesMedicos,"Agenda una ","Cita");
         }
         if (e.getSource() == pacienteI.btnSugerencias) {
             pacienteI.btnSugerencias.setEnabled(false);
