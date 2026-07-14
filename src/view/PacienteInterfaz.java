@@ -77,8 +77,9 @@ public class PacienteInterfaz extends JFrame {
     public JTextArea areaDescripcion;
     public JScrollPane miCroll;
     public JPanel panelComentarios;
+    public static JPanel panelComenForo;
     //Aqui creo todo para el apartado notificaciones
-    public JPanel panelContenidoNotificaciones;
+    public static JPanel panelContenidoNotificaciones;
     //Aqui ceo todo para el apartado AgendarCita
     public JButton btnOdontologia;
     public JButton btnDermatologia;
@@ -221,10 +222,15 @@ public class PacienteInterfaz extends JFrame {
                 BorderFactory.createEmptyBorder(0, 30, 5, 30)));
         this.panelComentarios.setOpaque(false);
 
+        this.panelComenForo = new JPanel();
+        this.panelComenForo.setLayout(new BoxLayout(panelComenForo, BoxLayout.Y_AXIS));
+        this.panelComenForo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+//        this.panelComenForo.setOpaque(false);
+
         this.btnSugerencias = new JButton("Sugerencias ", new ImageIcon("iconsP/happy-face.png"));
-        this.btnQuejas = new JButton("Quejas ",new ImageIcon("iconsP/quejas.png"));
-        this.btnForo = new JButton("Foro ",new ImageIcon("iconsP/communication.png"));
-        this.btnEnviar = new JButton("Enviar ",new ImageIcon("iconsP/descargar.png"));
+        this.btnQuejas = new JButton("Quejas ", new ImageIcon("iconsP/quejas.png"));
+        this.btnForo = new JButton("Foro ", new ImageIcon("iconsP/communication.png"));
+        this.btnEnviar = new JButton("Enviar ", new ImageIcon("iconsP/descargar.png"));
         MetodosPublicos.estilizarBoton(btnQuejas, (byte) 4);
         MetodosPublicos.estilizarBoton(btnSugerencias, (byte) 4);
         MetodosPublicos.estilizarBoton(btnForo, (byte) 4);
@@ -322,7 +328,6 @@ public class PacienteInterfaz extends JFrame {
         JPanel panelAgenda = new JPanel();
         panelAgenda.setLayout(new BoxLayout(panelAgenda, BoxLayout.Y_AXIS));
         panelAgenda.setPreferredSize(new Dimension(600, 0));
-//        panelAgenda.set
         panelAgenda.setOpaque(false);
         panelAgenda.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
@@ -391,7 +396,6 @@ public class PacienteInterfaz extends JFrame {
         this.cuerpo2.add(scrollCitas, BorderLayout.CENTER);
         this.cuerpo2.add(panelContacto, BorderLayout.SOUTH);
         labelCitas = null;//Ya quedo agregado al cuerpo2 entonces libero memoria 
-        System.out.println(panelAgenda.getHeight());
         MetodosPublicos.refrescarVentana(cuerpo2);
         MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
@@ -568,7 +572,7 @@ public class PacienteInterfaz extends JFrame {
         panelTitulo = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo eliminar para ahorrar memoria o algo asi por el estilo creo
 
         for (String nombreMedico : medicos) {
-            JButton botonMedico = new JButton(nombreMedico,new ImageIcon("iconsP/avatar.png"));//Creo boton con el nombre del medico
+            JButton botonMedico = new JButton(nombreMedico, new ImageIcon("iconsP/avatar.png"));//Creo boton con el nombre del medico
             MetodosPublicos.estilizarBoton(botonMedico, (byte) 4);//Agrego estilo al boton
             MetodosPublicos.prepararBotonTarjeta(botonMedico, 380, 55);//Agrego tamano estable 
             this.listaBotonesMedicos.add(botonMedico);

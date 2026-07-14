@@ -79,8 +79,8 @@ public class RecuperacionContrasenaInterfaz extends JFrame {
         gbcContenido.weightx = 1.0;
         gbcContenido.weighty = 1.0; // que ocupe el resto del espacio vertical
         this.fondo.add(panelContenido, gbcContenido);
-        this.btnCorreo = new JButton(" 📧 Correo electronico");
-        this.btnSms = new JButton(" 💬 SMS");
+        this.btnCorreo = new JButton("Correo electronico ", new ImageIcon("iconsP/gmail.png"));
+        this.btnSms = new JButton("SMS ", new ImageIcon("iconsP/chatting.png"));
         this.btnContinuar = new JButton("Continuar");
         MetodosPublicos.estilizarBoton(btnCorreo, (byte) 4);
         MetodosPublicos.estilizarBoton(btnSms, (byte) 4);

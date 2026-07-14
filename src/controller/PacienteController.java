@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -45,13 +46,14 @@ public class PacienteController implements ActionListener {
         this.pacienteI.btnMisCitas.doClick();
     }
 
-  public void actionListenerParaBotonesDeVectores(ArrayList<JButton> vectorBotones) {
-    for (JButton boton : vectorBotones) {
-        boton.addActionListener((ActionEvent e) -> {
-            pacienteI.mostrarVistaAgendamientoCita(new Titulo("Agendar una ", "cita",50));
-        });
+    public void actionListenerParaBotonesDeVectores(ArrayList<JButton> vectorBotones) {
+        for (JButton boton : vectorBotones) {
+            boton.addActionListener((ActionEvent e) -> {
+                pacienteI.mostrarVistaAgendamientoCita(new Titulo("Agendar una ", "cita", 50));
+            });
+        }
     }
-}
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == pacienteI.btnCerrarSesion) {
