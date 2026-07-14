@@ -1,6 +1,5 @@
 package controller;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ public class PacienteController implements ActionListener {
         this.citadao = new CitaDao();
         this.medicodao = new MedicoDao();
         this.pacienteI = pacienteI;
-        this.pacienteI.agregarBotonesMenuPaciente();
         this.pacienteI.btnMisCitas.addActionListener(this);
         this.pacienteI.btnHistorial.addActionListener(this);
         this.pacienteI.btnComentarios.addActionListener(this);
@@ -47,12 +45,18 @@ public class PacienteController implements ActionListener {
         this.pacienteI.btnMisCitas.doClick();
     }
 
-    public void actionListenerParaBotonesDeVectores(ArrayList<JButton> vectorBotones, String primero, String segundo) {
+    private void actionListenerParaBotonesDeVectores(ArrayList<JButton> vectorBotones, String primero, String segundo) {
         for (JButton boton : vectorBotones) {
             boton.addActionListener((ActionEvent e) -> {
                 pacienteI.mostrarVistaAgendamientoCita(new Titulo(primero, segundo, 50));
             });
         }
+    }
+
+    private void estaditodeBotonesComentarios(JButton boton1, JButton boton2, JButton boton3) {
+        boton1.setEnabled(false);
+        boton2.setEnabled(true);
+        boton3.setEnabled(true);
     }
 
     @Override
@@ -105,21 +109,18 @@ public class PacienteController implements ActionListener {
                 nombreMedicos[i] = medicos[i].getPrimerNombre() + " " + medicos[i].getPrimerApellido();
             }
             pacienteI.mostrarVistaSeleccionMedico(nombreMedicos);
-            actionListenerParaBotonesDeVectores(pacienteI.listaBotonesMedicos,"Agenda una ","Cita");
+            actionListenerParaBotonesDeVectores(pacienteI.listaBotonesMedicos, "Agenda una ", "Cita");
         }
         if (e.getSource() == pacienteI.btnSugerencias) {
-            pacienteI.btnSugerencias.setEnabled(false);
-            pacienteI.btnQuejas.setEnabled(true);
+            estaditodeBotonesComentarios(pacienteI.btnSugerencias, pacienteI.btnQuejas, pacienteI.btnForo);
             pacienteI.construirFormularioComentario();
         }
         if (e.getSource() == pacienteI.btnQuejas) {
-            pacienteI.btnQuejas.setEnabled(false);
-            pacienteI.btnSugerencias.setEnabled(true);
+            estaditodeBotonesComentarios(pacienteI.btnQuejas, pacienteI.btnSugerencias, pacienteI.btnForo);
             pacienteI.construirFormularioComentario();
         }
         if (e.getSource() == pacienteI.btnForo) {
-            pacienteI.btnQuejas.setEnabled(true);
-            pacienteI.btnSugerencias.setEnabled(true);
+            estaditodeBotonesComentarios(pacienteI.btnForo, pacienteI.btnQuejas, pacienteI.btnSugerencias);
             MetodosPublicos.vaciarPanel(pacienteI.panelComentarios);
         }
     }

@@ -79,7 +79,7 @@ public class PacienteInterfaz extends JFrame {
     public JPanel panelComentarios;
     public static JPanel panelComenForo;
     //Aqui creo todo para el apartado notificaciones
-    public static JPanel panelContenidoNotificaciones;
+    public JPanel panelContenidoNotificaciones;
     //Aqui ceo todo para el apartado AgendarCita
     public JButton btnOdontologia;
     public JButton btnDermatologia;
@@ -148,6 +148,7 @@ public class PacienteInterfaz extends JFrame {
         this.cuerpo1.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(40, 40, 0, 40),
                 BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY)));
+        agregarBotonesMenuPaciente();
 
         this.cuerpo2 = new JPanel();
         this.cuerpo2.setLayout(new BorderLayout());
