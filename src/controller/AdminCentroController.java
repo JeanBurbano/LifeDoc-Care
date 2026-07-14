@@ -40,6 +40,9 @@ public class AdminCentroController implements ActionListener {
         this.adminI.btnCrearHorario.addActionListener(this);
         this.adminI.btnVolver.addActionListener(this);
         this.adminI.btnHorarioMedico.addActionListener(this);
+        this.adminI.btnGuardarHorario.addActionListener(this);
+        this.adminI.btnConfirmarGuardarHorario.addActionListener(this);
+        this.adminI.btnCancelarVistaPrevia.addActionListener(this);
         
 
         //Vista inicial al abrir la interfaz: Personal del Centro
@@ -102,8 +105,21 @@ public class AdminCentroController implements ActionListener {
         }
 
         if (e.getSource() == adminI.btnGuardarHorario) {
+            mostrarVistaPreviaAntesDeGuardar();
+        }
+
+        if (e.getSource() == adminI.btnConfirmarGuardarHorario) {
+            adminI.dialogoVistaPreviaHorario.dispose();
             guardarHorario();
         }
+
+        if (e.getSource() == adminI.btnCancelarVistaPrevia) {
+            adminI.dialogoVistaPreviaHorario.dispose();
+        }
+        
+        
+        
+        
 
         // checkbox activo e inactivo
         for (int i = 0; i < adminI.diaSemana.length; i++) {
@@ -309,6 +325,29 @@ public class AdminCentroController implements ActionListener {
                 }
             }
         });
+    }
+    
+    private void mostrarVistaPreviaAntesDeGuardar() {
+        if (adminI.campoNombreHorario.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor ingresa un nombre para el horario.",
+                    "Campo incompleto", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        boolean[] diasActivos = new boolean[6];
+        String[] horasPorDia = new String[6];
+        for (int i = 0; i < 6; i++) {
+            diasActivos[i] = adminI.diaSemana[i].isSelected();
+            if (diasActivos[i]) {
+                horasPorDia[i] = adminI.horaInicio[i].getSelectedItem() + " - " + adminI.horaFin[i].getSelectedItem()
+                        + "\nAlm: " + adminI.almuerzoIni[i].getSelectedItem() + "-" + adminI.almuerzoFin[i].getSelectedItem();
+            }
+        }
+
+        String mes = (String) adminI.comboMesHorario.getSelectedItem(); // ej. "Julio", directo del combo
+        adminI.mostrarVistaPreviaHorarioApartado(mes, diasActivos, horasPorDia);
+
+        
     }
 
     

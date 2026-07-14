@@ -14,6 +14,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -29,6 +30,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import model.MetodosPublicos;
@@ -94,6 +96,11 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     public JComboBox[] almuerzoIni = new JComboBox[6]; //Hora de inicio de almuerzo por día
     public JComboBox[] almuerzoFin = new JComboBox[6]; // Hora de fin de almuerzo por día
     public JLabel[] lblHoras = new JLabel[6]; //Muestra las horas laborales calculadas por día
+    
+    //mostrar el horario de forma grafica antes de guardar
+    public JComboBox comboMesHorario; // mes al que se aplicará el horario
+    public JDialog dialogoVistaPreviaHorario; //donde estará el horario de manera grafica
+    public JButton btnConfirmarGuardarHorario, btnCancelarVistaPrevia;
 
     //colores para etiqueta de horario formato rgb
     public static final Color ETIQ_AZUL = new Color(0x1B, 0x6B, 0x7B);
@@ -110,10 +117,12 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         ETIQ_AZUL, ETIQ_ROJA, ETIQ_VERDE, ETIQ_NARANJA, ETIQ_MORADA, ETIQ_GRIS
     };
 
-    //Días de la semana que se muestran en el formulario de horario
-    public static final String[] DIAS_SEMANA = {
-        "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"
-    };
+    //Días de la semana y mes que se muestran en el formulario de horario
+    public static final String[] DIAS_SEMANA = {"Lunes", "Martes", "Miércoles", "Jueves", 
+                                                "Viernes", "Sábado"};
+    public static final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                                          "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", 
+                                          "Diciembre"};
 
     // Horas disponibles en los combos de hora (07:00 a 17:00 cada 30 min).
     // Se llenará en el constructor llamando a la clase  GeneradorHorarios()
@@ -546,6 +555,12 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
         parteFija.add(MetodosPublicos.crearFila("Color de etiqueta:", comboColorEtiqueta));
         parteFija.add(Box.createVerticalStrut(20));
+        
+        //mes para ese horario
+        comboMesHorario = new JComboBox<>(MESES);
+        MetodosPublicos.crearComboEstilizado(comboMesHorario);
+        parteFija.add(MetodosPublicos.crearFila("Mes de aplicación:", comboMesHorario));
+        parteFija.add(Box.createVerticalStrut(20));
 
         //Sección 2: Días de la semana
         JPanel seccionDias = new JPanel(new BorderLayout(8, 0));
@@ -673,6 +688,75 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         dialogoAsignarMedico.add(contenido, BorderLayout.CENTER);
         dialogoAsignarMedico.setVisible(true);
     }
+    
+    
+public void mostrarVistaPreviaHorarioApartado(String nombreMes, boolean[] diasActivos, String[] horasPorDia) {
+    //Ventana emergente para mostrar el horario graficamente
+    dialogoVistaPreviaHorario = new JDialog(); // ventana nueva, independiente de la principal
+    dialogoVistaPreviaHorario.setTitle("Vista Previa del Horario - " + nombreMes);
+    dialogoVistaPreviaHorario.setModal(true); // bloquea el resto de la app mientras está abierta
+    dialogoVistaPreviaHorario.setSize(500, 300);
+    dialogoVistaPreviaHorario.setLocationRelativeTo(null); // se centra en la pantalla
+    dialogoVistaPreviaHorario.setLayout(new BorderLayout(0, 10)); // título arriba, matriz en medio, botones abajo
+
+    JLabel titulo = new JLabel("Días asignados en " + nombreMes, SwingConstants.CENTER);
+    titulo.setFont(new Font("Arial", Font.BOLD, 16));
+    titulo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // aire alrededor del título
+    dialogoVistaPreviaHorario.add(titulo, BorderLayout.NORTH);
+
+    JPanel matriz = new JPanel(new GridLayout(1, 6, 6, 6));
+    matriz.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+
+    String[] nombresDias = {"Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"};
+
+    for (int i = 0; i < 6; i++) { // recorre los 6 días 
+        JPanel tarjeta = new JPanel(); // una casilla de la matriz, para un solo día
+        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS)); // apila el contenido de arriba hacia abajo
+        tarjeta.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY)); // borde delgado para que se vea como celda
+
+        JLabel lblDia = new JLabel(nombresDias[i], SwingConstants.CENTER);
+        lblDia.setFont(new Font("Arial", Font.BOLD, 12));
+        lblDia.setAlignmentX(Component.CENTER_ALIGNMENT);
+        tarjeta.add(lblDia);
+
+        if (diasActivos[i]) { // si el día está activo, se pinta de verde y se muestran las horas
+            tarjeta.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
+            tarjeta.setOpaque(true); 
+
+            // Se divide el texto de horas en varias líneas pequeñas. una por cada línea del arregl
+            String[] lineas = horasPorDia[i].split("\n");
+            for (String linea : lineas) {
+                JLabel lblLinea = new JLabel(linea, SwingConstants.CENTER);
+                lblLinea.setFont(new Font("Arial", Font.PLAIN, 10));
+                lblLinea.setAlignmentX(Component.CENTER_ALIGNMENT);
+                tarjeta.add(lblLinea);
+            }
+        } else { // si el día no está activo, se muestra en gris con un guion
+            JLabel lblInactivo = new JLabel("—", SwingConstants.CENTER);
+            lblInactivo.setForeground(Color.GRAY);
+            lblInactivo.setAlignmentX(Component.CENTER_ALIGNMENT);
+            tarjeta.add(lblInactivo);
+        }
+
+        matriz.add(tarjeta); // se agrega la tarjeta de este día a la matriz
+    }
+
+    dialogoVistaPreviaHorario.add(matriz, BorderLayout.CENTER);
+
+    // Botones Cancelar / Confirmar
+    JPanel filaBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+    btnCancelarVistaPrevia = new JButton("Cancelar");
+    btnConfirmarGuardarHorario = new JButton("Confirmar y Guardar");
+    btnConfirmarGuardarHorario.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
+    btnConfirmarGuardarHorario.setForeground(Color.WHITE);
+    btnCancelarVistaPrevia.setBackground(Color.RED);
+    btnCancelarVistaPrevia.setForeground(Color.WHITE);
+    filaBotones.add(btnCancelarVistaPrevia);
+    filaBotones.add(btnConfirmarGuardarHorario);
+    dialogoVistaPreviaHorario.add(filaBotones, BorderLayout.SOUTH);
+
+    dialogoVistaPreviaHorario.setVisible(true); // muestra la ventana 
+}
     
     
    
