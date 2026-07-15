@@ -16,7 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import model.MetodosPublicos;
-import view.PacienteInterfaz;
+
 
 /**
  * Clase para construir cada fila del formulario de horario
@@ -36,6 +36,7 @@ public class ConstructorFilaHorario {
      */
     public static JComboBox construirComboHora(String[] horas) {
         JComboBox combo = new JComboBox<>(horas); //combo con las horas recibidas
+        MetodosPublicos.crearComboEstilizado(combo);
         combo.setFont(new Font("Arial", Font.PLAIN, 12)); // fuente pequeña
         combo.setPreferredSize(new Dimension(76, 28)); // tamaño fijo 
         return combo;
@@ -79,6 +80,7 @@ public class ConstructorFilaHorario {
         diaSemana[indiceDia] = new JCheckBox(); // se crea y se guarda en el arreglo recibido
         diaSemana[indiceDia].setSelected(indiceDia < 5); // Lunes a Viernes activos por defecto, Sábado no
         diaSemana[indiceDia].setOpaque(false); // sin fondo propio
+        
 
         // Nombre del día con ancho fijo para que queden alineados entre filas
         JLabel lblDia = new JLabel(diasSemana[indiceDia]);
@@ -96,6 +98,7 @@ public class ConstructorFilaHorario {
         horaFin[indiceDia] = construirComboHora(horas);
         almuerzoIni[indiceDia] = construirComboHora(horas);
         almuerzoFin[indiceDia] = construirComboHora(horas);
+        
 
         // Etiqueta que mostrará las horas laborales calculadas para este día
         lblHoras[indiceDia] = new JLabel("—"); //texto inicial mientras no se calculan las horas
@@ -111,7 +114,7 @@ public class ConstructorFilaHorario {
         fila.add(horaInicio[indiceDia]);
         fila.add(MetodosPublicos.crearMiniEtiqueta("Fin"));
         fila.add(horaFin[indiceDia]);
-        fila.add(MetodosPublicos.crearMiniEtiqueta("Almuerzo"));
+        fila.add(MetodosPublicos.crearMiniEtiqueta("Descanso"));
         fila.add(almuerzoIni[indiceDia]);
         fila.add(MetodosPublicos.crearMiniEtiqueta("→"));
         fila.add(almuerzoFin[indiceDia]);

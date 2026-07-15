@@ -3,7 +3,6 @@ package model;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -27,6 +26,7 @@ import view.PacienteInterfaz;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MetodosPublicos {
+
     //Aqui creo un funcion para estilizar el boton
     public static void estilizarBoton(JButton boton, byte estilo) {
         switch (estilo) {
@@ -56,28 +56,6 @@ public class MetodosPublicos {
                 boton.setBackground(new Color(0, 75, 121));
                 boton.setForeground(Color.WHITE);
                 boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                break;
-            case 6://Boton cancelar
-                boton.setFont(new Font("Arial", Font.BOLD, 13));
-                boton.setBackground(new Color(248, 205, 205));
-                boton.setForeground(new Color(153, 45, 45));
-                boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                boton.setFocusPainted(false);
-                boton.setBorderPainted(false);
-                boton.setOpaque(true);
-                boton.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
-                boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                break;
-            case 7://Boton reagendar
-                boton.setFont(new Font("Arial", Font.BOLD, 13));
-                boton.setBackground(new Color(198, 230, 206));
-                boton.setForeground(new Color(35, 105, 60));
-                boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                boton.setFocusPainted(false);
-                boton.setBorderPainted(false);
-                boton.setOpaque(true);
-                boton.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
-                boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 break;
         }
     }
@@ -155,6 +133,7 @@ public class MetodosPublicos {
      * @param combo el combo (ya creado, puede estar vacío) a estilizar
      */
     public static void crearComboEstilizado(JComboBox combo) {
+
         combo.setPreferredSize(new Dimension(200, 35)); // tamaño fijo para que combine con los demás campos
         combo.setFont(new Font("Arial", Font.PLAIN, 15)); // misma fuente que los JTextField
         combo.setBackground(Color.WHITE); //fondo blanco para qutarle el gris por defecto
@@ -281,9 +260,9 @@ public class MetodosPublicos {
     }
 
     /**
-     * Crea el panel lateral para adjuntar la imagen de un medicamento. Recibe
-     * el botón y la etiqueta de previsualización ya creados (normalmente
-     * atributos de la interfaz) para ubicarlos dentro del panel con el estilo
+     * Crea el panel lateral para adjuntar la imagen en un formulario. Recibe el
+     * botón y la etiqueta de previsualización ya creados (normalmente atributos
+     * de la interfaz) para ubicarlos dentro del panel con el estilo
      * correspondiente.
      *
      * @param btnSeleccionar botón que abrirá el JFileChooser
@@ -291,40 +270,41 @@ public class MetodosPublicos {
      * elegida
      * @return el panel armado, listo para agregarse al formulario
      */
-    public static JPanel crearPanelImagen(JButton btnSeleccionar, JLabel previsualizacionImagen) {
-        JPanel panelImagen = new JPanel(new BorderLayout(0, 10)); // título arriba, contenido centrado abajo
-        panelImagen.setPreferredSize(new Dimension(320, 0)); // ancho fijo, alto libre
-        panelImagen.setOpaque(false); // sin fondo
+    public static JPanel crearPanelImagen(JButton btnSeleccionar, JLabel previsualizacionImagen, String tituloTexto) {
+        JPanel panelImagen = new JPanel(new BorderLayout(0, 10));
+        panelImagen.setOpaque(false);
         panelImagen.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
 
-        JLabel etiqueta = new JLabel("Imagen del Medicamento:", SwingConstants.CENTER); // título del panel
-        etiqueta.setFont(new Font("Arial", Font.BOLD, 20));
-        etiqueta.setBorder(new EmptyBorder(90, 0, 0, 0)); // empuja el título hacia abajo para centrar visualmente
+        JLabel etiqueta = new JLabel(tituloTexto, SwingConstants.CENTER);
+        etiqueta.setFont(new Font("Arial", Font.BOLD, 15));
 
-        // Estilo de la etiqueta de previsualización (recibida como parámetro)
-        previsualizacionImagen.setText("Sin imagen"); // texto inicial mientras no se elija ninguna imagen
+        previsualizacionImagen.setText("Sin imagen");
         previsualizacionImagen.setHorizontalAlignment(SwingConstants.CENTER);
-        previsualizacionImagen.setPreferredSize(new Dimension(180, 180)); // tamaño fijo del recuadro de previsualización
-        previsualizacionImagen.setBorder(BorderFactory.createDashedBorder(PacienteInterfaz.COLOR_VERDE_ACENTO)); // borde punteado
-        previsualizacionImagen.setOpaque(true); // necesita fondo propio para que se note el color blanco
+        previsualizacionImagen.setPreferredSize(new Dimension(130, 130));
+        previsualizacionImagen.setBorder(BorderFactory.createDashedBorder(PacienteInterfaz.COLOR_VERDE_ACENTO));
+        previsualizacionImagen.setOpaque(true);
         previsualizacionImagen.setBackground(Color.WHITE);
         previsualizacionImagen.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        btnSeleccionar.setAlignmentX(Component.CENTER_ALIGNMENT); // centra el botón dentro del panel vertical
+        btnSeleccionar.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPanel centro = new JPanel(); // contenedor de la previsualización + el botón
+        JPanel centro = new JPanel();
         centro.setOpaque(false);
-        centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS)); // apilados verticalmente
+        centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
         centro.add(previsualizacionImagen);
-        centro.add(Box.createVerticalStrut(10)); // espacio entre la imagen y el botón
+        centro.add(Box.createVerticalStrut(10));
         centro.add(btnSeleccionar);
 
-        panelImagen.add(etiqueta, BorderLayout.NORTH); // título arriba
-        panelImagen.add(centro, BorderLayout.CENTER); // contenido centrado
-
+        panelImagen.add(etiqueta, BorderLayout.NORTH);
+        panelImagen.add(centro, BorderLayout.CENTER);
         return panelImagen;
+    }
+
+    
+    public static JPanel crearPanelImagen(JButton btnSeleccionar, JLabel previsualizacionImagen) {
+        return crearPanelImagen(btnSeleccionar, previsualizacionImagen, "Imagen del Medicamento:");
     }
 }
