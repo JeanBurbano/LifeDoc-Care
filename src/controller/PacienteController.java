@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import model.Cita;
 import model.CitaDao;
 import model.Medico;
@@ -20,7 +21,7 @@ public class PacienteController implements ActionListener {
     protected PacienteInterfaz pacienteI;//protected para que el hijo lo acceda directo
     public Medico[] medicos;
     protected Cita[] citas;
-    private boolean verificador = false;
+    private boolean verificador;
 
     public PacienteController(PacienteInterfaz pacienteI) {
         this.citadao = new CitaDao();
@@ -113,15 +114,32 @@ public class PacienteController implements ActionListener {
         }
         if (e.getSource() == pacienteI.btnSugerencias) {
             estaditodeBotonesComentarios(pacienteI.btnSugerencias, pacienteI.btnQuejas, pacienteI.btnForo);
+            this.verificador = true;
             pacienteI.construirFormularioComentario();
         }
         if (e.getSource() == pacienteI.btnQuejas) {
             estaditodeBotonesComentarios(pacienteI.btnQuejas, pacienteI.btnSugerencias, pacienteI.btnForo);
+            this.verificador = false;
             pacienteI.construirFormularioComentario();
         }
         if (e.getSource() == pacienteI.btnForo) {
             estaditodeBotonesComentarios(pacienteI.btnForo, pacienteI.btnQuejas, pacienteI.btnSugerencias);
             MetodosPublicos.vaciarPanel(pacienteI.panelComentarios);
+        }
+        if (e.getSource() == pacienteI.btnEnviar) {
+            if (verificador) {
+                if (!pacienteI.campoAsunto.getText().isEmpty() && !pacienteI.areaDescripcion.getText().isEmpty()) {
+
+                } else {
+                    JOptionPane.showMessageDialog(pacienteI, "Los campos deven de contener algo");
+                }
+            } else {
+                if (!pacienteI.campoAsunto.getText().isEmpty() && !pacienteI.areaDescripcion.getText().isEmpty()) {
+
+                } else {
+                    JOptionPane.showMessageDialog(pacienteI, "Los campos deven de contener algo");
+                }
+            }
         }
     }
 }

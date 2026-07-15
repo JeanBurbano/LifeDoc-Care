@@ -3,6 +3,7 @@ package view;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -22,7 +23,7 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
                 BorderFactory.createEmptyBorder(0, 30, 5, 30)));
         this.panelUsuarios.setOpaque(false);
-        this.btnRol = new JButton("Usuarios");
+        this.btnRol = new JButton("Usuarios",new ImageIcon("iconsP/friends.png"));
         super.agregarBotonCuerpo1(btnRol);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
