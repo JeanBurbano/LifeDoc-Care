@@ -3,6 +3,7 @@ package model;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -56,6 +57,28 @@ public class MetodosPublicos {
                 boton.setBackground(new Color(0, 75, 121));
                 boton.setForeground(Color.WHITE);
                 boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                break;
+            case 6://Boton cancelar
+                boton.setFont(new Font("Arial", Font.BOLD, 13));
+                boton.setBackground(new Color(248, 205, 205));
+                boton.setForeground(new Color(153, 45, 45));
+                boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                boton.setFocusPainted(false);
+                boton.setBorderPainted(false);
+                boton.setOpaque(true);
+                boton.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
+                boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                break;
+            case 7://Boton reagendar
+                boton.setFont(new Font("Arial", Font.BOLD, 13));
+                boton.setBackground(new Color(198, 230, 206));
+                boton.setForeground(new Color(35, 105, 60));
+                boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                boton.setFocusPainted(false);
+                boton.setBorderPainted(false);
+                boton.setOpaque(true);
+                boton.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
+                boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 break;
         }
     }
@@ -303,7 +326,6 @@ public class MetodosPublicos {
         return panelImagen;
     }
 
-    
     public static JPanel crearPanelImagen(JButton btnSeleccionar, JLabel previsualizacionImagen) {
         return crearPanelImagen(btnSeleccionar, previsualizacionImagen, "Imagen del Medicamento:");
     }

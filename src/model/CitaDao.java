@@ -94,7 +94,7 @@ public class CitaDao implements Crud<Cita> {
     public int setEliminar(int id) {
         // no se borra la cita: queda en la BD como 'Cancelada' para mantener
         // el historial (y para que los reportes del admin del centro cuadren).
-        String sql = "UPDATE cita SET estado = 'Cancelada' WHERE id_cita = ?";
+        String sql = "UPDATE cita SET estado = 0 WHERE id_cita = ?";
         try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             return ps.executeUpdate();

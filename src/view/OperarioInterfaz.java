@@ -55,23 +55,21 @@ public class OperarioInterfaz extends PacienteInterfaz {
     private JTextField txtSexo;
     private DatePicker datePickerCita;
     private JTextField txtHoraCita;
-    private JButton btnAgendarCita;
+    public JButton btnAgendarCita;
 
-    public OperarioInterfaz(String nombreInterfaz,Paciente usuario) {
-        super( nombreInterfaz, usuario);
+    public OperarioInterfaz(String nombreInterfaz, Paciente usuario) {
+        super(nombreInterfaz, usuario);
 
-        cuerpo1.removeAll();
-
-        this.btnAgendarCitas = new JButton("📅 Paciente");
-        this.btnPagos = new JButton("💰 Pagos");
-        this.btnConsultas = new JButton("📋 Consultas");
-
+        this.btnAgendarCitas = new JButton("Paciente ", new ImageIcon("iconsP/schedule.png"));
+        this.btnPagos = new JButton("Pagos ", new ImageIcon("iconsP/money-bag.png"));
+        this.btnConsultas = new JButton("Consultas ", new ImageIcon("iconsP/done.png"));
+        this.btnAgendarCita = new JButton("Agendar una cita", new ImageIcon("iconsP/heart.png"));
+        estilizarBoton(btnAgendarCita, (byte) 5);
         super.agregarBotonCuerpo1(btnAgendarCitas);
         super.agregarBotonCuerpo1(btnPagos);
         super.agregarBotonCuerpo1(btnConsultas);
-
+        
         new OperarioController(this);
-
         refrescarVentana(cuerpo1);
     }
 
@@ -91,7 +89,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         txtBuscarID = new JTextField(15);
         txtBuscarID.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        btnBuscarPaciente = new JButton("Buscar");
+        btnBuscarPaciente = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
         estilizarBoton(btnBuscarPaciente, (byte) 5);
 
         panelBusqueda.add(lblBuscar);
@@ -174,9 +172,6 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelCentral.add(panelResumen, BorderLayout.WEST);
         panelCentral.add(panelFormulario, BorderLayout.CENTER);
 
-        btnAgendarCita = new JButton("❤️ Agendar una cita");
-        estilizarBoton(btnAgendarCita, (byte) 5);
-
         cuerpo2.add(panelBusqueda, BorderLayout.NORTH);
         cuerpo2.add(panelCentral, BorderLayout.CENTER);
         cuerpo2.add(btnAgendarCita, BorderLayout.SOUTH);
@@ -199,6 +194,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
     }
 
     public class PanelPagos {
+
         public JPanel panelPagos;
         public JButton btnAceptar;
         public JComboBox cmbMetodoPago;
@@ -213,7 +209,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         public PanelPagos(String nombrePaciente, String identificacion, String grupoSisben,
                 String clasificacionSisben, String regimen, String condicionAtencion,
                 String especialidad, String nombreMedico, String fechaCita) {
-            
+
             this.codigoFactura = CalculadorPago.generarCodigoFactura();
             this.fechaHoraFactura = CalculadorPago.obtenerFechaHoraActual();
             this.valorConsulta = CalculadorPago.obtenerValorConsulta(especialidad);
@@ -388,7 +384,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
             lblTituloMetodos.setFont(new Font("Arial", Font.BOLD, 20));
             lblTituloMetodos.setForeground(COLOR_AZUL_CORPORATIVO);
             lblTituloMetodos.setAlignmentX(Component.CENTER_ALIGNMENT);
-            
+
             JLabel labelQR = generarImagenQR(this.codigoFactura, 200, 200);
             labelQR.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -410,15 +406,15 @@ public class OperarioInterfaz extends PacienteInterfaz {
             this.cmbMetodoPago.setAlignmentX(Component.CENTER_ALIGNMENT);
             this.cmbMetodoPago.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-            this.btnAceptar = new JButton("✔ Aceptar");
+            this.btnAceptar = new JButton("Aceptar", new ImageIcon("iconsP/accept.png"));
             MetodosPublicos.estilizarBoton(btnAceptar, (byte) 5);
             this.btnAceptar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
             this.btnAceptar.setAlignmentX(Component.CENTER_ALIGNMENT);
-            
+
             this.btnAceptar.addActionListener(e -> {
                 OperarioInterfaz.this.mostrarFacturaDetallada();
             });
-            
+
             panelMetodosPago.add(lblTituloMetodos);
             panelMetodosPago.add(Box.createRigidArea(new Dimension(0, 15)));
             panelMetodosPago.add(labelQR);
@@ -487,9 +483,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
             return valorNeto;
         }
     }
-    
+
     public void mostrarFacturaDetallada() {
-        
+
         vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout(25, 0));
@@ -518,14 +514,14 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelFactura.add(new JLabel("Fecha/Hora Emisión: 30 de Mayo de 2026 | 10:50 AM"));
 
         panelFactura.add(Box.createRigidArea(new Dimension(0, 15)));
-        
+
         // SEPARADOR
         JPanel separador1 = new JPanel();
         separador1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
         separador1.setPreferredSize(new Dimension(0, 1));
         separador1.setBackground(new Color(200, 210, 220));
         panelFactura.add(separador1);
-        
+
         panelFactura.add(new JLabel("DATOS DEL PACIENTE"));
         panelFactura.add(new JLabel("Nombre: Jhon Alejandro Vanegas Morcillo"));
         panelFactura.add(new JLabel("Identificación: 167894320"));
@@ -533,28 +529,28 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelFactura.add(new JLabel("Clasificación SISBEN: Grupo B"));
 
         panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
-        
+
         // SEPARADOR
         JPanel separador2 = new JPanel();
         separador1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
         separador1.setPreferredSize(new Dimension(0, 1));
         separador1.setBackground(new Color(200, 210, 220));
         panelFactura.add(separador2);
-        
+
         panelFactura.add(new JLabel("DETALLE DE LA CITA"));
         panelFactura.add(new JLabel("Especialidad: Medico General"));
         panelFactura.add(new JLabel("Médico Asignado: Jhon Alex Palencia Morcillo"));
         panelFactura.add(new JLabel("Fecha y Hora: 30 de Mayo de 2026 - 8:45 AM"));
 
         panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
-        
+
         // SEPARADOR
         JPanel separador3 = new JPanel();
         separador1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
         separador1.setPreferredSize(new Dimension(0, 1));
         separador1.setBackground(new Color(200, 210, 220));
         panelFactura.add(separador3);
-        
+
         panelFactura.add(new JLabel("LIQUIDACIÓN DEL COBRO"));
         panelFactura.add(new JLabel("Valor Base de la Consulta: $65.000 COP"));
         panelFactura.add(new JLabel("Subsidio Entidad (Régimen Subsidiado): $60.500 COP"));
@@ -577,9 +573,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
                 BorderFactory.createEmptyBorder(20, 20, 20, 20)
         ));
 
-        JButton btnDebito = new JButton("💳 Tarjeta débito");
-        JButton btnCredito = new JButton("💳 Tarjeta crédito");
-        JButton btnTransferencia = new JButton("🏦 Transferencia");
+        JButton btnDebito = new JButton("Tarjeta débito", new ImageIcon("iconsP/atm-card.png"));
+        JButton btnCredito = new JButton("Tarjeta crédito", new ImageIcon("iconsP/atm-card.png"));
+        JButton btnTransferencia = new JButton("Transferencia", new ImageIcon("iconsP/bank.png"));
 
         estilizarBoton(btnDebito, (byte) 4);
         estilizarBoton(btnCredito, (byte) 4);
@@ -588,7 +584,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         btnDebito.setPreferredSize(new Dimension(240, 60));
         btnCredito.setPreferredSize(new Dimension(240, 60));
         btnTransferencia.setPreferredSize(new Dimension(240, 60));
-        
+
         btnDebito.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnCredito.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnTransferencia.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -634,26 +630,29 @@ public class OperarioInterfaz extends PacienteInterfaz {
         modal.add(new JLabel("Número de tarjeta"), gbc);
         gbc.gridx = 1;
         modal.add(txtNumero, gbc);
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         modal.add(new JLabel("Fecha de vencimiento"), gbc);
         gbc.gridx = 1;
         modal.add(txtFecha, gbc);
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         modal.add(new JLabel("Código de seguridad"), gbc);
         gbc.gridx = 1;
         modal.add(txtCodigo, gbc);
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         modal.add(btnAceptar, gbc);
 
-        javax.swing.JOptionPane.showOptionDialog(this, modal, "Tarjeta Débito", 
-            javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+        javax.swing.JOptionPane.showOptionDialog(this, modal, "Tarjeta Débito",
+                javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
     }
-    
-    private void mostrarModalTarjetaCredito(){
+
+    private void mostrarModalTarjetaCredito() {
         mostrarModalTarjetaDebito();
-        
+
     }
-    
+
     private void mostrarModalTransferencia() {
         JPanel modal = new JPanel(new GridBagLayout());
         modal.setBorder(BorderFactory.createTitledBorder("Transferencia"));
@@ -676,37 +675,35 @@ public class OperarioInterfaz extends PacienteInterfaz {
         modal.add(new JLabel("Entidad Bancaria"), gbc);
         gbc.gridx = 1;
         modal.add(cmbEntidad, gbc);
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         modal.add(new JLabel("Tipo de cuenta"), gbc);
         gbc.gridx = 1;
         modal.add(cmbTipoCuenta, gbc);
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         modal.add(new JLabel("Número de cuenta"), gbc);
         gbc.gridx = 1;
         modal.add(txtNumeroCuenta, gbc);
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         modal.add(btnAceptar, gbc);
 
-        javax.swing.JOptionPane.showOptionDialog(this, modal, "Transferencia", 
-            javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+        javax.swing.JOptionPane.showOptionDialog(this, modal, "Transferencia",
+                javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
     }
-    
-    
+
+    @Override
     public void habilitarBotonesMenu(JButton botonActivo) {
-        if (btnAgendarCitas != null) {
-            btnAgendarCitas.setEnabled(true);
+        super.habilitarBotonesMenu(botonActivo);
+        if (botonActivo != btnAgendarCitas && !btnAgendarCitas.isEnabled()) {
+            this.btnAgendarCitas.setEnabled(true);
         }
-        if (btnPagos != null) {
-            btnPagos.setEnabled(true);
+        if (botonActivo != btnPagos && !btnPagos.isEnabled()) {
+            this.btnPagos.setEnabled(true);
         }
-        if (btnConsultas != null) {
-            btnConsultas.setEnabled(true);
-        }
-
-        if (botonActivo != null) {
-            botonActivo.setEnabled(false);
-
+        if (botonActivo != btnConsultas && !btnConsultas.isEnabled()) {
+            this.btnConsultas.setEnabled(true);
         }
     }
-
 }

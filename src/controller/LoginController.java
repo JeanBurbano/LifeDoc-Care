@@ -13,6 +13,7 @@ import model.UsuarioDao;
 import model.Paciente;
 import view.AdministradorDelSistemaInterfaz;
 import view.Login;
+import view.OperarioInterfaz;
 import view.PacienteInterfaz;
 import view.RecuperacionContrasenaInterfaz;
 
@@ -68,6 +69,13 @@ public class LoginController implements ActionListener {
                 adminSistem.setDefaultCloseOperation(EXIT_ON_CLOSE);
                 adminSistem.setExtendedState(MAXIMIZED_BOTH);
                 AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
+                break;
+            case 4:
+                OperarioInterfaz opI = new OperarioInterfaz("Operario", usuario);
+                opI.setVisible(true);
+                opI.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                opI.setExtendedState(MAXIMIZED_BOTH);
+                OperarioController controller = new OperarioController(opI);
                 break;
             case 5:
                 PacienteInterfaz p = new PacienteInterfaz("Paciente", usuario);

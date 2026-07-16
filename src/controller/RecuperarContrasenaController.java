@@ -36,7 +36,10 @@ public class RecuperarContrasenaController implements ActionListener {
                 if (!p.field.getText().isEmpty()) {
 //                    this.p.codigoAutenticacion("correo", this.p.field.getText());
                     this.p.field.setText("");
-                    this.validador = 3;
+//                    this.validador = 3;
+                    this.p.vistaCambiarContrasena();
+                    this.p.field.setText("");
+
                 } else {
                     JOptionPane.showMessageDialog(p, "El campo correo electronico es obligatorio");
                 }

@@ -34,6 +34,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import model.MetodosPublicos;
+import model.Paciente;
 
 /**
  *
@@ -137,8 +138,8 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     public int filaHorarioSeleccionada; // fila de la tabla que se está asignando actualmente
     
 
-    public AdministradorCentroInterfaz(String nombrePersona, String nombreInterfaz, String url) {
-        super(nombrePersona, nombreInterfaz, url);
+    public AdministradorCentroInterfaz(String nombreInterfaz,Paciente usuario) {
+        super(nombreInterfaz, usuario);
 
         //Generar las horas disponibles para los combos de horario
         HORAS = GeneradorHorarios.generarHoras(); //

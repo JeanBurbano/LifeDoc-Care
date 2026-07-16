@@ -27,6 +27,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
+import model.Paciente;
 
 /**
  *
@@ -59,8 +60,8 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
     JButton btnSeleccionarFoto;
     
 
-    public RegistroUsuariosInterfaz(String nombrePersona, String nombreInterfaz, String url) {
-        super(nombrePersona, nombreInterfaz, url);
+    public RegistroUsuariosInterfaz(String nombreInterfaz,Paciente usuario) {
+        super(nombreInterfaz, usuario);
         MetodosPublicos.vaciarPanel(encabezado);
         MetodosPublicos.vaciarPanel(cuerpo1);
         this.cuerpo1.setBorder(BorderFactory.createEmptyBorder());
