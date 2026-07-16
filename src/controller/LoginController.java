@@ -13,6 +13,7 @@ import model.UsuarioDao;
 import model.Paciente;
 import view.AdministradorDelSistemaInterfaz;
 import view.Login;
+import view.MedicoInterfaz;
 import view.OperarioInterfaz;
 import view.PacienteInterfaz;
 import view.RecuperacionContrasenaInterfaz;
@@ -55,7 +56,7 @@ public class LoginController implements ActionListener {
 
     private boolean estadito(String id, String contrasena) {
         return (MetodosPublicos.validarTamano(id, 8, 10)
-                && MetodosPublicos.validarid(id))
+                && MetodosPublicos.validarNumero(id))
                 && (MetodosPublicos.validarTamano(contrasena, 8)
                 && MetodosPublicos.validarContrasena(contrasena));
     }
@@ -69,6 +70,13 @@ public class LoginController implements ActionListener {
                 adminSistem.setDefaultCloseOperation(EXIT_ON_CLOSE);
                 adminSistem.setExtendedState(MAXIMIZED_BOTH);
                 AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
+                break;
+            case 3:
+                MedicoInterfaz i = new MedicoInterfaz("Medico", usuario);
+                i.setVisible(true);
+                i.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                i.setExtendedState(MAXIMIZED_BOTH);
+                MedicoController mc = new MedicoController(i);
                 break;
             case 4:
                 OperarioInterfaz opI = new OperarioInterfaz("Operario", usuario);
@@ -152,7 +160,7 @@ public class LoginController implements ActionListener {
                     if (!MetodosPublicos.validarTamano(id, 8, 10)) {
                         JOptionPane.showMessageDialog(lg, "Campo id debe contener 8 o 10 caracteres");
                     }
-                    if (!MetodosPublicos.validarid(id)) {
+                    if (!MetodosPublicos.validarNumero(id)) {
                         JOptionPane.showMessageDialog(lg, "Campo id contiene caracteres invalidos");
                     }
                 }

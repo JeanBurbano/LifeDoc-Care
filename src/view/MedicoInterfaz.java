@@ -90,18 +90,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
     @Override
     public void habilitarBotonesMenu(JButton botonActivo) {
-        if (botonActivo != btnMisCitas && !btnMisCitas.isEnabled()) {
-            this.btnMisCitas.setEnabled(true);
-        }
-        if (botonActivo != btnHistorial && !btnHistorial.isEnabled()) {
-            this.btnHistorial.setEnabled(true);
-        }
-        if (botonActivo != btnComentarios && !btnComentarios.isEnabled()) {
-            this.btnComentarios.setEnabled(true);
-        }
-        if (botonActivo != btnNotificaciones && !btnNotificaciones.isEnabled()) {
-            this.btnNotificaciones.setEnabled(true);
-        }
+       super.habilitarBotonesMenu(botonActivo);
         if (botonActivo != btnMiAgenda && !btnMiAgenda.isEnabled()) {
             this.btnMiAgenda.setEnabled(true);
         }
@@ -136,23 +125,8 @@ public class MedicoInterfaz extends PacienteInterfaz {
     }
 
     @Override
-    public void mostrarVistaMisCitas() {
-        super.mostrarVistaMisCitas();
-    }
-
-    @Override
     public void mostrarVistaHistorial() {
         super.mostrarVistaHistorial();
-    }
-
-    @Override
-    public void mostrarVistaComentarios() {
-        super.mostrarVistaComentarios();
-    }
-
-    @Override
-    public void mostrarVistaNotificaciones() {
-        super.mostrarVistaNotificaciones();
     }
 
     public void mostrarVistaMiAgenda() {
