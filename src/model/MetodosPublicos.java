@@ -21,7 +21,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import view.PacienteInterfaz;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
@@ -119,7 +118,7 @@ public class MetodosPublicos {
         return cadena.length() >= minimo;
     }
 
-    public static boolean validarid(String cadena) {
+    public static boolean validarNumero(String cadena) {
         return cadena.matches("[0-9]+");
     }
 
@@ -128,6 +127,14 @@ public class MetodosPublicos {
                 && cadena.matches(".*[A-Z].*")
                 && cadena.matches(".*[a-z].*")
                 && cadena.matches(".*(\\$|@|#|%|&|\\*|-|_|!|\\?).*"));
+    }
+
+    public static boolean validarFormatoCorreoGmail(String correo) {
+        if (correo == null) {
+            return false;
+        }
+        String exprecion = "^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@gmail\\.com$";
+        return correo.matches(exprecion);
     }
 
     //Aqui para estilizar formularios
