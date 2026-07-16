@@ -69,7 +69,6 @@ public class OperarioInterfaz extends PacienteInterfaz {
         super.agregarBotonCuerpo1(btnPagos);
         super.agregarBotonCuerpo1(btnConsultas);
         
-        new OperarioController(this);
         refrescarVentana(cuerpo1);
     }
 
