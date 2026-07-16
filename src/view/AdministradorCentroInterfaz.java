@@ -119,8 +119,8 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     };
 
     //Días de la semana y mes que se muestran en el formulario de horario
-    public static final String[] DIAS_SEMANA = {"Lunes", "Martes", "Miércoles", "Jueves", 
-                                                "Viernes", "Sábado"};
+    public static final String[] DIAS_SEMANA = {"Lunes", "Martes", "Miercoles", "Jueves", 
+                                                "Viernes", "Sabado"};
     public static final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                                           "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", 
                                           "Diciembre"};
