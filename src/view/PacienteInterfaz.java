@@ -5,6 +5,7 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -43,7 +44,7 @@ public class PacienteInterfaz extends JFrame {
     public JPanel encabezado;//Aqui creo el JPanel que sera el encabezado
     private JPanel panelBienvenida;//Aqui creo el JPanel de bienbenida ejemplo:Bienbenido alejo! lifedoccare
     private JPanel panelSesionUsuario;//Aqui creo el JPanel que lelva el boton cerrar sesion y foto de perfil
-    private JLabel labelFotoPerfil;//Aqui creo JLabel que llevara la foto de perfil
+    public JLabel labelFotoPerfil;//Aqui creo JLabel que llevara la foto de perfil
     public JButton btnCerrarSesion;//Aqui creo el boton cerrar sesion
     public JPanel cuerpo1;//Aqui creo el JPanel que va hacer el cuerpo1
     public JPanel cuerpo2;//Aqui creo el JPanel que va hacer el cuerpo2
@@ -77,7 +78,7 @@ public class PacienteInterfaz extends JFrame {
     public JTextArea areaDescripcion;
     public JScrollPane miCroll;
     public JPanel panelComentarios;
-    public static JPanel panelComenForo;
+    
     //Aqui creo todo para el apartado notificaciones
     public JPanel panelContenidoNotificaciones;
     //Aqui ceo todo para el apartado AgendarCita
@@ -135,6 +136,7 @@ public class PacienteInterfaz extends JFrame {
         this.labelFotoPerfil.setPreferredSize(tamanoFijo);
         this.labelFotoPerfil.setMinimumSize(tamanoFijo);
         this.labelFotoPerfil.setMaximumSize(tamanoFijo);
+        this.labelFotoPerfil.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         this.panelSesionUsuario.add(btnCerrarSesion);
         this.panelSesionUsuario.add(labelFotoPerfil);
@@ -222,11 +224,6 @@ public class PacienteInterfaz extends JFrame {
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
                 BorderFactory.createEmptyBorder(0, 30, 5, 30)));
         this.panelComentarios.setOpaque(false);
-
-        this.panelComenForo = new JPanel();
-        this.panelComenForo.setLayout(new BoxLayout(panelComenForo, BoxLayout.Y_AXIS));
-        this.panelComenForo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-//        this.panelComenForo.setOpaque(false);
 
         this.btnSugerencias = new JButton("Sugerencias ", new ImageIcon("iconsP/happy-face.png"));
         this.btnQuejas = new JButton("Quejas ", new ImageIcon("iconsP/quejas.png"));

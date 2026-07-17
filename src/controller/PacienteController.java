@@ -2,12 +2,16 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import model.Cita;
 import model.CitaDao;
+import model.Foro;
+import model.ForoDao;
 import model.Medico;
 import model.MedicoDao;
 import model.MetodosPublicos;
@@ -16,16 +20,28 @@ import view.Titulo;
 
 public class PacienteController implements ActionListener {
 
+    private static ArrayList<Foro> foro = new ArrayList<Foro>();
     private CitaDao citadao;
     private MedicoDao medicodao;
+    private ForoDao forodao;
     protected PacienteInterfaz pacienteI;//protected para que el hijo lo acceda directo
     public Medico[] medicos;
     protected Cita[] citas;
     private boolean verificador;
 
     public PacienteController(PacienteInterfaz pacienteI) {
+        if (foro == null) {
+            
+        }
+        pacienteI.labelFotoPerfil.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JOptionPane.showMessageDialog(pacienteI, "Vas a editar tu perfil");
+            }
+        });
         this.citadao = new CitaDao();
         this.medicodao = new MedicoDao();
+        this.forodao = new ForoDao();
         this.pacienteI = pacienteI;
         this.pacienteI.btnMisCitas.addActionListener(this);
         this.pacienteI.btnHistorial.addActionListener(this);
@@ -127,17 +143,21 @@ public class PacienteController implements ActionListener {
             MetodosPublicos.vaciarPanel(pacienteI.panelComentarios);
         }
         if (e.getSource() == pacienteI.btnEnviar) {
-            if (verificador) {
-                if (!pacienteI.campoAsunto.getText().isEmpty() && !pacienteI.areaDescripcion.getText().isEmpty()) {
-
-                } else {
-                    JOptionPane.showMessageDialog(pacienteI, "Los campos deven de contener algo");
-                }
+            String asunto = pacienteI.campoAsunto.getText().trim();
+            String descripcion = pacienteI.areaDescripcion.getText().trim();
+            if (asunto.isEmpty() || descripcion.isEmpty()) {
+                JOptionPane.showMessageDialog(pacienteI, "Los campos deben contener algo");
             } else {
-                if (!pacienteI.campoAsunto.getText().isEmpty() && !pacienteI.areaDescripcion.getText().isEmpty()) {
+                String tipoMensaje = verificador ? "Sugerencia" : "Queja";
+                Foro nuevoComentario = new Foro(tipoMensaje, asunto, descripcion, pacienteI.usuario.getIdUsuario());
+                int filasInsertadas = forodao.setAgregar(nuevoComentario);
 
+                if (filasInsertadas > 0) {
+                    JOptionPane.showMessageDialog(pacienteI, "Tu " + tipoMensaje.toLowerCase() + " fue enviada correctamente");
+                    pacienteI.campoAsunto.setText("");
+                    pacienteI.areaDescripcion.setText("");
                 } else {
-                    JOptionPane.showMessageDialog(pacienteI, "Los campos deven de contener algo");
+                    JOptionPane.showMessageDialog(pacienteI, "No se pudo enviar tu " + tipoMensaje.toLowerCase() + ", intenta nuevamente");
                 }
             }
         }

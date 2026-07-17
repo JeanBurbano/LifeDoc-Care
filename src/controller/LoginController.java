@@ -30,20 +30,39 @@ public class LoginController implements ActionListener {
     private byte c;
     private boolean bloqueado;
 
-    public LoginController(Login lg, RecuperacionContrasenaInterfaz recuperarC) {
-        this.lg = lg;
-        this.rc = recuperarC;
-        this.lg.bRegistar.addActionListener(this);
-        this.lg.bIngresar.addActionListener(this);
-        this.lg.titulo2.addMouseListener(new MouseAdapter() {
+    public LoginController(Login lg, RecuperacionContrasenaInterfaz rc) {
+        lg.lblOjo.addMouseListener(new MouseAdapter() {
+            boolean isVisible = false;
+
             @Override
             public void mouseClicked(MouseEvent e) {
-                rc.setVisible(true);
-                rc.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                rc.setExtendedState(MAXIMIZED_BOTH);
-                RecuperarContrasenaController cRc = new RecuperarContrasenaController(rc);
+                isVisible = !isVisible;
+                if (isVisible) {
+                    lg.cambioEstado((byte) 1); // Mostrar texto
+                    lg.lblOjo.setIcon(lg.iconOjoAbierto);
+                } else {
+                    lg.cambioEstado((byte) 2); // Ocultar texto
+                    lg.lblOjo.setIcon(lg.iconOjoCerrado);
+                }
             }
         });
+        lg.titulo2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (lg.titulo2.isEnabled()) {
+                    rc.setVisible(true);
+                    rc.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                    rc.setExtendedState(MAXIMIZED_BOTH);
+                    RecuperarContrasenaController cRc = new RecuperarContrasenaController(rc);
+                } else {
+                    JOptionPane.showMessageDialog(lg, "Por Favor Intenta Mas Tarde");
+                }
+            }
+        });
+        this.lg = lg;
+        this.rc = rc;
+        this.lg.bRegistar.addActionListener(this);
+        this.lg.bIngresar.addActionListener(this);
         this.c = 0;
         this.bloqueado = false;
     }
@@ -59,6 +78,23 @@ public class LoginController implements ActionListener {
                 && MetodosPublicos.validarNumero(id))
                 && (MetodosPublicos.validarTamano(contrasena, 8)
                 && MetodosPublicos.validarContrasena(contrasena));
+    }
+
+    private void creaUsuSegunRol(byte id_rol) {
+        switch (id_rol) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            default:
+
+        }
     }
 
     //Metodo reutilizable abre la interfaz correspondiente segun el rol del usuario que inicio sesion
@@ -131,6 +167,7 @@ public class LoginController implements ActionListener {
                 if (usu != null && usu.getEstado()) {
                     this.c = 0;
                     this.lg.dispose();
+                    MetodosPublicos.reproducirSonido("senora-su-hijo-esta-viendo-p0rr0.wav");
                     abrirInterfazSegunRol(usu);
                 } else {
                     if (usu == null && !usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {

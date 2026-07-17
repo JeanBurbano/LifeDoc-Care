@@ -7,6 +7,10 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.io.File;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -26,6 +30,20 @@ import view.PacienteInterfaz;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MetodosPublicos {
+
+    //Este metodo es para reproducir audio
+    public static void reproducirSonido(String ruta) {
+        try {
+            File sonido = new File("sonido/"+ruta);
+            AudioInputStream audio = AudioSystem.getAudioInputStream(sonido);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audio);
+            clip.start();
+            System.out.println("Adio reproducido");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     //Aqui creo un funcion para estilizar el boton
     public static void estilizarBoton(JButton boton, byte estilo) {
