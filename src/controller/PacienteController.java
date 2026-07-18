@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,7 +21,7 @@ import view.Titulo;
 
 public class PacienteController implements ActionListener {
 
-    private static ArrayList<Foro> foro = new ArrayList<Foro>();
+    private static List<Foro> foro = new ArrayList<Foro>();
     private CitaDao citadao;
     private MedicoDao medicodao;
     private ForoDao forodao;
@@ -30,9 +31,6 @@ public class PacienteController implements ActionListener {
     private boolean verificador;
 
     public PacienteController(PacienteInterfaz pacienteI) {
-        if (foro == null) {
-            
-        }
         pacienteI.labelFotoPerfil.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -42,6 +40,9 @@ public class PacienteController implements ActionListener {
         this.citadao = new CitaDao();
         this.medicodao = new MedicoDao();
         this.forodao = new ForoDao();
+        if (foro == null || foro.isEmpty()) {
+            foro = forodao.listar();
+        }
         this.pacienteI = pacienteI;
         this.pacienteI.btnMisCitas.addActionListener(this);
         this.pacienteI.btnHistorial.addActionListener(this);
@@ -140,7 +141,12 @@ public class PacienteController implements ActionListener {
         }
         if (e.getSource() == pacienteI.btnForo) {
             estaditodeBotonesComentarios(pacienteI.btnForo, pacienteI.btnQuejas, pacienteI.btnSugerencias);
-            MetodosPublicos.vaciarPanel(pacienteI.panelComentarios);
+            pacienteI.mostarPanelComentarioVacio();
+            if (foro != null && !foro.isEmpty()) {
+                for (Foro clave : foro) {
+                    pacienteI.agregarAlPanelComentarios(clave.getTipoMensaje(), clave.getNombreUsuario(), clave.getAsunto(), clave.getDescripcion());
+                }
+            }
         }
         if (e.getSource() == pacienteI.btnEnviar) {
             String asunto = pacienteI.campoAsunto.getText().trim();
@@ -149,10 +155,10 @@ public class PacienteController implements ActionListener {
                 JOptionPane.showMessageDialog(pacienteI, "Los campos deben contener algo");
             } else {
                 String tipoMensaje = verificador ? "Sugerencia" : "Queja";
-                Foro nuevoComentario = new Foro(tipoMensaje, asunto, descripcion, pacienteI.usuario.getIdUsuario());
+                Foro nuevoComentario = new Foro(tipoMensaje, asunto, descripcion, pacienteI.usuario.getPrimerNombre());
                 int filasInsertadas = forodao.setAgregar(nuevoComentario);
-
                 if (filasInsertadas > 0) {
+                    foro.add(nuevoComentario);
                     JOptionPane.showMessageDialog(pacienteI, "Tu " + tipoMensaje.toLowerCase() + " fue enviada correctamente");
                     pacienteI.campoAsunto.setText("");
                     pacienteI.areaDescripcion.setText("");

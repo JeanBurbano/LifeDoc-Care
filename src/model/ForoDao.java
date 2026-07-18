@@ -11,6 +11,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ForoDao implements Crud<Foro> {
+    public ForoDao(){
+        
+    }
 
     @Override
     public List<Foro> listar() {

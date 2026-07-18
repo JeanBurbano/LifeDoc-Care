@@ -33,16 +33,19 @@ public class MetodosPublicos {
 
     //Este metodo es para reproducir audio
     public static void reproducirSonido(String ruta) {
-        try {
-            File sonido = new File("sonido/"+ruta);
-            AudioInputStream audio = AudioSystem.getAudioInputStream(sonido);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audio);
-            clip.start();
-            System.out.println("Adio reproducido");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Thread hiloAudio = new Thread(() -> {
+            try {
+                File sonido = new File("sonido/" + ruta);
+                AudioInputStream audio = AudioSystem.getAudioInputStream(sonido);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audio);
+                clip.start();
+                System.out.println("Adio reproducido");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        hiloAudio.start();
     }
 
     //Aqui creo un funcion para estilizar el boton

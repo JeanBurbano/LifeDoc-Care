@@ -12,11 +12,11 @@ public class Foro {
     private int idUsuario;
     private String nombreUsuario;
 
-    public Foro(String tipoMensaje, String asunto, String descripcion, int idUsuario) {
+    public Foro(String tipoMensaje, String asunto, String descripcion, String nombreUsuario) {
         this.tipoMensaje = tipoMensaje;
         this.asunto = asunto;
         this.descripcion = descripcion;
-        this.idUsuario = idUsuario;
+        this.nombreUsuario = nombreUsuario;
     }
 
     public Foro(int idForo, String tipoMensaje, String asunto, String descripcion,

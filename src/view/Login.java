@@ -28,7 +28,7 @@ public class Login extends JFrame {
     private JTextField id;
     private JPasswordField password;
     private ImageIcon imagen1, imagen2;
-    private JLabel fondo, titulo1, titulo3, titulo4, descripcion, emoji1, emoji2, idField, passwordfield;
+    private JLabel fondo, titulo1, titulo3, titulo4, descripcion, emoji1, emoji2, idLabel, passwordLabel;
     public JLabel titulo2, lblOjo;
     public Icon iconOjoCerrado, iconOjoAbierto;
     public JButton bRegistar, bIngresar;
@@ -51,10 +51,10 @@ public class Login extends JFrame {
         this.panel1.setLayout(new FlowLayout());//Aqui le asigno al panel1 la distribucion FlowLayout
         this.panel1.setBackground(Color.WHITE);//Aqui establesco el color de fondo del panel1
         this.titulo1 = new JLabel(new ImageIcon("logo.png"));//Aqui creo una etiqueta con la imagen
-        this.idField = new JLabel("ID*");//Aqui creo una etiqueta correo electronico
-        this.idField.setOpaque(true);
-        this.idField.setBackground(new Color(230, 247, 246));
-        this.idField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        this.idLabel = new JLabel("ID*");//Aqui creo una etiqueta correo electronico
+        this.idLabel.setOpaque(true);
+        this.idLabel.setBackground(new Color(230, 247, 246));
+        this.idLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.id = new JTextField(30);//Creo JTextField para el correo del usuario.
         this.id.setBackground(new Color(230, 247, 246));//Aqui agrego el color de fondo al JTextField
         this.id.setBorder(new EmptyBorder(0, 0, 0, 0));//Aqui le quito los bordes al JTextField
@@ -66,10 +66,10 @@ public class Login extends JFrame {
         this.lblOjo.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.lblOjo.setOpaque(true);
         this.lblOjo.setBackground(new Color(230, 247, 246));
-        this.passwordfield = new JLabel("Password *");//Aqui creo una etiqueta password
-        this.passwordfield.setOpaque(true);
-        this.passwordfield.setBackground(new Color(230, 247, 246));
-        this.passwordfield.setAlignmentX(Component.LEFT_ALIGNMENT);
+        this.passwordLabel = new JLabel("Password *");//Aqui creo una etiqueta password
+        this.passwordLabel.setOpaque(true);
+        this.passwordLabel.setBackground(new Color(230, 247, 246));
+        this.passwordLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.password = new JPasswordField(30);//Creo JPasswordField para la contrasena del usuario.
         this.password.setBackground(new Color(230, 247, 246));//Aqui agrego el color de fondo al JPasswordField
         this.password.setBorder(new EmptyBorder(0, 0, 0, 0));//Aqui le quito los bordes al JPasswordField
@@ -77,7 +77,7 @@ public class Login extends JFrame {
         this.panelfield = new JPanel();
         this.panelfield.setLayout(new BoxLayout(panelfield, BoxLayout.Y_AXIS));
         this.panelfield.setBackground(Color.WHITE);
-        this.panelfield.add(idField);
+        this.panelfield.add(idLabel);
         this.panelfield.add(id);
         this.panelfield.add(new JLabel("  "));
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
@@ -85,7 +85,7 @@ public class Login extends JFrame {
         panel.setOpaque(false);
         panel.add(password);
         panel.add(lblOjo);
-        this.panelfield.add(passwordfield);
+        this.panelfield.add(passwordLabel);
         this.panelfield.add(panel);
         this.titulo2 = new JLabel("¿Olvidaste tu contrasena?", SwingConstants.CENTER);//Aqui creo una etiqueta con el texto olvidaste contrasena que va estar centrado en la etiqueta
         this.titulo2.setForeground(new Color(22, 197, 169));//Asigno color al olvidar contrasena
@@ -160,5 +160,10 @@ public class Login extends JFrame {
         } else {
             password.setEchoChar('*');
         }
+    }
+    
+    public void limpiar(){
+        this.id.setText("");
+        this.password.setText("");
     }
 }
