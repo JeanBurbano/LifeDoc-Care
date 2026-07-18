@@ -3,7 +3,8 @@ package model;
 import java.time.LocalDate;
 
 public class Medico extends Paciente {
-
+    
+    private int id_usuarioM;
     private int id_medico;
     private String especialidad;
 
@@ -25,6 +26,7 @@ public class Medico extends Paciente {
                 estado,
                 sisben,
                 fotoPerfil);
+        this.id_usuarioM=id_usuario;
         this.especialidad = especialidad;
     }
 

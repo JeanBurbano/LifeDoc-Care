@@ -40,7 +40,7 @@ public class MetodosPublicos {
                 Clip clip = AudioSystem.getClip();
                 clip.open(audio);
                 clip.start();
-                System.out.println("Adio reproducido");
+                System.out.println("Audio reproducido");
             } catch (Exception e) {
                 e.printStackTrace();
             }
