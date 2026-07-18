@@ -93,8 +93,35 @@ public class PacienteInterfaz extends JFrame {
     public CalendarPanel calendario;
     public JPanel panelHorarios;
 
-    public PacienteInterfaz() {
+    public PacienteInterfaz(String nombreInterfaz) {
+        super(nombreInterfaz);
 
+        this.fondoVentana = new JLabel(new ImageIcon("Fondo1_watermark.jpeg"));
+        this.fondoVentana.setOpaque(true);
+        this.fondoVentana.setLayout(new BoxLayout(fondoVentana, BoxLayout.Y_AXIS));
+        this.setContentPane(fondoVentana);
+
+        this.encabezado = new JPanel();
+        this.encabezado.setBorder(new EmptyBorder(40, 40, 0, 40));
+        this.encabezado.setLayout(new BorderLayout());
+        this.encabezado.setOpaque(false);
+
+        this.cuerpo1 = new JPanel();
+        this.cuerpo1.setLayout(new FlowLayout(FlowLayout.LEFT, 25, 10));
+        this.cuerpo1.setOpaque(false);
+        this.cuerpo1.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(40, 40, 0, 40),
+                BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY)));
+
+        this.cuerpo2 = new JPanel();
+        this.cuerpo2.setLayout(new BorderLayout());
+        this.cuerpo2.setBorder(new EmptyBorder(0, 40, 20, 40));
+        this.cuerpo2.setOpaque(false);
+        this.cuerpo2.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+
+        this.fondoVentana.add(encabezado);
+        this.fondoVentana.add(cuerpo1);
+        this.fondoVentana.add(cuerpo2);
     }
 
     public PacienteInterfaz(String nombreInterfaz, Paciente usuario) {
@@ -516,7 +543,7 @@ public class PacienteInterfaz extends JFrame {
         JPanel c = new JPanel();
         c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
         JTextField descripcionText = new JTextField(descripcion);
-        descripcionText.setEnabled(false);
+        descripcionText.setEditable(false);
         c.add(new JLabel(tipoMensaje + "-" + asunto + "-" + nombreUsu));
         c.add(descripcionText);
         this.panelComentarios1.add(c);

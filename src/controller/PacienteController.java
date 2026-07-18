@@ -30,20 +30,19 @@ public class PacienteController implements ActionListener {
     protected Cita[] citas;
     private boolean verificador;
 
-    public PacienteController(PacienteInterfaz pacienteI) {
-        pacienteI.labelFotoPerfil.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(pacienteI, "Vas a editar tu perfil");
-            }
+    private void agregaMauseClick() {
+        Thread hiloeditarPerfil = new Thread(() -> {
+            pacienteI.labelFotoPerfil.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    JOptionPane.showMessageDialog(pacienteI, "Vas a editar tu perfil");
+                }
+            });
         });
-        this.citadao = new CitaDao();
-        this.medicodao = new MedicoDao();
-        this.forodao = new ForoDao();
-        if (foro == null || foro.isEmpty()) {
-            foro = forodao.listar();
-        }
-        this.pacienteI = pacienteI;
+        hiloeditarPerfil.start();
+    }
+
+    private void agregarActionListener() {
         this.pacienteI.btnMisCitas.addActionListener(this);
         this.pacienteI.btnHistorial.addActionListener(this);
         this.pacienteI.btnComentarios.addActionListener(this);
@@ -63,6 +62,23 @@ public class PacienteController implements ActionListener {
         this.pacienteI.btnMisCitas.doClick();
     }
 
+    private void inicializarForo() {
+        if (foro == null || foro.isEmpty()) {
+            foro = forodao.listar();
+        }
+    }
+
+    //constructor
+    public PacienteController(PacienteInterfaz pacienteI) {
+        this.pacienteI = pacienteI;
+        this.citadao = new CitaDao();
+        this.medicodao = new MedicoDao();
+        this.forodao = new ForoDao();
+        agregaMauseClick();
+        agregarActionListener();
+        inicializarForo();
+    }
+
     private void actionListenerParaBotonesDeVectores(ArrayList<JButton> vectorBotones, String primero, String segundo) {
         for (JButton boton : vectorBotones) {
             boton.addActionListener((ActionEvent e) -> {
@@ -75,6 +91,17 @@ public class PacienteController implements ActionListener {
         boton1.setEnabled(false);
         boton2.setEnabled(true);
         boton3.setEnabled(true);
+    }
+
+    private void botonesFuncionalesMedicos(int n) {
+        pacienteI.listaBotonesMedicos.clear();
+        medicos = medicodao.listarPorEspecialidad(n);
+        String[] nombreMedicos = new String[medicos.length];
+        for (int i = 0; i < medicos.length; i++) {
+            nombreMedicos[i] = medicos[i].getPrimerNombre() + " " + medicos[i].getPrimerApellido();
+        }
+        pacienteI.mostrarVistaSeleccionMedico(nombreMedicos);
+        actionListenerParaBotonesDeVectores(pacienteI.listaBotonesMedicos, "Agenda una ", "Cita");
     }
 
     @Override
@@ -120,14 +147,13 @@ public class PacienteController implements ActionListener {
             pacienteI.mostrarVistaTipoConsulta(new Titulo("Agendamiento de ", "Cita"));
         }
         if (e.getSource() == pacienteI.btnOdontologia) {
-            pacienteI.listaBotonesMedicos.clear();
-            medicos = medicodao.listarPorEspecialidad(2);
-            String[] nombreMedicos = new String[medicos.length];
-            for (int i = 0; i < medicos.length; i++) {
-                nombreMedicos[i] = medicos[i].getPrimerNombre() + " " + medicos[i].getPrimerApellido();
-            }
-            pacienteI.mostrarVistaSeleccionMedico(nombreMedicos);
-            actionListenerParaBotonesDeVectores(pacienteI.listaBotonesMedicos, "Agenda una ", "Cita");
+            botonesFuncionalesMedicos(2);
+        }
+        if (e.getSource() == pacienteI.btnDermatologia) {
+            botonesFuncionalesMedicos(3);
+        }
+        if (e.getSource() == pacienteI.btnMedicoGeneral) {
+            botonesFuncionalesMedicos(1);
         }
         if (e.getSource() == pacienteI.btnSugerencias) {
             estaditodeBotonesComentarios(pacienteI.btnSugerencias, pacienteI.btnQuejas, pacienteI.btnForo);
@@ -155,10 +181,12 @@ public class PacienteController implements ActionListener {
                 JOptionPane.showMessageDialog(pacienteI, "Los campos deben contener algo");
             } else {
                 String tipoMensaje = verificador ? "Sugerencia" : "Queja";
-                Foro nuevoComentario = new Foro(tipoMensaje, asunto, descripcion, pacienteI.usuario.getPrimerNombre());
+                Foro nuevoComentario = new Foro(tipoMensaje, asunto, descripcion, pacienteI.usuario.getIdUsuario());
                 int filasInsertadas = forodao.setAgregar(nuevoComentario);
                 if (filasInsertadas > 0) {
-                    foro.add(nuevoComentario);
+                    nuevoComentario = new Foro(nuevoComentario.getTipoMensaje(), nuevoComentario.getAsunto(),
+                            nuevoComentario.getDescripcion(), pacienteI.usuario.getPrimerNombre());
+                    foro.add(0, nuevoComentario);
                     JOptionPane.showMessageDialog(pacienteI, "Tu " + tipoMensaje.toLowerCase() + " fue enviada correctamente");
                     pacienteI.campoAsunto.setText("");
                     pacienteI.areaDescripcion.setText("");

@@ -18,6 +18,7 @@ import view.MedicoInterfaz;
 import view.OperarioInterfaz;
 import view.PacienteInterfaz;
 import view.RecuperacionContrasenaInterfaz;
+import view.RegistroUsuariosInterfaz;
 
 public class LoginController implements ActionListener {
 
@@ -33,43 +34,49 @@ public class LoginController implements ActionListener {
     private boolean bloqueado;
 
     //Este metodo me hace el proceso para el ojo que permite ver la contrasena
-    public void ojodelLogin() {
-        lg.lblOjo.addMouseListener(new MouseAdapter() {
-            boolean isVisible = false;
+    private void ojodelLogin() {
+        Thread hiloOjo = new Thread(() -> {
+            lg.lblOjo.addMouseListener(new MouseAdapter() {
+                boolean isVisible = false;
 
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                isVisible = !isVisible;
-                if (isVisible) {
-                    lg.cambioEstado((byte) 1); //Mostrar texto
-                    lg.lblOjo.setIcon(lg.iconOjoAbierto);
-                } else {
-                    lg.cambioEstado((byte) 2); //Ocultar texto
-                    lg.lblOjo.setIcon(lg.iconOjoCerrado);
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    isVisible = !isVisible;
+                    if (isVisible) {
+                        lg.cambioEstado((byte) 1); //Mostrar texto
+                        lg.lblOjo.setIcon(lg.iconOjoAbierto);
+                    } else {
+                        lg.cambioEstado((byte) 2); //Ocultar texto
+                        lg.lblOjo.setIcon(lg.iconOjoCerrado);
+                    }
                 }
-            }
+            });
         });
+        hiloOjo.start();
     }
 
     //Este metodo hace 2 cosas primero le indicamos que el JLabel va a tener un mouseClicked y segundo
     //me hace el proceso para abrir la vista de recuperacion de contrasena
-    public void vistaRecuperarContrasena() {
-        lg.titulo2.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (lg.titulo2.isEnabled()) {
-                    rc.setVisible(true);
-                    rc.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                    rc.setExtendedState(MAXIMIZED_BOTH);
-                    RecuperarContrasenaController cRc = new RecuperarContrasenaController(rc);
-                } else {
-                    JOptionPane.showMessageDialog(lg, "Por Favor Intenta Mas Tarde");
+    private void vistaRecuperarContrasena() {
+        Thread hiloVistaRecu = new Thread(() -> {
+            lg.titulo2.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (lg.titulo2.isEnabled()) {
+                        rc.setVisible(true);
+                        rc.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                        rc.setExtendedState(MAXIMIZED_BOTH);
+                        RecuperarContrasenaController cRc = new RecuperarContrasenaController(rc);
+                    } else {
+                        JOptionPane.showMessageDialog(lg, "Por Favor Intenta Mas Tarde");
+                    }
                 }
-            }
+            });
         });
+        hiloVistaRecu.start();
     }
 
-    public void agregarActionListenerABotonesDeLogin() {
+    private void agregarActionListenerABotonesDeLogin() {
         this.lg.bRegistar.addActionListener(this);
         this.lg.bIngresar.addActionListener(this);
     }
@@ -82,6 +89,16 @@ public class LoginController implements ActionListener {
         vistaRecuperarContrasena();
         this.c = 0;
         this.bloqueado = false;
+    }
+
+    public void abrirVistaRegistro() {
+        Thread hiloVistasRegistro = new Thread(() -> {
+            RegistroUsuariosInterfaz ru = new RegistroUsuariosInterfaz("Registro");
+            ru.setVisible(true);
+            ru.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            ru.setExtendedState(MAXIMIZED_BOTH);
+        });
+        hiloVistasRegistro.start();
     }
 
     private void estadoDeCosas(boolean estado) {
@@ -179,7 +196,7 @@ public class LoginController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == this.lg.bIngresar) {
+        if (e.getSource() == lg.bIngresar) {
             estadoDeCosas(false);
             String id = this.lg.getId();
             String contrasena = this.lg.getPassword();
@@ -195,7 +212,7 @@ public class LoginController implements ActionListener {
                 if (usu != null && usu.getEstado()) {
                     this.c = 0;
                     this.lg.dispose();
-                    MetodosPublicos.reproducirSonido("senora-su-hijo-esta-viendo-p0rr0.wav");
+                    MetodosPublicos.reproducirSonido("bienvenido.wav");
                     abrirInterfazSegunRol(usu);
                 } else {
                     if (usu == null && !usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {
@@ -243,6 +260,10 @@ public class LoginController implements ActionListener {
                     }
                 }
             }
+        }
+
+        if (e.getSource() == lg.bRegistar) {
+            abrirVistaRegistro();
         }
     }
 }

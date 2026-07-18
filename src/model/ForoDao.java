@@ -149,10 +149,10 @@ public class ForoDao implements Crud<Foro> {
             if (con == null) {
                 return 0;
             }
-            try (PreparedStatement ps = con.prepareStatement(sql)) {
-                ps.setInt(1, id);
-                return ps.executeUpdate();
-            }
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            return ps.executeUpdate();
+
         } catch (SQLException e) {
             Logger.getLogger(ForoDao.class.getName()).log(Level.SEVERE, null, e);
             return 0;
