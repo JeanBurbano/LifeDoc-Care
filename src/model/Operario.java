@@ -33,4 +33,12 @@ public class Operario extends Paciente{
         this.id_operario = id_operario;
     }
     
+    public int getId_usuario(){
+        return super.getIdUsuario();
+    }
+    
+    public void setId_usuario(int id_usuario){
+        super.setIdUsuario(id_usuario);
+    }
+    
 }

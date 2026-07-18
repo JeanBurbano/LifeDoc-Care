@@ -13,31 +13,32 @@ public class OperarioDao implements Crud<Operario>{
     Connection con;
     PreparedStatement ps;
     ResultSet rs;
-    
-    public Operario buscarPorId(int idOperario) {
+            
+    public List<Operario> listarOp() {
+        List<Operario> operarios = new ArrayList<>();
         String sql = "SELECT o.id_operario, u.primer_nombre, u.primer_apellido "
                    + "FROM operario o "
                    + "JOIN usuario u ON u.id_usuario = o.id_usuario "
-                   + "WHERE o.id_operario = ? AND u.estado = 1";
+                   + "WHERE u.estado = 1 "
+                   + "ORDER BY u.primer_apellido, u.primer_nombre";
         
         try {
             con = conectar.getConection();
             ps = con.prepareStatement(sql);
-            ps.setInt(1, idOperario);
             
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new Operario(
+                while (rs.next()) {
+                    operarios.add(new Operario(
                         rs.getInt("id_operario"),
                         rs.getString("primer_nombre"),
                         rs.getString("primer_apellido")
-                    );
+                    ));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return operarios;
     }
     
     @Override
@@ -46,7 +47,7 @@ public class OperarioDao implements Crud<Operario>{
         String sql = "SELECT o.id_operario, u.primer_nombre, u.primer_apellido "
                    + "FROM operario o "
                    + "JOIN usuario u ON u.id_usuario = o.id_usuario "
-                   + "WHERE u.estado = 1 "
+                   + "WHERE u.estado = 1 "  
                    + "ORDER BY u.primer_apellido, u.primer_nombre";
         
         try {

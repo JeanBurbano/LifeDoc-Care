@@ -33,6 +33,7 @@ import static model.MetodosPublicos.estilizarBoton;
 import static model.MetodosPublicos.refrescarVentana;
 import static model.MetodosPublicos.vaciarPanel;
 import model.Paciente;
+import model.PacienteDao;
 
 public class OperarioInterfaz extends PacienteInterfaz {
 
@@ -53,8 +54,6 @@ public class OperarioInterfaz extends PacienteInterfaz {
     private JTextField txtCorreo, txtTelefono;
     private JTextField txtFechaNacimiento;
     private JTextField txtSexo;
-    private DatePicker datePickerCita;
-    private JTextField txtHoraCita;
     public JButton btnAgendarCita;
 
     public OperarioInterfaz(String nombreInterfaz, Paciente usuario) {
@@ -78,7 +77,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         cuerpo2.setLayout(new BorderLayout(15, 15));
         cuerpo2.setBorder(new EmptyBorder(20, 40, 20, 40));
 
-        // Búsqueda
+        // Búsqueda pacientes
         JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelBusqueda.setOpaque(false);
 
@@ -94,12 +93,12 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelBusqueda.add(lblBuscar);
         panelBusqueda.add(txtBuscarID);
         panelBusqueda.add(btnBuscarPaciente);
-
+        
         // Panel central
         JPanel panelCentral = new JPanel(new BorderLayout(15, 0));
         panelCentral.setOpaque(false);
 
-        // Resumen
+        // Resumen paciente
         panelResumen = new JPanel();
         panelResumen.setLayout(new BoxLayout(panelResumen, BoxLayout.Y_AXIS));
         panelResumen.setOpaque(false);
@@ -137,16 +136,6 @@ public class OperarioInterfaz extends PacienteInterfaz {
         txtFechaNacimiento = new JTextField(20);
         txtSexo = new JTextField(20);
 
-        DatePickerSettings settings = new DatePickerSettings();
-        settings.setAllowEmptyDates(false);
-
-        datePickerCita = new DatePicker(settings);
-
-        // Bloquear fechas pasadas (permitir hoy y futuro)
-        settings.setVetoPolicy(date -> date.isAfter(LocalDate.now().minusDays(1)));
-
-        txtHoraCita = new JTextField(10);
-
         addFormField(panelFormulario, gbc, "Primer Nombre:", txtPrimerNombre, 0);
         addFormField(panelFormulario, gbc, "Segundo Nombre:", txtSegundoNombre, 1);
         addFormField(panelFormulario, gbc, "Primer Apellido:", txtPrimerApellido, 2);
@@ -156,18 +145,6 @@ public class OperarioInterfaz extends PacienteInterfaz {
         addFormField(panelFormulario, gbc, "Fecha Nacimiento:", txtFechaNacimiento, 6);
         addFormField(panelFormulario, gbc, "Sexo:", txtSexo, 7);
 
-        gbc.gridx = 0;
-        gbc.gridy = 8;
-        panelFormulario.add(new JLabel("Fecha de la Cita:"), gbc);
-        gbc.gridx = 1;
-        panelFormulario.add(datePickerCita, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 9;
-        panelFormulario.add(new JLabel("Hora (HH:mm):"), gbc);
-        gbc.gridx = 1;
-        panelFormulario.add(txtHoraCita, gbc);
-
         panelCentral.add(panelResumen, BorderLayout.WEST);
         panelCentral.add(panelFormulario, BorderLayout.CENTER);
 
@@ -176,8 +153,46 @@ public class OperarioInterfaz extends PacienteInterfaz {
         cuerpo2.add(btnAgendarCita, BorderLayout.SOUTH);
 
         refrescarVentana(cuerpo2);
+        
+        btnBuscarPaciente.addActionListener(e -> buscarPaciente());
     }
-
+    
+    private void buscarPaciente() {
+        String id = txtBuscarID.getText().trim();
+        if (id.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Por favor ingrese un ID de paciente.", 
+                "Campo vacío", 
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        PacienteDao dao = new PacienteDao();
+        Paciente paciente = dao.buscarPorId(id);
+        
+        if (paciente != null) {
+            cargarDatosPaciente(
+                paciente.getNumeroId()+ "",
+                paciente.getPrimerNombre(),
+                paciente.getSegundoNombre(),
+                paciente.getPrimerApellido(),
+                paciente.getSegundoApellido(),
+                paciente.getCorreoElectronico(),
+                paciente.getNumeroTelefonico(),
+                paciente.getFechaNacimiento() != null ? paciente.getFechaNacimiento().toString() : "",
+                paciente.getSexoBiologico()
+            );
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Paciente encontrado y cargado correctamente.", 
+                "Éxito", 
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "No se encontró paciente con ID: " + id, 
+                "Paciente no encontrado", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }
     private void addFormField(JPanel panel, GridBagConstraints gbc, String label, JTextField field, int row) {
         gbc.gridx = 0;
         gbc.gridy = row;
