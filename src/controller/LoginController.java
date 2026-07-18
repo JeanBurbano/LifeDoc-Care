@@ -117,15 +117,19 @@ public class LoginController implements ActionListener {
     private void creaUsuSegunRol(byte id_rol, String id, String contrasena) {
         switch (id_rol) {
             case 1:
+                //Aqui se crearia usuario administrador del sistema pero como todavia no esta contruido la clase no lo hago
                 this.usu = usuDao.login(id, contrasena);
                 break;
             case 2:
+                //Aqui se crearia usuario administrador del centro pero como todavia no esta contruido la clase no lo hago
                 this.usu = usuDao.login(id, contrasena);
                 break;
             case 3:
+                //Aqui se crearia medico del sistema pero como todavia no esta contruido la clase no lo hago
                 this.usu = usuDao.login(id, contrasena);
                 break;
             case 4:
+                //Aqui se crearia usuario operarario pero como todavia no esta contruido la clase no lo hago
                 this.usu = usuDao.login(id, contrasena);
                 break;
             case 5:
@@ -136,42 +140,38 @@ public class LoginController implements ActionListener {
         }
     }
 
+    //Este metodo tadavi no se si ponerlo en el abirInterfaz para abrir las vistas sin problemas
+    private void verInterfaz(PacienteInterfaz p) {
+        p.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        p.setExtendedState(MAXIMIZED_BOTH);
+        p.setVisible(true);
+    }
+
     //Metodo reutilizable abre la interfaz correspondiente segun el rol del usuario que inicio sesion
     private void abrirInterfazSegunRol(Paciente usuario) {
         switch (usuario.getId_rol()) {
             case 1:
                 AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz("Administrador del sistema", usuario);
-                adminSistem.setVisible(true);
-                adminSistem.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                adminSistem.setExtendedState(MAXIMIZED_BOTH);
                 AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
+                verInterfaz(adminSistem);
                 break;
             case 2:
                 AdministradorCentroInterfaz adminI = new AdministradorCentroInterfaz("Administrador del centro", usuario);
-                adminI.setVisible(true);
-                adminI.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                adminI.setExtendedState(MAXIMIZED_BOTH);
                 AdminCentroController adminC = new AdminCentroController(adminI);
+                verInterfaz(adminI);
                 break;
             case 3:
                 MedicoInterfaz i = new MedicoInterfaz("Medico", usuario);
-                i.setVisible(true);
-                i.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                i.setExtendedState(MAXIMIZED_BOTH);
                 MedicoController mc = new MedicoController(i);
+                verInterfaz(i);
                 break;
             case 4:
                 OperarioInterfaz opI = new OperarioInterfaz("Operario", usuario);
-                opI.setVisible(true);
-                opI.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                opI.setExtendedState(MAXIMIZED_BOTH);
                 OperarioController controller = new OperarioController(opI);
+                verInterfaz(opI);
                 break;
             case 5:
                 PacienteInterfaz p = new PacienteInterfaz("Paciente", usuario);
-                p.setVisible(true);
-                p.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                p.setExtendedState(MAXIMIZED_BOTH);
                 PacienteController clg = new PacienteController(p);
                 break;
             default:
@@ -200,12 +200,10 @@ public class LoginController implements ActionListener {
             estadoDeCosas(false);
             String id = this.lg.getId();
             String contrasena = this.lg.getPassword();
-            if (this.bloqueado) {
-                JOptionPane.showMessageDialog(lg, "Lo has intentado muchas veces por favor espera " + MINUTOS_BLOQUEO + " minutos");
-                id = null;
-                contrasena = null;
+            if (c >= MAX_INTENTOS) {
+                bloquearFormularioTemporalmente();
                 this.lg.limpiar();
-            } else if (estadito(id, contrasena) && c < MAX_INTENTOS) {
+            } else if (estadito(id, contrasena)) {
                 estadoDeCosas(true);
                 byte idRol = usuDao.sacarIdRol(id, contrasena);
                 creaUsuSegunRol(idRol, id, contrasena);
@@ -215,7 +213,8 @@ public class LoginController implements ActionListener {
                     MetodosPublicos.reproducirSonido("bienvenido.wav");
                     abrirInterfazSegunRol(usu);
                 } else {
-                    if (usu == null && !usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {
+                    boolean verificardor = usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion");
+                    if (usu == null && !verificardor) {
                         JOptionPane.showMessageDialog(lg, "El usuario no existe");
                     } else if (usu == null && usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {
                         JOptionPane.showMessageDialog(lg, "La contrasena es incorrecta");
@@ -231,6 +230,7 @@ public class LoginController implements ActionListener {
                 estadoDeCosas(true);
                 this.usu = null;
                 id = null;
+                contrasena = null;
             } else {
                 estadoDeCosas(true);
                 this.c++;

@@ -11,10 +11,10 @@ public class LifeDocCare {
     public static void main(String[] args) {
         Login lg = new Login();
         RecuperacionContrasenaInterfaz rc = new RecuperacionContrasenaInterfaz();
-        lg.setVisible(true);
+        LoginController clg = new LoginController(lg, rc);
         lg.setDefaultCloseOperation(EXIT_ON_CLOSE);
         lg.setExtendedState(MAXIMIZED_BOTH);
-        LoginController clg = new LoginController(lg, rc);
+        lg.setVisible(true);
     }
 
 }
