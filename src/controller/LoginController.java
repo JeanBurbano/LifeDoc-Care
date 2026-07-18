@@ -11,6 +11,7 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.MetodosPublicos;
 import model.UsuarioDao;
 import model.Paciente;
+import view.AdministradorCentroInterfaz;
 import view.AdministradorDelSistemaInterfaz;
 import view.Login;
 import view.MedicoInterfaz;
@@ -127,6 +128,13 @@ public class LoginController implements ActionListener {
                 adminSistem.setDefaultCloseOperation(EXIT_ON_CLOSE);
                 adminSistem.setExtendedState(MAXIMIZED_BOTH);
                 AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
+                break;
+            case 2:
+                AdministradorCentroInterfaz adminI = new AdministradorCentroInterfaz("Administrador del centro", usuario);
+                adminI.setVisible(true);
+                adminI.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                adminI.setExtendedState(MAXIMIZED_BOTH);
+                AdminCentroController adminC = new AdminCentroController(adminI);
                 break;
             case 3:
                 MedicoInterfaz i = new MedicoInterfaz("Medico", usuario);
