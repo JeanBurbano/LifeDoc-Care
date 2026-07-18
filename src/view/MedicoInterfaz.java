@@ -9,6 +9,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -33,25 +34,20 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
     public MedicoInterfaz(String nombreInterfaz,Paciente usuario) {
         super(nombreInterfaz, usuario);
-
-        this.btnMisCitas = new JButton("👥 Mis citas");
-        this.btnHistorial = new JButton("☰ Historial");
-        this.btnComentarios = new JButton("💬 Comentarios");
-        this.btnNotificaciones = new JButton("✉️ Notificaciones");
-        this.btnMiAgenda = new JButton("📅 Mi Agenda");
-        this.btnConsultorio = new JButton("❤️ Consultorio");
-        btnBuscar = new JButton("📤 Buscar");
-        pruebaFicha = new JButton("✓ Atender");
+        this.btnMiAgenda = new JButton("Mi Agenda", new ImageIcon("iconsP/schedule.png"));
+        this.btnConsultorio = new JButton("Consultorio", new ImageIcon("iconsP/heart.png"));
+        btnBuscar = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
+        pruebaFicha = new JButton("Atender", new ImageIcon("iconsP/accept.png"));
         simboloRegresarConfirmacionP = new JButton("←");
-        btnAsistio = new JButton("✓ Asistió");
-        btnNoAsistio = new JButton("X No asistió");
-        btnGuardarFicha = new JButton("✓ Guardar");
-        btnAceptarFicha = new JButton("✓ Aceptar");
-        btnReagendarCita = new JButton("→ Reagendar");
-        btnVerDetalles = new JButton("🔎 Ver detalles");
+        btnAsistio = new JButton("Asistió", new ImageIcon("iconsP/accept.png"));
+        btnNoAsistio = new JButton("No asistió", new ImageIcon("iconsP/quejas.png"));
+        btnGuardarFicha = new JButton("Guardar", new ImageIcon("iconsP/accept.png"));
+        btnAceptarFicha = new JButton("Aceptar", new ImageIcon("iconsP/accept.png"));
+        btnReagendarCita = new JButton("Reagendar", new ImageIcon("iconsP/reagendar.png"));
+        btnVerDetalles = new JButton("Ver detalles", new ImageIcon("iconsP/magnifying-glass.png"));
         btnVolverVerDetalles = new JButton("← Volver");
-        btnActReagendar = new JButton("✓ Aceptar");
-        btnNoReagendar = new JButton("X Cancelar");
+        btnActReagendar = new JButton("Aceptar", new ImageIcon("iconsP/accept.png"));
+        btnNoReagendar = new JButton("Cancelar", new ImageIcon("iconsP/quejas.png"));
 
         MetodosPublicos.estilizarBoton(btnBuscar, (byte) 5);
         btnBuscar.setPreferredSize(new Dimension(130, 30));
@@ -61,11 +57,12 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
         MetodosPublicos.estilizarBoton(btnAsistio, (byte) 5);
         btnAsistio.setBackground(COLOR_VERDE_ACENTO);
-        btnAsistio.setPreferredSize(new Dimension(150, 40));
+        btnAsistio.setPreferredSize(new Dimension(160, 40));
 
         MetodosPublicos.estilizarBoton(btnNoAsistio, (byte) 5);
         btnNoAsistio.setBackground(Color.RED);
-        btnNoAsistio.setPreferredSize(new Dimension(150, 40));
+        btnNoAsistio.setPreferredSize(new Dimension(160, 40));
+        
         pruebaFicha.setPreferredSize(new Dimension(150, 40));
 
         MetodosPublicos.estilizarBoton(btnGuardarFicha, (byte) 5);
@@ -90,10 +87,6 @@ public class MedicoInterfaz extends PacienteInterfaz {
         btnNoReagendar.setBackground(Color.RED);
         btnNoReagendar.setPreferredSize(new Dimension(150, 40));
         
-//        super.agregarBotonCuerpo1(btnMisCitas);
-//        super.agregarBotonCuerpo1(btnHistorial);
-//        super.agregarBotonCuerpo1(btnComentarios);
-//        super.agregarBotonCuerpo1(btnNotificaciones);
         super.agregarBotonCuerpo1(btnMiAgenda);
         super.agregarBotonCuerpo1(btnConsultorio);
 
@@ -169,7 +162,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         scrollCitas.getViewport().setOpaque(false);
         scrollCitas.setBorder(null);
 
-        JLabel tituloMiAgenda = new JLabel("Citas programadas vigentes");
+        JLabel tituloMiAgenda = new JLabel("Citas asignadas vigentes");
         tituloMiAgenda.setFont(new Font("arial", Font.BOLD, 28));
         tituloMiAgenda.setForeground(COLOR_AZUL_CORPORATIVO);
 
@@ -702,7 +695,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         tituloS.setForeground(new Color(0, 194, 177));
         tituloS.setFont(new Font("Arial", Font.BOLD, 20));
         
-        JButton btnEstado = new JButton("☑ En sala de espera");
+        JButton btnEstado = new JButton("En sala de espera", new ImageIcon("iconsP/happy-face.png"));
         MetodosPublicos.estilizarBoton(btnEstado, (byte) 1);
         btnEstado.setPreferredSize(new Dimension(190, 40));
         

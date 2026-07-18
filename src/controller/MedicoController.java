@@ -14,6 +14,7 @@ public class MedicoController extends PacienteController {
         this.medico.simboloRegresarConfirmacionP.addActionListener(this);
         this.medico.btnAsistio.addActionListener(this);
         this.medico.btnNoAsistio.addActionListener(this);
+        this.medico.pruebaFicha.addActionListener(this);
         this.medico.btnGuardarFicha.addActionListener(this);
         this.medico.btnAceptarFicha.addActionListener(this);
         this.medico.btnVerDetalles.addActionListener(this);
