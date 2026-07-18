@@ -230,6 +230,7 @@ public class PacienteInterfaz extends JFrame {
         this.panelComentarios1.setLayout(new BoxLayout(panelComentarios1, BoxLayout.Y_AXIS));
         this.panelComentarios1.setBorder(BorderFactory.createEmptyBorder(15, 10, 10, 10));
         this.panelComentarios1.setOpaque(false);
+        this.panelComentarios1.setBorder(null);
         this.btnSugerencias = new JButton("Sugerencias ", new ImageIcon("iconsP/happy-face.png"));
         this.btnQuejas = new JButton("Quejas ", new ImageIcon("iconsP/quejas.png"));
         this.btnForo = new JButton("Foro ", new ImageIcon("iconsP/communication.png"));
@@ -482,7 +483,7 @@ public class PacienteInterfaz extends JFrame {
         scrollComentarios.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollComentarios.setOpaque(false);
         scrollComentarios.getViewport().setOpaque(false);
-        scrollComentarios.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
+        scrollComentarios.setBorder(null);
         this.panelComentarios.add(scrollComentarios);
         MetodosPublicos.refrescarVentana(panelComentarios1);
         MetodosPublicos.refrescarVentana(panelComentarios);
@@ -515,6 +516,7 @@ public class PacienteInterfaz extends JFrame {
         JPanel c = new JPanel();
         c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
         JTextField descripcionText = new JTextField(descripcion);
+        descripcionText.setEnabled(false);
         c.add(new JLabel(tipoMensaje + "-" + asunto + "-" + nombreUsu));
         c.add(descripcionText);
         this.panelComentarios1.add(c);
