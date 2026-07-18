@@ -1,17 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controller;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import view.MedicoInterfaz;
 
-/**
- *
- * @author Windows 10 PRO
- */
 public class MedicoController extends PacienteController {
 
     MedicoInterfaz medico;
@@ -25,14 +16,18 @@ public class MedicoController extends PacienteController {
         this.medico.btnNoAsistio.addActionListener(this);
         this.medico.btnGuardarFicha.addActionListener(this);
         this.medico.btnAceptarFicha.addActionListener(this);
-        this.medico.pruebaFicha.addActionListener(this);
+        this.medico.btnVerDetalles.addActionListener(this);
+        this.medico.btnVolverVerDetalles.addActionListener(this);
+        this.medico.btnReagendarCita.addActionListener(this);
+        this.medico.btnActReagendar.addActionListener(this);
+        this.medico.btnNoReagendar.addActionListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
         this.medico = (MedicoInterfaz) pacienteI;
-        if (e.getSource() == this.medico.btnMiAgenda) {
+        if (e.getSource() == this.medico.btnMiAgenda || e.getSource() == this.medico.btnVolverVerDetalles || e.getSource() == this.medico.btnNoReagendar) {
             this.medico.mostrarVistaMiAgenda();
             this.medico.citaVistaMiAgenda();
             this.medico.btnMiAgenda.setEnabled(false);
@@ -75,6 +70,23 @@ public class MedicoController extends PacienteController {
             this.medico.mostrarVistaConsultorio();
             this.medico.btnConsultorio.setEnabled(false);
             this.medico.habilitarBotonesMenu(this.medico.btnConsultorio);
+        }
+        if (e.getSource() == this.medico.btnVerDetalles) {
+            this.medico.mostrarDetallesCita();
+            this.medico.btnMiAgenda.setEnabled(false);
+            this.medico.habilitarBotonesMenu(this.medico.btnMiAgenda);
+        }
+        if (e.getSource() == this.medico.btnReagendarCita) {
+            this.medico.mostrarVistaConfirmacionReagendar();
+            this.medico.btnMisCitas.setEnabled(false);
+            this.medico.btnHistorial.setEnabled(false);
+            this.medico.btnComentarios.setEnabled(false);
+            this.medico.btnNotificaciones.setEnabled(false);
+            this.medico.btnMiAgenda.setEnabled(false);
+            this.medico.btnConsultorio.setEnabled(false);
+        }
+        if (e.getSource() == this.medico.btnActReagendar) {
+
         }
     }
 }

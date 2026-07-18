@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package view;
 
+import model.GeneradorHorarios;
 import com.github.lgooddatepicker.components.DatePicker;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,10 +33,6 @@ import javax.swing.table.JTableHeader;
 import model.MetodosPublicos;
 import model.Paciente;
 
-/**
- *
- * @author lunaa
- */
 public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
     //Botones del menu principal
@@ -213,6 +206,8 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     //Habilitar e inhabilitar los botones
     @Override
     public void habilitarBotonesMenu(JButton botonActivo) {
+        super.habilitarBotonesMenu(botonActivo);
+        
         if (botonActivo != btnPersonalCentro && !btnPersonalCentro.isEnabled()) {
             this.btnPersonalCentro.setEnabled(true);
         }

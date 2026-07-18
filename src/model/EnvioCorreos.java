@@ -26,7 +26,7 @@ public class EnvioCorreos {
             + "Hemos recibido una solicitud para restablecer la contrasena asociada a su cuenta "
             + "en LifeDoc-Care. Para continuar con el proceso, utilice el siguiente codigo de verificacion:\n\n"
             + "Codigo de verificacion: ";
-    private static final String CONTENIDO_PIE = "\n\nEste codigo es personal e intransferible; "
+    private static final String CONTENIDO_PIE = "\n\nEste codigo es personal e intransferible. "
             + "por su seguridad, no lo comparta con nadie, ni siquiera con personal de LifeDoc-Care.\n"
             + "Si usted no solicito este cambio, ignore este mensaje y su contrasena actual seguira siendo valida.\n\n"
             + "Atentamente,\nEquipo LifeDoc-Care  La bestia Alejandro Vanegas Tu papa";
