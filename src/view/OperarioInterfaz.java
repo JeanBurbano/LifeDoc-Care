@@ -6,7 +6,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-import controller.OperarioController;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -17,6 +16,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -57,6 +57,12 @@ public class OperarioInterfaz extends PacienteInterfaz {
     private JTextField txtHoraCita;
     public JButton btnAgendarCita;
 
+    public ArrayList<JButton> listaBotonesCancelarOpeario;
+    public ArrayList<JButton> listaBotonesReagendarOpeario;
+    
+    public ArrayList<JButton> listaBotonesNoasistio;
+    public ArrayList<JButton> listaBotonesAsistio;
+
     public OperarioInterfaz(String nombreInterfaz, Paciente usuario) {
         super(nombreInterfaz, usuario);
 
@@ -68,7 +74,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         super.agregarBotonCuerpo1(btnAgendarCitas);
         super.agregarBotonCuerpo1(btnPagos);
         super.agregarBotonCuerpo1(btnConsultas);
-        
+
         refrescarVentana(cuerpo1);
     }
 
