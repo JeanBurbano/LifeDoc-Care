@@ -44,7 +44,7 @@ public class RecuperacionContrasenaInterfaz extends JFrame {
         this.panelSuperior.setOpaque(false);
         this.panelSuperior.setPreferredSize(new Dimension(50, 90));
 
-        this.flecha = new JButton("←");
+        this.flecha = new JButton("Volver",new ImageIcon("iconsP/arrow-left.png"));
         MetodosPublicos.estilizarBoton(flecha, (byte) 1);
         JLabel titulo1 = new JLabel("Cambiar Contrasena");
         titulo1.setFont(new Font("arial", Font.BOLD, 25));

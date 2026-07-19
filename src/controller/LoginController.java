@@ -173,6 +173,7 @@ public class LoginController implements ActionListener {
             case 5:
                 PacienteInterfaz p = new PacienteInterfaz("Paciente", usuario);
                 PacienteController clg = new PacienteController(p);
+                verInterfaz(p);
                 break;
             default:
                 System.out.println("se produjo un error rol no valido");

@@ -660,7 +660,7 @@ public class PacienteInterfaz extends JFrame {
         settings.setVisibleNextYearButton(false);
         settings.setVisiblePreviousYearButton(false);
 
-        // Agrandar el calendario
+        //Agrandar el calendario
         settings.setSizeDatePanelMinimumHeight((int) (settings.getSizeDatePanelMinimumHeight() * 2.5));
         settings.setSizeDatePanelMinimumWidth((int) (settings.getSizeDatePanelMinimumWidth() * 2.5));
 
@@ -731,7 +731,8 @@ public class PacienteInterfaz extends JFrame {
         lblFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblHora.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblMedico.setAlignmentX(Component.LEFT_ALIGNMENT);
-
+        titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
         panelContenido.add(titulo);
         panelContenido.add(lblFecha);
         panelContenido.add(lblHora);
@@ -752,4 +753,5 @@ public class PacienteInterfaz extends JFrame {
         this.panelInfoCitas.add(c);
         MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
+
 }
