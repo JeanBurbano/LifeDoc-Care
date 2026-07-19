@@ -5,6 +5,7 @@ import com.github.lgooddatepicker.components.DatePickerSettings;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -43,7 +44,7 @@ public class PacienteInterfaz extends JFrame {
     public JPanel encabezado;//Aqui creo el JPanel que sera el encabezado
     private JPanel panelBienvenida;//Aqui creo el JPanel de bienbenida ejemplo:Bienbenido alejo! lifedoccare
     private JPanel panelSesionUsuario;//Aqui creo el JPanel que lelva el boton cerrar sesion y foto de perfil
-    private JLabel labelFotoPerfil;//Aqui creo JLabel que llevara la foto de perfil
+    public JLabel labelFotoPerfil;//Aqui creo JLabel que llevara la foto de perfil
     public JButton btnCerrarSesion;//Aqui creo el boton cerrar sesion
     public JPanel cuerpo1;//Aqui creo el JPanel que va hacer el cuerpo1
     public JPanel cuerpo2;//Aqui creo el JPanel que va hacer el cuerpo2
@@ -67,6 +68,7 @@ public class PacienteInterfaz extends JFrame {
     public JPanel panelHistorial;
     public JPanel panelFiltros;
     public JPanel panelListaHistorial;
+    public JScrollPane scrollHistorial;
     public JPanel panelBotonesLaterales;
     //Aqui creo todo para el apartado Comentarios
     public JButton btnSugerencias;
@@ -76,8 +78,8 @@ public class PacienteInterfaz extends JFrame {
     public JTextField campoAsunto;
     public JTextArea areaDescripcion;
     public JScrollPane miCroll;
-    public JPanel panelComentarios;
-    public static JPanel panelComenForo;
+    public JPanel panelComentarios, panelComentarios1;
+
     //Aqui creo todo para el apartado notificaciones
     public JPanel panelContenidoNotificaciones;
     //Aqui ceo todo para el apartado AgendarCita
@@ -135,6 +137,7 @@ public class PacienteInterfaz extends JFrame {
         this.labelFotoPerfil.setPreferredSize(tamanoFijo);
         this.labelFotoPerfil.setMinimumSize(tamanoFijo);
         this.labelFotoPerfil.setMaximumSize(tamanoFijo);
+        this.labelFotoPerfil.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         this.panelSesionUsuario.add(btnCerrarSesion);
         this.panelSesionUsuario.add(labelFotoPerfil);
@@ -215,19 +218,18 @@ public class PacienteInterfaz extends JFrame {
         this.areaDescripcion.setWrapStyleWord(true);
         this.areaDescripcion.setBorder(BorderFactory.createLineBorder(COLOR_VERDE_ACENTO));
         this.miCroll = new JScrollPane(areaDescripcion);
+        this.miCroll.setBorder(BorderFactory.createLineBorder(COLOR_VERDE_ACENTO));
 
         this.panelComentarios = new JPanel();
+        this.panelComentarios1 = new JPanel();
         this.panelComentarios.setLayout(new BoxLayout(panelComentarios, BoxLayout.Y_AXIS));
         this.panelComentarios.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
                 BorderFactory.createEmptyBorder(0, 30, 5, 30)));
         this.panelComentarios.setOpaque(false);
-
-        this.panelComenForo = new JPanel();
-        this.panelComenForo.setLayout(new BoxLayout(panelComenForo, BoxLayout.Y_AXIS));
-        this.panelComenForo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-//        this.panelComenForo.setOpaque(false);
-
+        this.panelComentarios1.setLayout(new BoxLayout(panelComentarios1, BoxLayout.Y_AXIS));
+        this.panelComentarios1.setBorder(BorderFactory.createEmptyBorder(15, 10, 10, 10));
+        this.panelComentarios1.setOpaque(false);
         this.btnSugerencias = new JButton("Sugerencias ", new ImageIcon("iconsP/happy-face.png"));
         this.btnQuejas = new JButton("Quejas ", new ImageIcon("iconsP/quejas.png"));
         this.btnForo = new JButton("Foro ", new ImageIcon("iconsP/communication.png"));
@@ -425,12 +427,12 @@ public class PacienteInterfaz extends JFrame {
         this.panelFiltros.add(this.cmbEspecialidad);
         lblFiltrar = null;//Ya quedo agregado a panelFiltros
 
-        JScrollPane scrollHistorial = new JScrollPane(panelListaHistorial);
-        scrollHistorial.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollHistorial.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollHistorial.setOpaque(false);
-        scrollHistorial.getViewport().setOpaque(false);
-        scrollHistorial.setBorder(null);
+        this.scrollHistorial = new JScrollPane(panelListaHistorial);
+        this.scrollHistorial.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        this.scrollHistorial.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        this.scrollHistorial.setOpaque(false);
+        this.scrollHistorial.getViewport().setOpaque(false);
+        this.scrollHistorial.setBorder(null);
 
         this.panelHistorial.add(panelFiltros, BorderLayout.NORTH);
         this.panelHistorial.add(scrollHistorial, BorderLayout.CENTER);
@@ -471,6 +473,21 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.refrescarVentana(panelComentarios);
     }
 
+    public void mostarPanelComentarioVacio() {
+        MetodosPublicos.vaciarPanel(panelComentarios1);
+        MetodosPublicos.vaciarPanel(panelComentarios);
+        JScrollPane scrollComentarios = new JScrollPane(panelComentarios1);
+        scrollComentarios.setPreferredSize(new Dimension(600, 345));
+        scrollComentarios.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollComentarios.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollComentarios.setOpaque(false);
+        scrollComentarios.getViewport().setOpaque(false);
+        scrollComentarios.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
+        this.panelComentarios.add(scrollComentarios);
+        MetodosPublicos.refrescarVentana(panelComentarios1);
+        MetodosPublicos.refrescarVentana(panelComentarios);
+    }
+
     //Aqui creo el metodo que me permitiria vizualizar en el JPanel cuerpo2 el apartado de comentarios
     public void mostrarVistaComentarios() {
         MetodosPublicos.vaciarPanel(cuerpo2);
@@ -494,10 +511,15 @@ public class PacienteInterfaz extends JFrame {
     }
 
     //Aqui creo el metodo que me permitiria agregar componentes al panel comentarios
-    public void agregarAlPanelComentarios(JComponent c) {
-        this.panelComentarios.add(c);
-        this.panelComentarios.add(Box.createRigidArea(new Dimension(0, 30)));
-        MetodosPublicos.refrescarVentana(panelComentarios);
+    public void agregarAlPanelComentarios(String tipoMensaje, String asunto, String nombreUsu, String descripcion) {
+        JPanel c = new JPanel();
+        c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
+        JTextField descripcionText = new JTextField(descripcion);
+        c.add(new JLabel(tipoMensaje + "-" + asunto + "-" + nombreUsu));
+        c.add(descripcionText);
+        this.panelComentarios1.add(c);
+        this.panelComentarios1.add(Box.createRigidArea(new Dimension(0, 30)));
+        MetodosPublicos.refrescarVentana(panelComentarios1);
     }
 
     //Aqui creo el metodo que permitiria vizualsar en el panel cuerpo2 el apartado de notificaciones

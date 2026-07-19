@@ -11,6 +11,7 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.MetodosPublicos;
 import model.UsuarioDao;
 import model.Paciente;
+import view.AdministradorCentroInterfaz;
 import view.AdministradorDelSistemaInterfaz;
 import view.Login;
 import view.MedicoInterfaz;
@@ -20,30 +21,65 @@ import view.RecuperacionContrasenaInterfaz;
 
 public class LoginController implements ActionListener {
 
+    //Variables static por que las van a compartir todas las intancias por ende su valor va aser el mismo y si cambia una cambia para todas
     private static final byte MAX_INTENTOS = 5;
     private static final int MINUTOS_BLOQUEO = 5;
-
-    RecuperacionContrasenaInterfaz rc;
-    Login lg;
-    UsuarioDao usuDao = new UsuarioDao();
+    //Variables de instancia
+    private RecuperacionContrasenaInterfaz rc;
+    private Login lg;
+    private UsuarioDao usuDao = new UsuarioDao();
     private Paciente usu;
     private byte c;
     private boolean bloqueado;
 
-    public LoginController(Login lg, RecuperacionContrasenaInterfaz recuperarC) {
-        this.lg = lg;
-        this.rc = recuperarC;
-        this.lg.bRegistar.addActionListener(this);
-        this.lg.bIngresar.addActionListener(this);
-        this.lg.titulo2.addMouseListener(new MouseAdapter() {
+    //Este metodo me hace el proceso para el ojo que permite ver la contrasena
+    public void ojodelLogin() {
+        lg.lblOjo.addMouseListener(new MouseAdapter() {
+            boolean isVisible = false;
+
             @Override
             public void mouseClicked(MouseEvent e) {
-                rc.setVisible(true);
-                rc.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                rc.setExtendedState(MAXIMIZED_BOTH);
-                RecuperarContrasenaController cRc = new RecuperarContrasenaController(rc);
+                isVisible = !isVisible;
+                if (isVisible) {
+                    lg.cambioEstado((byte) 1); //Mostrar texto
+                    lg.lblOjo.setIcon(lg.iconOjoAbierto);
+                } else {
+                    lg.cambioEstado((byte) 2); //Ocultar texto
+                    lg.lblOjo.setIcon(lg.iconOjoCerrado);
+                }
             }
         });
+    }
+
+    //Este metodo hace 2 cosas primero le indicamos que el JLabel va a tener un mouseClicked y segundo
+    //me hace el proceso para abrir la vista de recuperacion de contrasena
+    public void vistaRecuperarContrasena() {
+        lg.titulo2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (lg.titulo2.isEnabled()) {
+                    rc.setVisible(true);
+                    rc.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                    rc.setExtendedState(MAXIMIZED_BOTH);
+                    RecuperarContrasenaController cRc = new RecuperarContrasenaController(rc);
+                } else {
+                    JOptionPane.showMessageDialog(lg, "Por Favor Intenta Mas Tarde");
+                }
+            }
+        });
+    }
+
+    public void agregarActionListenerABotonesDeLogin() {
+        this.lg.bRegistar.addActionListener(this);
+        this.lg.bIngresar.addActionListener(this);
+    }
+
+    public LoginController(Login lg, RecuperacionContrasenaInterfaz rc) {
+        this.lg = lg;
+        ojodelLogin();
+        agregarActionListenerABotonesDeLogin();
+        this.rc = rc;
+        vistaRecuperarContrasena();
         this.c = 0;
         this.bloqueado = false;
     }
@@ -61,6 +97,28 @@ public class LoginController implements ActionListener {
                 && MetodosPublicos.validarContrasena(contrasena));
     }
 
+    private void creaUsuSegunRol(byte id_rol, String id, String contrasena) {
+        switch (id_rol) {
+            case 1:
+                this.usu = usuDao.login(id, contrasena);
+                break;
+            case 2:
+                this.usu = usuDao.login(id, contrasena);
+                break;
+            case 3:
+                this.usu = usuDao.login(id, contrasena);
+                break;
+            case 4:
+                this.usu = usuDao.login(id, contrasena);
+                break;
+            case 5:
+                this.usu = usuDao.login(id, contrasena);
+                break;
+            default:
+
+        }
+    }
+
     //Metodo reutilizable abre la interfaz correspondiente segun el rol del usuario que inicio sesion
     private void abrirInterfazSegunRol(Paciente usuario) {
         switch (usuario.getId_rol()) {
@@ -70,6 +128,13 @@ public class LoginController implements ActionListener {
                 adminSistem.setDefaultCloseOperation(EXIT_ON_CLOSE);
                 adminSistem.setExtendedState(MAXIMIZED_BOTH);
                 AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
+                break;
+            case 2:
+                AdministradorCentroInterfaz adminI = new AdministradorCentroInterfaz("Administrador del centro", usuario);
+                adminI.setVisible(true);
+                adminI.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                adminI.setExtendedState(MAXIMIZED_BOTH);
+                AdminCentroController adminC = new AdminCentroController(adminI);
                 break;
             case 3:
                 MedicoInterfaz i = new MedicoInterfaz("Medico", usuario);
@@ -115,22 +180,22 @@ public class LoginController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.lg.bIngresar) {
-
-            if (this.bloqueado) {
-                JOptionPane.showMessageDialog(lg, "Los has intentado muchas veces por favor espera " + MINUTOS_BLOQUEO + " minutos");
-                return;//Rompe si ya fue bloqueado
-            }
-
             estadoDeCosas(false);
             String id = this.lg.getId();
             String contrasena = this.lg.getPassword();
-            if (estadito(id, contrasena) && c < MAX_INTENTOS) {
-                estadoDeCosas(true);
-                this.usu = usuDao.login(id, contrasena);
+            if (this.bloqueado) {
+                JOptionPane.showMessageDialog(lg, "Lo has intentado muchas veces por favor espera " + MINUTOS_BLOQUEO + " minutos");
+                id = null;
                 contrasena = null;
+                this.lg.limpiar();
+            } else if (estadito(id, contrasena) && c < MAX_INTENTOS) {
+                estadoDeCosas(true);
+                byte idRol = usuDao.sacarIdRol(id, contrasena);
+                creaUsuSegunRol(idRol, id, contrasena);
                 if (usu != null && usu.getEstado()) {
                     this.c = 0;
                     this.lg.dispose();
+                    MetodosPublicos.reproducirSonido("senora-su-hijo-esta-viendo-p0rr0.wav");
                     abrirInterfazSegunRol(usu);
                 } else {
                     if (usu == null && !usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {
@@ -149,8 +214,6 @@ public class LoginController implements ActionListener {
                 estadoDeCosas(true);
                 this.usu = null;
                 id = null;
-            } else if (c >= MAX_INTENTOS) {
-                bloquearFormularioTemporalmente();
             } else {
                 estadoDeCosas(true);
                 this.c++;

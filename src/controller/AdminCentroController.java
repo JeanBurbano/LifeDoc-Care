@@ -7,7 +7,6 @@ package controller;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -19,14 +18,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import view.ConstructorFilaHorario;
 import view.AdministradorCentroInterfaz;
 
+public class AdminCentroController extends PacienteController {
 
+    AdministradorCentroInterfaz adminI;
 
-public class AdminCentroController implements ActionListener {
-
-    AdministradorCentroInterfaz adminI; 
-    
     public AdminCentroController(AdministradorCentroInterfaz adminI) {
-        this.adminI = adminI;
+
+        super(adminI);
 
         //Botones del menú principal
         this.adminI.btnPersonalCentro.addActionListener(this);
@@ -43,15 +41,15 @@ public class AdminCentroController implements ActionListener {
         this.adminI.btnGuardarHorario.addActionListener(this);
         this.adminI.btnConfirmarGuardarHorario.addActionListener(this);
         this.adminI.btnCancelarVistaPrevia.addActionListener(this);
-        
 
-        //Vista inicial al abrir la interfaz: Personal del Centro
-        this.adminI.btnPersonalCentro.doClick(); // simula el primer clic para mostrar la vista de entrada
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        super.actionPerformed(e);
+        this.adminI = (AdministradorCentroInterfaz) pacienteI;
+        
         //Menu princcipal
         if (e.getSource() == adminI.btnPersonalCentro) {
             adminI.mostrarVistaPersonalCentroApartado();
@@ -116,10 +114,6 @@ public class AdminCentroController implements ActionListener {
         if (e.getSource() == adminI.btnCancelarVistaPrevia) {
             adminI.dialogoVistaPreviaHorario.dispose();
         }
-        
-        
-        
-        
 
         // checkbox activo e inactivo
         for (int i = 0; i < adminI.diaSemana.length; i++) {
@@ -139,7 +133,7 @@ public class AdminCentroController implements ActionListener {
                 calcularHorasLaborales(i);
             }
         }
-        
+
         if (e.getSource() == adminI.btnHorarioMedico) {
             adminI.mostrarVistaHorarioMedicoApartado();
             adminI.btnHorarioMedico.setEnabled(false);
@@ -149,13 +143,11 @@ public class AdminCentroController implements ActionListener {
         }
     }
 
-    
-
     /**
      * Agrega el ActionListener a los checkbox y combos de cada día del
-     * formulario de horario. Se llama después de construir el
-     * formulario, porque esos componentes se crean de nuevo cada vez
-     * que se abre (no existen desde el constructor de la interfaz).
+     * formulario de horario. Se llama después de construir el formulario,
+     * porque esos componentes se crean de nuevo cada vez que se abre (no
+     * existen desde el constructor de la interfaz).
      */
     private void agregarListenersFormularioHorario() {
         for (int i = 0; i < adminI.diaSemana.length; i++) {
@@ -168,9 +160,9 @@ public class AdminCentroController implements ActionListener {
     }
 
     /**
-     * Llena el combo de tipo de medicamento con datos simulados.
-     * Cuando exista conexión a la base de datos, esta lista debería
-     * obtenerse con una consulta (por ejemplo, ModeloMedicamento.obtenerTipos()).
+     * Llena el combo de tipo de medicamento con datos simulados. Cuando exista
+     * conexión a la base de datos, esta lista debería obtenerse con una
+     * consulta (por ejemplo, ModeloMedicamento.obtenerTipos()).
      */
     private void poblarTipoMedicamento() {
         String[] tiposSimulados = {"Tableta", "Jarabe", "Inyectable", "Cápsula", "Crema"};
@@ -181,10 +173,9 @@ public class AdminCentroController implements ActionListener {
     }
 
     /**
-     * Abre el selector de archivos para elegir la imagen del
-     * medicamento, la muestra en la previsualización, y guarda el
-     * archivo en el atributo correspondiente para cuando se guarde
-     * el medicamento en la base de datos.
+     * Abre el selector de archivos para elegir la imagen del medicamento, la
+     * muestra en la previsualización, y guarda el archivo en el atributo
+     * correspondiente para cuando se guarde el medicamento en la base de datos.
      */
     private void seleccionarImagenMedicamento() {
         JFileChooser fileChooser = new JFileChooser();
@@ -207,10 +198,9 @@ public class AdminCentroController implements ActionListener {
     }
 
     /**
-     * Valida los campos obligatorios del formulario de medicamento y
-     * simula el guardado (mientras no haya conexión a la base de
-     * datos), mostrando un mensaje de confirmación y regresando a la
-     * lista de inventario.
+     * Valida los campos obligatorios del formulario de medicamento y simula el
+     * guardado (mientras no haya conexión a la base de datos), mostrando un
+     * mensaje de confirmación y regresando a la lista de inventario.
      */
     private void guardarMedicamento() {
         if (adminI.campoNRS.getText().trim().isEmpty()
@@ -234,9 +224,9 @@ public class AdminCentroController implements ActionListener {
     }
 
     /**
-     * Calcula las horas laborales de un día del horario, a partir de
-     * los combos de hora de inicio/fin de jornada y de almuerzo, y
-     * actualiza la etiqueta correspondiente.
+     * Calcula las horas laborales de un día del horario, a partir de los combos
+     * de hora de inicio/fin de jornada y de almuerzo, y actualiza la etiqueta
+     * correspondiente.
      *
      * @param i índice del día (0=Lunes ... 5=Sábado)
      */
@@ -269,9 +259,9 @@ public class AdminCentroController implements ActionListener {
     }
 
     /**
-     * Valida el nombre del horario y simula el guardado (mientras no
-     * haya conexión a la base de datos), mostrando un mensaje de
-     * confirmación y regresando a la lista de horarios.
+     * Valida el nombre del horario y simula el guardado (mientras no haya
+     * conexión a la base de datos), mostrando un mensaje de confirmación y
+     * regresando a la lista de horarios.
      */
     private void guardarHorario() {
         if (adminI.campoNombreHorario.getText().trim().isEmpty()) {
@@ -289,12 +279,12 @@ public class AdminCentroController implements ActionListener {
         adminI.btnHorarioMedico.setEnabled(false);
         adminI.habilitarBotonesMenu(adminI.btnHorarioMedico);
     }
-    
+
     /**
-     * Llena la tabla de horarios con filas de prueba, solo para poder
-     * ver y probar el botón "Asignar" mientras no hay conexión a la
-     * base de datos. Cuando exista esa conexión, este método se
-     * reemplaza por una consulta real (ej. ModeloHorario.obtenerTodos()).
+     * Llena la tabla de horarios con filas de prueba, solo para poder ver y
+     * probar el botón "Asignar" mientras no hay conexión a la base de datos.
+     * Cuando exista esa conexión, este método se reemplaza por una consulta
+     * real (ej. ModeloHorario.obtenerTodos()).
      */
     private void poblarHorariosPrueba() {
         // Se agrega una fila por cada horario de prueba: {ETIQUETA, NOMBRE, FECHA CREACIÓN, columna del botón}
@@ -302,11 +292,11 @@ public class AdminCentroController implements ActionListener {
         adminI.listaHorarioM.addRow(new Object[]{"Verde", "Horario Tarde", "2026-07-02", ""});
         adminI.listaHorarioM.addRow(new Object[]{"Naranja", "Horario Fin de Semana", "2026-07-03", ""});
     }
-    
+
     /**
-     * Detecta el clic sobre la columna del botón "Asignar" en la
-     * tabla de horarios (la tabla se recrea cada vez que se muestra
-     * la vista, así que este listener se agrega de nuevo cada vez).
+     * Detecta el clic sobre la columna del botón "Asignar" en la tabla de
+     * horarios (la tabla se recrea cada vez que se muestra la vista, así que
+     * este listener se agrega de nuevo cada vez).
      */
     private void agregarListenerBotonAsignar() {
         adminI.tablaHorarioM.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -326,7 +316,7 @@ public class AdminCentroController implements ActionListener {
             }
         });
     }
-    
+
     private void mostrarVistaPreviaAntesDeGuardar() {
         if (adminI.campoNombreHorario.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Por favor ingresa un nombre para el horario.",
@@ -347,10 +337,6 @@ public class AdminCentroController implements ActionListener {
         String mes = (String) adminI.comboMesHorario.getSelectedItem(); // ej. "Julio", directo del combo
         adminI.mostrarVistaPreviaHorarioApartado(mes, diasActivos, horasPorDia);
 
-        
     }
 
-    
 }
-    
-

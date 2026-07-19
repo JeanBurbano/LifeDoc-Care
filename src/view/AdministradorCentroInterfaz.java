@@ -1,5 +1,6 @@
 package view;
 
+import model.GeneradorHorarios;
 import com.github.lgooddatepicker.components.DatePicker;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -205,6 +206,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     //Habilitar e inhabilitar los botones
     @Override
     public void habilitarBotonesMenu(JButton botonActivo) {
+        super.habilitarBotonesMenu(botonActivo);
         
         if (botonActivo != btnPersonalCentro && !btnPersonalCentro.isEnabled()) {
             this.btnPersonalCentro.setEnabled(true);

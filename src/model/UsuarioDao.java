@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class UsuarioDao {
 
-    public  Conexion conectar = new Conexion();
+    public Conexion conectar = new Conexion();
     Connection con;
     PreparedStatement ps;
     ResultSet rs;
@@ -89,16 +89,63 @@ public class UsuarioDao {
     public boolean validarCampoIdBs(String valorComparar, String tabla, String campo) {
         boolean valor = false;
         String sql = "SELECT EXISTS (SELECT 1 FROM " + tabla + " WHERE " + campo + " = ?) AS existe";
-        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, valorComparar);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    valor = rs.getBoolean("existe");
-                }
+        try {
+            this.con = conectar.getConection();
+            this.ps = con.prepareStatement(sql);
+            this.ps.setString(1, valorComparar);
+            this.rs = ps.executeQuery();
+            if (rs.next()) {
+                valor = rs.getBoolean("existe");
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    this.rs.close();
+                }
+                if (ps != null) {
+                    this.ps.close();
+                }
+                if (con != null) {
+                    this.con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return valor;
+    }
+
+    public byte sacarIdRol(String id, String contrasena) {
+        byte idRol = -1;
+        String sql = "SELECT id_rol FROM usuario WHERE numero_identificacion = ? AND contrasena = ?";
+        try {
+            this.con = conectar.getConection();
+            this.ps = con.prepareStatement(sql);
+            this.ps.setString(1, id);
+            this.ps.setString(2, contrasena);
+            this.rs = ps.executeQuery();
+            if (rs.next()) {
+                idRol = rs.getByte("id_rol");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    this.rs.close();
+                }
+                if (ps != null) {
+                    this.ps.close();
+                }
+                if (con != null) {
+                    this.con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return idRol;
     }
 }
