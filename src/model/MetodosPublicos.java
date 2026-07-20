@@ -32,6 +32,16 @@ import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MetodosPublicos {
 
+    public static JTextField crearCampoTexto(Color color) {
+        JTextField campo = new JTextField(15);
+        campo.setFont(new Font("Arial", Font.PLAIN, 15));
+        campo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(color, 1, true),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
+        return campo;
+    }
+
     //Este metodo es para reproducir audio
     public static void reproducirSonido(String ruta) {
         Thread hiloAudio = new Thread(() -> {

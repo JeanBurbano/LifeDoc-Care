@@ -210,7 +210,7 @@ public class LoginController implements ActionListener {
                 creaUsuSegunRol(idRol, id, contrasena);
                 if (usu != null && usu.getEstado()) {
                     this.c = 0;
-                    this.lg.dispose();
+//                    this.lg.dispose();
                     MetodosPublicos.reproducirSonido("bienvenido.wav");
                     abrirInterfazSegunRol(usu);
                 } else {

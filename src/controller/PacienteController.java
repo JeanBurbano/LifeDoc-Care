@@ -1,5 +1,6 @@
 package controller;
 
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -9,6 +10,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.Cita;
 import model.CitaDao;
 import model.Foro;
@@ -16,12 +18,15 @@ import model.ForoDao;
 import model.Medico;
 import model.MedicoDao;
 import model.MetodosPublicos;
+import model.Paciente;
+import view.EditarPerfilInterfaz;
 import view.PacienteInterfaz;
 import view.Titulo;
 
 public class PacienteController implements ActionListener {
 
     private static List<Foro> foro = new ArrayList<Foro>();
+    private Paciente usurio;
     private CitaDao citadao;
     private MedicoDao medicodao;
     private ForoDao forodao;
@@ -35,7 +40,13 @@ public class PacienteController implements ActionListener {
             pacienteI.labelFotoPerfil.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    JOptionPane.showMessageDialog(pacienteI, "Vas a editar tu perfil");
+                    EditarPerfilInterfaz vista = new EditarPerfilInterfaz("Editar Perfil", usurio.getPrimerNombre(),
+                            String.valueOf(usurio.getEdad()), usurio.getCorreoElectronico(), usurio.getNumeroTelefonico(),
+                            usurio.getSexoBiologico(), String.valueOf(usurio.getFechaNacimiento()), usurio.getSisben(), usurio.getFotoPerfil());
+                    EditarPerfilController cedI = new EditarPerfilController(vista,usurio.getIdUsuario());
+                    vista.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                    vista.setExtendedState(MAXIMIZED_BOTH);
+                    vista.setVisible(true);
                 }
             });
         });
@@ -71,6 +82,7 @@ public class PacienteController implements ActionListener {
     //constructor
     public PacienteController(PacienteInterfaz pacienteI) {
         this.pacienteI = pacienteI;
+        this.usurio = this.pacienteI.getUsuario();
         this.citadao = new CitaDao();
         this.medicodao = new MedicoDao();
         this.forodao = new ForoDao();
@@ -115,7 +127,7 @@ public class PacienteController implements ActionListener {
             pacienteI.mostrarVistaMisCitas();
             this.pacienteI.listaBotonesCancelar.clear();
             this.pacienteI.listaBotonesReagendar.clear();
-            this.citas = citadao.listarPorUsuario(pacienteI.usuario.getIdUsuario());
+            this.citas = citadao.listarPorUsuario(usurio.getIdUsuario());
             if (citas == null || citas.length == 0) {
                 pacienteI.panelInfoCitas.add(new JLabel("No tienes citas"));
                 MetodosPublicos.refrescarVentana(pacienteI.panelInfoCitas);
@@ -181,11 +193,11 @@ public class PacienteController implements ActionListener {
                 JOptionPane.showMessageDialog(pacienteI, "Los campos deben contener algo");
             } else {
                 String tipoMensaje = verificador ? "Sugerencia" : "Queja";
-                Foro nuevoComentario = new Foro(tipoMensaje, asunto, descripcion, pacienteI.usuario.getIdUsuario());
+                Foro nuevoComentario = new Foro(tipoMensaje, asunto, descripcion, usurio.getIdUsuario());
                 int filasInsertadas = forodao.setAgregar(nuevoComentario);
                 if (filasInsertadas > 0) {
                     nuevoComentario = new Foro(nuevoComentario.getTipoMensaje(), nuevoComentario.getAsunto(),
-                            nuevoComentario.getDescripcion(), pacienteI.usuario.getPrimerNombre());
+                            nuevoComentario.getDescripcion(), usurio.getPrimerNombre());
                     foro.add(0, nuevoComentario);
                     JOptionPane.showMessageDialog(pacienteI, "Tu " + tipoMensaje.toLowerCase() + " fue enviada correctamente");
                     pacienteI.campoAsunto.setText("");

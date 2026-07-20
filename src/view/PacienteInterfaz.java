@@ -11,6 +11,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -34,7 +36,7 @@ import model.Paciente;
 
 public class PacienteInterfaz extends JFrame {
 
-    public Paciente usuario;
+    private Paciente usuario;
     //Aqui creo los colores que mas vamos autilizar en la plantilla.
     public static final Color COLOR_AZUL_CORPORATIVO = new Color(0, 79, 124);
     public static final Color COLOR_VERDE_ACENTO = new Color(0, 194, 177);
@@ -44,6 +46,7 @@ public class PacienteInterfaz extends JFrame {
     public JPanel encabezado;//Aqui creo el JPanel que sera el encabezado
     private JPanel panelBienvenida;//Aqui creo el JPanel de bienbenida ejemplo:Bienbenido alejo! lifedoccare
     private JPanel panelSesionUsuario;//Aqui creo el JPanel que lelva el boton cerrar sesion y foto de perfil
+    private PanelRound panelFotoPerfil;
     public JLabel labelFotoPerfil;//Aqui creo JLabel que llevara la foto de perfil
     public JButton btnCerrarSesion;//Aqui creo el boton cerrar sesion
     public JPanel cuerpo1;//Aqui creo el JPanel que va hacer el cuerpo1
@@ -160,14 +163,29 @@ public class PacienteInterfaz extends JFrame {
         this.btnCerrarSesion.setFont(new Font("arial", Font.BOLD, 15));
 
         Dimension tamanoFijo = new Dimension(64, 64);
-        this.labelFotoPerfil = new JLabel(new ImageIcon(this.usuario.getFotoPerfil()));
+        int radio = 100;
+        this.panelFotoPerfil = new PanelRound();
+        this.panelFotoPerfil.setLayout(new BorderLayout());
+        this.panelFotoPerfil.setPreferredSize(tamanoFijo);
+        this.panelFotoPerfil.setMaximumSize(tamanoFijo);
+        this.panelFotoPerfil.setRoundTopLeft(radio);
+        this.panelFotoPerfil.setRoundTopRight(radio);
+        this.panelFotoPerfil.setRoundBottomLeft(radio);
+        this.panelFotoPerfil.setRoundBottomRight(radio);
+        ImageIcon imagen = new ImageIcon(this.usuario.getFotoPerfil());
+        this.labelFotoPerfil = new JLabel();
         this.labelFotoPerfil.setPreferredSize(tamanoFijo);
         this.labelFotoPerfil.setMinimumSize(tamanoFijo);
         this.labelFotoPerfil.setMaximumSize(tamanoFijo);
+        Icon icono = new ImageIcon(imagen.getImage().getScaledInstance(
+                64, 64,
+                Image.SCALE_DEFAULT));
+        this.labelFotoPerfil.setIcon(icono);
         this.labelFotoPerfil.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
+        this.panelFotoPerfil.add(labelFotoPerfil, BorderLayout.CENTER);
         this.panelSesionUsuario.add(btnCerrarSesion);
-        this.panelSesionUsuario.add(labelFotoPerfil);
+        this.panelSesionUsuario.add(panelFotoPerfil);
 
         this.encabezado.add(panelBienvenida, BorderLayout.WEST);
         this.encabezado.add(panelSesionUsuario, BorderLayout.EAST);
@@ -223,7 +241,7 @@ public class PacienteInterfaz extends JFrame {
 
         this.btnHistorialMedico = new JButton("Historial Medico ", new ImageIcon("iconsP/avatar.png"));
         this.btnHistorialCitas = new JButton("Historial de Citas", new ImageIcon("iconsP/friends.png"));
-        this.btnDescargar = new JButton(" ⬇️ Descargar Historial Medico");
+        this.btnDescargar = new JButton("Descargar Historial Medico", new ImageIcon("iconsP/descargar.png"));
         MetodosPublicos.estilizarBoton(btnHistorialMedico, (byte) 2);
         MetodosPublicos.estilizarBoton(btnHistorialCitas, (byte) 2);
 
@@ -732,7 +750,7 @@ public class PacienteInterfaz extends JFrame {
         lblHora.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblMedico.setAlignmentX(Component.LEFT_ALIGNMENT);
         titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         panelContenido.add(titulo);
         panelContenido.add(lblFecha);
         panelContenido.add(lblHora);
@@ -754,4 +772,7 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
 
+    public Paciente getUsuario() {
+        return this.usuario;
+    }
 }

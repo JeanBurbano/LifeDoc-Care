@@ -55,12 +55,13 @@ public class PanelRound extends JPanel {
     public PanelRound() {
         setOpaque(false);
     }
-    
+
     @Override
-    protected void paintComponent(Graphics grphcs) {
-        Graphics2D g2 = (Graphics2D) grphcs.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(getBackground());
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
         Area area = new Area(createRoundTopLeft());
         if (roundTopRight > 0) {
             area.intersect(new Area(createRoundTopRight()));
@@ -71,9 +72,36 @@ public class PanelRound extends JPanel {
         if (roundBottomRight > 0) {
             area.intersect(new Area(createRoundBottomRight()));
         }
+
+        // Fondo
+        g2.setColor(getBackground());
         g2.fill(area);
+
+        // Recorta todo lo que se dibuje después
+        g2.setClip(area);
+
+        super.paintComponent(g2);
         g2.dispose();
-        super.paintComponent(grphcs);
+    }
+
+    @Override
+    protected void paintChildren(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+
+        Area area = new Area(createRoundTopLeft());
+        if (roundTopRight > 0) {
+            area.intersect(new Area(createRoundTopRight()));
+        }
+        if (roundBottomLeft > 0) {
+            area.intersect(new Area(createRoundBottomLeft()));
+        }
+        if (roundBottomRight > 0) {
+            area.intersect(new Area(createRoundBottomRight()));
+        }
+
+        g2.setClip(area);
+        super.paintChildren(g2);
+        g2.dispose();
     }
 
     private Shape createRoundTopLeft() {
