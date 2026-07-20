@@ -25,29 +25,34 @@ import model.MetodosPublicos;
 
 public class RegistroUsuariosInterfaz extends PacienteInterfaz {
 
-    JPanel creacionPerfil; //panel del titulo
-    JPanel volver; //panel del boton de volver
-    JPanel identificacion, datos, fotoF; //panel de las tres secciones de registro
-    JLabel tituloCreacion; //titulo de crear cuenta
-    JLabel tloSeccion1, tloSeccion2, tloSeccion3; //titulos de las tres secciones
-    JButton btnVolverA, btnRegistrarse; //botones de volver al login y de registrarse
-    JPanel panelLifeDoc; //panel para el titulo lifedoccare
-    JPanel camposIde; //panel para los campos de identificacion
-    //campos de identificacion
-    JTextField campoNumeroID;
-    JComboBox campoTipoId;
+    final static String[] ARREGLO_ID = {"", "Registro civil", "Targeta Identidad", "Cedula Ciudadania",};
+    final static String[] ARREGLO_SEXO = {"", "Femenino", "Masculino"};
+    final static String[] ARREGLO_SISBEN = {"", "No aplica", "A", "B", "C", "D"};
 
-    JPanel camposDatos, camposFoto; //contenedores internos de las secciones "Datos personales" y "Foto frontal"
+    public JPanel creacionPerfil; //panel del titulo
+    public JPanel volver; //panel del boton de volver
+    public JPanel identificacion, datos, fotoF; //panel de las tres secciones de registro
+    public JLabel tituloCreacion; //titulo de crear cuenta
+    public JLabel tloSeccion1, tloSeccion2, tloSeccion3; //titulos de las tres secciones
+    public JButton btnVolverA, btnRegistrarse; //botones de volver al login y de registrarse
+    public JPanel panelLifeDoc; //panel para el titulo lifedoccare
+    public JPanel camposIde; //panel para los campos de identificacion
+    //campos de identificacion
+    public JTextField campoNumeroID;
+    public JComboBox campoTipoId;
+
+    public JPanel camposDatos, camposFoto; //contenedores internos de las secciones "Datos personales" y "Foto frontal"
 
     // Campos de "Datos personales"
-    JTextField campoPrimerNombre, campoSegundoNombre, campoPrimerApellido, campoSegundoApellido;
-    JComboBox comboSexo;
-    DatePicker datePickerNacimiento;
-    JTextField campoCorreo, campoTelefono;
-    JPasswordField campoContraseña;
+    public JTextField campoPrimerNombre, campoSegundoNombre, campoPrimerApellido, campoSegundoApellido;
+    public JComboBox comboSexo;
+    public DatePicker datePickerNacimiento;
+    public JTextField campoCorreo, campoTelefono;
+    public JPasswordField campoContraseña;
+    public JComboBox campoSisben;
     // Campos de Foto frontal
-    JLabel previsualizacionFoto;
-    JButton btnSeleccionarFoto;
+    public JLabel previsualizacionFoto;
+    public JButton btnSeleccionarFoto;
 
     public RegistroUsuariosInterfaz(String nombreInterfaz) {
         super(nombreInterfaz);
@@ -60,7 +65,7 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
         this.cuerpo1.setBorder(BorderFactory.createEmptyBorder());
         this.cuerpo1.setLayout(new BoxLayout(cuerpo1, BoxLayout.Y_AXIS));
         this.cuerpo2.setLayout(new BoxLayout(cuerpo2, BoxLayout.Y_AXIS));
-        
+
         this.cuerpo1.setBorder(BorderFactory.createEmptyBorder());
         this.cuerpo1.setLayout(new BoxLayout(cuerpo1, BoxLayout.Y_AXIS));
         this.cuerpo2.setLayout(new BoxLayout(cuerpo2, BoxLayout.Y_AXIS));
@@ -136,7 +141,7 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
         gb.fill = GridBagConstraints.NONE;
 
         campoNumeroID = MetodosPublicos.crearCampoTexto();
-        campoTipoId = new JComboBox();
+        campoTipoId = new JComboBox(ARREGLO_ID);
         MetodosPublicos.crearComboEstilizado(campoTipoId);
 
         gb.gridx = 0;
@@ -183,7 +188,7 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
         campoPrimerApellido = MetodosPublicos.crearCampoTexto();
         campoSegundoApellido = MetodosPublicos.crearCampoTexto();
 
-        comboSexo = new JComboBox();
+        comboSexo = new JComboBox(ARREGLO_SEXO);
         MetodosPublicos.crearComboEstilizado(comboSexo);
 
         datePickerNacimiento = FechaCalendarioEstilizar.crearDatePickerNacimiento();
@@ -198,6 +203,9 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
                 BorderFactory.createEmptyBorder(8, 10, 8, 10)
         ));
+
+        campoSisben = new JComboBox(ARREGLO_SISBEN);
+        MetodosPublicos.crearComboEstilizado(campoSisben);
 
         // Fila 0
         gbDatos.gridx = 0;
@@ -224,11 +232,14 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
         gbDatos.insets = new Insets(0, 0, 22, 0);
         camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Número de teléfono ", campoTelefono), gbDatos);
 
-        // Fila 2: Contraseña sola
-        gbDatos.insets = new Insets(0, 0, 0, 0);
+        // Fila 2: Contraseña y Grupo Sisbén
+        gbDatos.insets = new Insets(0, 0, 0, 30);
         gbDatos.gridx = 0;
         gbDatos.gridy = 2;
         camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Contraseña *", campoContraseña), gbDatos);
+        gbDatos.gridx = 1;
+        gbDatos.insets = new Insets(0, 0, 0, 0);
+        camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Grupo Sisbén *", campoSisben), gbDatos);
 
         camposDatos.setAlignmentX(Component.LEFT_ALIGNMENT);
         camposDatos.setMaximumSize(camposDatos.getPreferredSize());

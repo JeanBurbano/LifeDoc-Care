@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 public class UsuarioDao {
 
@@ -147,6 +148,64 @@ public class UsuarioDao {
             }
         }
         return idRol;
+    }
+
+    public int registrarUsuario(int idRol, int idTipoIdentificacion, String numeroIdentificacion,
+            String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String correoElectronico, String contrasena, LocalDate fechaNacimiento,
+            String sexoBiologico, String numeroCelular, byte edad, String sisben) {
+
+        int idGenerado = -1;
+        String sql = "INSERT INTO usuario "
+                + "(id_rol, id_tipo_identificacion, numero_identificacion, primer_nombre, segundo_nombre, "
+                + "primer_apellido, segundo_apellido, correo_electronico, contrasena, fecha_nacimiento, "
+                + "sexo_biologico, numero_celular, edad, sisben) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            this.con = conectar.getConection();
+            this.ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+
+            ps.setInt(1, idRol);
+            ps.setInt(2, idTipoIdentificacion);
+            ps.setString(3, numeroIdentificacion);
+            ps.setString(4, primerNombre);
+            ps.setString(5, (segundoNombre == null || segundoNombre.isBlank()) ? null : segundoNombre);
+            ps.setString(6, primerApellido);
+            ps.setString(7, (segundoApellido == null || segundoApellido.isBlank()) ? null : segundoApellido);
+            ps.setString(8, correoElectronico);
+            ps.setString(9, contrasena);
+            ps.setDate(10, java.sql.Date.valueOf(fechaNacimiento));
+            ps.setString(11, sexoBiologico);
+            ps.setString(12, (numeroCelular == null || numeroCelular.isBlank()) ? null : numeroCelular);
+            ps.setByte(13, edad);
+            ps.setString(14, sisben);
+
+            int filas = ps.executeUpdate();
+            if (filas > 0) {
+                this.rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    idGenerado = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    this.rs.close();
+                }
+                if (ps != null) {
+                    this.ps.close();
+                }
+                if (con != null) {
+                    this.con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return idGenerado;
     }
 
     public boolean actualizarCampoUsuario(int id_usuario, String nombreCampo, String nuevoValor) {

@@ -94,9 +94,10 @@ public class LoginController implements ActionListener {
     public void abrirVistaRegistro() {
         Thread hiloVistasRegistro = new Thread(() -> {
             RegistroUsuariosInterfaz ru = new RegistroUsuariosInterfaz("Registro");
-            ru.setVisible(true);
+            RegistroUsuariosController cRu = new RegistroUsuariosController(ru);
             ru.setDefaultCloseOperation(EXIT_ON_CLOSE);
             ru.setExtendedState(MAXIMIZED_BOTH);
+            ru.setVisible(true);
         });
         hiloVistasRegistro.start();
     }
