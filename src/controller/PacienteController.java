@@ -43,7 +43,7 @@ public class PacienteController implements ActionListener {
                     EditarPerfilInterfaz vista = new EditarPerfilInterfaz("Editar Perfil", usurio.getPrimerNombre(),
                             String.valueOf(usurio.getEdad()), usurio.getCorreoElectronico(), usurio.getNumeroTelefonico(),
                             usurio.getSexoBiologico(), String.valueOf(usurio.getFechaNacimiento()), usurio.getSisben(), usurio.getFotoPerfil());
-                    EditarPerfilController cedI = new EditarPerfilController(vista,usurio.getIdUsuario());
+                    EditarPerfilController cedI = new EditarPerfilController(vista, usurio.getIdUsuario());
                     vista.setDefaultCloseOperation(EXIT_ON_CLOSE);
                     vista.setExtendedState(MAXIMIZED_BOTH);
                     vista.setVisible(true);

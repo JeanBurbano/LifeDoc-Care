@@ -270,10 +270,10 @@ public class PacienteInterfaz extends JFrame {
         this.panelComentarios.setLayout(new BoxLayout(panelComentarios, BoxLayout.Y_AXIS));
         this.panelComentarios.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(0, 30, 5, 30)));
+                BorderFactory.createEmptyBorder(5, 30, 5, 30)));
         this.panelComentarios.setOpaque(false);
         this.panelComentarios1.setLayout(new BoxLayout(panelComentarios1, BoxLayout.Y_AXIS));
-        this.panelComentarios1.setBorder(BorderFactory.createEmptyBorder(15, 10, 10, 10));
+        this.panelComentarios1.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
         this.panelComentarios1.setOpaque(false);
         this.panelComentarios1.setBorder(null);
         this.btnSugerencias = new JButton("Sugerencias ", new ImageIcon("iconsP/happy-face.png"));
@@ -523,7 +523,6 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.vaciarPanel(panelComentarios1);
         MetodosPublicos.vaciarPanel(panelComentarios);
         JScrollPane scrollComentarios = new JScrollPane(panelComentarios1);
-        scrollComentarios.setPreferredSize(new Dimension(600, 345));
         scrollComentarios.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollComentarios.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollComentarios.setOpaque(false);
@@ -536,10 +535,11 @@ public class PacienteInterfaz extends JFrame {
 
     //Aqui creo el metodo que me permitiria vizualizar en el JPanel cuerpo2 el apartado de comentarios
     public void mostrarVistaComentarios() {
-        MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelBotonesLaterales);
+        MetodosPublicos.vaciarPanel(panelComentarios);
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        
         construirFormularioComentario();
-
         this.panelBotonesLaterales.add(btnSugerencias);
         this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
         this.panelBotonesLaterales.add(btnQuejas);
@@ -550,23 +550,38 @@ public class PacienteInterfaz extends JFrame {
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));//Padding propio de esta vista
         this.cuerpo2.add(panelBotonesLaterales, BorderLayout.WEST);
         this.cuerpo2.add(panelComentarios, BorderLayout.CENTER);
-
-        MetodosPublicos.refrescarVentana(panelComentarios);
+       
         MetodosPublicos.refrescarVentana(panelBotonesLaterales);
+        MetodosPublicos.refrescarVentana(panelComentarios);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     //Aqui creo el metodo que me permitiria agregar componentes al panel comentarios
     public void agregarAlPanelComentarios(String tipoMensaje, String asunto, String nombreUsu, String descripcion) {
-        JPanel c = new JPanel();
+        PanelRound c = new PanelRound();
+        int valor = 50;
+        c.setRoundBottomRight(valor);
+        c.setRoundBottomLeft(valor);
+        c.setRoundTopLeft(valor);
+        c.setRoundTopRight(valor);
         c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
+        c.setBorder(new EmptyBorder(0, 10, 0, 10));
+        c.setBackground(COLOR_VERDE_ACENTO);
         JTextField descripcionText = new JTextField(descripcion);
         descripcionText.setEditable(false);
-        c.add(new JLabel(tipoMensaje + "-" + asunto + "-" + nombreUsu));
+        descripcionText.setBackground(Color.WHITE);
+        JLabel label = new JLabel(tipoMensaje + "-" + asunto + "-" + nombreUsu);
+        label.setFont(new Font("Arial", Font.BOLD, 20));
+        label.setOpaque(false);
+        c.add(Box.createRigidArea(new Dimension(0, 10)));
+        c.add(label);
+        c.add(Box.createRigidArea(new Dimension(0, 10)));
         c.add(descripcionText);
-        this.panelComentarios1.add(c);
+        c.add(Box.createRigidArea(new Dimension(0, 10)));
         this.panelComentarios1.add(Box.createRigidArea(new Dimension(0, 30)));
+        this.panelComentarios1.add(c);
         MetodosPublicos.refrescarVentana(panelComentarios1);
+        MetodosPublicos.refrescarVentana(panelComentarios);
     }
 
     //Aqui creo el metodo que permitiria vizualsar en el panel cuerpo2 el apartado de notificaciones
@@ -729,6 +744,7 @@ public class PacienteInterfaz extends JFrame {
         JPanel panelBotones = new JPanel(), panelContenido = new JPanel(), c = new JPanel();
         panelBotones.setOpaque(false);
         panelBotones.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        panelBotones.setBorder(new EmptyBorder(45, 0, 0, 0));
         panelContenido.setOpaque(false);
         panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
         panelContenido.setAlignmentX(Component.LEFT_ALIGNMENT);
