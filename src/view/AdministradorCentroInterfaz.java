@@ -16,6 +16,7 @@ import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -141,28 +142,28 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         HORAS = GeneradorHorarios.generarHoras(); //
 
         //Botones del menú principal
-        this.btnPersonalCentro = new JButton("👥 Personal del Centro");
-        this.btnInventarioMedicamentos = new JButton("💊 Inventario de Medicamentos");
-        this.btnHorarioMedico = new JButton("🗓️ Horarios Médicos");
+        this.btnPersonalCentro = new JButton("Personal del Centro", new ImageIcon("iconsP/friends.png"));
+        this.btnInventarioMedicamentos = new JButton("Inventario de Medicamentos", new ImageIcon("iconsP/pildora.png"));
+        this.btnHorarioMedico = new JButton("Horarios Médicos", new ImageIcon("iconsP/horario.png"));
         // Se agregan al cuerpo1 heredado
         super.agregarBotonCuerpo1(btnPersonalCentro);
         super.agregarBotonCuerpo1(btnInventarioMedicamentos);
         super.agregarBotonCuerpo1(btnHorarioMedico);
 
         //Botón para registrar personal
-        this.btnregistrarPersonal = new JButton("👤 Registrar Personal");
+        this.btnregistrarPersonal = new JButton("Registrar Personal", new ImageIcon("iconsP/avatar.png"));
         MetodosPublicos.estilizarBoton(btnregistrarPersonal, (byte) 5); // aplica el estilo 5 predefinido
 
         //Botones del formulario de medicamento
-        this.btnAñadirMedicamento = new JButton("➕ Añadir Medicamento");
-        this.btnGuardarMedicamento = new JButton("➕ Guardar Medicamento");
+        this.btnAñadirMedicamento = new JButton("Añadir Medicamento", new ImageIcon("iconsP/añadirDos.png"));
+        this.btnGuardarMedicamento = new JButton("Guardar Medicamento", new ImageIcon("iconsP/guardar.png"));
         this.btnSeleccionar = new JButton("Seleccionar Medicamento");
         MetodosPublicos.estilizarBoton(btnGuardarMedicamento, (byte) 5);
         MetodosPublicos.estilizarBoton(btnAñadirMedicamento, (byte) 5);
         MetodosPublicos.estilizarBoton(btnSeleccionar, (byte) 5);
 
         //Botón para crear un nuevo horario con estilo propio
-        this.btnCrearHorario = new JButton("📍 Crear Nuevo Horario");
+        this.btnCrearHorario = new JButton("Crear Nuevo Horario", new ImageIcon("iconsP/horario.png"));
         btnCrearHorario.setFont(new Font("Arial", Font.BOLD, 20));
         btnCrearHorario.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
         btnCrearHorario.setForeground(Color.WHITE);

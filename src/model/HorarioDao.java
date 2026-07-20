@@ -30,11 +30,11 @@ public class HorarioDao implements Crud<Horario> {
     @Override
     public List<Horario> listar() {
         List<Horario> listaHorarios = new ArrayList<Horario>();
-        String sql = "SELECT h.id_horario, h.nombre, h.color_etiqueta, "
-                + "hd.dia_semana, hd.hora_inicio, hd.hora_fin, hd.descanso_inicio, hd.descanso_fin "
-                + "FROM horarios h "
-                + "LEFT JOIN horario_dias hd ON hd.id_horarios = h.id_horario "
-                + "ORDER BY h.id_horario";
+        String sql = "SELECT h.id_horario, h.nombre, h.color_etiqueta, h.fecha_creacion, "
+                   + "hd.dia_semana, hd.hora_inicio, hd.hora_fin, hd.descanso_inicio, hd.descanso_fin "
+                   + "FROM horarios h "
+                   + "LEFT JOIN horario_dias hd ON hd.id_horarios = h.id_horario "
+                   + "ORDER BY h.id_horario";
         try {
             con = conectar.getConection();
             ps = con.prepareStatement(sql);
@@ -51,6 +51,7 @@ public class HorarioDao implements Crud<Horario> {
                     horarioActual.setId(idHorario);
                     horarioActual.setNombre(rs.getString("nombre"));
                     horarioActual.setColorEtiqueta(rs.getString("color_etiqueta"));
+                    horarioActual.setFechaCreacion(rs.getString("fecha_creacion"));
                     horarioActual.setDias(new ArrayList<HorarioDia>());
                     listaHorarios.add(horarioActual);
                     idHorarioAnterior = idHorario;

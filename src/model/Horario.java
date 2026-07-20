@@ -14,6 +14,7 @@ public class Horario {
     private int id;
     private String nombre;
     private String colorEtiqueta;
+    private String fechaCreacion;
     private List<HorarioDia> dias;
 
     public Horario() {
@@ -50,5 +51,14 @@ public class Horario {
     public void setDias(List<HorarioDia> dias) {
         this.dias = dias;
     }
+
+    public String getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(String fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+    
     
 }
