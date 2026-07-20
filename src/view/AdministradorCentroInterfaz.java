@@ -121,7 +121,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     public static final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                                           "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", 
                                           "Diciembre"};
-    public String[] anio = {"2026"};
+    
     // Horas disponibles en los combos de hora (07:00 a 17:00 cada 30 min).
     // Se llenará en el constructor llamando a la clase  GeneradorHorarios()
     public static String[] HORAS;
@@ -675,15 +675,10 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         
         comboMesHorario = new JComboBox<>(MESES);
         MetodosPublicos.crearComboEstilizado(comboMesHorario);
-        comboAnioHorario = new JComboBox(anio);
         MetodosPublicos.crearComboEstilizado(comboAnioHorario);
         JPanel  filaMes = MetodosPublicos.crearFila("Mes de aplicación:", comboMesHorario);
-        JPanel filaAnio = MetodosPublicos.crearFila("Año de aplicación:", comboAnioHorario);
         filaMes.setAlignmentX(Component.LEFT_ALIGNMENT);
         contenido.add(filaMes);
-        contenido.add(Box.createVerticalStrut(30));
-        filaAnio.setAlignmentX(Component.LEFT_ALIGNMENT);
-        contenido.add(filaAnio);
         contenido.add(Box.createVerticalStrut(30));
 
         JPanel filaBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));

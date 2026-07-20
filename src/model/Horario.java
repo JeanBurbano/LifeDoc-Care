@@ -16,6 +16,42 @@ public class Horario {
     private String colorEtiqueta;
     private String fechaCreacion;
     private List<HorarioDia> dias;
+    private Integer idMedico;
+    private Integer idConsultorio;
+    private Integer mes;
+    private Integer anio;
+
+    public Integer getIdMedico() {
+        return idMedico;
+    }
+
+    public void setIdMedico(Integer idMedico) {
+        this.idMedico = idMedico;
+    }
+
+    public Integer getIdConsultorio() {
+        return idConsultorio;
+    }
+
+    public void setIdConsultorio(Integer idConsultorio) {
+        this.idConsultorio = idConsultorio;
+    }
+
+    public Integer getMes() {
+        return mes;
+    }
+
+    public void setMes(Integer mes) {
+        this.mes = mes;
+    }
+
+    public Integer getAnio() {
+        return anio;
+    }
+
+    public void setAnio(Integer anio) {
+        this.anio = anio;
+    }
 
     public Horario() {
     }

@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
-
+import java.sql.SQLException;
 /**
  *
  * @author lunaa
@@ -75,6 +75,21 @@ public class HorarioDao implements Crud<Horario> {
         }
         return listaHorarios;
     }
+    
+    public int asignarMedico(int idHorario, int idMedico, int idConsultorio, int mes, int anio) {
+    String sql = "UPDATE horarios SET id_medico = ?, id_consultorio = ?, mes = ?, anio = ? WHERE id_horario = ?";
+    try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setInt(1, idMedico);
+        ps.setInt(2, idConsultorio);
+        ps.setInt(3, mes);
+        ps.setInt(4, anio);
+        ps.setInt(5, idHorario);
+        return ps.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return 0;
+    }
+}
 
     @Override
     public int setAgregar(Horario h) {
@@ -116,6 +131,15 @@ public class HorarioDao implements Crud<Horario> {
                     JOptionPane.ERROR_MESSAGE
             );
             return 0;
+        }finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    ps.close();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.toString());
+                }
+            }
         }
     }
 
@@ -143,6 +167,15 @@ public class HorarioDao implements Crud<Horario> {
                     JOptionPane.ERROR_MESSAGE
             );
             return 0;
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    ps.close();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, e.toString());
+                }
+            }
         }
         
 

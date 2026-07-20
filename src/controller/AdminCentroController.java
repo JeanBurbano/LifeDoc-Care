@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,9 @@ import model.Horario;
 import model.HorarioDao;
 import model.HorarioDia;
 import model.Medico;
+import model.MedicoDao;
+import model.Medicos;
+import model.MedicosDao;
 import view.ConstructorFilaHorario;
 import view.AdministradorCentroInterfaz;
 
@@ -34,7 +38,7 @@ public class AdminCentroController extends PacienteController {
     private static final int COLUMNA_ELIMINAR = 5;
 
     private List<Horario> horariosActuales = new ArrayList<>();
-    //private List<Medico> medicosActuales = new ArrayList<>();
+    private List<Medicos> medicosActuales = new ArrayList<>();
 
     public AdminCentroController(AdministradorCentroInterfaz adminI) {
         super(adminI);
@@ -52,7 +56,6 @@ public class AdminCentroController extends PacienteController {
         this.adminI.btnCrearHorario.addActionListener(this);
         this.adminI.btnVolver.addActionListener(this);
         this.adminI.btnGuardarHorario.addActionListener(this);
-        this.adminI.btnConfirmarGuardarHorario.addActionListener(this);
         this.adminI.btnCancelarVistaPrevia.addActionListener(this);
     }
 
@@ -66,7 +69,7 @@ public class AdminCentroController extends PacienteController {
         manejarApartadoMedicamento(e);
         manejarApartadoHorario(e);
         manejarFormularioHorario(e);
-        //manejarTablaHorarios(e);
+        manejarTablaHorarios(e);
     }
 
     // menu principal
@@ -341,9 +344,40 @@ public class AdminCentroController extends PacienteController {
     private void abrirAsignacion(int fila) {
         Horario horarioSeleccionado = horariosActuales.get(fila);
         adminI.mostrarAsignacionHorarioMedicoApartado(horarioSeleccionado.getNombre(), fila);
-        //poblarMedicosAsignacion();
+        poblarMedicosAsignacion();
         adminI.btnConfirmarAsignacion.addActionListener(this);
         adminI.btnCancelarAsignacion.addActionListener(this);
+    }
+    
+    private void poblarMedicosAsignacion() {
+        medicosActuales = new MedicosDao().listar();
+        adminI.comboMedicoAsignar.removeAllItems();
+        for (Medicos m : medicosActuales) {
+            adminI.comboMedicoAsignar.addItem(m.getPrimerNombre() + " " + m.getPrimerApellido());
+        }
+    }
+    
+    private void confirmarAsignacionMedico(int filaHorario) {
+        int indiceMedico = adminI.comboMedicoAsignar.getSelectedIndex();
+        if (indiceMedico < 0) {
+            JOptionPane.showMessageDialog(null, "Por favor selecciona un médico.",
+                    "Selección requerida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Horario horario = horariosActuales.get(filaHorario);
+        Medicos medico = medicosActuales.get(indiceMedico);
+        String mesTexto = (String) adminI.comboMesHorario.getSelectedItem(); // combo de mes en la ventana de asignación
+        int mes = adminI.comboMesHorario.getSelectedIndex() + 1;
+        int anio =LocalDate.now().getYear();
+
+        //new HorarioDao().asignarMedico(horario.getId(), medico.getId_medico(), idConsultorioSeleccionado, mes, anio);
+
+        JOptionPane.showMessageDialog(null,
+                "Horario \"" + horario.getNombre() + "\" asignado a " + medico.getPrimerNombre() + " " + medico.getPrimerApellido() + ".",
+                "Asignación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+
+        adminI.dialogoAsignarMedico.dispose();
     }
 
 
@@ -362,6 +396,15 @@ public class AdminCentroController extends PacienteController {
             adminI.mostrarVistaHorarioMedicoApartado();
             cargarHorarios();
             agregarListenerBotonesTabla();
+        }
+    }
+    
+    private void manejarTablaHorarios(ActionEvent e) {
+        if (e.getSource() == adminI.btnConfirmarAsignacion) {
+            confirmarAsignacionMedico(adminI.filaHorarioSeleccionada); // ajusta al nombre real de tu atributo de fila
+        }
+        if (e.getSource() == adminI.btnCancelarAsignacion) {
+            adminI.dialogoAsignarMedico.dispose();
         }
     }
 
