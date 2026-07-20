@@ -1,6 +1,7 @@
 package controller;
 
 import java.awt.event.ActionEvent;
+import javax.swing.JButton;
 import view.MedicoInterfaz;
 
 public class MedicoController extends PacienteController {
@@ -9,6 +10,7 @@ public class MedicoController extends PacienteController {
 
     public MedicoController(MedicoInterfaz medico) {
         super(medico);
+        this.medico.btnHistorialMedicoPaciente.addActionListener(this);
         this.medico.btnMiAgenda.addActionListener(this);
         this.medico.btnConsultorio.addActionListener(this);
         this.medico.simboloRegresarConfirmacionP.addActionListener(this);
@@ -24,10 +26,26 @@ public class MedicoController extends PacienteController {
         this.medico.btnNoReagendar.addActionListener(this);
     }
 
+    private void habilitarBotonesHistorial(JButton boton1, JButton boton2, JButton boton3) {
+        boton1.setEnabled(false);
+        boton2.setEnabled(true);
+        boton3.setEnabled(true);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
         this.medico = (MedicoInterfaz) pacienteI;
+        if(e.getSource() == this.medico.btnHistorialCitas){
+            habilitarBotonesHistorial(this.medico.btnHistorialCitas,this.medico.btnHistorialMedicoPaciente,this.medico.btnHistorialMedico);
+        }
+        if(e.getSource() == this.medico.btnHistorialMedico){
+            habilitarBotonesHistorial(this.medico.btnHistorialMedico,this.medico.btnHistorialCitas,this.medico.btnHistorialMedicoPaciente);
+        }
+        if(e.getSource() == this.medico.btnHistorialMedicoPaciente){
+            this.medico.mostrarFormularioHistorialMedicoPaciente();
+            habilitarBotonesHistorial(this.medico.btnHistorialMedicoPaciente,this.medico.btnHistorialCitas,this.medico.btnHistorialMedico);
+        }
         if (e.getSource() == this.medico.btnMiAgenda || e.getSource() == this.medico.btnVolverVerDetalles || e.getSource() == this.medico.btnNoReagendar) {
             this.medico.mostrarVistaMiAgenda();
             this.medico.citaVistaMiAgenda();

@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,9 +27,10 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
     public JButton btnMisCitas, btnHistorial, btnComentarios, btnNotificaciones, btnMiAgenda, btnConsultorio, btnBuscar,
             pruebaFicha, simboloRegresarConfirmacionP, btnAsistio, btnNoAsistio, btnGuardarFicha, btnAceptarFicha, btnReagendarCita,
-            btnVerDetalles, btnVolverVerDetalles, btnActReagendar, btnNoReagendar;
+            btnVerDetalles, btnVolverVerDetalles, btnActReagendar, btnNoReagendar, btnHistorialMedicoPaciente,
+            btnBuscarIdHistorialPaciente;
     public JPanel panelPrincipal;
-    public JTextField id;
+    public JTextField id, idHistorial;
 
     ;
 
@@ -48,6 +50,8 @@ public class MedicoInterfaz extends PacienteInterfaz {
         btnVolverVerDetalles = new JButton("← Volver");
         btnActReagendar = new JButton("Aceptar", new ImageIcon("iconsP/accept.png"));
         btnNoReagendar = new JButton("Cancelar", new ImageIcon("iconsP/quejas.png"));
+        btnHistorialMedicoPaciente = new JButton("<html><center>Historial Médico<br>Paciente</center></html>", new ImageIcon("iconsP/paciente.png"));
+        btnBuscarIdHistorialPaciente = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
 
         MetodosPublicos.estilizarBoton(btnBuscar, (byte) 5);
         btnBuscar.setPreferredSize(new Dimension(130, 30));
@@ -87,6 +91,14 @@ public class MedicoInterfaz extends PacienteInterfaz {
         btnNoReagendar.setBackground(Color.RED);
         btnNoReagendar.setPreferredSize(new Dimension(150, 40));
         
+        MetodosPublicos.estilizarBoton(btnHistorialMedicoPaciente, (byte) 2);
+        btnHistorialMedicoPaciente.setMinimumSize(new Dimension(307, 100));
+        btnHistorialMedicoPaciente.setMaximumSize(new Dimension(307, 100));
+        
+        MetodosPublicos.estilizarBoton(btnBuscarIdHistorialPaciente, (byte) 5);
+        btnBuscarIdHistorialPaciente.setMinimumSize(new Dimension(130, 30));
+        btnBuscarIdHistorialPaciente.setMaximumSize(new Dimension(130, 30));
+        
         super.agregarBotonCuerpo1(btnMiAgenda);
         super.agregarBotonCuerpo1(btnConsultorio);
 
@@ -96,6 +108,9 @@ public class MedicoInterfaz extends PacienteInterfaz {
         id.setFont(new Font("Arial", Font.PLAIN, 18));
         id.setPreferredSize(new Dimension(240, 30));
         id.setBorder(BorderFactory.createLineBorder(COLOR_VERDE_ACENTO));
+       
+        idHistorial = new JTextField();
+        idHistorial.setBorder(BorderFactory.createLineBorder(COLOR_VERDE_ACENTO));
 
         this.panelPrincipal = new JPanel();
         this.panelPrincipal.setOpaque(false);
@@ -140,6 +155,33 @@ public class MedicoInterfaz extends PacienteInterfaz {
     @Override
     public void mostrarVistaHistorial() {
         super.mostrarVistaHistorial();
+        this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
+        this.panelBotonesLaterales.add(btnHistorialMedicoPaciente);
+    }
+    
+    public void mostrarFormularioHistorialMedicoPaciente(){
+        MetodosPublicos.vaciarPanel(panelListaHistorial);
+        MetodosPublicos.vaciarPanel(panelFiltros);
+        
+        this.panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
+        this.panelPrincipal.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+        
+        JLabel tituloIdPaciente = new JLabel("Número de identificación del paciente");
+        tituloIdPaciente.setFont(new Font("arial", Font.BOLD, 25));
+        tituloIdPaciente.setForeground(COLOR_AZUL_CORPORATIVO);
+        tituloIdPaciente.setBorder(new EmptyBorder(140,0,30,0));
+        
+        campo(18,360,30,idHistorial);
+        
+        this.panelHistorial.remove(this.panelFiltros);
+        this.panelHistorial.remove(this.scrollHistorial);
+        this.panelPrincipal.add(tituloIdPaciente,BorderLayout.CENTER);
+        this.panelPrincipal.add(idHistorial,BorderLayout.CENTER);
+        this.panelPrincipal.add(btnBuscarIdHistorialPaciente,BorderLayout.CENTER);
+        this.panelHistorial.add(panelPrincipal);
+        
+        MetodosPublicos.refrescarVentana(panelListaHistorial);
+        MetodosPublicos.refrescarVentana(panelFiltros);
     }
 
     public void mostrarVistaMiAgenda() {
