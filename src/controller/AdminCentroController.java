@@ -15,17 +15,21 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import model.HorarioDao;
 import view.ConstructorFilaHorario;
 import view.AdministradorCentroInterfaz;
 
 public class AdminCentroController extends PacienteController {
 
     AdministradorCentroInterfaz adminI;
+    private static final int COLUMNA_ASIGNAR = 3;
+    private static final int COLUMNA_EDITAR = 4;
+    private static final int COLUMNA_ELIMINAR = 5;
 
     public AdminCentroController(AdministradorCentroInterfaz adminI) {
 
         super(adminI);
-
+        
         //Botones del menú principal
         this.adminI.btnPersonalCentro.addActionListener(this);
         this.adminI.btnInventarioMedicamentos.addActionListener(this);
@@ -41,6 +45,8 @@ public class AdminCentroController extends PacienteController {
         this.adminI.btnGuardarHorario.addActionListener(this);
         this.adminI.btnConfirmarGuardarHorario.addActionListener(this);
         this.adminI.btnCancelarVistaPrevia.addActionListener(this);
+        
+        
 
     }
 
@@ -83,7 +89,7 @@ public class AdminCentroController extends PacienteController {
             adminI.mostrarAñadirMedicamentoApartado(); // crea los campos del formulario (nuevos objetos cada vez)
             poblarTipoMedicamento(); // llena el combo de tipo con datos simulados (en producción vendría de la BD)
         }
-
+        
         if (e.getSource() == adminI.btnSeleccionar) {
             seleccionarImagenMedicamento();
         }
@@ -139,7 +145,7 @@ public class AdminCentroController extends PacienteController {
             adminI.btnHorarioMedico.setEnabled(false);
             adminI.habilitarBotonesMenu(adminI.btnHorarioMedico);
             poblarHorariosPrueba();
-            agregarListenerBotonAsignar(); // conecta el clic en la columna "Asignar" (tabla nueva cada vez)
+            agregarListenerBotonesTabla();
         }
     }
 
@@ -294,29 +300,67 @@ public class AdminCentroController extends PacienteController {
     }
 
     /**
-     * Detecta el clic sobre la columna del botón "Asignar" en la tabla de
-     * horarios (la tabla se recrea cada vez que se muestra la vista, así que
-     * este listener se agrega de nuevo cada vez).
+     * Detecta el clic en la tabla de horarios y decide qué botón fue,
+     * comparando la columna donde se hizo clic con las constantes de arriba.
      */
-    private void agregarListenerBotonAsignar() {
+    private void agregarListenerBotonesTabla() {
         adminI.tablaHorarioM.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                JTable tabla = adminI.tablaHorarioM;
-                int fila = tabla.rowAtPoint(e.getPoint());
-                int columna = tabla.columnAtPoint(e.getPoint());
-                int columnaBoton = tabla.getColumnCount() - 1; // la última columna es la del botón
+                int fila = adminI.tablaHorarioM.rowAtPoint(e.getPoint());
+                int columna = adminI.tablaHorarioM.columnAtPoint(e.getPoint());
 
-                if (fila >= 0 && columna == columnaBoton) {
-                    String nombreHorario = String.valueOf(adminI.listaHorarioM.getValueAt(fila, 1)); // columna NOMBRE
-                    adminI.mostrarAsignacionHorarioMedicoApartado(nombreHorario, fila);
-                    adminI.btnConfirmarAsignacion.addActionListener(AdminCentroController.this);
-                    adminI.btnCancelarAsignacion.addActionListener(AdminCentroController.this);
+                if (fila < 0) {
+                    return; // se hizo clic fuera de una fila (ej. en un espacio vacío)
+                }
+
+                if (columna == COLUMNA_ASIGNAR) {
+                    abrirAsignacion(fila);
+                } else if (columna == COLUMNA_EDITAR) {
+                    editarHorario(fila);
+                } else if (columna == COLUMNA_ELIMINAR) {
+                    eliminarHorario(fila);
                 }
             }
         });
     }
+    
+    /**
+     * Abre la ventana para asignar el horario de la fila seleccionada a un médico.
+     */
+    private void abrirAsignacion(int fila) {
+        String nombreHorario = String.valueOf(adminI.listaHorarioM.getValueAt(fila, 1));
+        adminI.mostrarAsignacionHorarioMedicoApartado(nombreHorario, fila);
+        //poblarMedicosAsignacion();
+        adminI.btnConfirmarAsignacion.addActionListener(this);
+        adminI.btnCancelarAsignacion.addActionListener(this);
+    }
+    
+    /**
+     * Pendiente: aquí se abrirá el formulario de edición del horario.
+     */
+    private void editarHorario(int fila) {
+        // por hacer
+    }
 
+    /**
+     * Pregunta confirmación y elimina el horario de la fila seleccionada.
+     */
+    private void eliminarHorario(int fila) {
+        int idHorario = (int) adminI.listaHorarioM.getValueAt(fila, 0);
+        int respuesta = JOptionPane.showConfirmDialog(null,
+                "¿Seguro que deseas eliminar este horario?",
+                "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+
+        if (respuesta == JOptionPane.YES_OPTION) {
+            new HorarioDao().setEliminar(idHorario);
+            adminI.mostrarVistaHorarioMedicoApartado();
+            poblarHorariosPrueba();
+            agregarListenerBotonesTabla();
+      
+        }
+    }
+    
     private void mostrarVistaPreviaAntesDeGuardar() {
         if (adminI.campoNombreHorario.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Por favor ingresa un nombre para el horario.",
