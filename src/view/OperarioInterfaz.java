@@ -15,7 +15,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -160,10 +159,14 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
         refrescarVentana(cuerpo2);
         
+//        btnBuscarPaciente = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
+//        estilizarBoton(btnBuscarPaciente, (byte) 5);
         btnBuscarPaciente.addActionListener(e -> buscarPaciente());
+        
     }
     
     private void buscarPaciente() {
+        System.out.println("=== buscarPaciente() fue invocado ===");
         String id = txtBuscarID.getText().trim();
         if (id.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, 
@@ -176,9 +179,11 @@ public class OperarioInterfaz extends PacienteInterfaz {
         PacienteDao dao = new PacienteDao();
         Paciente paciente = dao.buscarPorId(id);
         
+        System.out.println(paciente.getPrimerNombre());
+        
         if (paciente != null) {
             cargarDatosPaciente(
-                paciente.getNumeroId()+ "",
+                paciente.getNumeroId(),
                 paciente.getPrimerNombre(),
                 paciente.getSegundoNombre(),
                 paciente.getPrimerApellido(),
@@ -192,11 +197,13 @@ public class OperarioInterfaz extends PacienteInterfaz {
                 "Paciente encontrado y cargado correctamente.", 
                 "Éxito", 
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
         } else {
             javax.swing.JOptionPane.showMessageDialog(this, 
                 "No se encontró paciente con ID: " + id, 
                 "Paciente no encontrado", 
                 javax.swing.JOptionPane.ERROR_MESSAGE);
+            
         }
     }
     private void addFormField(JPanel panel, GridBagConstraints gbc, String label, JTextField field, int row) {
@@ -207,10 +214,32 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panel.add(field, gbc);
     }
 
-    public void cargarDatosPaciente(String id, String nombreCompleto, String correo,
-            String telefono, String fechaNac, String sexo) {
+    public void cargarDatosPaciente(String id, String primerNombre, String segundoNombre,
+            String primerApellido, String segundoApellido, String correo, String telefono,
+            String fechaNac, String sexo) {
+        
+    // Aqui se arma el nombre completo del paciente que se busca, sin importar si no cuenta con segundo nombre o apellido
+            String nombreCompleto = primerNombre
+                + (segundoNombre != null && !segundoNombre.isEmpty() ? " " + segundoNombre : "")
+                + " " + primerApellido
+                + (segundoApellido != null && !segundoApellido.isEmpty() ? " " + segundoApellido : "");
+
         lblIDPaciente.setText("ID: " + id);
         lblNombrePaciente.setText("Nombre: " + nombreCompleto);
+        
+    // Se llenan tambien los campos del formulario para que el Operario
+    // pueda revisarlos/editarlos antes de agendar la cita
+    
+        txtPrimerNombre.setText(primerNombre);
+        txtSegundoNombre.setText(segundoNombre);
+        txtPrimerApellido.setText(primerApellido);
+        txtSegundoApellido.setText(segundoApellido);
+        txtCorreo.setText(correo);
+        txtTelefono.setText(telefono);
+        txtFechaNacimiento.setText(fechaNac);
+        txtSexo.setText(sexo);
+        
+        
     }
 
     public class PanelPagos {
