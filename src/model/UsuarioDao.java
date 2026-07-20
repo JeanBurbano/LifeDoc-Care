@@ -148,4 +148,34 @@ public class UsuarioDao {
         }
         return idRol;
     }
+
+    public boolean actualizarCampoUsuario(int id_usuario, String nombreCampo, String nuevoValor) {
+        boolean validador = false;
+        String sql = "UPDATE usuario SET " + nombreCampo + " = ? WHERE id_usuario = ?";
+        try {
+            this.con = conectar.getConection();
+            this.ps = con.prepareStatement(sql);
+            ps.setString(1, nuevoValor);
+            ps.setInt(2, id_usuario);
+
+            int filas = ps.executeUpdate();
+            if (filas > 0) {
+                validador = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null) {
+                    this.ps.close();
+                }
+                if (con != null) {
+                    this.con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return validador;
+    }
 }
