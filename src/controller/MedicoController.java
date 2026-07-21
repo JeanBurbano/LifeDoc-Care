@@ -10,7 +10,7 @@ import view.MedicoInterfaz;
 import view.Titulo;
 
 public class MedicoController extends PacienteController {
-    
+
     private CitaDao citadao;
     protected Cita[] citas;
     MedicoInterfaz medico;
@@ -40,30 +40,30 @@ public class MedicoController extends PacienteController {
         boton2.setEnabled(true);
         boton3.setEnabled(true);
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
         this.medico = (MedicoInterfaz) pacienteI;
-        if(e.getSource() == this.medico.btnHistorialCitas){
-            habilitarBotonesHistorial(this.medico.btnHistorialCitas,this.medico.btnHistorialMedicoPaciente,this.medico.btnHistorialMedico);
+        if (e.getSource() == this.medico.btnHistorialCitas) {
+            habilitarBotonesHistorial(this.medico.btnHistorialCitas, this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialMedico);
         }
-        if(e.getSource() == this.medico.btnHistorialMedico){
-            habilitarBotonesHistorial(this.medico.btnHistorialMedico,this.medico.btnHistorialCitas,this.medico.btnHistorialMedicoPaciente);
+        if (e.getSource() == this.medico.btnHistorialMedico) {
+            habilitarBotonesHistorial(this.medico.btnHistorialMedico, this.medico.btnHistorialCitas, this.medico.btnHistorialMedicoPaciente);
         }
-        if(e.getSource() == this.medico.btnHistorialMedicoPaciente){
+        if (e.getSource() == this.medico.btnHistorialMedicoPaciente) {
             this.medico.mostrarFormularioHistorialMedicoPaciente();
-            habilitarBotonesHistorial(this.medico.btnHistorialMedicoPaciente,this.medico.btnHistorialCitas,this.medico.btnHistorialMedico);
+            habilitarBotonesHistorial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
         }
-        if(e.getSource() == this.medico.btnBuscarIdHistorialPaciente){
+        if (e.getSource() == this.medico.btnBuscarIdHistorialPaciente) {
             this.medico.mostrarHistorialMedicoPaciente();
-            habilitarBotonesHistorial(this.medico.btnHistorialMedicoPaciente,this.medico.btnHistorialCitas,this.medico.btnHistorialMedico);
+            habilitarBotonesHistorial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
         }
         if (e.getSource() == this.medico.btnMiAgenda || e.getSource() == this.medico.btnVolverVerDetalles || e.getSource() == this.medico.btnNoReagendar) {
             this.medico.mostrarVistaMiAgenda();
             this.medico.btnMiAgenda.setEnabled(false);
             this.medico.habilitarBotonesMenu(this.medico.btnMiAgenda);
-            this.citas = citadao.listarPorMedico(medico.usuario.getIdUsuario());
+            this.citas = citadao.listarPorMedico(medico.getUsuario().getIdUsuario());
             if (citas == null || citas.length == 0) {
                 medico.panelPrincipal.add(new JLabel("No tienes citas asignadas"));
                 MetodosPublicos.refrescarVentana(medico.panelPrincipal);
