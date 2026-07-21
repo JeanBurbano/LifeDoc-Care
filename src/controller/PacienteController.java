@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Font;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +20,7 @@ import model.Medico;
 import model.MedicoDao;
 import model.MetodosPublicos;
 import model.Paciente;
+import model.UsuarioDao;
 import view.EditarPerfilInterfaz;
 import view.PacienteInterfaz;
 import view.Titulo;
@@ -126,8 +128,7 @@ public class PacienteController implements ActionListener {
             this.pacienteI.listaBotonesReagendar.clear();
             this.citas = citadao.listarPorUsuario(usurio.getIdUsuario());
             if (citas == null || citas.length == 0) {
-                pacienteI.panelInfoCitas.add(new JLabel("No tienes citas"));
-                MetodosPublicos.refrescarVentana(pacienteI.panelInfoCitas);
+                pacienteI.agregarAlPanelMiscitas();
             } else {
                 for (Cita clave : citas) {
                     pacienteI.agregarAlPanelMiscitas(new Titulo("Cita ", clave.getEspecialidad(), 30).getPanelTitulo(),
@@ -203,6 +204,15 @@ public class PacienteController implements ActionListener {
                 } else {
                     JOptionPane.showMessageDialog(pacienteI, "No se pudo enviar tu " + tipoMensaje.toLowerCase() + ", intenta nuevamente");
                 }
+            }
+        }
+        if (e.getSource() == pacienteI.btnHistorialMedico) {
+            UsuarioDao usuDao = new UsuarioDao();
+            String historial = usuDao.historialMedico(pacienteI.getUsuario().getIdUsuario());
+            if (historial == null) {
+                JOptionPane.showMessageDialog(pacienteI, "No tienes historial medico");
+            } else {
+                JOptionPane.showMessageDialog(pacienteI,historial);
             }
         }
     }
