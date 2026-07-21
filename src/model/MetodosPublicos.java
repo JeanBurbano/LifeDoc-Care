@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -30,6 +31,16 @@ import view.PacienteInterfaz;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MetodosPublicos {
+
+    public static JTextField crearCampoTexto(Color color) {
+        JTextField campo = new JTextField(15);
+        campo.setFont(new Font("Arial", Font.PLAIN, 15));
+        campo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(color, 1, true),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
+        return campo;
+    }
 
     //Este metodo es para reproducir audio
     public static void reproducirSonido(String ruta) {
@@ -156,6 +167,36 @@ public class MetodosPublicos {
         }
         String exprecion = "^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@gmail\\.com$";
         return correo.matches(exprecion);
+    }
+
+    public static JPanel crearPanelInfo(String titulo, String descripcion) {
+        JPanel panelInfo = new JPanel();
+        panelInfo.setOpaque(true);
+        panelInfo.setBackground(Color.WHITE);
+        panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
+        panelInfo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(225, 225, 225), 1, true),
+                BorderFactory.createEmptyBorder(15, 18, 15, 18)
+        ));
+        panelInfo.setPreferredSize(new Dimension(420, 90));
+        panelInfo.setMaximumSize(new Dimension(420, 90));
+
+        JLabel lblTitulo = new JLabel(titulo, new ImageIcon("iconsP/info.png"), SwingConstants.CENTER);
+
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
+        lblTitulo.setForeground(new Color(20, 20, 20));
+        lblTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel lblDescripcion = new JLabel(descripcion);
+        lblDescripcion.setFont(new Font("Arial", Font.PLAIN, 13));
+        lblDescripcion.setForeground(new Color(110, 110, 110));
+        lblDescripcion.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        panelInfo.add(lblTitulo);
+        panelInfo.add(Box.createVerticalStrut(6));
+        panelInfo.add(lblDescripcion);
+
+        return panelInfo;
     }
 
     //Aqui para estilizar formularios

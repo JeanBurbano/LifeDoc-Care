@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package view;
 
 import com.github.lgooddatepicker.components.DatePicker;
@@ -25,45 +21,51 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
-import model.Paciente;
 
-/**
- *
- * @author lunaa
- */
 public class RegistroUsuariosInterfaz extends PacienteInterfaz {
 
-    JPanel creacionPerfil; //panel del titulo
-    JPanel volver; //panel del boton de volver
-    JPanel identificacion, datos, fotoF; //panel de las tres secciones de registro
-    JLabel tituloCreacion; //titulo de crear cuenta
-    JLabel tloSeccion1, tloSeccion2, tloSeccion3; //titulos de las tres secciones
-    JButton btnVolverA, btnRegistrarse; //botones de volver al login y de registrarse
-    JPanel panelLifeDoc; //panel para el titulo lifedoccare
-    JPanel camposIde; //panel para los campos de identificacion
-    //campos de identificacion
-    JTextField campoNumeroID;
-    JComboBox campoTipoId;
+    final static String[] ARREGLO_ID = {"", "Registro civil", "Targeta Identidad", "Cedula Ciudadania",};
+    final static String[] ARREGLO_SEXO = {"", "Femenino", "Masculino"};
+    final static String[] ARREGLO_SISBEN = {"", "No aplica", "A", "B", "C", "D"};
 
-    JPanel camposDatos, camposFoto; //contenedores internos de las secciones "Datos personales" y "Foto frontal"
+    public JPanel creacionPerfil; //panel del titulo
+    public JPanel volver; //panel del boton de volver
+    public JPanel identificacion, datos, fotoF; //panel de las tres secciones de registro
+    public JLabel tituloCreacion; //titulo de crear cuenta
+    public JLabel tloSeccion1, tloSeccion2, tloSeccion3; //titulos de las tres secciones
+    public JButton btnVolverA, btnRegistrarse; //botones de volver al login y de registrarse
+    public JPanel panelLifeDoc; //panel para el titulo lifedoccare
+    public JPanel camposIde; //panel para los campos de identificacion
+    //campos de identificacion
+    public JTextField campoNumeroID;
+    public JComboBox campoTipoId;
+
+    public JPanel camposDatos, camposFoto; //contenedores internos de las secciones "Datos personales" y "Foto frontal"
 
     // Campos de "Datos personales"
-    JTextField campoPrimerNombre, campoSegundoNombre, campoPrimerApellido, campoSegundoApellido;
-    JComboBox comboSexo;
-    DatePicker datePickerNacimiento;
-    JTextField campoCorreo, campoTelefono;
-    JPasswordField campoContraseña;
+    public JTextField campoPrimerNombre, campoSegundoNombre, campoPrimerApellido, campoSegundoApellido;
+    public JComboBox comboSexo;
+    public DatePicker datePickerNacimiento;
+    public JTextField campoCorreo, campoTelefono;
+    public JPasswordField campoContraseña;
+    public JComboBox campoSisben;
     // Campos de Foto frontal
-    JLabel previsualizacionFoto;
-    JButton btnSeleccionarFoto;
-    
+    public JLabel previsualizacionFoto;
+    public JButton btnSeleccionarFoto;
 
-    public RegistroUsuariosInterfaz(String nombreInterfaz,Paciente usuario) {
-        super(nombreInterfaz, usuario);
-        MetodosPublicos.vaciarPanel(encabezado);
-        MetodosPublicos.vaciarPanel(cuerpo1);
+    public RegistroUsuariosInterfaz(String nombreInterfaz) {
+        super(nombreInterfaz);
+
+        this.encabezado.setAlignmentX(Component.LEFT_ALIGNMENT);
+        this.cuerpo1.setAlignmentX(Component.LEFT_ALIGNMENT);
+        this.cuerpo2.setAlignmentX(Component.LEFT_ALIGNMENT);
+        this.cuerpo2.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+        this.cuerpo1.setBorder(BorderFactory.createEmptyBorder());
+        this.cuerpo1.setLayout(new BoxLayout(cuerpo1, BoxLayout.Y_AXIS));
+        this.cuerpo2.setLayout(new BoxLayout(cuerpo2, BoxLayout.Y_AXIS));
+
         this.cuerpo1.setBorder(BorderFactory.createEmptyBorder());
         this.cuerpo1.setLayout(new BoxLayout(cuerpo1, BoxLayout.Y_AXIS));
         this.cuerpo2.setLayout(new BoxLayout(cuerpo2, BoxLayout.Y_AXIS));
@@ -79,20 +81,22 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
         datos.setOpaque(false);
         fotoF.setOpaque(false);
 
-        //botones
+        //Botones
         this.btnVolverA = new JButton("← Volver");
         btnVolverA.setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO);
         btnVolverA.setFont(new Font("Arial", Font.BOLD, 18));
         btnVolverA.setContentAreaFilled(false);
+        btnVolverA.setBorderPainted(false);
         btnVolverA.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
         this.btnRegistrarse = new JButton("Registrarme");
         MetodosPublicos.estilizarBoton(btnRegistrarse, (byte) 5);
 
-        // encabezado
+        //Encabezado
         creacionPerfil.setLayout(new BoxLayout(creacionPerfil, BoxLayout.Y_AXIS));
 
         this.tituloCreacion = new JLabel("Crear una Cuenta");
-        this.tituloCreacion.setFont(new Font("arial", Font.PLAIN, 33));
+        this.tituloCreacion.setFont(new Font("Arial", Font.PLAIN, 33));
         this.tituloCreacion.setForeground(Color.BLACK);
         this.tituloCreacion.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -103,81 +107,79 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
         this.creacionPerfil.add(tituloCreacion);
         this.creacionPerfil.add(panelLifeDoc);
 
-        this.volver.setLayout(new FlowLayout());
+        this.volver.setLayout(new FlowLayout(FlowLayout.RIGHT));
         this.volver.add(btnVolverA);
+
         this.encabezado.add(volver, BorderLayout.EAST);
         this.encabezado.add(creacionPerfil, BorderLayout.WEST);
 
-        this.cuerpo1.setBorder(new EmptyBorder(0, 0, 30, 0));
-
-        // seccion 1 de identificacion
-        // titulo
+        //Sección 1: Identificación
         this.identificacion.setLayout(new BorderLayout(8, 0));
         this.identificacion.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.identificacion.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
 
         this.tloSeccion1 = new JLabel("Identificación");
-        this.tloSeccion1.setAlignmentX(Component.LEFT_ALIGNMENT);
-        tloSeccion1.setFont(new Font("Arial", Font.BOLD, 24));
-        tloSeccion1.setForeground(PacienteInterfaz.COLOR_GRIS_SUBTITULO);
+        tloSeccion1.setFont(new Font("Arial", Font.BOLD, 22));
+        tloSeccion1.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
 
-        JSeparator sep = new JSeparator();
-        sep.setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO);
+        JSeparator sep1 = new JSeparator();
+        sep1.setForeground(new Color(225, 225, 225));
 
         this.identificacion.add(tloSeccion1, BorderLayout.WEST);
-        this.identificacion.add(sep, BorderLayout.CENTER);
+        this.identificacion.add(sep1, BorderLayout.CENTER);
 
-        this.cuerpo2.add(identificacion); 
+        this.cuerpo2.add(identificacion);
+        this.cuerpo2.add(Box.createVerticalStrut(20));
 
-        //campos
         camposIde = new JPanel(new GridBagLayout());
         camposIde.setOpaque(false);
         camposIde.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         GridBagConstraints gb = new GridBagConstraints();
-        gb.insets = new Insets(8, 8, 8, 8);
+        gb.insets = new Insets(0, 0, 0, 30); // separación horizontal entre campos, sin separación vertical
         gb.anchor = GridBagConstraints.WEST;
         gb.fill = GridBagConstraints.NONE;
 
         campoNumeroID = MetodosPublicos.crearCampoTexto();
-        campoTipoId = new JComboBox();
+        campoTipoId = new JComboBox(ARREGLO_ID);
         MetodosPublicos.crearComboEstilizado(campoTipoId);
 
         gb.gridx = 0;
         gb.gridy = 0;
-        gb.gridwidth = 1;
-        camposIde.add(MetodosPublicos.crearCampoConEtiqueta("Tipo de identificacion *", campoTipoId), gb);
+        camposIde.add(MetodosPublicos.crearCampoConEtiqueta("Tipo de documento *", campoTipoId), gb);
         gb.gridx = 1;
-        camposIde.add(MetodosPublicos.crearCampoConEtiqueta("Numero de Identificación *", campoNumeroID), gb);
+        camposIde.add(MetodosPublicos.crearCampoConEtiqueta("Número de identificación *", campoNumeroID), gb);
 
+        camposIde.setAlignmentX(Component.LEFT_ALIGNMENT);
         camposIde.setMaximumSize(camposIde.getPreferredSize());
 
-        this.cuerpo2.add(camposIde); 
+        this.cuerpo2.add(camposIde);
+        this.cuerpo2.add(Box.createVerticalStrut(30));
 
-        // seccion 2 de datos personales 
-        // Título
+        //Sección 2: Datos personales
         this.datos.setLayout(new BorderLayout(8, 0));
         this.datos.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.datos.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
 
-        this.tloSeccion2 = new JLabel("Datos Personales");
-        tloSeccion2.setFont(new Font("Arial", Font.BOLD, 24));
-        tloSeccion2.setForeground(PacienteInterfaz.COLOR_GRIS_SUBTITULO);
+        this.tloSeccion2 = new JLabel("Datos personales");
+        tloSeccion2.setFont(new Font("Arial", Font.BOLD, 22));
+        tloSeccion2.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
 
-        JSeparator sepDatos = new JSeparator();
-        sepDatos.setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO);
+        JSeparator sep2 = new JSeparator();
+        sep2.setForeground(new Color(225, 225, 225));
 
         this.datos.add(tloSeccion2, BorderLayout.WEST);
-        this.datos.add(sepDatos, BorderLayout.CENTER);
+        this.datos.add(sep2, BorderLayout.CENTER);
 
-        this.cuerpo2.add(datos); 
-        // capos
+        this.cuerpo2.add(datos);
+        this.cuerpo2.add(Box.createVerticalStrut(20));
+
         camposDatos = new JPanel(new GridBagLayout());
         camposDatos.setOpaque(false);
         camposDatos.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         GridBagConstraints gbDatos = new GridBagConstraints();
-        gbDatos.insets = new Insets(8, 8, 8, 8);
+        gbDatos.insets = new Insets(0, 0, 22, 30); //separación vertical entre filas + horizontal entre columnas
         gbDatos.anchor = GridBagConstraints.WEST;
         gbDatos.fill = GridBagConstraints.NONE;
 
@@ -186,7 +188,7 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
         campoPrimerApellido = MetodosPublicos.crearCampoTexto();
         campoSegundoApellido = MetodosPublicos.crearCampoTexto();
 
-        comboSexo = new JComboBox();
+        comboSexo = new JComboBox(ARREGLO_SEXO);
         MetodosPublicos.crearComboEstilizado(comboSexo);
 
         datePickerNacimiento = FechaCalendarioEstilizar.crearDatePickerNacimiento();
@@ -202,7 +204,10 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
                 BorderFactory.createEmptyBorder(8, 10, 8, 10)
         ));
 
-        // Fila 0 de los primeros 4 campos
+        campoSisben = new JComboBox(ARREGLO_SISBEN);
+        MetodosPublicos.crearComboEstilizado(campoSisben);
+
+        // Fila 0
         gbDatos.gridx = 0;
         gbDatos.gridy = 0;
         camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Primer nombre *", campoPrimerNombre), gbDatos);
@@ -211,9 +216,11 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
         gbDatos.gridx = 2;
         camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Primer apellido *", campoPrimerApellido), gbDatos);
         gbDatos.gridx = 3;
+        gbDatos.insets = new Insets(0, 0, 22, 0); // última columna de la fila sin margen derecho
         camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Segundo apellido", campoSegundoApellido), gbDatos);
 
-        // Fila 1 de los segundos 4 campos
+        // Fila 1
+        gbDatos.insets = new Insets(0, 0, 22, 30);
         gbDatos.gridx = 0;
         gbDatos.gridy = 1;
         camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Sexo Biológico *", comboSexo), gbDatos);
@@ -222,58 +229,69 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
         gbDatos.gridx = 2;
         camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Correo electrónico *", campoCorreo), gbDatos);
         gbDatos.gridx = 3;
-        camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Número de teléfono *", campoTelefono), gbDatos);
+        gbDatos.insets = new Insets(0, 0, 22, 0);
+        camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Número de teléfono ", campoTelefono), gbDatos);
 
-        // Fila 2: Contraseña
+        // Fila 2: Contraseña y Grupo Sisbén
+        gbDatos.insets = new Insets(0, 0, 0, 30);
         gbDatos.gridx = 0;
         gbDatos.gridy = 2;
         camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Contraseña *", campoContraseña), gbDatos);
+        gbDatos.gridx = 1;
+        gbDatos.insets = new Insets(0, 0, 0, 0);
+        camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Grupo Sisbén *", campoSisben), gbDatos);
 
+        camposDatos.setAlignmentX(Component.LEFT_ALIGNMENT);
         camposDatos.setMaximumSize(camposDatos.getPreferredSize());
 
         this.cuerpo2.add(camposDatos);
+        this.cuerpo2.add(Box.createVerticalStrut(30));
 
-        // seccion de foto frontal
+        //Sección 3: Foto frontal 
         this.fotoF.setLayout(new BorderLayout(8, 0));
         this.fotoF.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.fotoF.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
 
-        this.tloSeccion3 = new JLabel("Foto Frontal");
-        tloSeccion3.setFont(new Font("Arial", Font.BOLD, 24));
-        tloSeccion3.setForeground(PacienteInterfaz.COLOR_GRIS_SUBTITULO);
+        this.tloSeccion3 = new JLabel("Foto frontal *");
+        tloSeccion3.setFont(new Font("Arial", Font.BOLD, 22));
+        tloSeccion3.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
 
-        JSeparator sepFoto = new JSeparator();
-        sepFoto.setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO);
+        JSeparator sep3 = new JSeparator();
+        sep3.setForeground(new Color(225, 225, 225));
 
         this.fotoF.add(tloSeccion3, BorderLayout.WEST);
-        this.fotoF.add(sepFoto, BorderLayout.CENTER);
+        this.fotoF.add(sep3, BorderLayout.CENTER);
 
         this.cuerpo2.add(fotoF);
+        this.cuerpo2.add(Box.createVerticalStrut(20));
 
-        // Panel con la imagen + botón Registrarme
-        JPanel filaFotoYBoton = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
-        filaFotoYBoton.setOpaque(false);
-        filaFotoYBoton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JPanel filaFoto = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
+        filaFoto.setOpaque(false);
+        filaFoto.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         previsualizacionFoto = new JLabel();
-        btnSeleccionarFoto = new JButton("Seleccionar Foto");
-        MetodosPublicos.estilizarBoton(btnSeleccionarFoto, (byte) 5);
-
+        btnSeleccionarFoto = new JButton();
         JPanel panelFoto = MetodosPublicos.crearPanelImagen(btnSeleccionarFoto, previsualizacionFoto, "Foto Frontal");
-        filaFotoYBoton.add(panelFoto);
 
-        JPanel contenedorBotonRegistro = new JPanel();
-        contenedorBotonRegistro.setOpaque(false);
-        contenedorBotonRegistro.setLayout(new BoxLayout(contenedorBotonRegistro, BoxLayout.Y_AXIS));
-        contenedorBotonRegistro.add(Box.createVerticalGlue());
-        contenedorBotonRegistro.add(btnRegistrarse);
-        contenedorBotonRegistro.add(Box.createVerticalGlue());
-        filaFotoYBoton.add(contenedorBotonRegistro);
+        JPanel columnaInfo = new JPanel();
+        columnaInfo.setOpaque(false);
+        columnaInfo.setLayout(new BoxLayout(columnaInfo, BoxLayout.Y_AXIS));
 
-        this.cuerpo2.add(filaFotoYBoton);
+        JPanel panelInfo = MetodosPublicos.crearPanelInfo("Tener en cuenta",
+                "La imagen que adjuntes debe ser PNG y pesar máximo 5 MB");
+        panelInfo.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnRegistrarse.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        columnaInfo.add(panelInfo);
+        columnaInfo.add(Box.createVerticalStrut(15));
+        columnaInfo.add(btnRegistrarse);
+
+        filaFoto.add(panelFoto);
+        filaFoto.add(columnaInfo);
+
+        this.cuerpo2.add(filaFoto);
 
         MetodosPublicos.refrescarVentana(cuerpo2);
         MetodosPublicos.refrescarVentana(cuerpo1);
     }
-
 }
