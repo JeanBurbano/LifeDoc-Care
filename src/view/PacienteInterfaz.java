@@ -35,7 +35,7 @@ import model.MetodosPublicos;
 import model.Paciente;
 
 public class PacienteInterfaz extends JFrame {
-    
+
     private Paciente usuario;
     //Aqui creo los colores que mas vamos autilizar en la plantilla.
     public static final Color COLOR_AZUL_CORPORATIVO = new Color(0, 79, 124);
@@ -95,38 +95,38 @@ public class PacienteInterfaz extends JFrame {
     public JPanel panelCalendario;
     public CalendarPanel calendario;
     public JPanel panelHorarios;
-    
+
     public PacienteInterfaz(String nombreInterfaz) {
         super(nombreInterfaz);
-        
+
         this.fondoVentana = new JLabel(new ImageIcon("Fondo1_watermark.jpeg"));
         this.fondoVentana.setOpaque(true);
         this.fondoVentana.setLayout(new BoxLayout(fondoVentana, BoxLayout.Y_AXIS));
         this.setContentPane(fondoVentana);
-        
+
         this.encabezado = new JPanel();
         this.encabezado.setBorder(new EmptyBorder(40, 40, 0, 40));
         this.encabezado.setLayout(new BorderLayout());
         this.encabezado.setOpaque(false);
-        
+
         this.cuerpo1 = new JPanel();
         this.cuerpo1.setLayout(new FlowLayout(FlowLayout.LEFT, 25, 10));
         this.cuerpo1.setOpaque(false);
         this.cuerpo1.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(40, 40, 0, 40),
                 BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY)));
-        
+
         this.cuerpo2 = new JPanel();
         this.cuerpo2.setLayout(new BorderLayout());
         this.cuerpo2.setBorder(new EmptyBorder(0, 40, 20, 40));
         this.cuerpo2.setOpaque(false);
         this.cuerpo2.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
-        
+
         this.fondoVentana.add(encabezado);
         this.fondoVentana.add(cuerpo1);
         this.fondoVentana.add(cuerpo2);
     }
-    
+
     public PacienteInterfaz(String nombreInterfaz, Paciente usuario) {
         super(nombreInterfaz);//Asigno nombre de la ventana
         this.usuario = usuario;
@@ -141,27 +141,27 @@ public class PacienteInterfaz extends JFrame {
         this.encabezado.setBorder(new EmptyBorder(40, 40, 0, 40));//Padding Arriba,Izquierda,Abajo,Derecha
         this.encabezado.setLayout(new BorderLayout());
         this.encabezado.setOpaque(false);
-        
+
         this.panelBienvenida = new JPanel();
         this.panelBienvenida.setLayout(new BorderLayout());
         this.panelBienvenida.setOpaque(false);
-        
+
         JLabel tituloBienvenida = new JLabel("Bienvenido, " + this.usuario.getPrimerNombre() + "!");
         tituloBienvenida.setFont(new Font("arial", Font.BOLD, 30));
-        
+
         this.panelBienvenida.add(tituloBienvenida, BorderLayout.NORTH);
         this.panelBienvenida.add(new Titulo("LifeDoc", "Care").getPanelTitulo(), BorderLayout.WEST);
         tituloBienvenida = null;
-        
+
         this.panelSesionUsuario = new JPanel();
         this.panelSesionUsuario.setLayout(new FlowLayout());
         this.panelSesionUsuario.setOpaque(false);
-        
+
         this.btnCerrarSesion = new JButton("← Cerrar sesion");
         this.btnCerrarSesion.setBackground(Color.WHITE);
         this.btnCerrarSesion.setForeground(COLOR_AZUL_CORPORATIVO);
         this.btnCerrarSesion.setFont(new Font("arial", Font.BOLD, 15));
-        
+
         Dimension tamanoFijo = new Dimension(64, 64);
         int radio = 100;
         this.panelFotoPerfil = new PanelRound();
@@ -182,14 +182,14 @@ public class PacienteInterfaz extends JFrame {
                 Image.SCALE_DEFAULT));
         this.labelFotoPerfil.setIcon(icono);
         this.labelFotoPerfil.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        
+
         this.panelFotoPerfil.add(labelFotoPerfil, BorderLayout.CENTER);
         this.panelSesionUsuario.add(btnCerrarSesion);
         this.panelSesionUsuario.add(panelFotoPerfil);
-        
+
         this.encabezado.add(panelBienvenida, BorderLayout.WEST);
         this.encabezado.add(panelSesionUsuario, BorderLayout.EAST);
-        
+
         this.cuerpo1 = new JPanel();
         this.cuerpo1.setLayout(new FlowLayout(FlowLayout.LEFT, 25, 10));
         this.cuerpo1.setOpaque(false);
@@ -197,66 +197,70 @@ public class PacienteInterfaz extends JFrame {
                 BorderFactory.createEmptyBorder(40, 40, 0, 40),
                 BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY)));
         agregarBotonesMenuPaciente();
-        
+
         this.cuerpo2 = new JPanel();
         this.cuerpo2.setLayout(new BorderLayout());
         this.cuerpo2.setBorder(new EmptyBorder(0, 40, 20, 40));
         this.cuerpo2.setOpaque(false);
         this.cuerpo2.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
-        
+
         this.fondoVentana.add(encabezado);
         this.fondoVentana.add(cuerpo1);
         this.fondoVentana.add(cuerpo2);
-        
+
         this.panelInfoCitas = new JPanel();
         this.panelInfoCitas.setLayout(new BoxLayout(panelInfoCitas, BoxLayout.Y_AXIS));
+        this.panelInfoCitas.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                        BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                ));
         this.panelInfoCitas.setOpaque(false);
-        this.panelInfoCitas.setBorder(new EmptyBorder(10, 10, 10, 10));
-        
+
         this.btnAgendar = new JButton("️Agendar una cita ", new ImageIcon("iconsP/heart.png"));
         MetodosPublicos.estilizarBoton(btnAgendar, (byte) 3);
         this.listaBotonesCancelar = new ArrayList<JButton>();
         this.listaBotonesReagendar = new ArrayList<JButton>();
-        
+
         this.panelHistorial = new JPanel();
         this.panelHistorial.setLayout(new BorderLayout());
         this.panelHistorial.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
         this.panelHistorial.setOpaque(false);
-        
+
         this.panelFiltros = new JPanel();
         this.panelFiltros.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 20));
         this.panelFiltros.setOpaque(false);
         this.panelFiltros.setPreferredSize(new Dimension(0, 100));
-        
+
         this.panelListaHistorial = new JPanel();
         this.panelListaHistorial.setLayout(new BoxLayout(panelListaHistorial, BoxLayout.Y_AXIS));
         this.panelListaHistorial.setPreferredSize(new Dimension(0, 470));
         this.panelListaHistorial.setOpaque(false);
-        
+
         this.panelBotonesLaterales = new JPanel();
         this.panelBotonesLaterales.setBorder(new EmptyBorder(105, 0, 0, 0));
         this.panelBotonesLaterales.setLayout(new BoxLayout(panelBotonesLaterales, BoxLayout.Y_AXIS));
         this.panelBotonesLaterales.setPreferredSize(new Dimension(400, 0));
         this.panelBotonesLaterales.setOpaque(false);
-        
+
         this.btnHistorialMedico = new JButton("Historial Medico ", new ImageIcon("iconsP/avatar.png"));
         this.btnHistorialCitas = new JButton("Historial de Citas", new ImageIcon("iconsP/friends.png"));
         this.btnDescargar = new JButton("Descargar Historial Medico", new ImageIcon("iconsP/descargar.png"));
         MetodosPublicos.estilizarBoton(btnHistorialMedico, (byte) 2);
         MetodosPublicos.estilizarBoton(btnHistorialCitas, (byte) 2);
-        
+
         this.cmbFecha = new JComboBox();
         this.cmbMedico = new JComboBox();
         this.cmbEspecialidad = new JComboBox();
         MetodosPublicos.estilizarComboBox(cmbFecha);
         MetodosPublicos.estilizarComboBox(cmbMedico);
         MetodosPublicos.estilizarComboBox(cmbEspecialidad);
-        
+
         this.campoAsunto = new JTextField();
         this.campoAsunto.setFont(new Font("Arial", Font.PLAIN, 18));
         this.campoAsunto.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         this.campoAsunto.setBorder(BorderFactory.createLineBorder(COLOR_VERDE_ACENTO));
-        
+
         this.areaDescripcion = new JTextArea();
         this.areaDescripcion.setFont(new Font("Arial", Font.PLAIN, 18));
         this.areaDescripcion.setLineWrap(true);
@@ -264,13 +268,14 @@ public class PacienteInterfaz extends JFrame {
         this.areaDescripcion.setBorder(BorderFactory.createLineBorder(COLOR_VERDE_ACENTO));
         this.miCroll = new JScrollPane(areaDescripcion);
         this.miCroll.setBorder(BorderFactory.createLineBorder(COLOR_VERDE_ACENTO));
-        
+
         this.panelComentarios = new JPanel();
         this.panelComentarios1 = new JPanel();
         this.panelComentarios.setLayout(new BoxLayout(panelComentarios, BoxLayout.Y_AXIS));
         this.panelComentarios.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(5, 30, 5, 30)));
+                BorderFactory.createEmptyBorder(5, 30, 5, 30)
+        ));
         this.panelComentarios.setOpaque(false);
         this.panelComentarios1.setLayout(new BoxLayout(panelComentarios1, BoxLayout.Y_AXIS));
         this.panelComentarios1.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
@@ -284,14 +289,16 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.estilizarBoton(btnSugerencias, (byte) 4);
         MetodosPublicos.estilizarBoton(btnForo, (byte) 4);
         MetodosPublicos.estilizarBoton(btnEnviar, (byte) 5);
-        
+
         this.panelContenidoNotificaciones = new JPanel();
         this.panelContenidoNotificaciones.setLayout(new BoxLayout(panelContenidoNotificaciones, BoxLayout.Y_AXIS));
-        this.panelContenidoNotificaciones.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(0, 30, 5, 30)));
+        this.panelContenidoNotificaciones.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                        BorderFactory.createEmptyBorder(0, 30, 5, 30)
+                ));
         this.panelContenidoNotificaciones.setOpaque(false);
-        
+
         this.btnOdontologia = new JButton("Odontologia", new ImageIcon("iconsP/heart.png"));
         this.btnDermatologia = new JButton("Dermatologia", new ImageIcon("iconsP/heart.png"));
         this.btnMedicoGeneral = new JButton("Medico General", new ImageIcon("iconsP/heart.png"));
@@ -299,27 +306,33 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.estilizarBoton(btnDermatologia, (byte) 4);
         MetodosPublicos.estilizarBoton(btnMedicoGeneral, (byte) 4);
         this.listaBotonesMedicos = new ArrayList<JButton>();
-        
+
         this.panelSeleccionConsulta = new JPanel();
         this.panelSeleccionConsulta.setLayout(new BoxLayout(panelSeleccionConsulta, BoxLayout.Y_AXIS));
-        this.panelSeleccionConsulta.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(50, 60, 50, 60)));//Padding interno tipo "tarjeta" como en la imagen
-        this.panelSeleccionConsulta.setOpaque(false);
-        
+        this.panelSeleccionConsulta.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                        BorderFactory.createEmptyBorder(50, 60, 50, 60)
+                ));
+
         this.panelCalendario = new JPanel();
         this.panelCalendario.setLayout(new BoxLayout(panelCalendario, BoxLayout.Y_AXIS));
-        this.panelCalendario.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        this.panelCalendario.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                        BorderFactory.createEmptyBorder(20, 20, 20, 20)
+                ));
+
         this.panelCalendario.setPreferredSize(new Dimension(750, 0));
         this.panelCalendario.setOpaque(false);
-        
+
         this.panelHorarios = new JPanel();
         this.panelHorarios.setLayout(new BoxLayout(panelHorarios, BoxLayout.Y_AXIS));
-        this.panelHorarios.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        this.panelHorarios.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                        BorderFactory.createEmptyBorder(20, 20, 20, 20)
+                ));
         this.panelHorarios.setPreferredSize(new Dimension(750, 0));
         this.panelHorarios.setOpaque(false);
     }
@@ -372,7 +385,7 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelInfoCitas);
         this.cuerpo2.setLayout(new BorderLayout(20, 20));//Esta vista necesita gap entre sus 4 zonas
-        this.cuerpo2.setBorder(new EmptyBorder(0, 40, 20, 40));//Padding propio de esta vista
+        this.cuerpo2.setBorder(new EmptyBorder(5, 40, 20, 40));//Padding propio de esta vista
 
         JPanel panelAgenda = new JPanel();
         panelAgenda.setLayout(new BoxLayout(panelAgenda, BoxLayout.Y_AXIS));
@@ -381,23 +394,23 @@ public class PacienteInterfaz extends JFrame {
         panelAgenda.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
                 BorderFactory.createEmptyBorder(110, 0, 95, 0)));
-        
+
         JLabel lblTituloAgenda = new JLabel("¡Agenda una cita con nosotros!");
         lblTituloAgenda.setFont(new Font("arial", Font.BOLD, 20));
         lblTituloAgenda.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblTituloAgenda.setForeground(COLOR_AZUL_CORPORATIVO);
-        
+
         JLabel lblSubAgenda = new JLabel("No dejes tu salud a último momento.");
         lblSubAgenda.setFont(new Font("arial", Font.BOLD, 20));
         lblSubAgenda.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblSubAgenda.setForeground(COLOR_GRIS_SUBTITULO);
-        
+
         panelAgenda.add(lblTituloAgenda);
         panelAgenda.add(lblSubAgenda);
         panelAgenda.add(btnAgendar);
         lblTituloAgenda = null;//Ya quedaron dentro de panelAgenda libero las referencias locales
         lblSubAgenda = null;
-        
+
         JPanel panelContacto = new JPanel();
         panelContacto.setLayout(new BoxLayout(panelContacto, BoxLayout.Y_AXIS));
         panelContacto.setOpaque(false);
@@ -405,22 +418,22 @@ public class PacienteInterfaz extends JFrame {
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
                 BorderFactory.createEmptyBorder(40, 40, 0, 0)));
         panelContacto.setPreferredSize(new Dimension(Short.MAX_VALUE, 200));
-        
+
         JLabel lblContactoTitulo = new JLabel("Si tienes dificultades para agendar tu cita, ¡contáctanos! ", new ImageIcon("iconsP/friends.png"), JLabel.CENTER);
         lblContactoTitulo.setFont(new Font("arial", Font.BOLD, 28));
         lblContactoTitulo.setForeground(COLOR_AZUL_CORPORATIVO);
         lblContactoTitulo.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         JLabel lblContactoSub = new JLabel("Llama al número de este operario para que podamos ayudarte:");
         lblContactoSub.setFont(new Font("arial", Font.BOLD, 20));
         lblContactoSub.setForeground(COLOR_AZUL_CORPORATIVO);
         lblContactoSub.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         JLabel lblTelefono = new JLabel("+57 316 127 3588", new ImageIcon("iconsP/phone-call.png"), JLabel.CENTER);
         lblTelefono.setFont(new Font("arial", Font.BOLD, 30));
         lblTelefono.setForeground(COLOR_AZUL_CORPORATIVO);
         lblTelefono.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         panelContacto.add(lblContactoTitulo);
         panelContacto.add(lblContactoSub);
         panelContacto.add(lblTelefono);
@@ -431,15 +444,14 @@ public class PacienteInterfaz extends JFrame {
         JLabel labelCitas = new JLabel("Citas programadas Vigentes");
         labelCitas.setFont(new Font("arial", Font.BOLD, 28));
         labelCitas.setForeground(COLOR_AZUL_CORPORATIVO);
-        
+
         JScrollPane scrollCitas = new JScrollPane(panelInfoCitas);
         scrollCitas.setPreferredSize(new Dimension(600, 345));
         scrollCitas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollCitas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollCitas.setOpaque(false);
         scrollCitas.getViewport().setOpaque(false);
-        scrollCitas.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
-        
+
         this.cuerpo2.add(labelCitas, BorderLayout.NORTH);
         this.cuerpo2.add(panelAgenda, BorderLayout.EAST);
         this.cuerpo2.add(scrollCitas, BorderLayout.CENTER);
@@ -455,18 +467,18 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.vaciarPanel(panelListaHistorial);
         MetodosPublicos.vaciarPanel(panelBotonesLaterales);
         MetodosPublicos.vaciarPanel(panelFiltros);
-        
+
         this.cuerpo2.setLayout(new BorderLayout());
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));//Padding propio de esta vista
 
         this.panelBotonesLaterales.add(btnHistorialMedico);
         this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
         this.panelBotonesLaterales.add(btnHistorialCitas);
-        
+
         JLabel lblFiltrar = new JLabel("Filtrar por");
         lblFiltrar.setFont(new Font("Arial", Font.PLAIN, 18));
         lblFiltrar.setForeground(new Color(80, 80, 80));
-        
+
         this.panelFiltros.add(lblFiltrar);
         this.panelFiltros.add(this.cmbFecha);
         this.panelFiltros.add(this.cmbMedico);
@@ -479,13 +491,13 @@ public class PacienteInterfaz extends JFrame {
         this.scrollHistorial.setOpaque(false);
         this.scrollHistorial.getViewport().setOpaque(false);
         this.scrollHistorial.setBorder(null);
-        
+
         this.panelHistorial.add(panelFiltros, BorderLayout.NORTH);
         this.panelHistorial.add(scrollHistorial, BorderLayout.CENTER);
-        
+
         this.cuerpo2.add(panelBotonesLaterales, BorderLayout.WEST);
         this.cuerpo2.add(panelHistorial, BorderLayout.CENTER);
-        
+
         MetodosPublicos.refrescarVentana(cuerpo2);
         MetodosPublicos.refrescarVentana(panelListaHistorial);
         MetodosPublicos.refrescarVentana(panelBotonesLaterales);
@@ -500,13 +512,13 @@ public class PacienteInterfaz extends JFrame {
         lblAsunto.setForeground(COLOR_AZUL_CORPORATIVO);
         lblAsunto.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblAsunto.setBorder(new EmptyBorder(20, 0, 0, 0));
-        
+
         JLabel lblDescripcion = new JLabel("Descripción *");
         lblDescripcion.setFont(new Font("Arial", Font.BOLD, 22));
         lblDescripcion.setForeground(COLOR_AZUL_CORPORATIVO);
         lblDescripcion.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblDescripcion.setBorder(new EmptyBorder(20, 0, 0, 0));
-        
+
         this.panelComentarios.add(lblAsunto);
         this.panelComentarios.add(campoAsunto);
         this.panelComentarios.add(lblDescripcion);
@@ -515,10 +527,10 @@ public class PacienteInterfaz extends JFrame {
         this.panelComentarios.add(btnEnviar);
         lblAsunto = null;//Ya quedaron dentro de panelComentarios
         lblDescripcion = null;
-        
+
         MetodosPublicos.refrescarVentana(panelComentarios);
     }
-    
+
     public void mostarPanelComentarioVacio() {
         MetodosPublicos.vaciarPanel(panelComentarios1);
         MetodosPublicos.vaciarPanel(panelComentarios);
@@ -538,19 +550,19 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.vaciarPanel(panelBotonesLaterales);
         MetodosPublicos.vaciarPanel(panelComentarios);
         MetodosPublicos.vaciarPanel(cuerpo2);
-        
+
         construirFormularioComentario();
         this.panelBotonesLaterales.add(btnSugerencias);
         this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
         this.panelBotonesLaterales.add(btnQuejas);
         this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
         this.panelBotonesLaterales.add(btnForo);
-        
+
         this.cuerpo2.setLayout(new BorderLayout());//Misma distribucion que historial: botones | panel
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));//Padding propio de esta vista
         this.cuerpo2.add(panelBotonesLaterales, BorderLayout.WEST);
         this.cuerpo2.add(panelComentarios, BorderLayout.CENTER);
-        
+
         MetodosPublicos.refrescarVentana(panelBotonesLaterales);
         MetodosPublicos.refrescarVentana(panelComentarios);
         MetodosPublicos.refrescarVentana(cuerpo2);
@@ -558,28 +570,46 @@ public class PacienteInterfaz extends JFrame {
 
     //Aqui creo el metodo que me permitiria agregar componentes al panel comentarios
     public void agregarAlPanelComentarios(String tipoMensaje, String asunto, String nombreUsu, String descripcion) {
-        PanelRound c = new PanelRound();
-        int valor = 50;
-        c.setRoundBottomRight(valor);
-        c.setRoundBottomLeft(valor);
-        c.setRoundTopLeft(valor);
-        c.setRoundTopRight(valor);
+        JPanel c = new JPanel();
+        c.setBackground(Color.WHITE);
         c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
-        c.setBorder(new EmptyBorder(0, 10, 0, 10));
-        c.setBackground(COLOR_VERDE_ACENTO);
-        JTextField descripcionText = new JTextField(descripcion);
+        c.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                new EmptyBorder(15, 20, 15, 20)
+        ));
+        c.setMaximumSize(new Dimension(Integer.MAX_VALUE, 170));
+
+        // Encabezado
+        JLabel titulo = new JLabel(asunto);
+        titulo.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titulo.setForeground(new Color(33, 33, 33));
+        titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel informacion = new JLabel(tipoMensaje + " • " + nombreUsu);
+        informacion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        informacion.setForeground(new Color(120, 120, 120));
+        informacion.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // Descripción
+        JTextArea descripcionText = new JTextArea(descripcion);
         descripcionText.setEditable(false);
-        descripcionText.setBackground(Color.WHITE);
-        JLabel label = new JLabel(tipoMensaje + "-" + asunto + "-" + nombreUsu);
-        label.setFont(new Font("Arial", Font.BOLD, 20));
-        label.setOpaque(false);
-        c.add(Box.createRigidArea(new Dimension(0, 10)));
-        c.add(label);
-        c.add(Box.createRigidArea(new Dimension(0, 10)));
+        descripcionText.setLineWrap(true);
+        descripcionText.setWrapStyleWord(true);
+        descripcionText.setOpaque(false);
+        descripcionText.setFocusable(false);
+        descripcionText.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        descripcionText.setForeground(new Color(60, 60, 60));
+        descripcionText.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        c.add(titulo);
+        c.add(Box.createVerticalStrut(5));
+        c.add(informacion);
+        c.add(Box.createVerticalStrut(12));
         c.add(descripcionText);
-        c.add(Box.createRigidArea(new Dimension(0, 10)));
-        this.panelComentarios1.add(Box.createRigidArea(new Dimension(0, 30)));
-        this.panelComentarios1.add(c);
+
+        panelComentarios1.add(Box.createVerticalStrut(15));
+        panelComentarios1.add(c);
+
         MetodosPublicos.refrescarVentana(panelComentarios1);
         MetodosPublicos.refrescarVentana(panelComentarios);
     }
@@ -591,11 +621,11 @@ public class PacienteInterfaz extends JFrame {
         this.cuerpo2.setLayout(new BorderLayout());
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));//Padding propio de esta vista
         this.cuerpo2.add(panelContenidoNotificaciones);
-        
+
         MetodosPublicos.refrescarVentana(cuerpo2);
         MetodosPublicos.refrescarVentana(panelContenidoNotificaciones);
     }
-    
+
     public void agregarNotificaciones(JComponent c) {
         this.panelContenidoNotificaciones.add(c);
         MetodosPublicos.refrescarVentana(panelContenidoNotificaciones);
@@ -605,19 +635,19 @@ public class PacienteInterfaz extends JFrame {
     public void mostrarVistaTipoConsulta(Titulo titulo) {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelSeleccionConsulta);
-        
+
         JLabel descripcion = new JLabel("Selecciona Tipo De Consulta Que Deseas Agendar");
         descripcion.setFont(new Font("Arial", Font.BOLD, 22));
         descripcion.setForeground(Color.BLACK);
         descripcion.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         JPanel panelTitulo = titulo.getPanelTitulo();
         panelTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         MetodosPublicos.prepararBotonTarjeta(btnOdontologia, 380, 55);
         MetodosPublicos.prepararBotonTarjeta(btnDermatologia, 380, 55);
         MetodosPublicos.prepararBotonTarjeta(btnMedicoGeneral, 380, 55);
-        
+
         this.panelSeleccionConsulta.add(panelTitulo);
         this.panelSeleccionConsulta.add(descripcion);
         this.panelSeleccionConsulta.add(Box.createRigidArea(new Dimension(0, 25)));
@@ -632,15 +662,15 @@ public class PacienteInterfaz extends JFrame {
         this.cuerpo2.setLayout(new GridBagLayout());
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));
         this.cuerpo2.add(panelSeleccionConsulta, new GridBagConstraints());
-        
+
         MetodosPublicos.refrescarVentana(panelSeleccionConsulta);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
-    
+
     public void mostrarVistaSeleccionMedico(String[] medicos) {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelSeleccionConsulta);
-        
+
         Titulo titulo = new Titulo("Agendamiento de ", "Cita");
         JLabel descripcion = new JLabel("Selecciona El Medico Con El Que Deseas Agendar");
         descripcion.setFont(new Font("Arial", Font.BOLD, 22));
@@ -648,7 +678,7 @@ public class PacienteInterfaz extends JFrame {
         descripcion.setAlignmentX(Component.CENTER_ALIGNMENT);
         JPanel panelTitulo = titulo.getPanelTitulo();
         panelTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         this.panelSeleccionConsulta.add(panelTitulo);
         this.panelSeleccionConsulta.add(descripcion);
         this.panelSeleccionConsulta.add(Box.createRigidArea(new Dimension(0, 25)));
@@ -676,7 +706,7 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelCalendario);
         MetodosPublicos.vaciarPanel(panelHorarios);
-        
+
         this.cuerpo2.setLayout(new BorderLayout(5, 0));//Gap horizontal entre las dos tarjetas
         this.cuerpo2.setBorder(new EmptyBorder(20, 40, 40, 40));//Padding propio de esta vista
         JLabel descrip1 = new JLabel("Selecciona Fecha y Horario en el");
@@ -686,7 +716,7 @@ public class PacienteInterfaz extends JFrame {
         JLabel tituloHorarioDisponibles = new JLabel("Horarios Disponibles");
         tituloHorarioDisponibles.setFont(new Font("Arial", Font.BOLD, 25));
         tituloHorarioDisponibles.setForeground(COLOR_AZUL_CORPORATIVO);
-        
+
         int añoActual = Year.now().getValue();
         DatePickerSettings settings = new DatePickerSettings();
         settings.setDefaultYearMonth(YearMonth.now());
@@ -716,7 +746,7 @@ public class PacienteInterfaz extends JFrame {
         descrip1.setAlignmentX(Component.LEFT_ALIGNMENT);
         descrip2.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.calendario.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         this.panelCalendario.add(tituloAgendaMientoCita.getPanelTitulo());
         this.panelCalendario.add(descrip1);
         this.panelCalendario.add(descrip2);
@@ -739,15 +769,20 @@ public class PacienteInterfaz extends JFrame {
         this.panelHorarios.add(c);
         MetodosPublicos.refrescarVentana(panelHorarios);
     }
-    
+
     public void agregarAlPanelMiscitas() {
         MetodosPublicos.vaciarPanel(panelInfoCitas);
-        JLabel label = new JLabel("No  tienes citas pendientes");
+        JLabel label = new JLabel("No tienes citas pendientes", new ImageIcon("iconsP/emoji.png"), JLabel.CENTER);
+        label.setHorizontalTextPosition(JLabel.CENTER);
+        label.setVerticalTextPosition(JLabel.BOTTOM);
         label.setFont(new Font("Arial", Font.BOLD, 20));
-        this.panelInfoCitas.add(label);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelInfoCitas.add(Box.createVerticalGlue());
+        panelInfoCitas.add(label);
+        panelInfoCitas.add(Box.createVerticalGlue());
         MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
-    
+
     public void agregarAlPanelMiscitas(JPanel titulo, String fecha, String hora, String nombreMedico) {
         JPanel panelBotones = new JPanel(), panelContenido = new JPanel(), c = new JPanel();
         panelBotones.setOpaque(false);
@@ -761,41 +796,41 @@ public class PacienteInterfaz extends JFrame {
         c.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY),
                 new EmptyBorder(10, 0, 10, 0)));
-        
+
         JLabel lblFecha = new JLabel("Fecha: " + fecha);
         lblFecha.setFont(new Font("Arial", Font.BOLD, 19));
         JLabel lblHora = new JLabel("Hora: " + hora);
         lblHora.setFont(new Font("Arial", Font.BOLD, 19));
         JLabel lblMedico = new JLabel(nombreMedico);
         lblMedico.setFont(new Font("Arial", Font.BOLD, 19));
-        
+
         titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblHora.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblMedico.setAlignmentX(Component.LEFT_ALIGNMENT);
         titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         panelContenido.add(titulo);
         panelContenido.add(lblFecha);
         panelContenido.add(lblHora);
         panelContenido.add(lblMedico);
-        
+
         JButton btnReagendarCita = new JButton("Reagendar");
         JButton btnCancelarCita = new JButton("Cancelar");
         MetodosPublicos.estilizarBoton(btnReagendarCita, (byte) 7);
         MetodosPublicos.estilizarBoton(btnCancelarCita, (byte) 6);
         panelBotones.add(btnCancelarCita);
         panelBotones.add(btnReagendarCita);
-        
+
         c.add(panelContenido, BorderLayout.WEST);
         c.add(panelBotones, BorderLayout.EAST);
-        
+
         this.listaBotonesReagendar.add(btnReagendarCita);
         this.listaBotonesCancelar.add(btnCancelarCita);
         this.panelInfoCitas.add(c);
         MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
-    
+
     public Paciente getUsuario() {
         return this.usuario;
     }
