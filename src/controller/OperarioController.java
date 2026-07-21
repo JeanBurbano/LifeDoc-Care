@@ -1,7 +1,12 @@
 package controller;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import model.DatosPagoCita;
+import model.DatosPagoCitaDao;
 import static model.MetodosPublicos.refrescarVentana;
 import static model.MetodosPublicos.vaciarPanel;
 import view.OperarioInterfaz;
@@ -36,25 +41,28 @@ public class OperarioController extends PacienteController {
             this.vista.btnPagos.setEnabled(false);
             vista.habilitarBotonesMenu(vista.btnPagos);
 
-            // Crear el PanelPagos correctamente (clase interna)
-            OperarioInterfaz.PanelPagos panelPagos = vista.new PanelPagos(
-                    "Jhon Alejandro Vanegas Morcillo",
-                    "167894320",
-                    "Grupo B",
-                    "Subsidizado",
-                    "Contributivo",
-                    "Consulta General",
-                    "Odontología",
-                    "Dr. Jhon Palencia",
-                    "12/07/2026"
-            );
+            // Trae la ultima cita agendada por este operario que aun no
+            // tiene factura, con todos los datos 
+            DatosPagoCita datosPago = datosPagoCitaDao.obtenerCitaPendientePago(vista.usuario.getIdUsuario());
 
             vaciarPanel(vista.cuerpo2);
-            vista.cuerpo2.add(panelPagos.panelPagos, BorderLayout.CENTER);
+        }
+        
+        if (datosPago == null) {
+                JLabel lblSinPagos = new JLabel("No hay citas pendientes de pago.", SwingConstants.CENTER);
+                lblSinPagos.setFont(new Font("Arial", Font.BOLD, 18));
+                vista.cuerpo2.setLayout(new BorderLayout());
+                vista.cuerpo2.add(lblSinPagos, BorderLayout.CENTER);
+            } else {
+                OperarioInterfaz.PanelPagos panelPagos = vista.new PanelPagos(datosPago);
+                vista.cuerpo2.setLayout(new BorderLayout());
+                vista.cuerpo2.add(panelPagos.panelPagos, BorderLayout.CENTER);
+            }
             refrescarVentana(vista.cuerpo2);
         }
+    
         if (e.getSource() == vista.btnAgendarCita) {
             vista.mostrarVistaTipoConsulta(new Titulo("Agendamiento de ", "Cita"));
         }
-    }
+        
 }
