@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class DatosPagoCita {
-    
+
     private int idCita;
     private String nombrePaciente;
     private String identificacionPaciente;
@@ -13,7 +13,11 @@ public class DatosPagoCita {
     private String nombreMedico;
     private LocalDate fechaCita;
     private LocalTime horaCita;
-    
+
+    public DatosPagoCita() {
+
+    }
+
     public DatosPagoCita(int idCita, String nombrePaciente, String identificacionPaciente,
             String sisben, String especialidad, String nombreMedico,
             LocalDate fechaCita, LocalTime horaCita) {
@@ -58,17 +62,17 @@ public class DatosPagoCita {
     public LocalTime getHoraCita() {
         return horaCita;
     }
-    
+
     public String getRegimen() {
         return (sisben == null || sisben.isBlank()) ? "Contributivo / Particular" : "Subsidiado";
     }
-    
+
     public String getClasificacionSisbenTexto() {
-        
+
         if (sisben == null || sisben.isBlank()) {
             return "Sin clasificar";
         }
         return "Grupo " + sisben.charAt(0);
-        
+
     }
 }
