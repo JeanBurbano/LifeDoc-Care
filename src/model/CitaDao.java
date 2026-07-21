@@ -58,6 +58,46 @@ public class CitaDao implements Crud<Cita> {
         return citas.toArray(new Cita[0]);
     }
 
+    public Cita[] listarPorMedico(int idMedico) {
+        List<Cita> citas = new ArrayList<>();
+        String sql = "SELECT c.id_cita, c.estado, c.hora_cita, c.fecha_cita, "
+                + "c.id_Usuario, up.primer_nombre, up.primer_apellido, "
+                + "c.id_Medico, um.primer_nombre AS medico_nombre, um.primer_apellido AS medico_apellido, "
+                + "e.nombre_especialidad, "
+                + "c.id_usuario_agenda "
+                + "FROM cita c "
+                + "JOIN usuario up ON up.id_usuario = c.id_Usuario "
+                + "JOIN medico m ON m.id_medico = c.id_Medico "
+                + "JOIN usuario um ON um.id_usuario = m.id_usuario "
+                + "JOIN especialidad e ON e.id_especialidad = m.id_especialidad "
+                + "WHERE c.id_medico = ? AND c.estado = 1 "
+                + "ORDER BY c.fecha_cita, c.hora_cita";
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idMedico);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String nombrePaciente = rs.getString("primer_nombre") + " " + rs.getString("primer_apellido");
+                    String nombreMedico = rs.getString("medico_nombre") + " " + rs.getString("medico_apellido");
+                    citas.add(new Cita(
+                            rs.getByte("id_cita"),
+                            rs.getBoolean("estado"),
+                            rs.getTime("hora_cita").toLocalTime(),
+                            rs.getDate("fecha_cita").toLocalDate(),
+                            rs.getByte("id_Usuario"),
+                            nombrePaciente,
+                            rs.getByte("id_Medico"),
+                            nombreMedico,
+                            rs.getString("nombre_especialidad"),
+                            rs.getByte("id_usuario_agenda")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return citas.toArray(new Cita[0]);
+    }
+
     @Override
     public List<Cita> listar() {
         List<Cita> citas = new ArrayList<>();
