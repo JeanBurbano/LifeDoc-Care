@@ -61,8 +61,9 @@ public class OperarioController extends PacienteController {
             refrescarVentana(vista.cuerpo2);
         }
     
-        if (e.getSource() == vista.btnAgendarCita) {
+        if (e.getSource() == v {
             vista.mostrarVistaTipoConsulta(new Titulo("Agendamiento de ", "Cita"));
+        return null;
         }
         
 }
