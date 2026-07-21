@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Font;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -42,7 +43,8 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
         this.panelUsuarios.setOpaque(false);
 
         this.tabla = new JTable();
-        this.tabla.setBackground(COLOR_VERDE_ACENTO);
+        this.tabla.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
+        this.tabla.setFont(new Font("Tahoma", Font.PLAIN, 12));
         this.tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //Solo una fila a la vez
 
         this.btnRol = new JButton("Usuarios", new ImageIcon("iconsP/friends.png"));
@@ -56,7 +58,13 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
 
         super.agregarBotonCuerpo1(btnRol);
 
-        mDefaultTableModel = new DefaultTableModel();
+        mDefaultTableModel = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+        };
         procesoTabla();
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
@@ -96,7 +104,7 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
     }
 
     public void cargarUsuarios(List<Paciente> usuarios) {
-        mDefaultTableModel.setRowCount(0); //Limpia filas, NO columnas
+        mDefaultTableModel.setRowCount(0); //Limpia filas no columnas
         for (Paciente p : usuarios) {
             String segundoNombre = (p.getSegundoNombre() == null) ? "" : p.getSegundoNombre();
             String segundoApellido = (p.getSegundoApellido() == null) ? "" : p.getSegundoApellido();

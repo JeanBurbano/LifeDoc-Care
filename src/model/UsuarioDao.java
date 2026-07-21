@@ -211,7 +211,7 @@ public class UsuarioDao implements Crud<Paciente> {
             idGenerado = -1;
             try {
                 if (con != null) {
-                    con.rollback(); // algo falló -> revierte todo
+                    con.rollback(); // algo falló revierte todo
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
