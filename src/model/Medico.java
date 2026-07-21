@@ -30,7 +30,7 @@ public class Medico extends Paciente {
         this.especialidad = especialidad;
     }
 
-    public Medico(int id_medico, String primerNombre, String primerApellido) {
+            public Medico(int id_medico, String primerNombre, String primerApellido) {
         super(primerNombre, primerApellido);
         this.id_medico = id_medico;
     }
