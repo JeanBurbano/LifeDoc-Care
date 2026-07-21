@@ -18,6 +18,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import model.Consultorio;
+import model.ConsultorioDao;
 import model.Horario;
 import model.HorarioDao;
 import model.HorarioDia;
@@ -39,6 +41,7 @@ public class AdminCentroController extends PacienteController {
 
     private List<Horario> horariosActuales = new ArrayList<>();
     private List<Medicos> medicosActuales = new ArrayList<>();
+    private List<Consultorio> consultoriosActuales = new ArrayList<>();
 
     public AdminCentroController(AdministradorCentroInterfaz adminI) {
         super(adminI);
@@ -56,7 +59,7 @@ public class AdminCentroController extends PacienteController {
         this.adminI.btnCrearHorario.addActionListener(this);
         this.adminI.btnVolver.addActionListener(this);
         this.adminI.btnGuardarHorario.addActionListener(this);
-        this.adminI.btnCancelarVistaPrevia.addActionListener(this);
+        
     }
 
     @Override
@@ -105,8 +108,7 @@ public class AdminCentroController extends PacienteController {
         }
     }
 
-    //inventario de edicamentos 
-
+    //inventario de medicamentos 
     private void manejarApartadoMedicamento(ActionEvent e) {
         if (e.getSource() == adminI.btnAñadirMedicamento) {
             adminI.mostrarAñadirMedicamentoApartado();
@@ -121,6 +123,7 @@ public class AdminCentroController extends PacienteController {
             guardarMedicamento();
         }
     }
+
     //simulacion
     private void poblarTipoMedicamento() {
         String[] tiposSimulados = {"Tableta", "Jarabe", "Inyectable", "Cápsula", "Crema"};
@@ -129,7 +132,7 @@ public class AdminCentroController extends PacienteController {
             adminI.campoTipoM.addItem(tipo);
         }
     }
-    
+
     private void seleccionarImagenMedicamento() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png"));
@@ -173,7 +176,6 @@ public class AdminCentroController extends PacienteController {
     }
 
     // horarios
-
     private void manejarApartadoHorario(ActionEvent e) {
         if (e.getSource() == adminI.btnCrearHorario) {
             adminI.mostrarFormularioCreacionHorarioApartado();
@@ -227,8 +229,9 @@ public class AdminCentroController extends PacienteController {
             }
         }
 
-        String mes = (String) adminI.comboMesHorario.getSelectedItem();
-        adminI.mostrarVistaPreviaHorarioApartado(mes, diasActivos, horasPorDia);
+        adminI.mostrarVistaPreviaHorarioApartado(diasActivos, horasPorDia);
+        this.adminI.btnConfirmarGuardarHorario.addActionListener(this);
+        this.adminI.btnCancelarVistaPrevia.addActionListener(this);
     }
 
     /**
@@ -314,7 +317,6 @@ public class AdminCentroController extends PacienteController {
     }
 
     // tabla de horarios
-
     private void cargarHorarios() {
         horariosActuales = new HorarioDao().listar();
         for (Horario h : horariosActuales) {
@@ -328,7 +330,9 @@ public class AdminCentroController extends PacienteController {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 int fila = adminI.tablaHorarioM.rowAtPoint(e.getPoint());
                 int columna = adminI.tablaHorarioM.columnAtPoint(e.getPoint());
-                if (fila < 0) return;
+                if (fila < 0) {
+                    return;
+                }
 
                 if (columna == COLUMNA_ASIGNAR) {
                     abrirAsignacion(fila);
@@ -345,10 +349,11 @@ public class AdminCentroController extends PacienteController {
         Horario horarioSeleccionado = horariosActuales.get(fila);
         adminI.mostrarAsignacionHorarioMedicoApartado(horarioSeleccionado.getNombre(), fila);
         poblarMedicosAsignacion();
+        poblarConsultoriosAsignacion();
         adminI.btnConfirmarAsignacion.addActionListener(this);
         adminI.btnCancelarAsignacion.addActionListener(this);
     }
-    
+
     private void poblarMedicosAsignacion() {
         medicosActuales = new MedicosDao().listar();
         adminI.comboMedicoAsignar.removeAllItems();
@@ -356,30 +361,39 @@ public class AdminCentroController extends PacienteController {
             adminI.comboMedicoAsignar.addItem(m.getPrimerNombre() + " " + m.getPrimerApellido());
         }
     }
-    
+
+     
+
+    private void poblarConsultoriosAsignacion() {
+        consultoriosActuales = new ConsultorioDao().listar();
+        adminI.comboConsultorioHorario.removeAllItems();
+        for (Consultorio c : consultoriosActuales) {
+            adminI.comboConsultorioHorario.addItem("Consultorio: " + c.getNumeroConsultorio());
+        }
+    }
+
     private void confirmarAsignacionMedico(int filaHorario) {
         int indiceMedico = adminI.comboMedicoAsignar.getSelectedIndex();
-        if (indiceMedico < 0) {
-            JOptionPane.showMessageDialog(null, "Por favor selecciona un médico.",
+        int indiceConsultorio = adminI.comboConsultorioHorario.getSelectedIndex();
+        if (indiceMedico < 0 || indiceConsultorio < 0) {
+            JOptionPane.showMessageDialog(null, "Por favor selecciona un médico y un consultorio.",
                     "Selección requerida", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         Horario horario = horariosActuales.get(filaHorario);
         Medicos medico = medicosActuales.get(indiceMedico);
-        String mesTexto = (String) adminI.comboMesHorario.getSelectedItem(); // combo de mes en la ventana de asignación
-        int mes = adminI.comboMesHorario.getSelectedIndex() + 1;
-        int anio =LocalDate.now().getYear();
+        int idConsultorioSeleccionado = consultoriosActuales.get(indiceConsultorio).getIdConsultorio(); // <-- aquí sale
+        int mes = adminI.comboMedicoAsignar.getSelectedIndex() + 1;
+        int anio = java.time.LocalDate.now().getYear();
 
-        //new HorarioDao().asignarMedico(horario.getId(), medico.getId_medico(), idConsultorioSeleccionado, mes, anio);
-
+        new HorarioDao().asignarMedico(horario.getId(), medico.getId_medico(), idConsultorioSeleccionado, mes, anio);
         JOptionPane.showMessageDialog(null,
                 "Horario \"" + horario.getNombre() + "\" asignado a " + medico.getPrimerNombre() + " " + medico.getPrimerApellido() + ".",
                 "Asignación Exitosa", JOptionPane.INFORMATION_MESSAGE);
 
         adminI.dialogoAsignarMedico.dispose();
     }
-
 
     private void editarHorario(int fila) {
         // Pendiente,me falta setActualizar en HorarioDao
@@ -398,7 +412,7 @@ public class AdminCentroController extends PacienteController {
             agregarListenerBotonesTabla();
         }
     }
-    
+
     private void manejarTablaHorarios(ActionEvent e) {
         if (e.getSource() == adminI.btnConfirmarAsignacion) {
             confirmarAsignacionMedico(adminI.filaHorarioSeleccionada); // ajusta al nombre real de tu atributo de fila
@@ -408,5 +422,4 @@ public class AdminCentroController extends PacienteController {
         }
     }
 
-    
 }

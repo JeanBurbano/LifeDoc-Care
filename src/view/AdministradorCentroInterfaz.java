@@ -704,16 +704,16 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     }
     
     
-public void mostrarVistaPreviaHorarioApartado(String nombreMes, boolean[] diasActivos, String[] horasPorDia) {
+public void mostrarVistaPreviaHorarioApartado(boolean[] diasActivos, String[] horasPorDia) {
     //Ventana emergente para mostrar el horario graficamente
     dialogoVistaPreviaHorario = new JDialog(); // ventana nueva, independiente de la principal
-    dialogoVistaPreviaHorario.setTitle("Vista Previa del Horario - " + nombreMes);
+    dialogoVistaPreviaHorario.setTitle("Vista Previa del Horario");
     dialogoVistaPreviaHorario.setModal(true); // bloquea el resto de la app mientras está abierta
     dialogoVistaPreviaHorario.setSize(500, 300);
     dialogoVistaPreviaHorario.setLocationRelativeTo(null); // se centra en la pantalla
     dialogoVistaPreviaHorario.setLayout(new BorderLayout(0, 10)); // título arriba, matriz en medio, botones abajo
 
-    JLabel titulo = new JLabel("Días asignados en " + nombreMes, SwingConstants.CENTER);
+    JLabel titulo = new JLabel("Días asignados", SwingConstants.CENTER);
     titulo.setFont(new Font("Arial", Font.BOLD, 16));
     titulo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // aire alrededor del título
     dialogoVistaPreviaHorario.add(titulo, BorderLayout.NORTH);
