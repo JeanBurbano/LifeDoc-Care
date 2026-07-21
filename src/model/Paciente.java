@@ -20,6 +20,21 @@ public class Paciente {
         this.primerApellido = primerApellido;
     }
 
+    public Paciente(int id_usuario, byte id_rol, String primerNombre, String segundoNombre,
+            String primerApellido, String segundoApellido, byte edad,
+            String correoElectronico, String numeroTelefonico, boolean estado) {
+        this.id_usuario = id_usuario;
+        this.id_rol = id_rol;
+        this.primerNombre = primerNombre;
+        this.segundoNombre = segundoNombre;
+        this.primerApellido = primerApellido;
+        this.segundoApellido = segundoApellido;
+        this.edad = edad;
+        this.correoElectronico = correoElectronico;
+        this.numeroTelefonico = numeroTelefonico;
+        this.estado = estado;
+    }
+
     //contructor datos seguros del paciente
     public Paciente(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
             String correo, LocalDate fechaNacimiento, String sexoBiologico, String numeroTelefonico, byte edad, boolean estado, String sisben, String fotoPerfil) {

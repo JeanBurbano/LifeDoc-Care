@@ -7,6 +7,7 @@ package view;
 import controller.AdminCentroController;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import model.Paciente;
 
 /**
  *
@@ -19,10 +20,10 @@ public class PruebaAdminCentro {
      */
     public static void main(String[] args) {
 //        AdministradorCentroInterfaz i = new AdministradorCentroInterfaz("alejandra cossio", "Administrador del Centro", "anonymous.png");
-//        //RegistroUsuariosInterfaz i = new RegistroUsuariosInterfaz("Juanito", "Registro Usuario", "");
-//        i.setVisible(true);
-//        i.setDefaultCloseOperation(EXIT_ON_CLOSE);
-//        i.setExtendedState(MAXIMIZED_BOTH);
+        RegistroUsuariosInterfaz i = new RegistroUsuariosInterfaz("Registro");
+        i.setVisible(true);
+        i.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        i.setExtendedState(MAXIMIZED_BOTH);
 //        AdminCentroController j = new AdminCentroController(i);
     }
 

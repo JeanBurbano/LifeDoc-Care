@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import model.EnvioCorreos;
 import model.MetodosPublicos;
+import model.UsuarioDao;
 import view.RecuperacionContrasenaInterfaz;
 
 public class RecuperarContrasenaController implements ActionListener {
@@ -12,8 +13,10 @@ public class RecuperarContrasenaController implements ActionListener {
     RecuperacionContrasenaInterfaz p;
     private byte validador;
     private EnvioCorreos envioCorreos;
+    private UsuarioDao usuDao;
 
     public RecuperarContrasenaController(RecuperacionContrasenaInterfaz p) {
+        this.usuDao = new UsuarioDao();
         this.validador = 0;
         this.p = p;
         this.p.vistaMetodoDerecuperacion();
@@ -40,7 +43,9 @@ public class RecuperarContrasenaController implements ActionListener {
                     JOptionPane.showMessageDialog(p, "El campo correo electronico es obligatorio");
                 } else if (!MetodosPublicos.validarFormatoCorreoGmail(correo)) {
                     JOptionPane.showMessageDialog(p, "El correo debe tener el formato .....@gmail.com");
-                } else {
+                } else if(!usuDao.validarCampoIdBs(correo, "usuario", "correo_electronico")){
+                    JOptionPane.showMessageDialog(p, "El corre no esta disponible");
+                }else{
                     this.envioCorreos = new EnvioCorreos(p);
                     boolean enviado = envioCorreos.enviarCorreoRecuperacion();
                     if (enviado) {

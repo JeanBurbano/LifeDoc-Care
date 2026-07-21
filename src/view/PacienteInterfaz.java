@@ -11,6 +11,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -34,7 +36,7 @@ import model.Paciente;
 
 public class PacienteInterfaz extends JFrame {
 
-    public Paciente usuario;
+    private Paciente usuario;
     //Aqui creo los colores que mas vamos autilizar en la plantilla.
     public static final Color COLOR_AZUL_CORPORATIVO = new Color(0, 79, 124);
     public static final Color COLOR_VERDE_ACENTO = new Color(0, 194, 177);
@@ -44,6 +46,7 @@ public class PacienteInterfaz extends JFrame {
     public JPanel encabezado;//Aqui creo el JPanel que sera el encabezado
     private JPanel panelBienvenida;//Aqui creo el JPanel de bienbenida ejemplo:Bienbenido alejo! lifedoccare
     private JPanel panelSesionUsuario;//Aqui creo el JPanel que lelva el boton cerrar sesion y foto de perfil
+    private PanelRound panelFotoPerfil;
     public JLabel labelFotoPerfil;//Aqui creo JLabel que llevara la foto de perfil
     public JButton btnCerrarSesion;//Aqui creo el boton cerrar sesion
     public JPanel cuerpo1;//Aqui creo el JPanel que va hacer el cuerpo1
@@ -93,8 +96,35 @@ public class PacienteInterfaz extends JFrame {
     public CalendarPanel calendario;
     public JPanel panelHorarios;
 
-    public PacienteInterfaz() {
+    public PacienteInterfaz(String nombreInterfaz) {
+        super(nombreInterfaz);
 
+        this.fondoVentana = new JLabel(new ImageIcon("Fondo1_watermark.jpeg"));
+        this.fondoVentana.setOpaque(true);
+        this.fondoVentana.setLayout(new BoxLayout(fondoVentana, BoxLayout.Y_AXIS));
+        this.setContentPane(fondoVentana);
+
+        this.encabezado = new JPanel();
+        this.encabezado.setBorder(new EmptyBorder(40, 40, 0, 40));
+        this.encabezado.setLayout(new BorderLayout());
+        this.encabezado.setOpaque(false);
+
+        this.cuerpo1 = new JPanel();
+        this.cuerpo1.setLayout(new FlowLayout(FlowLayout.LEFT, 25, 10));
+        this.cuerpo1.setOpaque(false);
+        this.cuerpo1.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(40, 40, 0, 40),
+                BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY)));
+
+        this.cuerpo2 = new JPanel();
+        this.cuerpo2.setLayout(new BorderLayout());
+        this.cuerpo2.setBorder(new EmptyBorder(0, 40, 20, 40));
+        this.cuerpo2.setOpaque(false);
+        this.cuerpo2.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+
+        this.fondoVentana.add(encabezado);
+        this.fondoVentana.add(cuerpo1);
+        this.fondoVentana.add(cuerpo2);
     }
 
     public PacienteInterfaz(String nombreInterfaz, Paciente usuario) {
@@ -133,14 +163,29 @@ public class PacienteInterfaz extends JFrame {
         this.btnCerrarSesion.setFont(new Font("arial", Font.BOLD, 15));
 
         Dimension tamanoFijo = new Dimension(64, 64);
-        this.labelFotoPerfil = new JLabel(new ImageIcon(this.usuario.getFotoPerfil()));
+        int radio = 100;
+        this.panelFotoPerfil = new PanelRound();
+        this.panelFotoPerfil.setLayout(new BorderLayout());
+        this.panelFotoPerfil.setPreferredSize(tamanoFijo);
+        this.panelFotoPerfil.setMaximumSize(tamanoFijo);
+        this.panelFotoPerfil.setRoundTopLeft(radio);
+        this.panelFotoPerfil.setRoundTopRight(radio);
+        this.panelFotoPerfil.setRoundBottomLeft(radio);
+        this.panelFotoPerfil.setRoundBottomRight(radio);
+        ImageIcon imagen = new ImageIcon(this.usuario.getFotoPerfil());
+        this.labelFotoPerfil = new JLabel();
         this.labelFotoPerfil.setPreferredSize(tamanoFijo);
         this.labelFotoPerfil.setMinimumSize(tamanoFijo);
         this.labelFotoPerfil.setMaximumSize(tamanoFijo);
+        Icon icono = new ImageIcon(imagen.getImage().getScaledInstance(
+                64, 64,
+                Image.SCALE_DEFAULT));
+        this.labelFotoPerfil.setIcon(icono);
         this.labelFotoPerfil.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
+        this.panelFotoPerfil.add(labelFotoPerfil, BorderLayout.CENTER);
         this.panelSesionUsuario.add(btnCerrarSesion);
-        this.panelSesionUsuario.add(labelFotoPerfil);
+        this.panelSesionUsuario.add(panelFotoPerfil);
 
         this.encabezado.add(panelBienvenida, BorderLayout.WEST);
         this.encabezado.add(panelSesionUsuario, BorderLayout.EAST);
@@ -196,7 +241,7 @@ public class PacienteInterfaz extends JFrame {
 
         this.btnHistorialMedico = new JButton("Historial Medico ", new ImageIcon("iconsP/avatar.png"));
         this.btnHistorialCitas = new JButton("Historial de Citas", new ImageIcon("iconsP/friends.png"));
-        this.btnDescargar = new JButton(" ⬇️ Descargar Historial Medico");
+        this.btnDescargar = new JButton("Descargar Historial Medico", new ImageIcon("iconsP/descargar.png"));
         MetodosPublicos.estilizarBoton(btnHistorialMedico, (byte) 2);
         MetodosPublicos.estilizarBoton(btnHistorialCitas, (byte) 2);
 
@@ -225,11 +270,12 @@ public class PacienteInterfaz extends JFrame {
         this.panelComentarios.setLayout(new BoxLayout(panelComentarios, BoxLayout.Y_AXIS));
         this.panelComentarios.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(0, 30, 5, 30)));
+                BorderFactory.createEmptyBorder(5, 30, 5, 30)));
         this.panelComentarios.setOpaque(false);
         this.panelComentarios1.setLayout(new BoxLayout(panelComentarios1, BoxLayout.Y_AXIS));
-        this.panelComentarios1.setBorder(BorderFactory.createEmptyBorder(15, 10, 10, 10));
+        this.panelComentarios1.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
         this.panelComentarios1.setOpaque(false);
+        this.panelComentarios1.setBorder(null);
         this.btnSugerencias = new JButton("Sugerencias ", new ImageIcon("iconsP/happy-face.png"));
         this.btnQuejas = new JButton("Quejas ", new ImageIcon("iconsP/quejas.png"));
         this.btnForo = new JButton("Foro ", new ImageIcon("iconsP/communication.png"));
@@ -477,12 +523,11 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.vaciarPanel(panelComentarios1);
         MetodosPublicos.vaciarPanel(panelComentarios);
         JScrollPane scrollComentarios = new JScrollPane(panelComentarios1);
-        scrollComentarios.setPreferredSize(new Dimension(600, 345));
         scrollComentarios.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollComentarios.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollComentarios.setOpaque(false);
         scrollComentarios.getViewport().setOpaque(false);
-        scrollComentarios.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
+        scrollComentarios.setBorder(null);
         this.panelComentarios.add(scrollComentarios);
         MetodosPublicos.refrescarVentana(panelComentarios1);
         MetodosPublicos.refrescarVentana(panelComentarios);
@@ -490,10 +535,11 @@ public class PacienteInterfaz extends JFrame {
 
     //Aqui creo el metodo que me permitiria vizualizar en el JPanel cuerpo2 el apartado de comentarios
     public void mostrarVistaComentarios() {
-        MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelBotonesLaterales);
+        MetodosPublicos.vaciarPanel(panelComentarios);
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        
         construirFormularioComentario();
-
         this.panelBotonesLaterales.add(btnSugerencias);
         this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
         this.panelBotonesLaterales.add(btnQuejas);
@@ -504,22 +550,38 @@ public class PacienteInterfaz extends JFrame {
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));//Padding propio de esta vista
         this.cuerpo2.add(panelBotonesLaterales, BorderLayout.WEST);
         this.cuerpo2.add(panelComentarios, BorderLayout.CENTER);
-
-        MetodosPublicos.refrescarVentana(panelComentarios);
+       
         MetodosPublicos.refrescarVentana(panelBotonesLaterales);
+        MetodosPublicos.refrescarVentana(panelComentarios);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     //Aqui creo el metodo que me permitiria agregar componentes al panel comentarios
     public void agregarAlPanelComentarios(String tipoMensaje, String asunto, String nombreUsu, String descripcion) {
-        JPanel c = new JPanel();
+        PanelRound c = new PanelRound();
+        int valor = 50;
+        c.setRoundBottomRight(valor);
+        c.setRoundBottomLeft(valor);
+        c.setRoundTopLeft(valor);
+        c.setRoundTopRight(valor);
         c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
+        c.setBorder(new EmptyBorder(0, 10, 0, 10));
+        c.setBackground(COLOR_VERDE_ACENTO);
         JTextField descripcionText = new JTextField(descripcion);
-        c.add(new JLabel(tipoMensaje + "-" + asunto + "-" + nombreUsu));
+        descripcionText.setEditable(false);
+        descripcionText.setBackground(Color.WHITE);
+        JLabel label = new JLabel(tipoMensaje + "-" + asunto + "-" + nombreUsu);
+        label.setFont(new Font("Arial", Font.BOLD, 20));
+        label.setOpaque(false);
+        c.add(Box.createRigidArea(new Dimension(0, 10)));
+        c.add(label);
+        c.add(Box.createRigidArea(new Dimension(0, 10)));
         c.add(descripcionText);
-        this.panelComentarios1.add(c);
+        c.add(Box.createRigidArea(new Dimension(0, 10)));
         this.panelComentarios1.add(Box.createRigidArea(new Dimension(0, 30)));
+        this.panelComentarios1.add(c);
         MetodosPublicos.refrescarVentana(panelComentarios1);
+        MetodosPublicos.refrescarVentana(panelComentarios);
     }
 
     //Aqui creo el metodo que permitiria vizualsar en el panel cuerpo2 el apartado de notificaciones
@@ -631,7 +693,7 @@ public class PacienteInterfaz extends JFrame {
         settings.setVisibleNextYearButton(false);
         settings.setVisiblePreviousYearButton(false);
 
-        // Agrandar el calendario
+        //Agrandar el calendario
         settings.setSizeDatePanelMinimumHeight((int) (settings.getSizeDatePanelMinimumHeight() * 2.5));
         settings.setSizeDatePanelMinimumWidth((int) (settings.getSizeDatePanelMinimumWidth() * 2.5));
 
@@ -682,6 +744,7 @@ public class PacienteInterfaz extends JFrame {
         JPanel panelBotones = new JPanel(), panelContenido = new JPanel(), c = new JPanel();
         panelBotones.setOpaque(false);
         panelBotones.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        panelBotones.setBorder(new EmptyBorder(45, 0, 0, 0));
         panelContenido.setOpaque(false);
         panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
         panelContenido.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -702,6 +765,7 @@ public class PacienteInterfaz extends JFrame {
         lblFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblHora.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblMedico.setAlignmentX(Component.LEFT_ALIGNMENT);
+        titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         panelContenido.add(titulo);
         panelContenido.add(lblFecha);
@@ -722,5 +786,9 @@ public class PacienteInterfaz extends JFrame {
         this.listaBotonesCancelar.add(btnCancelarCita);
         this.panelInfoCitas.add(c);
         MetodosPublicos.refrescarVentana(panelInfoCitas);
+    }
+
+    public Paciente getUsuario() {
+        return this.usuario;
     }
 }
