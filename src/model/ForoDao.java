@@ -11,8 +11,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ForoDao implements Crud<Foro> {
-    public ForoDao(){
-        
+
+    public Conexion conectar = new Conexion();
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
+
+    public ForoDao() {
+
     }
 
     @Override
@@ -23,26 +29,42 @@ public class ForoDao implements Crud<Foro> {
                 + "FROM foro f LEFT JOIN usuario u ON f.id_usuario = u.id_usuario "
                 + "ORDER BY f.fecha_publicacion DESC";
 
-        try (Connection conexion = new Conexion().getConection()) {
-            if (conexion == null) {
+        try {
+            con = conectar.getConection();
+            if (con == null) {
                 return lista;
             }
-            try (PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String nombreCompleto = (rs.getString("primer_nombre") + " " + rs.getString("primer_apellido")).trim();
-                    Timestamp fecha = rs.getTimestamp("fecha_publicacion");
-                    lista.add(new Foro(
-                            rs.getInt("id_foro"),
-                            rs.getString("tipo_mensaje"),
-                            rs.getString("asunto"),
-                            rs.getString("descripcion"),
-                            fecha != null ? fecha.toLocalDateTime() : null,
-                            rs.getInt("id_usuario"),
-                            nombreCompleto));
-                }
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String nombreCompleto = (rs.getString("primer_nombre") + " " + rs.getString("primer_apellido")).trim();
+                Timestamp fecha = rs.getTimestamp("fecha_publicacion");
+                lista.add(new Foro(
+                        rs.getInt("id_foro"),
+                        rs.getString("tipo_mensaje"),
+                        rs.getString("asunto"),
+                        rs.getString("descripcion"),
+                        fecha != null ? fecha.toLocalDateTime() : null,
+                        rs.getInt("id_usuario"),
+                        nombreCompleto));
             }
+
         } catch (SQLException e) {
             Logger.getLogger(ForoDao.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                if (rs != null) {
+                    this.rs.close();
+                }
+                if (ps != null) {
+                    this.ps.close();
+                }
+                if (con != null) {
+                    this.con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return lista;
     }
@@ -51,20 +73,35 @@ public class ForoDao implements Crud<Foro> {
     public int setAgregar(Foro tr) {
         String sql = "INSERT INTO foro (tipo_mensaje, asunto, descripcion, id_usuario) VALUES (?, ?, ?, ?)";
 
-        try (Connection conexion = new Conexion().getConection()) {
-            if (conexion == null) {
+        try {
+            con = conectar.getConection();
+            if (con == null) {
                 return 0;
             }
-            try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-                ps.setString(1, tr.getTipoMensaje());
-                ps.setString(2, tr.getAsunto());
-                ps.setString(3, tr.getDescripcion());
-                ps.setInt(4, tr.getIdUsuario());
-                return ps.executeUpdate();
-            }
+            ps = con.prepareStatement(sql);
+            ps.setString(1, tr.getTipoMensaje());
+            ps.setString(2, tr.getAsunto());
+            ps.setString(3, tr.getDescripcion());
+            ps.setInt(4, tr.getIdUsuario());
+            return ps.executeUpdate();
+
         } catch (SQLException e) {
             Logger.getLogger(ForoDao.class.getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            try {
+                if (rs != null) {
+                    this.rs.close();
+                }
+                if (ps != null) {
+                    this.ps.close();
+                }
+                if (con != null) {
+                    this.con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -72,19 +109,34 @@ public class ForoDao implements Crud<Foro> {
     public int setActualizar(Foro tr) {
         String sql = "UPDATE foro SET asunto = ?, descripcion = ? WHERE id_foro = ?";
 
-        try (Connection conexion = new Conexion().getConection()) {
-            if (conexion == null) {
+        try {
+            con = conectar.getConection();
+            if (con == null) {
                 return 0;
             }
-            try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-                ps.setString(1, tr.getAsunto());
-                ps.setString(2, tr.getDescripcion());
-                ps.setInt(3, tr.getIdForo());
-                return ps.executeUpdate();
-            }
+            ps = con.prepareStatement(sql);
+            ps.setString(1, tr.getAsunto());
+            ps.setString(2, tr.getDescripcion());
+            ps.setInt(3, tr.getIdForo());
+            return ps.executeUpdate();
+
         } catch (SQLException e) {
             Logger.getLogger(ForoDao.class.getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            try {
+                if (rs != null) {
+                    this.rs.close();
+                }
+                if (ps != null) {
+                    this.ps.close();
+                }
+                if (con != null) {
+                    this.con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -92,17 +144,32 @@ public class ForoDao implements Crud<Foro> {
     public int setEliminar(int id) {
         String sql = "DELETE FROM foro WHERE id_foro = ?";
 
-        try (Connection conexion = new Conexion().getConection()) {
-            if (conexion == null) {
+        try {
+            con = conectar.getConection();
+            if (con == null) {
                 return 0;
             }
-            try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-                ps.setInt(1, id);
-                return ps.executeUpdate();
-            }
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            return ps.executeUpdate();
+
         } catch (SQLException e) {
             Logger.getLogger(ForoDao.class.getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            try {
+                if (rs != null) {
+                    this.rs.close();
+                }
+                if (ps != null) {
+                    this.ps.close();
+                }
+                if (con != null) {
+                    this.con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
