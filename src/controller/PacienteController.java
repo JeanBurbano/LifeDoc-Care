@@ -185,10 +185,6 @@ public class PacienteController implements ActionListener {
                     pacienteI.agregarAlPanelComentarios(clave.getTipoMensaje(), clave.getAsunto(),
                             clave.getNombreUsuario(), clave.getDescripcion());
                 }
-                for (Foro clave : foro) {
-                    pacienteI.agregarAlPanelComentarios(clave.getTipoMensaje(), clave.getAsunto(),
-                            clave.getNombreUsuario(), clave.getDescripcion());
-                }
             }
         }
         if (e.getSource() == pacienteI.btnEnviar) {
