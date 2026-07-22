@@ -1,6 +1,5 @@
 package controller;
 
-import java.awt.Font;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,16 +8,15 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.Cita;
 import model.CitaDao;
+import model.CreadorPdf;
 import model.Foro;
 import model.ForoDao;
 import model.Medico;
 import model.MedicoDao;
-import model.MetodosPublicos;
 import model.Paciente;
 import model.UsuarioDao;
 import view.EditarPerfilInterfaz;
@@ -36,6 +34,7 @@ public class PacienteController implements ActionListener {
     public Medico[] medicos;
     protected Cita[] citas;
     private boolean verificador;
+    private String historial;
 
     private void agregaMauseClick() {
         pacienteI.labelFotoPerfil.addMouseListener(new MouseAdapter() {
@@ -115,13 +114,18 @@ public class PacienteController implements ActionListener {
         actionListenerParaBotonesDeVectores(pacienteI.listaBotonesMedicos, "Agenda una ", "Cita");
     }
 
+    private void proceso(String mensaje, boolean valor) {
+        pacienteI.mostrarVistaHistorialConHistorial(mensaje, pacienteI.getUsuario().getPrimerNombre(),
+                String.valueOf(pacienteI.getUsuario().getEdad()));
+        pacienteI.btnDescargar.setEnabled(valor);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == pacienteI.btnCerrarSesion) {
             this.pacienteI.dispose();
         }
         if (e.getSource() == pacienteI.btnMisCitas) {
-            pacienteI.btnMisCitas.setEnabled(false);
             pacienteI.habilitarBotonesMenu(pacienteI.btnMisCitas);
             pacienteI.mostrarVistaMisCitas();
             this.pacienteI.listaBotonesCancelar.clear();
@@ -138,20 +142,18 @@ public class PacienteController implements ActionListener {
             }
         }
         if (e.getSource() == pacienteI.btnHistorial) {
-            pacienteI.btnHistorial.setEnabled(false);
             pacienteI.habilitarBotonesMenu(pacienteI.btnHistorial);
-            pacienteI.mostrarVistaHistorial();
+            pacienteI.btnHistorialCitas.setEnabled(true);
+            pacienteI.btnHistorialCitas.doClick();
         }
         if (e.getSource() == pacienteI.btnComentarios) {
-            pacienteI.btnComentarios.setEnabled(false);
             pacienteI.habilitarBotonesMenu(pacienteI.btnComentarios);
             pacienteI.mostrarVistaComentarios();
             pacienteI.btnSugerencias.doClick();
         }
         if (e.getSource() == pacienteI.btnNotificaciones) {
-            pacienteI.mostrarVistaNotificaciones();
-            pacienteI.btnNotificaciones.setEnabled(false);
             pacienteI.habilitarBotonesMenu(pacienteI.btnNotificaciones);
+            pacienteI.mostrarVistaNotificaciones();
         }
         if (e.getSource() == pacienteI.btnAgendar) {
             pacienteI.mostrarVistaTipoConsulta(new Titulo("Agendamiento de ", "Cita"));
@@ -183,6 +185,10 @@ public class PacienteController implements ActionListener {
                     pacienteI.agregarAlPanelComentarios(clave.getTipoMensaje(), clave.getAsunto(),
                             clave.getNombreUsuario(), clave.getDescripcion());
                 }
+                for (Foro clave : foro) {
+                    pacienteI.agregarAlPanelComentarios(clave.getTipoMensaje(), clave.getAsunto(),
+                            clave.getNombreUsuario(), clave.getDescripcion());
+                }
             }
         }
         if (e.getSource() == pacienteI.btnEnviar) {
@@ -206,14 +212,24 @@ public class PacienteController implements ActionListener {
                 }
             }
         }
+        if (e.getSource() == pacienteI.btnHistorialCitas) {
+            pacienteI.btnHistorialCitas.setEnabled(false);
+            pacienteI.btnHistorialMedico.setEnabled(true);
+            pacienteI.mostrarVistaHistorial();
+        }
         if (e.getSource() == pacienteI.btnHistorialMedico) {
+            pacienteI.btnHistorialMedico.setEnabled(false);
+            pacienteI.btnHistorialCitas.setEnabled(true);
             UsuarioDao usuDao = new UsuarioDao();
-            String historial = usuDao.historialMedico(pacienteI.getUsuario().getIdUsuario());
+            this.historial = usuDao.historialMedico(pacienteI.getUsuario().getIdUsuario());
             if (historial == null) {
-                JOptionPane.showMessageDialog(pacienteI, "No tienes historial medico");
+                proceso("No tienes historial medico", false);
             } else {
-                JOptionPane.showMessageDialog(pacienteI,historial);
+                proceso(historial, true);
             }
+        }
+        if (e.getSource() == pacienteI.btnDescargar) {
+            CreadorPdf.constructorCreadorPdf("historial_clinico_" + pacienteI.getUsuario().getPrimerNombre(), historial);
         }
     }
 }
