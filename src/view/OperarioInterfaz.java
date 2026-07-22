@@ -672,18 +672,6 @@ public class OperarioInterfaz extends PacienteInterfaz {
         lblMetodoUsado.setFont(new Font("Arial", Font.PLAIN, 14));
         lblMetodoUsado.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        panelConfirmacion.add(lblExito);
-        panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 20)));
-        panelConfirmacion.add(lblMetodoUsado);
-        panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 30)));
-//        panelConfirmacion.add(btnFinalizar);
- 
-        panelPrincipal.add(panelFactura, BorderLayout.WEST);
-        panelPrincipal.add(panelConfirmacion, BorderLayout.CENTER);
- 
-        cuerpo2.add(panelPrincipal, BorderLayout.CENTER);
- 
-        refrescarVentana(cuerpo2);
         JButton btnDebito = new JButton("Tarjeta débito", new ImageIcon("iconsP/atm-card.png"));
         JButton btnCredito = new JButton("Tarjeta crédito", new ImageIcon("iconsP/atm-card.png"));
         JButton btnTransferencia = new JButton("Transferencia", new ImageIcon("iconsP/bank.png"));
@@ -700,8 +688,8 @@ public class OperarioInterfaz extends PacienteInterfaz {
         btnCredito.setPreferredSize(new Dimension(Integer.MAX_VALUE, 45));
         btnTransferencia.setPreferredSize(new Dimension(Integer.MAX_VALUE, 45));
 
-        btnDebito.addActionListener(e -> mostrarModalTarjetaDebito());
-        btnCredito.addActionListener(e -> mostrarModalTarjetaCredito());
+        btnDebito.addActionListener(e -> mostrarModalTarjeta("Tarjeta Debito"));
+        btnCredito.addActionListener(e -> mostrarModalTarjeta( "Tarjeta Credito"));
         btnTransferencia.addActionListener(e -> mostrarModalTransferencia());
         
         JButton btnFinalizar = new JButton("Finalizar");
@@ -714,101 +702,85 @@ public class OperarioInterfaz extends PacienteInterfaz {
             btnPagos.doClick();
             
         });
-
         
-
+        panelConfirmacion.add(lblExito);
+        panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 20)));
+        panelConfirmacion.add(lblMetodoUsado);
+        panelConfirmacion.add(lblMetodoUsado);
+        panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 20)));
+        panelConfirmacion.add(btnDebito);
+        panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 12)));
+        panelConfirmacion.add(btnCredito);
+        panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 12)));
+        panelConfirmacion.add(btnTransferencia);
+        panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 30)));
+        panelConfirmacion.add(btnFinalizar);
+ 
         panelPrincipal.add(panelFactura, BorderLayout.WEST);
-//        panelPrincipal.add(panelOpciones, BorderLayout.CENTER);
+        panelPrincipal.add(panelConfirmacion, BorderLayout.CENTER);
 
         cuerpo2.add(panelPrincipal, BorderLayout.CENTER);
 
         refrescarVentana(cuerpo2);
     }
 
-    // Modales (Ventanas emergentes)
-    private void mostrarModalTarjetaDebito() {
-        JPanel modal = new JPanel(new GridBagLayout());
-        modal.setBorder(BorderFactory.createTitledBorder("Tarjeta débito"));
-        modal.setPreferredSize(new Dimension(400, 300));
+    // Ventanas emergentes, donde se mostrata como una espcie de modal para el metodo de pago de las tarjetas
+    private void mostrarModalTarjeta(String tituloModal) {
+        JPanel modal = new JPanel();
+        modal.setLayout(new BoxLayout(modal, BoxLayout.Y_AXIS));
+        modal.setPreferredSize(new Dimension(360, 260));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new java.awt.Insets(10, 10, 10, 10);
+        JTextField txtNumero = MetodosPublicos.crearCampoTexto();
+        JTextField txtFecha = MetodosPublicos.crearCampoTexto();
+        JTextField txtCodigo = MetodosPublicos.crearCampoTexto();
 
-        JTextField txtNumero = new JTextField(20);
-        JTextField txtFecha = new JTextField(10);
-        JTextField txtCodigo = new JTextField(6);
+        modal.add(MetodosPublicos.crearSeparador(tituloModal));
+        modal.add(Box.createRigidArea(new Dimension(0, 15)));
+        modal.add(MetodosPublicos.crearCampoConEtiqueta("Número de tarjeta", txtNumero));
+        modal.add(Box.createRigidArea(new Dimension(0, 12)));
+        modal.add(MetodosPublicos.crearCampoConEtiqueta("Fecha de vencimiento", txtFecha));
+        modal.add(Box.createRigidArea(new Dimension(0, 12)));
+        modal.add(MetodosPublicos.crearCampoConEtiqueta("Código de seguridad", txtCodigo));
 
-        JButton btnAceptar = new JButton("Aceptar");
-        estilizarBoton(btnAceptar, (byte) 5);
+        int opcion = javax.swing.JOptionPane.showConfirmDialog(this, modal, tituloModal,
+                javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE);
 
-        btnAceptar.addActionListener(e -> {
-            javax.swing.JOptionPane.showMessageDialog(this, "Pago con tarjeta débito confirmado", "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-        });
-
-        modal.add(new JLabel("Número de tarjeta"), gbc);
-        gbc.gridx = 1;
-        modal.add(txtNumero, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        modal.add(new JLabel("Fecha de vencimiento"), gbc);
-        gbc.gridx = 1;
-        modal.add(txtFecha, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        modal.add(new JLabel("Código de seguridad"), gbc);
-        gbc.gridx = 1;
-        modal.add(txtCodigo, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        modal.add(btnAceptar, gbc);
-
-        javax.swing.JOptionPane.showOptionDialog(this, modal, "Tarjeta Débito",
-                javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+        if (opcion == javax.swing.JOptionPane.OK_OPTION) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Pago con " + tituloModal.toLowerCase() + " confirmado",
+                    "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        }
+        
     }
-
-    private void mostrarModalTarjetaCredito() {
-        mostrarModalTarjetaDebito();
-
-    }
-
+    
+    // Ventana emergente para digitar los datos de la transferencia bancaria.
     private void mostrarModalTransferencia() {
-        JPanel modal = new JPanel(new GridBagLayout());
-        modal.setBorder(BorderFactory.createTitledBorder("Transferencia"));
-        modal.setPreferredSize(new Dimension(400, 300));
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new java.awt.Insets(10, 10, 10, 10);
+        JPanel modal = new JPanel();
+        modal.setLayout(new BoxLayout(modal, BoxLayout.Y_AXIS));
+        modal.setPreferredSize(new Dimension(360, 260));
 
         JComboBox cmbEntidad = new JComboBox(new String[]{"Bancolombia", "Davivienda", "BBVA"});
         JComboBox cmbTipoCuenta = new JComboBox(new String[]{"Corriente", "Ahorros"});
-        JTextField txtNumeroCuenta = new JTextField(20);
+        MetodosPublicos.crearComboEstilizado(cmbEntidad);
+        MetodosPublicos.crearComboEstilizado(cmbTipoCuenta);
+        JTextField txtNumeroCuenta = MetodosPublicos.crearCampoTexto();
 
-        JButton btnAceptar = new JButton("Aceptar");
-        estilizarBoton(btnAceptar, (byte) 5);
+        modal.add(MetodosPublicos.crearSeparador("Transferencia"));
+        modal.add(Box.createRigidArea(new Dimension(0, 15)));
+        modal.add(MetodosPublicos.crearCampoConEtiqueta("Entidad bancaria", cmbEntidad));
+        modal.add(Box.createRigidArea(new Dimension(0, 12)));
+        modal.add(MetodosPublicos.crearCampoConEtiqueta("Tipo de cuenta", cmbTipoCuenta));
+        modal.add(Box.createRigidArea(new Dimension(0, 12)));
+        modal.add(MetodosPublicos.crearCampoConEtiqueta("Número de cuenta", txtNumeroCuenta));
 
-        btnAceptar.addActionListener(e -> {
-            javax.swing.JOptionPane.showMessageDialog(this, "Transferencia confirmada", "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-        });
+        int opcion = javax.swing.JOptionPane.showConfirmDialog(this, modal, "Transferencia",
+                javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE);
 
-        modal.add(new JLabel("Entidad Bancaria"), gbc);
-        gbc.gridx = 1;
-        modal.add(cmbEntidad, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        modal.add(new JLabel("Tipo de cuenta"), gbc);
-        gbc.gridx = 1;
-        modal.add(cmbTipoCuenta, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        modal.add(new JLabel("Número de cuenta"), gbc);
-        gbc.gridx = 1;
-        modal.add(txtNumeroCuenta, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        modal.add(btnAceptar, gbc);
-
-        javax.swing.JOptionPane.showOptionDialog(this, modal, "Transferencia",
-                javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE, null, new Object[]{}, null);
+        if (opcion == javax.swing.JOptionPane.OK_OPTION) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Transferencia confirmada",
+                    "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     @Override
