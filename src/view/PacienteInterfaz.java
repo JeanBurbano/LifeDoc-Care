@@ -114,7 +114,7 @@ public class PacienteInterfaz extends JFrame {
         this.cuerpo1.setOpaque(false);
         this.cuerpo1.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(40, 40, 0, 40),
-                BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY)));
+                BorderFactory.createMatteBorder(0, 0, 2, 0, COLOR_AZUL_CORPORATIVO)));
 
         this.cuerpo2 = new JPanel();
         this.cuerpo2.setLayout(new BorderLayout());
@@ -195,7 +195,7 @@ public class PacienteInterfaz extends JFrame {
         this.cuerpo1.setOpaque(false);
         this.cuerpo1.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(40, 40, 0, 40),
-                BorderFactory.createMatteBorder(0, 0, 2, 0, Color.GRAY)));
+                BorderFactory.createMatteBorder(0, 0, 2, 0, COLOR_AZUL_CORPORATIVO)));
         agregarBotonesMenuPaciente();
 
         this.cuerpo2 = new JPanel();
@@ -210,8 +210,12 @@ public class PacienteInterfaz extends JFrame {
 
         this.panelInfoCitas = new JPanel();
         this.panelInfoCitas.setLayout(new BoxLayout(panelInfoCitas, BoxLayout.Y_AXIS));
+        this.panelInfoCitas.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                        BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                ));
         this.panelInfoCitas.setOpaque(false);
-        this.panelInfoCitas.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         this.btnAgendar = new JButton("️Agendar una cita ", new ImageIcon("iconsP/heart.png"));
         MetodosPublicos.estilizarBoton(btnAgendar, (byte) 3);
@@ -220,13 +224,26 @@ public class PacienteInterfaz extends JFrame {
 
         this.panelHistorial = new JPanel();
         this.panelHistorial.setLayout(new BorderLayout());
-        this.panelHistorial.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
+        this.panelHistorial.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2));
         this.panelHistorial.setOpaque(false);
 
         this.panelFiltros = new JPanel();
         this.panelFiltros.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 20));
         this.panelFiltros.setOpaque(false);
         this.panelFiltros.setPreferredSize(new Dimension(0, 100));
+        this.cmbFecha = new JComboBox();
+        this.cmbMedico = new JComboBox();
+        this.cmbEspecialidad = new JComboBox();
+        MetodosPublicos.estilizarComboBox(cmbFecha);
+        MetodosPublicos.estilizarComboBox(cmbMedico);
+        MetodosPublicos.estilizarComboBox(cmbEspecialidad);
+        JLabel lblFiltrar = new JLabel("Filtrar por");
+        lblFiltrar.setFont(new Font("Arial", Font.PLAIN, 18));
+        lblFiltrar.setForeground(new Color(80, 80, 80));
+        this.panelFiltros.add(lblFiltrar);
+        this.panelFiltros.add(this.cmbFecha);
+        this.panelFiltros.add(this.cmbMedico);
+        this.panelFiltros.add(this.cmbEspecialidad);
 
         this.panelListaHistorial = new JPanel();
         this.panelListaHistorial.setLayout(new BoxLayout(panelListaHistorial, BoxLayout.Y_AXIS));
@@ -242,15 +259,9 @@ public class PacienteInterfaz extends JFrame {
         this.btnHistorialMedico = new JButton("Historial Medico ", new ImageIcon("iconsP/avatar.png"));
         this.btnHistorialCitas = new JButton("Historial de Citas", new ImageIcon("iconsP/friends.png"));
         this.btnDescargar = new JButton("Descargar Historial Medico", new ImageIcon("iconsP/descargar.png"));
+        MetodosPublicos.estilizarBoton(btnDescargar, (byte) 5);
         MetodosPublicos.estilizarBoton(btnHistorialMedico, (byte) 2);
         MetodosPublicos.estilizarBoton(btnHistorialCitas, (byte) 2);
-
-        this.cmbFecha = new JComboBox();
-        this.cmbMedico = new JComboBox();
-        this.cmbEspecialidad = new JComboBox();
-        MetodosPublicos.estilizarComboBox(cmbFecha);
-        MetodosPublicos.estilizarComboBox(cmbMedico);
-        MetodosPublicos.estilizarComboBox(cmbEspecialidad);
 
         this.campoAsunto = new JTextField();
         this.campoAsunto.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -269,8 +280,9 @@ public class PacienteInterfaz extends JFrame {
         this.panelComentarios1 = new JPanel();
         this.panelComentarios.setLayout(new BoxLayout(panelComentarios, BoxLayout.Y_AXIS));
         this.panelComentarios.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(5, 30, 5, 30)));
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                BorderFactory.createEmptyBorder(5, 30, 5, 30)
+        ));
         this.panelComentarios.setOpaque(false);
         this.panelComentarios1.setLayout(new BoxLayout(panelComentarios1, BoxLayout.Y_AXIS));
         this.panelComentarios1.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
@@ -287,9 +299,11 @@ public class PacienteInterfaz extends JFrame {
 
         this.panelContenidoNotificaciones = new JPanel();
         this.panelContenidoNotificaciones.setLayout(new BoxLayout(panelContenidoNotificaciones, BoxLayout.Y_AXIS));
-        this.panelContenidoNotificaciones.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(0, 30, 5, 30)));
+        this.panelContenidoNotificaciones.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                        BorderFactory.createEmptyBorder(0, 30, 5, 30)
+                ));
         this.panelContenidoNotificaciones.setOpaque(false);
 
         this.btnOdontologia = new JButton("Odontologia", new ImageIcon("iconsP/heart.png"));
@@ -302,30 +316,38 @@ public class PacienteInterfaz extends JFrame {
 
         this.panelSeleccionConsulta = new JPanel();
         this.panelSeleccionConsulta.setLayout(new BoxLayout(panelSeleccionConsulta, BoxLayout.Y_AXIS));
-        this.panelSeleccionConsulta.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(50, 60, 50, 60)));//Padding interno tipo "tarjeta" como en la imagen
+        this.panelSeleccionConsulta.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                        BorderFactory.createEmptyBorder(50, 60, 50, 60)
+                ));
         this.panelSeleccionConsulta.setOpaque(false);
 
         this.panelCalendario = new JPanel();
         this.panelCalendario.setLayout(new BoxLayout(panelCalendario, BoxLayout.Y_AXIS));
-        this.panelCalendario.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        this.panelCalendario.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                        BorderFactory.createEmptyBorder(20, 20, 20, 20)
+                ));
+
         this.panelCalendario.setPreferredSize(new Dimension(750, 0));
         this.panelCalendario.setOpaque(false);
 
         this.panelHorarios = new JPanel();
         this.panelHorarios.setLayout(new BoxLayout(panelHorarios, BoxLayout.Y_AXIS));
-        this.panelHorarios.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        this.panelHorarios.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                        BorderFactory.createEmptyBorder(20, 20, 20, 20)
+                ));
         this.panelHorarios.setPreferredSize(new Dimension(750, 0));
         this.panelHorarios.setOpaque(false);
     }
 
     //Aqui creo el metodo para habilitar o desabilitar botones del paciente.
     public void habilitarBotonesMenu(JButton botonActivo) {
+        botonActivo.setEnabled(false);
         if (botonActivo != btnMisCitas && !btnMisCitas.isEnabled()) {
             this.btnMisCitas.setEnabled(true);
         }
@@ -372,14 +394,14 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelInfoCitas);
         this.cuerpo2.setLayout(new BorderLayout(20, 20));//Esta vista necesita gap entre sus 4 zonas
-        this.cuerpo2.setBorder(new EmptyBorder(0, 40, 20, 40));//Padding propio de esta vista
+        this.cuerpo2.setBorder(new EmptyBorder(5, 40, 20, 40));//Padding propio de esta vista
 
         JPanel panelAgenda = new JPanel();
         panelAgenda.setLayout(new BoxLayout(panelAgenda, BoxLayout.Y_AXIS));
         panelAgenda.setPreferredSize(new Dimension(600, 0));
         panelAgenda.setOpaque(false);
         panelAgenda.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
                 BorderFactory.createEmptyBorder(110, 0, 95, 0)));
 
         JLabel lblTituloAgenda = new JLabel("¡Agenda una cita con nosotros!");
@@ -402,7 +424,7 @@ public class PacienteInterfaz extends JFrame {
         panelContacto.setLayout(new BoxLayout(panelContacto, BoxLayout.Y_AXIS));
         panelContacto.setOpaque(false);
         panelContacto.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
                 BorderFactory.createEmptyBorder(40, 40, 0, 0)));
         panelContacto.setPreferredSize(new Dimension(Short.MAX_VALUE, 200));
 
@@ -438,7 +460,6 @@ public class PacienteInterfaz extends JFrame {
         scrollCitas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollCitas.setOpaque(false);
         scrollCitas.getViewport().setOpaque(false);
-        scrollCitas.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
 
         this.cuerpo2.add(labelCitas, BorderLayout.NORTH);
         this.cuerpo2.add(panelAgenda, BorderLayout.EAST);
@@ -449,29 +470,32 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
 
-    //qui creo el metodo que me permitiria vizualizar en el JPanel cuerpo2 el apartado de historial
-    public void mostrarVistaHistorial() {
+    //Aqui armo la vista del histial vacia
+    private void prepararVistaBaseHistorial() {
         MetodosPublicos.vaciarPanel(cuerpo2);
-        MetodosPublicos.vaciarPanel(panelListaHistorial);
         MetodosPublicos.vaciarPanel(panelBotonesLaterales);
-        MetodosPublicos.vaciarPanel(panelFiltros);
+        MetodosPublicos.vaciarPanel(panelHistorial);
 
         this.cuerpo2.setLayout(new BorderLayout());
-        this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));//Padding propio de esta vista
+        this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40)); // Padding propio de esta vista
 
         this.panelBotonesLaterales.add(btnHistorialMedico);
         this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
         this.panelBotonesLaterales.add(btnHistorialCitas);
 
-        JLabel lblFiltrar = new JLabel("Filtrar por");
-        lblFiltrar.setFont(new Font("Arial", Font.PLAIN, 18));
-        lblFiltrar.setForeground(new Color(80, 80, 80));
+        this.cuerpo2.add(panelBotonesLaterales, BorderLayout.WEST);
+        this.cuerpo2.add(panelHistorial, BorderLayout.CENTER);
 
-        this.panelFiltros.add(lblFiltrar);
-        this.panelFiltros.add(this.cmbFecha);
-        this.panelFiltros.add(this.cmbMedico);
-        this.panelFiltros.add(this.cmbEspecialidad);
-        lblFiltrar = null;//Ya quedo agregado a panelFiltros
+        MetodosPublicos.refrescarVentana(cuerpo2);
+        MetodosPublicos.refrescarVentana(panelBotonesLaterales);
+        MetodosPublicos.refrescarVentana(panelHistorial);
+    }
+
+    //Aqui muestro la vista del historial
+    public void mostrarVistaHistorial() {
+        prepararVistaBaseHistorial();
+        MetodosPublicos.vaciarPanel(panelHistorial);
+        MetodosPublicos.vaciarPanel(panelListaHistorial);
 
         this.scrollHistorial = new JScrollPane(panelListaHistorial);
         this.scrollHistorial.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -483,13 +507,45 @@ public class PacienteInterfaz extends JFrame {
         this.panelHistorial.add(panelFiltros, BorderLayout.NORTH);
         this.panelHistorial.add(scrollHistorial, BorderLayout.CENTER);
 
-        this.cuerpo2.add(panelBotonesLaterales, BorderLayout.WEST);
-        this.cuerpo2.add(panelHistorial, BorderLayout.CENTER);
-
-        MetodosPublicos.refrescarVentana(cuerpo2);
+        MetodosPublicos.refrescarVentana(panelHistorial);
         MetodosPublicos.refrescarVentana(panelListaHistorial);
-        MetodosPublicos.refrescarVentana(panelBotonesLaterales);
-        MetodosPublicos.refrescarVentana(panelFiltros);
+    }
+
+    //cargar el panel historial con el historial
+    public void mostrarVistaHistorialConHistorial(String historial, String nombre, String edad) {
+        MetodosPublicos.vaciarPanel(panelHistorial);
+
+        JPanel panelSuperior = new JPanel();
+        panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
+        panelSuperior.setOpaque(false);
+        JPanel panelLife = new Titulo("Lifedoc ", "Care", 30).getPanelTitulo();
+        panelLife.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel lNombre = new JLabel("Nombre :" + nombre);
+        lNombre.setOpaque(false);
+        lNombre.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel lEdad = new JLabel("Edad: " + edad);
+        lEdad.setOpaque(false);
+        lEdad.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panelSuperior.add(panelLife);
+        panelSuperior.add(lNombre);
+        panelSuperior.add(lEdad);
+
+        JTextArea miarea = new JTextArea(historial);
+        miarea.setOpaque(false);
+        miarea.setEditable(false);
+        miarea.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        this.scrollHistorial = new JScrollPane(miarea);
+        this.scrollHistorial.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        this.scrollHistorial.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        this.scrollHistorial.setOpaque(false);
+        this.scrollHistorial.getViewport().setOpaque(false);
+        this.scrollHistorial.setBorder(null);
+
+        this.panelHistorial.add(panelSuperior, BorderLayout.NORTH);
+        this.panelHistorial.add(scrollHistorial, BorderLayout.CENTER);
+        this.panelHistorial.add(btnDescargar, BorderLayout.SOUTH);
+
+        MetodosPublicos.refrescarVentana(panelHistorial);
     }
 
     //Aqui creo el metodo que me permitiria contruer el aprtado de comentarios para quejas y sujerencias
@@ -538,7 +594,7 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.vaciarPanel(panelBotonesLaterales);
         MetodosPublicos.vaciarPanel(panelComentarios);
         MetodosPublicos.vaciarPanel(cuerpo2);
-        
+
         construirFormularioComentario();
         this.panelBotonesLaterales.add(btnSugerencias);
         this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
@@ -550,7 +606,7 @@ public class PacienteInterfaz extends JFrame {
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));//Padding propio de esta vista
         this.cuerpo2.add(panelBotonesLaterales, BorderLayout.WEST);
         this.cuerpo2.add(panelComentarios, BorderLayout.CENTER);
-       
+
         MetodosPublicos.refrescarVentana(panelBotonesLaterales);
         MetodosPublicos.refrescarVentana(panelComentarios);
         MetodosPublicos.refrescarVentana(cuerpo2);
@@ -558,28 +614,46 @@ public class PacienteInterfaz extends JFrame {
 
     //Aqui creo el metodo que me permitiria agregar componentes al panel comentarios
     public void agregarAlPanelComentarios(String tipoMensaje, String asunto, String nombreUsu, String descripcion) {
-        PanelRound c = new PanelRound();
-        int valor = 50;
-        c.setRoundBottomRight(valor);
-        c.setRoundBottomLeft(valor);
-        c.setRoundTopLeft(valor);
-        c.setRoundTopRight(valor);
+        JPanel c = new JPanel();
+        c.setBackground(Color.WHITE);
         c.setLayout(new BoxLayout(c, BoxLayout.Y_AXIS));
-        c.setBorder(new EmptyBorder(0, 10, 0, 10));
-        c.setBackground(COLOR_VERDE_ACENTO);
-        JTextField descripcionText = new JTextField(descripcion);
+        c.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                new EmptyBorder(15, 20, 15, 20)
+        ));
+        c.setMaximumSize(new Dimension(Integer.MAX_VALUE, 170));
+
+        // Encabezado
+        JLabel titulo = new JLabel(asunto);
+        titulo.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titulo.setForeground(new Color(33, 33, 33));
+        titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel informacion = new JLabel(tipoMensaje + " • " + nombreUsu);
+        informacion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        informacion.setForeground(new Color(120, 120, 120));
+        informacion.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // Descripción
+        JTextArea descripcionText = new JTextArea(descripcion);
         descripcionText.setEditable(false);
-        descripcionText.setBackground(Color.WHITE);
-        JLabel label = new JLabel(tipoMensaje + "-" + asunto + "-" + nombreUsu);
-        label.setFont(new Font("Arial", Font.BOLD, 20));
-        label.setOpaque(false);
-        c.add(Box.createRigidArea(new Dimension(0, 10)));
-        c.add(label);
-        c.add(Box.createRigidArea(new Dimension(0, 10)));
+        descripcionText.setLineWrap(true);
+        descripcionText.setWrapStyleWord(true);
+        descripcionText.setOpaque(false);
+        descripcionText.setFocusable(false);
+        descripcionText.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        descripcionText.setForeground(new Color(60, 60, 60));
+        descripcionText.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        c.add(titulo);
+        c.add(Box.createVerticalStrut(5));
+        c.add(informacion);
+        c.add(Box.createVerticalStrut(12));
         c.add(descripcionText);
-        c.add(Box.createRigidArea(new Dimension(0, 10)));
-        this.panelComentarios1.add(Box.createRigidArea(new Dimension(0, 30)));
-        this.panelComentarios1.add(c);
+
+        panelComentarios1.add(Box.createVerticalStrut(15));
+        panelComentarios1.add(c);
+
         MetodosPublicos.refrescarVentana(panelComentarios1);
         MetodosPublicos.refrescarVentana(panelComentarios);
     }
@@ -738,6 +812,19 @@ public class PacienteInterfaz extends JFrame {
     public void agregarAlPanelHorarios(JComponent c) {
         this.panelHorarios.add(c);
         MetodosPublicos.refrescarVentana(panelHorarios);
+    }
+
+    public void agregarAlPanelMiscitas() {
+        MetodosPublicos.vaciarPanel(panelInfoCitas);
+        JLabel label = new JLabel("No tienes citas pendientes", new ImageIcon("iconsP/emoji.png"), JLabel.CENTER);
+        label.setHorizontalTextPosition(JLabel.CENTER);
+        label.setVerticalTextPosition(JLabel.BOTTOM);
+        label.setFont(new Font("Arial", Font.BOLD, 20));
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelInfoCitas.add(Box.createVerticalGlue());
+        panelInfoCitas.add(label);
+        panelInfoCitas.add(Box.createVerticalGlue());
+        MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
 
     public void agregarAlPanelMiscitas(JPanel titulo, String fecha, String hora, String nombreMedico) {
