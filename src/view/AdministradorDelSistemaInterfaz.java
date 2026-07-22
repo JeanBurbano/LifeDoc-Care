@@ -73,7 +73,7 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
         MetodosPublicos.vaciarPanel(panelUsuarios);
         MetodosPublicos.vaciarPanel(cuerpo2);
         super.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));
-
+        
         JPanel panelBotones = new JPanel();
         panelBotones.setOpaque(false);
         panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.Y_AXIS));
@@ -111,7 +111,6 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
             String nombreCompleto = String.join(" ",
                     p.getPrimerNombre(), segundoNombre, p.getPrimerApellido(), segundoApellido)
                     .replaceAll("\\s+", " ").trim();
-
             mDefaultTableModel.addRow(new Object[]{
                 p.getIdUsuario(), nombreCompleto, p.getEdad(), p.getCorreoElectronico(),
                 p.getNumeroTelefonico(), p.getId_rol()
