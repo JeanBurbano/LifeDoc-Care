@@ -36,7 +36,7 @@ import model.Paciente;
 
 public class PacienteInterfaz extends JFrame {
 
-    private Paciente usuario;
+    public Paciente usuario;
     //Aqui creo los colores que mas vamos autilizar en la plantilla.
     public static final Color COLOR_AZUL_CORPORATIVO = new Color(0, 79, 124);
     public static final Color COLOR_VERDE_ACENTO = new Color(0, 194, 177);
@@ -157,7 +157,7 @@ public class PacienteInterfaz extends JFrame {
         this.panelSesionUsuario.setLayout(new FlowLayout());
         this.panelSesionUsuario.setOpaque(false);
 
-        this.btnCerrarSesion = new JButton("← Cerrar sesion");
+        this.btnCerrarSesion = new JButton("Cerrar sesion", new ImageIcon("iconsP/arrow-left.png"));
         this.btnCerrarSesion.setBackground(Color.WHITE);
         this.btnCerrarSesion.setForeground(COLOR_AZUL_CORPORATIVO);
         this.btnCerrarSesion.setFont(new Font("arial", Font.BOLD, 15));
