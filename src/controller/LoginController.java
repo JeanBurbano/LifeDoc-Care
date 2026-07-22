@@ -212,7 +212,11 @@ public class LoginController implements ActionListener {
                 if (usu != null && usu.getEstado()) {
                     this.c = 0;
 //                    this.lg.dispose();
-                    MetodosPublicos.reproducirSonido("bienvenido.wav");
+                    if (usu.getSexoBiologico().equals("Masculino")) {
+                        MetodosPublicos.reproducirSonido("bienvenido.wav");
+                    } else {
+                        MetodosPublicos.reproducirSonido("bienvenida.wav");
+                    }
                     abrirInterfazSegunRol(usu);
                 } else {
                     boolean verificardor = usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion");

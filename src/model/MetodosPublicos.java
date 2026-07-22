@@ -61,55 +61,70 @@ public class MetodosPublicos {
 
     //Aqui creo un funcion para estilizar el boton
     public static void estilizarBoton(JButton boton, byte estilo) {
+        boton.setFocusPainted(false);
+        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        boton.setOpaque(true);
+
         switch (estilo) {
             case 1://Botones del menu cuerpo1
                 boton.setFont(new Font("Arial", Font.BOLD, 15));
                 boton.setBackground(new Color(232, 249, 248));
                 boton.setForeground(new Color(0, 75, 121));
+                boton.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(0, 75, 121), 1, true),
+                        BorderFactory.createEmptyBorder(6, 16, 6, 16)));
                 break;
             case 2://Botones laterales tipo Historial Medico/Historial de Citas
                 boton.setFont(new Font("Arial", Font.BOLD, 30));
                 boton.setBackground(Color.WHITE);
                 boton.setForeground(new Color(0, 75, 121));
+                boton.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(0, 75, 121), 1, true),
+                        BorderFactory.createEmptyBorder(10, 22, 10, 22)));
                 break;
             case 3://Boton Agendar una cita
                 boton.setFont(new Font("arial", Font.BOLD, 20));
                 boton.setAlignmentX(Component.CENTER_ALIGNMENT);
                 boton.setBackground(Color.WHITE);
                 boton.setForeground(COLOR_AZUL_CORPORATIVO);
+                boton.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 1, true),
+                        BorderFactory.createEmptyBorder(10, 22, 10, 22)));
                 break;
-            case 4://Botones de tipo de consulta / sugerencias / quejas / foro
+            case 4://Botones de tipo de consulta, sugerencias, quejas, foro
                 boton.setFont(new Font("Arial", Font.BOLD, 30));
                 boton.setBackground(Color.WHITE);
                 boton.setForeground(new Color(0, 75, 121));
+                boton.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(0, 75, 121), 1, true),
+                        BorderFactory.createEmptyBorder(10, 22, 10, 22)));
                 break;
             case 5://Boton Enviar resaltado en azul solido
                 boton.setFont(new Font("Arial", Font.BOLD, 20));
                 boton.setBackground(new Color(0, 75, 121));
                 boton.setForeground(Color.WHITE);
                 boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                boton.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(0, 75, 121).darker(), 1, true),
+                        BorderFactory.createEmptyBorder(8, 24, 8, 24)));
                 break;
             case 6://Boton cancelar
                 boton.setFont(new Font("Arial", Font.BOLD, 13));
                 boton.setBackground(new Color(248, 205, 205));
                 boton.setForeground(new Color(153, 45, 45));
                 boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                boton.setFocusPainted(false);
-                boton.setBorderPainted(false);
-                boton.setOpaque(true);
-                boton.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
-                boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                boton.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(153, 45, 45), 1, true),
+                        BorderFactory.createEmptyBorder(6, 16, 6, 16)));
                 break;
             case 7://Boton reagendar
                 boton.setFont(new Font("Arial", Font.BOLD, 13));
                 boton.setBackground(new Color(198, 230, 206));
                 boton.setForeground(new Color(35, 105, 60));
                 boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                boton.setFocusPainted(false);
-                boton.setBorderPainted(false);
-                boton.setOpaque(true);
-                boton.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
-                boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                boton.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(35, 105, 60), 1, true),
+                        BorderFactory.createEmptyBorder(6, 16, 6, 16)));
                 break;
         }
     }

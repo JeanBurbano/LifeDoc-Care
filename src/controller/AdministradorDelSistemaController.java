@@ -25,11 +25,15 @@ public class AdministradorDelSistemaController extends PacienteController {
             return;
         }
         int idUsuario = (int) adminSistem.mDefaultTableModel.getValueAt(fila, 0);
-        boolean actualizado = usuarioDao.habilitarUsuario(idUsuario);
-        if (actualizado) {
-            JOptionPane.showMessageDialog(adminSistem, "Usuario habilitado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        if (adminSistem.getUsuario().getIdUsuario() != idUsuario) {
+            boolean actualizado = usuarioDao.habilitarUsuario(idUsuario);
+            if (actualizado) {
+                JOptionPane.showMessageDialog(adminSistem, "Usuario habilitado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(adminSistem, "El usuario ya se encuentra habilitado.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            }
         } else {
-            JOptionPane.showMessageDialog(adminSistem, "El usuario ya se encuentra habilitado.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(adminSistem, "No se puede inhabilitar a si mismo.", "Aviso", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -40,11 +44,15 @@ public class AdministradorDelSistemaController extends PacienteController {
             return;
         }
         int idUsuario = (int) adminSistem.mDefaultTableModel.getValueAt(fila, 0);
-        boolean actualizado = usuarioDao.deshabilitarUsuario(idUsuario);
-        if (actualizado) {
-            JOptionPane.showMessageDialog(adminSistem, "Usuario deshabilitado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        if (adminSistem.getUsuario().getIdUsuario() != idUsuario) {
+            boolean actualizado = usuarioDao.deshabilitarUsuario(idUsuario);
+            if (actualizado) {
+                JOptionPane.showMessageDialog(adminSistem, "Usuario deshabilitado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(adminSistem, "El usuario ya se encuentra deshabilitado.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            }
         } else {
-            JOptionPane.showMessageDialog(adminSistem, "El usuario ya se encuentra deshabilitado.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(adminSistem, "No se puede deshabilitar a si mismo.", "Aviso", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -55,7 +63,7 @@ public class AdministradorDelSistemaController extends PacienteController {
 
         if (e.getSource() == adminSistem.btnRol) {
             adminSistem.vistaUsuarios();
-            adminSistem.cargarUsuarios(usuarioDao.listar()); 
+            adminSistem.cargarUsuarios(usuarioDao.listar());
             adminSistem.btnRol.setEnabled(false);
             adminSistem.habilitarBotonesMenu(adminSistem.btnRol);
         } else if (e.getSource() == adminSistem.btnHabilitar) {
