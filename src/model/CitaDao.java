@@ -5,18 +5,38 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CitaDao implements Crud<Cita> {
 
+    // setAgregar devuelve esto cuando el medico ya tiene otra cita en esa fecha,hora.
+    public static final int CONFLICTO_HORARIO = -1;
+
     public CitaDao() {
 
     }
-    // setAgregar devuelve esto cuando el medico ya tiene otra cita en esa fecha/hora.
-    public static final int CONFLICTO_HORARIO = -1;
 
     public static Conexion conectar = new Conexion();
+
+    public List<LocalTime> listarHorasOcupadas(int idMedico, LocalDate fecha) {
+        List<LocalTime> horas = new ArrayList<>();
+        String sql = "SELECT hora_cita FROM cita WHERE id_Medico = ? AND fecha_cita = ? AND estado = 1";
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idMedico);
+            ps.setObject(2, fecha);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    horas.add(rs.getTime("hora_cita").toLocalTime());
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return horas;
+    }
 
     public Cita[] listarPorUsuario(int idUsuario) {
         List<Cita> citas = new ArrayList<>();

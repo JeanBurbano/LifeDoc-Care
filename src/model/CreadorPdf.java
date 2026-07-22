@@ -30,7 +30,7 @@ public class CreadorPdf {
 
     public void setCrearPdf(String nombre, String mensaje) {
         this.nombre = nombre;
-        // Abrir ventana para elegir donde guardar
+        //Abrir ventanita esa de java para elejir donde guardar
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Guardar PDF");
         chooser.setSelectedFile(new File(nombre + ".pdf"));
@@ -39,7 +39,6 @@ public class CreadorPdf {
             public boolean accept(File f) {
                 return f.getName().toLowerCase().endsWith(".pdf") || f.isDirectory();
             }
-
             @Override
             public String getDescription() {
                 return "Archivos PDF (*.pdf)";
@@ -48,11 +47,11 @@ public class CreadorPdf {
 
         int resultado = chooser.showSaveDialog(null);
         if (resultado != JFileChooser.APPROVE_OPTION) {
-            return; // El usuario canceló
+            return; //El usuario cancelo
         }
 
         File archivo = chooser.getSelectedFile();
-        // Asegurar que tenga extensión .pdf
+        //Aqui vamos a asegurar que usuario tenga esa cosa que es como una extencion pdf
         if (!archivo.getName().toLowerCase().endsWith(".pdf")) {
             archivo = new File(archivo.getAbsolutePath() + ".pdf");
         }

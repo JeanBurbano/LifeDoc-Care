@@ -21,7 +21,7 @@ import model.Paciente;
 public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
 
     private final static String ARREGLO_COLUMNAS[] = {"Id", "Nombre Completo", "Edad", "Correo", "Numero Celular", "Rol"};
-    public JPanel panelUsuarios;
+    public JPanel panelUsuarios, panelBotones;
     public JButton btnRol, btnHabilitar, btnDesabilitar, btnLimpiar;
     public DefaultTableModel mDefaultTableModel;
     public JTable tabla;
@@ -46,6 +46,7 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
         this.tabla.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
         this.tabla.setFont(new Font("Tahoma", Font.PLAIN, 12));
         this.tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //Solo una fila a la vez
+        this.tabla.getTableHeader().setReorderingAllowed(false);
 
         this.btnRol = new JButton("Usuarios", new ImageIcon("iconsP/friends.png"));
         this.btnHabilitar = new JButton("Habilitar ", new ImageIcon("iconsP/accept.png"));
@@ -56,6 +57,15 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
         MetodosPublicos.estilizarBoton(btnLimpiar, (byte) 1);
         this.btnLimpiar.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        this.panelBotones = new JPanel();
+        this.panelBotones.setOpaque(false);
+        this.panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.Y_AXIS));
+        this.panelBotones.add(Box.createVerticalStrut(170));
+        this.panelBotones.add(btnHabilitar);
+        this.panelBotones.add(Box.createVerticalStrut(20));
+        this.panelBotones.add(btnDesabilitar);
+        this.panelBotones.add(Box.createVerticalStrut(20));
+        this.panelBotones.add(btnLimpiar);
         super.agregarBotonCuerpo1(btnRol);
 
         mDefaultTableModel = new DefaultTableModel() {
@@ -72,23 +82,12 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
     public void vistaUsuarios() {
         MetodosPublicos.vaciarPanel(panelUsuarios);
         MetodosPublicos.vaciarPanel(cuerpo2);
+        super.cuerpo2.setLayout(new BorderLayout(20, 20));
         super.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));
-        
-        JPanel panelBotones = new JPanel();
-        panelBotones.setOpaque(false);
-        panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.Y_AXIS));
-        panelBotones.add(Box.createVerticalStrut(170));
-        panelBotones.add(btnHabilitar);
-        panelBotones.add(Box.createVerticalStrut(20));
-        panelBotones.add(btnDesabilitar);
-        panelBotones.add(Box.createVerticalStrut(20));
-        panelBotones.add(btnLimpiar);
-
-        super.cuerpo2.add(panelBotones, BorderLayout.WEST);
 
         JScrollPane scrollPane = new JScrollPane(tabla);
         this.panelUsuarios.add(scrollPane, BorderLayout.CENTER);
-
+        super.cuerpo2.add(panelBotones, BorderLayout.WEST);
         super.cuerpo2.add(panelUsuarios, BorderLayout.CENTER);
 
         MetodosPublicos.refrescarVentana(panelUsuarios);

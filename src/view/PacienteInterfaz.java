@@ -95,6 +95,7 @@ public class PacienteInterfaz extends JFrame {
     public JPanel panelCalendario;
     public CalendarPanel calendario;
     public JPanel panelHorarios;
+    public JScrollPane scrollHorarios;
 
     public PacienteInterfaz(String nombreInterfaz) {
         super(nombreInterfaz);
@@ -145,8 +146,9 @@ public class PacienteInterfaz extends JFrame {
         this.panelBienvenida = new JPanel();
         this.panelBienvenida.setLayout(new BorderLayout());
         this.panelBienvenida.setOpaque(false);
-        
-        JLabel tituloBienvenida = new JLabel("Bienvenido, " + this.usuario.getPrimerNombre() + "!");
+
+        JLabel tituloBienvenida = new JLabel((usuario.getSexoBiologico().equals("Masculino") ? "Bienvenido, " : "Bienvenida, ")
+                + this.usuario.getPrimerNombre() + "!");
         tituloBienvenida.setFont(new Font("arial", Font.BOLD, 30));
 
         this.panelBienvenida.add(tituloBienvenida, BorderLayout.NORTH);
@@ -191,7 +193,7 @@ public class PacienteInterfaz extends JFrame {
         this.encabezado.add(panelSesionUsuario, BorderLayout.EAST);
 
         this.cuerpo1 = new JPanel();
-        this.cuerpo1.setLayout(new FlowLayout(FlowLayout.LEFT, 25, 10));
+        this.cuerpo1.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.cuerpo1.setOpaque(false);
         this.cuerpo1.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(40, 40, 0, 40),
@@ -327,7 +329,7 @@ public class PacienteInterfaz extends JFrame {
         this.panelCalendario.setLayout(new BoxLayout(panelCalendario, BoxLayout.Y_AXIS));
         this.panelCalendario.setBorder(
                 BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 3),
                         BorderFactory.createEmptyBorder(20, 20, 20, 20)
                 ));
 
@@ -339,10 +341,15 @@ public class PacienteInterfaz extends JFrame {
         this.panelHorarios.setBorder(
                 BorderFactory.createCompoundBorder(
                         BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
-                        BorderFactory.createEmptyBorder(20, 20, 20, 20)
-                ));
-        this.panelHorarios.setPreferredSize(new Dimension(750, 0));
+                        BorderFactory.createEmptyBorder(20, 20, 20, 20)));
         this.panelHorarios.setOpaque(false);
+        this.scrollHorarios = new JScrollPane(panelHorarios);
+        this.scrollHorarios.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        this.scrollHorarios.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        this.scrollHorarios.setOpaque(false);
+        this.scrollHorarios.getViewport().setOpaque(false);
+        this.scrollHorarios.setBorder(null);
+        this.scrollHorarios.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
     }
 
     //Aqui creo el metodo para habilitar o desabilitar botones del paciente.
@@ -366,6 +373,7 @@ public class PacienteInterfaz extends JFrame {
     public void agregarBotonCuerpo1(JButton boton) {
         MetodosPublicos.estilizarBoton(boton, (byte) 1);
         this.cuerpo1.add(boton);
+        this.cuerpo1.add(Box.createHorizontalStrut(5));
         MetodosPublicos.refrescarVentana(cuerpo1);
     }
 
@@ -458,6 +466,7 @@ public class PacienteInterfaz extends JFrame {
         scrollCitas.setPreferredSize(new Dimension(600, 345));
         scrollCitas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollCitas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollCitas.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2));
         scrollCitas.setOpaque(false);
         scrollCitas.getViewport().setOpaque(false);
 
@@ -796,8 +805,9 @@ public class PacienteInterfaz extends JFrame {
         this.panelCalendario.add(descrip2);
         this.panelCalendario.add(calendario);
         this.panelHorarios.add(tituloHorarioDisponibles);
+        this.scrollHorarios.setViewportView(panelHorarios);
         this.cuerpo2.add(panelCalendario, BorderLayout.WEST);
-        this.cuerpo2.add(panelHorarios, BorderLayout.EAST);
+        this.cuerpo2.add(scrollHorarios, BorderLayout.CENTER);
         descrip1 = null;
         descrip2 = null;
         tituloHorarioDisponibles = null;
@@ -805,13 +815,8 @@ public class PacienteInterfaz extends JFrame {
         settings = null;
         MetodosPublicos.refrescarVentana(panelCalendario);
         MetodosPublicos.refrescarVentana(panelHorarios);
+        MetodosPublicos.refrescarVentana(scrollHorarios);
         MetodosPublicos.refrescarVentana(cuerpo2);
-    }
-
-    //Aqui creo el metodo que me permitiria agregar compoenentes al panelHorarios
-    public void agregarAlPanelHorarios(JComponent c) {
-        this.panelHorarios.add(c);
-        MetodosPublicos.refrescarVentana(panelHorarios);
     }
 
     public void agregarAlPanelMiscitas() {
@@ -873,6 +878,28 @@ public class PacienteInterfaz extends JFrame {
         this.listaBotonesCancelar.add(btnCancelarCita);
         this.panelInfoCitas.add(c);
         MetodosPublicos.refrescarVentana(panelInfoCitas);
+    }
+
+    public void limpiarPanelHorarios() {
+        MetodosPublicos.vaciarPanel(panelHorarios);
+        panelHorarios.add(new JLabel("Horarios Disponibles"));
+        MetodosPublicos.refrescarVentana(panelHorarios);
+    }
+
+    public JButton agregarBotonHoraDisponible(String hora) {
+        JButton btn = new JButton(hora);
+        MetodosPublicos.estilizarBoton(btn, (byte) 4);
+        panelHorarios.add(btn);
+        panelHorarios.add(Box.createRigidArea(new Dimension(0, 8)));
+        MetodosPublicos.refrescarVentana(panelHorarios);
+        return btn;
+    }
+
+    public void mostrarMensajeSinDisponibilidad(String mensaje) {
+        JLabel lbl = new JLabel(mensaje);
+        lbl.setFont(new Font("Arial", Font.BOLD, 16));
+        panelHorarios.add(lbl);
+        MetodosPublicos.refrescarVentana(panelHorarios);
     }
 
     public Paciente getUsuario() {
