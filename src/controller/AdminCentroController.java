@@ -165,7 +165,7 @@ public class AdminCentroController extends PacienteController {
             return;
         }
 
-        // Pendiente: MedicamentoDao().setAgregar(...) cuando exista
+        // 
         JOptionPane.showMessageDialog(null,
                 "Medicamento \"" + adminI.campoNombreM.getText() + "\" guardado correctamente (simulado).",
                 "Medicamento Guardado", JOptionPane.INFORMATION_MESSAGE);
@@ -195,6 +195,7 @@ public class AdminCentroController extends PacienteController {
         if (e.getSource() == adminI.btnConfirmarGuardarHorario) {
             adminI.dialogoVistaPreviaHorario.dispose();
             guardarHorario();
+            
         }
 
         if (e.getSource() == adminI.btnCancelarVistaPrevia) {
@@ -232,6 +233,8 @@ public class AdminCentroController extends PacienteController {
         adminI.mostrarVistaPreviaHorarioApartado(diasActivos, horasPorDia);
         this.adminI.btnConfirmarGuardarHorario.addActionListener(this);
         this.adminI.btnCancelarVistaPrevia.addActionListener(this);
+        
+        adminI.dialogoVistaPreviaHorario.setVisible(true);
     }
 
     /**
@@ -352,6 +355,7 @@ public class AdminCentroController extends PacienteController {
         poblarConsultoriosAsignacion();
         adminI.btnConfirmarAsignacion.addActionListener(this);
         adminI.btnCancelarAsignacion.addActionListener(this);
+        adminI.dialogoAsignarMedico.setVisible(true);
     }
 
     private void poblarMedicosAsignacion() {

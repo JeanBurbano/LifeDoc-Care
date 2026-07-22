@@ -13,6 +13,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.time.LocalDate;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -95,7 +96,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     
     //mostrar el horario de forma grafica antes de guardar
     public JComboBox comboMesHorario; // mes al que se aplicará el horario
-    public JComboBox comboAnioHorario; // año al que se aplicará el horario
+    public JTextField comboAnioHorario; // año al que se aplicará el horario
     public JComboBox comboConsultorioHorario; // consultorio al que se aplicará el horario para ese medico
     public JDialog dialogoVistaPreviaHorario; //donde estará el horario de manera grafica
     public JButton btnConfirmarGuardarHorario, btnCancelarVistaPrevia;
@@ -675,11 +676,22 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         
         comboMesHorario = new JComboBox<>(MESES);
         MetodosPublicos.crearComboEstilizado(comboMesHorario);
-        MetodosPublicos.crearComboEstilizado(comboAnioHorario);
+        comboAnioHorario = new JTextField(String.valueOf(LocalDate.now().getYear())); 
+        comboAnioHorario.setEditable(false); // solo lectura
+        comboAnioHorario.setFont(new Font("Arial", Font.PLAIN, 13));
+        comboAnioHorario.setBackground(new Color(240, 240, 240)); // gris claro  para que se note que no es editable
+        comboAnioHorario.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
+                BorderFactory.createEmptyBorder(6, 10, 6, 10)
+        ));
+        
         JPanel  filaMes = MetodosPublicos.crearFila("Mes de aplicación:", comboMesHorario);
         filaMes.setAlignmentX(Component.LEFT_ALIGNMENT);
         contenido.add(filaMes);
         contenido.add(Box.createVerticalStrut(30));
+        JPanel filaAnio = MetodosPublicos.crearFila("Año:", comboAnioHorario);
+        filaAnio.setAlignmentX(Component.LEFT_ALIGNMENT);
+        contenido.add(filaAnio);
 
         JPanel filaBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         filaBotones.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -700,7 +712,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         contenido.add(filaBotones);
 
         dialogoAsignarMedico.add(contenido, BorderLayout.CENTER);
-        dialogoAsignarMedico.setVisible(true);
+        
     }
     
     
@@ -769,7 +781,7 @@ public void mostrarVistaPreviaHorarioApartado(boolean[] diasActivos, String[] ho
     filaBotones.add(btnConfirmarGuardarHorario);
     dialogoVistaPreviaHorario.add(filaBotones, BorderLayout.SOUTH);
 
-    dialogoVistaPreviaHorario.setVisible(true); // muestra la ventana 
+    
 }
     
     
