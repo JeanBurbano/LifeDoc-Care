@@ -676,7 +676,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 20)));
         panelConfirmacion.add(lblMetodoUsado);
         panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 30)));
-        panelConfirmacion.add(btnFinalizar);
+//        panelConfirmacion.add(btnFinalizar);
  
         panelPrincipal.add(panelFactura, BorderLayout.WEST);
         panelPrincipal.add(panelConfirmacion, BorderLayout.CENTER);
@@ -718,7 +718,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         
 
         panelPrincipal.add(panelFactura, BorderLayout.WEST);
-        panelPrincipal.add(panelOpciones, BorderLayout.CENTER);
+//        panelPrincipal.add(panelOpciones, BorderLayout.CENTER);
 
         cuerpo2.add(panelPrincipal, BorderLayout.CENTER);
 
