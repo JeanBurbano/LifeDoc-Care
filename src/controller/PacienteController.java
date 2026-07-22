@@ -1,20 +1,28 @@
 package controller;
 
+import com.github.lgooddatepicker.optionalusertools.CalendarListener;
+import com.github.lgooddatepicker.zinternaltools.CalendarSelectionEvent;
+import com.github.lgooddatepicker.zinternaltools.YearMonthChangeEvent;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import model.CalculadorHorarioDisponible;
 import model.Cita;
 import model.CitaDao;
 import model.CreadorPdf;
 import model.Foro;
 import model.ForoDao;
+import model.Horario;
+import model.HorarioDao;
+import model.HorarioDia;
 import model.Medico;
 import model.MedicoDao;
 import model.Paciente;
@@ -31,7 +39,8 @@ public class PacienteController implements ActionListener {
     private MedicoDao medicodao;
     private ForoDao forodao;
     protected PacienteInterfaz pacienteI;//protected para que el hijo lo acceda directo
-    public Medico[] medicos;
+    private Medico[] medicos;
+    private Medico medicoSeleccionado;
     protected Cita[] citas;
     private boolean verificador;
     private String historial;
@@ -71,6 +80,7 @@ public class PacienteController implements ActionListener {
         this.pacienteI.btnMisCitas.doClick();
     }
 
+    //funcion para rellenar foro si es null
     private void inicializarForo() {
         if (foro == null || foro.isEmpty()) {
             foro = forodao.listar();
@@ -89,10 +99,71 @@ public class PacienteController implements ActionListener {
         inicializarForo();
     }
 
+    //funsion 
+    private void mostrarHorasDisponibles(LocalDate fecha) {
+        pacienteI.limpiarPanelHorarios();
+        Horario horarioMedico = new HorarioDao().obtenerPorMedico(medicoSeleccionado.getId_medico());
+        HorarioDia diaHorario = CalculadorHorarioDisponible.buscarDiaParaFecha(horarioMedico, fecha);
+        if (diaHorario == null) {
+            pacienteI.mostrarMensajeSinDisponibilidad("El medico no atiende este dia.");
+            return;
+        }
+        List<java.time.LocalTime> ocupadas = citadao.listarHorasOcupadas(medicoSeleccionado.getId_medico(), fecha);
+        List<java.time.LocalTime> disponibles = CalculadorHorarioDisponible.calcularDisponibles(diaHorario, ocupadas);
+        if (disponibles.isEmpty()) {
+            pacienteI.mostrarMensajeSinDisponibilidad("No hay horas disponibles para este dia.");
+            return;
+        }
+        for (java.time.LocalTime hora : disponibles) {
+            JButton btnHora = pacienteI.agregarBotonHoraDisponible(hora.toString());
+            btnHora.addActionListener((ActionEvent ev) -> confirmarCita(fecha, hora));
+        }
+    }
+
+    //funcion para agregar el listener al calendario
+    private void agregarListenerCalendario() {
+        pacienteI.calendario.addCalendarListener(new CalendarListener() {
+            @Override
+            public void selectedDateChanged(CalendarSelectionEvent event) {
+                LocalDate fechaSeleccionada = event.getNewDate();
+                if (fechaSeleccionada == null || medicoSeleccionado == null) {
+                    return;
+                }
+                mostrarHorasDisponibles(fechaSeleccionada);
+            }
+
+            @Override
+            public void yearMonthChanged(YearMonthChangeEvent event) {
+                // como tal no se necesita hacer nada aqui pero el metodo es obligatorio
+            }
+        });
+    }
+
+    private void confirmarCita(LocalDate fecha, java.time.LocalTime hora) {
+        Cita nuevaCita = new Cita((byte) 0, true, hora, fecha, (byte) usurio.getIdUsuario(), null,
+                (byte) medicoSeleccionado.getId_medico(), null, null, (byte) usurio.getIdUsuario());
+        
+        int resultado = citadao.setAgregar(nuevaCita);
+
+        if (resultado == CitaDao.CONFLICTO_HORARIO) {
+            JOptionPane.showMessageDialog(pacienteI, "Esa hora acaba de ser tomada, elige otra.");
+            mostrarHorasDisponibles(fecha);
+        } else if (resultado > 0) {
+            JOptionPane.showMessageDialog(pacienteI, "Cita agendada correctamente.");
+            pacienteI.btnMisCitas.doClick();
+        } else {
+            JOptionPane.showMessageDialog(pacienteI, "No se pudo agendar, intenta nuevamente.");
+        }
+    }
+
     private void actionListenerParaBotonesDeVectores(ArrayList<JButton> vectorBotones, String primero, String segundo) {
-        for (JButton boton : vectorBotones) {
+        for (int i = 0; i < vectorBotones.size(); i++) {
+            JButton boton = vectorBotones.get(i);
+            Medico medicoDelBoton = medicos[i];
             boton.addActionListener((ActionEvent e) -> {
+                this.medicoSeleccionado = medicoDelBoton;
                 pacienteI.mostrarVistaAgendamientoCita(new Titulo(primero, segundo, 50));
+                agregarListenerCalendario();
             });
         }
     }

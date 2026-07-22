@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import java.sql.SQLException;
+
 /**
  *
  * @author lunaa
@@ -27,14 +28,50 @@ public class HorarioDao implements Crud<Horario> {
     private static final String[] NOMBRES_DIAS = {"Lunes", "Martes", "Miercoles",
         "Jueves", "Viernes", "Sabado"};
 
+    public Horario obtenerPorMedico(int idMedico) {
+        String sql = "SELECT h.id_horario, h.nombre, h.color_etiqueta, h.fecha_creacion, "
+                + "hd.dia_semana, hd.hora_inicio, hd.hora_fin, hd.descanso_inicio, hd.descanso_fin "
+                + "FROM horarios h "
+                + "LEFT JOIN horario_dias hd ON hd.id_horarios = h.id_horario "
+                + "WHERE h.id_medico = ?";
+        Horario horario = null;
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idMedico);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    if (horario == null) {
+                        horario = new Horario();
+                        horario.setId(rs.getInt("id_horario"));
+                        horario.setNombre(rs.getString("nombre"));
+                        horario.setColorEtiqueta(rs.getString("color_etiqueta"));
+                        horario.setFechaCreacion(rs.getString("fecha_creacion"));
+                        horario.setDias(new ArrayList<>());
+                    }
+                    if (rs.getObject("dia_semana") != null) {
+                        HorarioDia dia = new HorarioDia();
+                        dia.setDiaSemana(rs.getString("dia_semana"));
+                        dia.setHoraInicio(rs.getString("hora_inicio"));
+                        dia.setHoraFin(rs.getString("hora_fin"));
+                        dia.setDescansoInicio(rs.getString("descanso_inicio"));
+                        dia.setDescansoFin(rs.getString("descanso_fin"));
+                        horario.getDias().add(dia);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return horario; // null si el médico no tiene horario asignado
+    }
+
     @Override
     public List<Horario> listar() {
         List<Horario> listaHorarios = new ArrayList<Horario>();
         String sql = "SELECT h.id_horario, h.nombre, h.color_etiqueta, h.fecha_creacion, "
-                   + "hd.dia_semana, hd.hora_inicio, hd.hora_fin, hd.descanso_inicio, hd.descanso_fin "
-                   + "FROM horarios h "
-                   + "LEFT JOIN horario_dias hd ON hd.id_horarios = h.id_horario "
-                   + "ORDER BY h.id_horario";
+                + "hd.dia_semana, hd.hora_inicio, hd.hora_fin, hd.descanso_inicio, hd.descanso_fin "
+                + "FROM horarios h "
+                + "LEFT JOIN horario_dias hd ON hd.id_horarios = h.id_horario "
+                + "ORDER BY h.id_horario";
         try {
             con = conectar.getConection();
             ps = con.prepareStatement(sql);
@@ -75,21 +112,21 @@ public class HorarioDao implements Crud<Horario> {
         }
         return listaHorarios;
     }
-    
+
     public int asignarMedico(int idHorario, int idMedico, int idConsultorio, int mes, int anio) {
-    String sql = "UPDATE horarios SET id_medico = ?, id_consultorio = ?, mes = ?, anio = ? WHERE id_horario = ?";
-    try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setInt(1, idMedico);
-        ps.setInt(2, idConsultorio);
-        ps.setInt(3, mes);
-        ps.setInt(4, anio);
-        ps.setInt(5, idHorario);
-        return ps.executeUpdate();
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return 0;
+        String sql = "UPDATE horarios SET id_medico = ?, id_consultorio = ?, mes = ?, anio = ? WHERE id_horario = ?";
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idMedico);
+            ps.setInt(2, idConsultorio);
+            ps.setInt(3, mes);
+            ps.setInt(4, anio);
+            ps.setInt(5, idHorario);
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
-}
 
     @Override
     public int setAgregar(Horario h) {
@@ -131,7 +168,7 @@ public class HorarioDao implements Crud<Horario> {
                     JOptionPane.ERROR_MESSAGE
             );
             return 0;
-        }finally {
+        } finally {
             if (con != null) {
                 try {
                     con.close();
@@ -177,10 +214,9 @@ public class HorarioDao implements Crud<Horario> {
                 }
             }
         }
-        
 
     }
-    
+
     public static String indiceANombreDia(int indice) {
         return NOMBRES_DIAS[indice];
     }
