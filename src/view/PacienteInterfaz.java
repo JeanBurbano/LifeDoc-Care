@@ -147,7 +147,8 @@ public class PacienteInterfaz extends JFrame {
         this.panelBienvenida.setLayout(new BorderLayout());
         this.panelBienvenida.setOpaque(false);
 
-        JLabel tituloBienvenida = new JLabel("Bienvenido, " + this.usuario.getPrimerNombre() + "!");
+        JLabel tituloBienvenida = new JLabel((usuario.getSexoBiologico().equals("Masculino") ? "Bienvenido, " : "Bienvenida, ")
+                + this.usuario.getPrimerNombre() + "!");
         tituloBienvenida.setFont(new Font("arial", Font.BOLD, 30));
 
         this.panelBienvenida.add(tituloBienvenida, BorderLayout.NORTH);
@@ -192,7 +193,7 @@ public class PacienteInterfaz extends JFrame {
         this.encabezado.add(panelSesionUsuario, BorderLayout.EAST);
 
         this.cuerpo1 = new JPanel();
-        this.cuerpo1.setLayout(new FlowLayout(FlowLayout.LEFT, 25, 10));
+        this.cuerpo1.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.cuerpo1.setOpaque(false);
         this.cuerpo1.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(40, 40, 0, 40),
@@ -328,7 +329,7 @@ public class PacienteInterfaz extends JFrame {
         this.panelCalendario.setLayout(new BoxLayout(panelCalendario, BoxLayout.Y_AXIS));
         this.panelCalendario.setBorder(
                 BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                        BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 3),
                         BorderFactory.createEmptyBorder(20, 20, 20, 20)
                 ));
 
@@ -340,8 +341,7 @@ public class PacienteInterfaz extends JFrame {
         this.panelHorarios.setBorder(
                 BorderFactory.createCompoundBorder(
                         BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
-                        BorderFactory.createEmptyBorder(20, 20, 20, 20)
-                ));
+                        BorderFactory.createEmptyBorder(20, 20, 20, 20)));
         this.panelHorarios.setOpaque(false);
         this.scrollHorarios = new JScrollPane(panelHorarios);
         this.scrollHorarios.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -349,6 +349,7 @@ public class PacienteInterfaz extends JFrame {
         this.scrollHorarios.setOpaque(false);
         this.scrollHorarios.getViewport().setOpaque(false);
         this.scrollHorarios.setBorder(null);
+        this.scrollHorarios.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
     }
 
     //Aqui creo el metodo para habilitar o desabilitar botones del paciente.
@@ -372,6 +373,7 @@ public class PacienteInterfaz extends JFrame {
     public void agregarBotonCuerpo1(JButton boton) {
         MetodosPublicos.estilizarBoton(boton, (byte) 1);
         this.cuerpo1.add(boton);
+        this.cuerpo1.add(Box.createHorizontalStrut(5));
         MetodosPublicos.refrescarVentana(cuerpo1);
     }
 
@@ -805,7 +807,7 @@ public class PacienteInterfaz extends JFrame {
         this.panelHorarios.add(tituloHorarioDisponibles);
         this.scrollHorarios.setViewportView(panelHorarios);
         this.cuerpo2.add(panelCalendario, BorderLayout.WEST);
-        this.cuerpo2.add(scrollHorarios, BorderLayout.EAST);
+        this.cuerpo2.add(scrollHorarios, BorderLayout.CENTER);
         descrip1 = null;
         descrip2 = null;
         tituloHorarioDisponibles = null;

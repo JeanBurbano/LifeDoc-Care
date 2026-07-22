@@ -211,7 +211,7 @@ public class LoginController implements ActionListener {
                 creaUsuSegunRol(idRol, id, contrasena);
                 if (usu != null && usu.getEstado()) {
                     this.c = 0;
-//                    this.lg.dispose();
+                    this.lg.dispose();
                     if (usu.getSexoBiologico().equals("Masculino")) {
                         MetodosPublicos.reproducirSonido("bienvenido.wav");
                     } else {
@@ -223,7 +223,7 @@ public class LoginController implements ActionListener {
                     if (usu == null && !verificardor) {
                         JOptionPane.showMessageDialog(lg, "El usuario no existe");
                     } else if (usu == null && usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {
-                        JOptionPane.showMessageDialog(lg, "La contrasena es incorrecta");
+                        JOptionPane.showMessageDialog(lg, "contrsena incorrecta incorrecta");
                     } else {
                         if (!usu.getEstado()) {
                             JOptionPane.showMessageDialog(lg, "El usuario esta inabilitado");
@@ -238,13 +238,14 @@ public class LoginController implements ActionListener {
                 id = null;
                 contrasena = null;
             } else {
+                String mensaje = null;
                 estadoDeCosas(true);
                 this.c++;
                 if (id.isEmpty()) {
-                    JOptionPane.showMessageDialog(lg, "Campo id es obligatorio");
+                    mensaje = "Campo id es obligatorio.\n";
                 } else {
                     if (!MetodosPublicos.validarTamano(id, 8, 10)) {
-                        JOptionPane.showMessageDialog(lg, "Campo id debe contener 8 o 10 caracteres");
+                        mensaje = "Campo id debe contener 8 o 10 caracteres.\n";
                     }
                     if (!MetodosPublicos.validarNumero(id)) {
                         JOptionPane.showMessageDialog(lg, "Campo id contiene caracteres invalidos");
