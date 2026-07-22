@@ -145,7 +145,7 @@ public class PacienteInterfaz extends JFrame {
         this.panelBienvenida = new JPanel();
         this.panelBienvenida.setLayout(new BorderLayout());
         this.panelBienvenida.setOpaque(false);
-
+        
         JLabel tituloBienvenida = new JLabel("Bienvenido, " + this.usuario.getPrimerNombre() + "!");
         tituloBienvenida.setFont(new Font("arial", Font.BOLD, 30));
 
