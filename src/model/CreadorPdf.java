@@ -23,26 +23,54 @@ public class CreadorPdf {
     public CreadorPdf() {
     }
 
+    public static void constructorCreadorPdf(String nombre, String mensaje) {
+        CreadorPdf creadorPdf = new CreadorPdf();
+        creadorPdf.setCrearPdf(nombre, mensaje);
+    }
+
     public void setCrearPdf(String nombre, String mensaje) {
         this.nombre = nombre;
-        try {
-            FileOutputStream archivo = new FileOutputStream(nombre + ".pdf");
-            Document documento = new Document();
+        // Abrir ventana para elegir donde guardar
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Guardar PDF");
+        chooser.setSelectedFile(new File(nombre + ".pdf"));
+        chooser.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                return f.getName().toLowerCase().endsWith(".pdf") || f.isDirectory();
+            }
 
-            PdfWriter.getInstance(documento, archivo);
+            @Override
+            public String getDescription() {
+                return "Archivos PDF (*.pdf)";
+            }
+        });
+
+        int resultado = chooser.showSaveDialog(null);
+        if (resultado != JFileChooser.APPROVE_OPTION) {
+            return; // El usuario canceló
+        }
+
+        File archivo = chooser.getSelectedFile();
+        // Asegurar que tenga extensión .pdf
+        if (!archivo.getName().toLowerCase().endsWith(".pdf")) {
+            archivo = new File(archivo.getAbsolutePath() + ".pdf");
+        }
+
+        try {
+            FileOutputStream archivoOut = new FileOutputStream(archivo);
+            Document documento = new Document();
+            PdfWriter.getInstance(documento, archivoOut);
             documento.open();
-            Paragraph parrafo = new Paragraph("My first pdf \n" + mensaje);
+            Paragraph parrafo = new Paragraph("Historial Clínico\n" + mensaje);
             parrafo.setAlignment(1);
             documento.add(parrafo);
-            documento.add(new Paragraph("Estos datos son del archivo" + nombre));
             documento.close();
-            JOptionPane.showMessageDialog(null, "Este archivo se Creo Con exito", "", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "PDF creado con éxito en:\n" + archivo.getAbsolutePath(), "", JOptionPane.INFORMATION_MESSAGE);
         } catch (FileNotFoundException ex) {
-
-            JOptionPane.showMessageDialog(null, "No se creo con exito", "", JOptionPane.ERROR_MESSAGE);
-
+            JOptionPane.showMessageDialog(null, "No se pudo crear el archivo", "", JOptionPane.ERROR_MESSAGE);
         } catch (DocumentException de) {
-            JOptionPane.showMessageDialog(null, "Este documento no se creo con exito", "", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al generar el documento", "", JOptionPane.ERROR_MESSAGE);
         }
     }
 

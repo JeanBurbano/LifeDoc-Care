@@ -318,6 +318,39 @@ public class UsuarioDao implements Crud<Paciente> {
         return actualizado;
     }
 
+    public String historialMedico(int id_usuario) {
+        String historial = null;
+        String sql = "SELECT descripcion FROM historial_medico WHERE id_usuario = ?";
+
+        try {
+            con = conectar.getConection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id_usuario);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                historial = rs.getString("descripcion");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return historial;
+    }
+
     @Override
     public List<Paciente> listar() {
         List<Paciente> lista = new ArrayList<>();
