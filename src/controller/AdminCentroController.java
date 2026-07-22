@@ -225,8 +225,8 @@ public class AdminCentroController extends PacienteController {
         for (int i = 0; i < 6; i++) {
             diasActivos[i] = adminI.diaSemana[i].isSelected();
             if (diasActivos[i]) {
-                horasPorDia[i] = adminI.horaInicio[i].getSelectedItem() + " - " + adminI.horaFin[i].getSelectedItem()
-                        + "\nAlm: " + adminI.almuerzoIni[i].getSelectedItem() + "-" + adminI.almuerzoFin[i].getSelectedItem();
+                horasPorDia[i] = "Horario:\n" + adminI.horaInicio[i].getSelectedItem() + " - " + adminI.horaFin[i].getSelectedItem()
+                        + "\nDescanso:\n " + adminI.almuerzoIni[i].getSelectedItem() + " - " + adminI.almuerzoFin[i].getSelectedItem();
             }
         }
 
@@ -388,7 +388,7 @@ public class AdminCentroController extends PacienteController {
         Horario horario = horariosActuales.get(filaHorario);
         Medicos medico = medicosActuales.get(indiceMedico);
         int idConsultorioSeleccionado = consultoriosActuales.get(indiceConsultorio).getIdConsultorio(); // <-- aquí sale
-        int mes = adminI.comboMedicoAsignar.getSelectedIndex() + 1;
+        int mes = LocalDate.now().getMonthValue();
         int anio = java.time.LocalDate.now().getYear();
 
         new HorarioDao().asignarMedico(horario.getId(), medico.getId_medico(), idConsultorioSeleccionado, mes, anio);

@@ -95,7 +95,8 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     public JLabel[] lblHoras = new JLabel[6]; //Muestra las horas laborales calculadas por día
     
     //mostrar el horario de forma grafica antes de guardar
-    public JComboBox comboMesHorario; // mes al que se aplicará el horario
+    public String comboMesHorario; // mes al que se aplicará el horario
+    public JTextField campoMes;
     public JTextField comboAnioHorario; // año al que se aplicará el horario
     public JComboBox comboConsultorioHorario; // consultorio al que se aplicará el horario para ese medico
     public JDialog dialogoVistaPreviaHorario; //donde estará el horario de manera grafica
@@ -674,8 +675,15 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         contenido.add(filaConsultorio);
         contenido.add(Box.createVerticalStrut(30));
         
-        comboMesHorario = new JComboBox<>(MESES);
-        MetodosPublicos.crearComboEstilizado(comboMesHorario);
+        comboMesHorario = MESES[LocalDate.now().getMonthValue() - 1];
+        campoMes = new JTextField(comboMesHorario);
+        campoMes.setEditable(false);
+        campoMes.setFont(new Font("Arial", Font.PLAIN, 13));
+        campoMes.setBackground(new Color(240, 240, 240));
+        campoMes.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
+                BorderFactory.createEmptyBorder(6, 10, 6, 10)
+        ));
         comboAnioHorario = new JTextField(String.valueOf(LocalDate.now().getYear())); 
         comboAnioHorario.setEditable(false); // solo lectura
         comboAnioHorario.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -685,7 +693,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
                 BorderFactory.createEmptyBorder(6, 10, 6, 10)
         ));
         
-        JPanel  filaMes = MetodosPublicos.crearFila("Mes de aplicación:", comboMesHorario);
+        JPanel  filaMes = MetodosPublicos.crearFila("Mes de aplicación:", campoMes);
         filaMes.setAlignmentX(Component.LEFT_ALIGNMENT);
         contenido.add(filaMes);
         contenido.add(Box.createVerticalStrut(30));
@@ -721,13 +729,13 @@ public void mostrarVistaPreviaHorarioApartado(boolean[] diasActivos, String[] ho
     dialogoVistaPreviaHorario = new JDialog(); // ventana nueva, independiente de la principal
     dialogoVistaPreviaHorario.setTitle("Vista Previa del Horario");
     dialogoVistaPreviaHorario.setModal(true); // bloquea el resto de la app mientras está abierta
-    dialogoVistaPreviaHorario.setSize(500, 300);
+    dialogoVistaPreviaHorario.setSize(650, 300);
     dialogoVistaPreviaHorario.setLocationRelativeTo(null); // se centra en la pantalla
-    dialogoVistaPreviaHorario.setLayout(new BorderLayout(0, 10)); // título arriba, matriz en medio, botones abajo
+    dialogoVistaPreviaHorario.setLayout(new BorderLayout(0, 10)); // título arriba, horario en medio, botones abajo
 
     JLabel titulo = new JLabel("Días asignados", SwingConstants.CENTER);
     titulo.setFont(new Font("Arial", Font.BOLD, 16));
-    titulo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // aire alrededor del título
+    titulo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // espacio interno alrededor del título
     dialogoVistaPreviaHorario.add(titulo, BorderLayout.NORTH);
 
     JPanel HorarioSemanalGrafico = new JPanel(new GridLayout(1, 6, 6, 6));
@@ -736,12 +744,13 @@ public void mostrarVistaPreviaHorarioApartado(boolean[] diasActivos, String[] ho
     String[] nombresDias = {"Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"};
 
     for (int i = 0; i < 6; i++) { // recorre los 6 días 
-        JPanel tarjeta = new JPanel(); // una casilla de la matriz, para un solo día
-        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS)); // apila el contenido de arriba hacia abajo
+        JPanel tarjeta = new JPanel(); // una casilla del horario para un solo día
+        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS)); // el contenido de arriba hacia abajo
         tarjeta.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY)); // borde delgado para que se vea como celda
 
         JLabel lblDia = new JLabel(nombresDias[i], SwingConstants.CENTER);
-        lblDia.setFont(new Font("Arial", Font.BOLD, 12));
+        lblDia.setFont(new Font("Arial", Font.BOLD, 15));
+        lblDia.setForeground(Color.WHITE);
         lblDia.setAlignmentX(Component.CENTER_ALIGNMENT);
         tarjeta.add(lblDia);
 
@@ -753,13 +762,15 @@ public void mostrarVistaPreviaHorarioApartado(boolean[] diasActivos, String[] ho
             String[] lineas = horasPorDia[i].split("\n");
             for (String linea : lineas) {
                 JLabel lblLinea = new JLabel(linea, SwingConstants.CENTER);
-                lblLinea.setFont(new Font("Arial", Font.PLAIN, 10));
+                lblLinea.setFont(new Font("Arial", Font.PLAIN, 13));
+                lblLinea.setForeground(Color.WHITE);
                 lblLinea.setAlignmentX(Component.CENTER_ALIGNMENT);
                 tarjeta.add(lblLinea);
             }
         } else { // si el día no está activo, se muestra en gris con un guion
             JLabel lblInactivo = new JLabel("—", SwingConstants.CENTER);
-            lblInactivo.setForeground(Color.GRAY);
+            tarjeta.setBackground(new Color(0x8B,0x8B,0x8B));
+            lblInactivo.setForeground(Color.WHITE);
             lblInactivo.setAlignmentX(Component.CENTER_ALIGNMENT);
             tarjeta.add(lblInactivo);
         }
