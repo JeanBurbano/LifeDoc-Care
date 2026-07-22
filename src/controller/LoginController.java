@@ -38,7 +38,7 @@ public class LoginController implements ActionListener {
         Thread hiloOjo = new Thread(() -> {
             lg.lblOjo.addMouseListener(new MouseAdapter() {
                 boolean isVisible = false;
-
+                
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     isVisible = !isVisible;
@@ -75,12 +75,12 @@ public class LoginController implements ActionListener {
         });
         hiloVistaRecu.start();
     }
-
+    
     private void agregarActionListenerABotonesDeLogin() {
         this.lg.bRegistar.addActionListener(this);
         this.lg.bIngresar.addActionListener(this);
     }
-
+    
     public LoginController(Login lg, RecuperacionContrasenaInterfaz rc) {
         this.lg = lg;
         ojodelLogin();
@@ -90,7 +90,7 @@ public class LoginController implements ActionListener {
         this.c = 0;
         this.bloqueado = false;
     }
-
+    
     public void abrirVistaRegistro() {
         Thread hiloVistasRegistro = new Thread(() -> {
             RegistroUsuariosInterfaz ru = new RegistroUsuariosInterfaz("Registro");
@@ -101,20 +101,20 @@ public class LoginController implements ActionListener {
         });
         hiloVistasRegistro.start();
     }
-
+    
     private void estadoDeCosas(boolean estado) {
         this.lg.bIngresar.setEnabled(estado);
         this.lg.bRegistar.setEnabled(estado);
         this.lg.titulo2.setEnabled(estado);
     }
-
+    
     private boolean estadito(String id, String contrasena) {
         return (MetodosPublicos.validarTamano(id, 8, 10)
                 && MetodosPublicos.validarNumero(id))
                 && (MetodosPublicos.validarTamano(contrasena, 8)
                 && MetodosPublicos.validarContrasena(contrasena));
     }
-
+    
     private void creaUsuSegunRol(byte id_rol, String id, String contrasena) {
         switch (id_rol) {
             case 1:
@@ -137,7 +137,7 @@ public class LoginController implements ActionListener {
                 this.usu = usuDao.login(id, contrasena);
                 break;
             default:
-
+            
         }
     }
 
@@ -195,7 +195,7 @@ public class LoginController implements ActionListener {
         temporizador.setRepeats(false);
         temporizador.start();
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == lg.bIngresar) {
@@ -248,27 +248,35 @@ public class LoginController implements ActionListener {
                         mensaje = "Campo id debe contener 8 o 10 caracteres.\n";
                     }
                     if (!MetodosPublicos.validarNumero(id)) {
-                        JOptionPane.showMessageDialog(lg, "Campo id contiene caracteres invalidos");
+                        mensaje = (mensaje == null) ? "Campo id contiene caracteres invalidos.\n"
+                                : mensaje + "Campo id contiene caracteres invalidos.\n";
                     }
                 }
                 if (contrasena.isEmpty()) {
-                    JOptionPane.showMessageDialog(lg, "Campo Contrasena es obligatorio");
+                    mensaje = (mensaje == null) ? "Campo Contrasena es obligatorio.\n"
+                            : mensaje + "Campo Contrasena es obligatorio.\n";
                 } else {
                     if (!MetodosPublicos.validarTamano(contrasena, 8)) {
-                        JOptionPane.showMessageDialog(lg, "El campo contrasena debe dcontener como minimo 8 caracteres");
+                        mensaje = (mensaje == null) ? "El campo contrasena debe dcontener como minimo 8 caracteres.\n"
+                                : mensaje + "El campo contrasena debe dcontener como minimo 8 caracteres.\n";
                     }
                     if (!MetodosPublicos.validarContrasena(contrasena)) {
-                        JOptionPane.showMessageDialog(lg, "La contrasena debe de cumplir con estos parametros\n"
-                                + "Minimo 8 caracteres\n"
+                        mensaje = (mensaje == null) ? "La contrasena debe de cumplir con estos parametros\n"
                                 + "1 Mayuscula,\n"
                                 + "1 Minuscula\n"
                                 + "1 Numero\n"
-                                + "1 Simbolos permitidos @, #, $, %, &, *, -, _, !, ?");
+                                + "1 Simbolos permitidos @, #, $, %, &, *, -, _, !, ?.\n"
+                                : mensaje + "La contrasena debe de cumplir con estos parametros\n"
+                                + "1 Mayuscula,\n"
+                                + "1 Minuscula\n"
+                                + "1 Numero\n"
+                                + "1 Simbolos permitidos @, #, $, %, &, *, -, _, !, ?.\n";
                     }
                 }
+                JOptionPane.showMessageDialog(lg, mensaje);
             }
         }
-
+        
         if (e.getSource() == lg.bRegistar) {
             abrirVistaRegistro();
         }
