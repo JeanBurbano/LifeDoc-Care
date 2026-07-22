@@ -29,7 +29,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
     public JButton btnMisCitas, btnHistorial, btnComentarios, btnNotificaciones, btnMiAgenda, btnConsultorio, btnBuscar,
             pruebaFicha, simboloRegresarConfirmacionP, btnAsistio, btnNoAsistio, btnGuardarFicha, btnAceptarFicha, 
             btnVolverVerDetalles, btnActReagendar, btnNoReagendar, btnHistorialMedicoPaciente,
-            btnBuscarIdHistorialPaciente;
+            btnBuscarIdHistorialPaciente, btnDescargarHistorialP;
     public JPanel panelPrincipal;
     public JTextField id, idHistorial;
     public ArrayList<JButton> listaBotonesReagendar;
@@ -181,15 +181,10 @@ public class MedicoInterfaz extends PacienteInterfaz {
         MetodosPublicos.refrescarVentana(panelListaHistorial);
         MetodosPublicos.refrescarVentana(panelFiltros);
     }
-
-    public void mostrarHistorialMedicoPaciente() {
-        MetodosPublicos.vaciarPanel(panelPrincipal);
-        MetodosPublicos.vaciarPanel(panelListaHistorial);
-        MetodosPublicos.vaciarPanel(panelFiltros);
-
-        MetodosPublicos.refrescarVentana(panelListaHistorial);
-        MetodosPublicos.refrescarVentana(panelFiltros);
-        MetodosPublicos.refrescarVentana(panelPrincipal);
+    
+    @Override
+    public void mostrarVistaHistorialConHistorial(String historial, String nombre, String edad) {
+        this.btnDescargarHistorialP = this.btnDescargar;
     }
 
     public void mostrarVistaMiAgenda() {

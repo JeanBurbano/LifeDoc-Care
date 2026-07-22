@@ -3,15 +3,18 @@ package controller;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import model.Cita;
 import model.CitaDao;
 import model.MetodosPublicos;
+import model.UsuarioDao;
 import view.MedicoInterfaz;
 import view.Titulo;
 
 public class MedicoController extends PacienteController {
 
     private CitaDao citadao;
+    private String historialPaciente, historial;
     protected Cita[] citas;
     MedicoInterfaz medico;
 
@@ -35,29 +38,59 @@ public class MedicoController extends PacienteController {
         this.medico.btnNoReagendar.addActionListener(this);
     }
 
-    private void habilitarBotonesHistorial(JButton boton1, JButton boton2, JButton boton3) {
-        boton1.setEnabled(false);
+    private void habilitarBotonesHistorial(JButton botonA, JButton boton2, JButton boton3) {
+        botonA.setEnabled(false);
         boton2.setEnabled(true);
         boton3.setEnabled(true);
+    }
+
+    private void proceso(String mensaje, boolean valor) {
+        pacienteI.mostrarVistaHistorialConHistorial(mensaje, pacienteI.getUsuario().getPrimerNombre(),
+                String.valueOf(pacienteI.getUsuario().getEdad()));
+        pacienteI.btnDescargar.setEnabled(valor);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
         this.medico = (MedicoInterfaz) pacienteI;
+        if (e.getSource() == this.medico.btnHistorial) {
+            habilitarBotonesHistorial(this.medico.btnHistorialCitas, this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialMedico);
+            medico.mostrarVistaHistorial();
+            medico.btnHistorialCitas.doClick();
+        }
         if (e.getSource() == this.medico.btnHistorialCitas) {
             habilitarBotonesHistorial(this.medico.btnHistorialCitas, this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialMedico);
+            pacienteI.mostrarVistaHistorial();
         }
         if (e.getSource() == this.medico.btnHistorialMedico) {
             habilitarBotonesHistorial(this.medico.btnHistorialMedico, this.medico.btnHistorialCitas, this.medico.btnHistorialMedicoPaciente);
+            UsuarioDao usuDao = new UsuarioDao();
+            this.historial = usuDao.historialMedico(medico.getUsuario().getIdUsuario());
+            if (historial == null) {
+                proceso("No tienes historial medico", false);
+            } else {
+                proceso(historial, true);
+            }
         }
         if (e.getSource() == this.medico.btnHistorialMedicoPaciente) {
             this.medico.mostrarFormularioHistorialMedicoPaciente();
             habilitarBotonesHistorial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
         }
         if (e.getSource() == this.medico.btnBuscarIdHistorialPaciente) {
-            this.medico.mostrarHistorialMedicoPaciente();
             habilitarBotonesHistorial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
+            String idHistorial = medico.idHistorial.getText().trim();
+            if (idHistorial.isBlank()) {
+                JOptionPane.showMessageDialog(medico, "Por favor ingresa un numero de identificación");
+            } else {
+                UsuarioDao usuDao = new UsuarioDao();
+                this.historialPaciente = usuDao.historialMedico(medico.getUsuario().getIdUsuario());
+                if (historialPaciente == null) {
+                    proceso("Este paciente no tiene un historial medico", false);
+                } else {
+                    proceso(historialPaciente, true);
+                }
+            }
         }
         if (e.getSource() == this.medico.btnMiAgenda || e.getSource() == this.medico.btnVolverVerDetalles || e.getSource() == this.medico.btnNoReagendar) {
             this.medico.mostrarVistaMiAgenda();
