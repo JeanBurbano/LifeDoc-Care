@@ -4,13 +4,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatosPagoCitaDao {
     
     public Conexion conectar = new Conexion();
     
-    public DatosPagoCita obtenerCitaPendientePago(int idUsuarioAgenda) {
-        DatosPagoCita datos = null;
+    public List<DatosPagoCita> listarCitasPendientesPago(int idUsuarioPaciente) {
+        List<DatosPagoCita> citasPendientes = new ArrayList<>();
         String sql = "SELECT c.id_cita, c.fecha_cita, c.hora_cita, "
                 + "up.primer_nombre, up.segundo_nombre, up.primer_apellido, up.segundo_apellido, "
                 + "up.numero_identificacion, up.sisben, "
@@ -22,25 +24,24 @@ public class DatosPagoCitaDao {
                 + "JOIN usuario um ON um.id_usuario = m.id_usuario "
                 + "JOIN especialidad e ON e.id_especialidad = m.id_especialidad "
                 + "LEFT JOIN factura f ON f.id_cita = c.id_cita "
-                + "WHERE c.id_usuario_agenda = ? AND c.estado = 1 AND f.id_factura IS NULL "
-                + "ORDER BY c.id_cita DESC "
-                + "LIMIT 1";
- 
+                + "WHERE c.id_Usuario = ? AND c.estado = 1 AND f.id_factura IS NULL "
+                + "ORDER BY c.fecha_cita, c.hora_cita";
+
         Connection con = conectar.getConection();
         if (con == null) {
-            return null;
+            return citasPendientes;
         }
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, idUsuarioAgenda);
+            ps.setInt(1, idUsuarioPaciente);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
+                while (rs.next()) {
                     String nombrePaciente = rs.getString("primer_nombre")
                             + (rs.getString("segundo_nombre") != null ? " " + rs.getString("segundo_nombre") : "")
                             + " " + rs.getString("primer_apellido")
                             + (rs.getString("segundo_apellido") != null ? " " + rs.getString("segundo_apellido") : "");
                     String nombreMedico = rs.getString("medico_nombre") + " " + rs.getString("medico_apellido");
- 
-                    datos = new DatosPagoCita(
+
+                    citasPendientes.add(new DatosPagoCita(
                             rs.getInt("id_cita"),
                             nombrePaciente,
                             rs.getString("numero_identificacion"),
@@ -49,13 +50,13 @@ public class DatosPagoCitaDao {
                             nombreMedico,
                             rs.getDate("fecha_cita").toLocalDate(),
                             rs.getTime("hora_cita").toLocalTime()
-                    );
+                    ));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return datos;
+        return citasPendientes;
     }
     
     
