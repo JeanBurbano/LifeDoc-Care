@@ -22,7 +22,7 @@ public class RolDao implements Crud<Rol>{
     @Override
     public List<Rol> listar(){
         List<Rol> lista = new ArrayList<>();
-        String sql = "SELECT id_rol, nombre_rol FROM rol WHERE id_rol IN (2, 3, 4) ORDER BY id_rol";
+        String sql = "SELECT id_rol, nombre_rol FROM rol WHERE id_rol IN (3, 4) ORDER BY id_rol";
         try (Connection con = conectar.getConection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {

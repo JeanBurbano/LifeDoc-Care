@@ -5,18 +5,23 @@
 package controller;
 
 import java.awt.Color;
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import model.CategoriaMedicamento;
 import model.CategoriaMedicamentoDao;
@@ -27,17 +32,24 @@ import model.HorarioDao;
 import model.HorarioDia;
 import model.Medicamentos;
 import model.MedicamentosDao;
+import model.MedicoDao;
 import model.Medicos;
 import model.MedicosDao;
+import model.OperarioDao;
+import model.PersonalCentroDao;
+import model.RolDao;
+import model.SeleccionImagenes;
 
 import model.TipoMedicamento;
 import model.TipoMedicamentoDao;
 import view.ConstructorFilaHorario;
 import view.AdministradorCentroInterfaz;
+import view.RegistroPersonalInterfaz;
 
 public class AdminCentroController extends PacienteController {
 
     AdministradorCentroInterfaz adminI;
+    
 
     // Columnas de la tabla de horarios
     private static final int COLUMNA_ASIGNAR = 3;
@@ -108,7 +120,7 @@ public class AdminCentroController extends PacienteController {
     }
 
     private void agregarListenerBotonEstadoMedicamento() {
-        adminI.tablaMedicamentoR.addMouseListener(new java.awt.event.MouseAdapter() {
+        adminI.tablaMedicamentoR.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int fila = adminI.tablaMedicamentoR.rowAtPoint(e.getPoint());
@@ -139,10 +151,9 @@ public class AdminCentroController extends PacienteController {
     //apartado de personal del centro
     private void manejarApartadoPersonal(ActionEvent e) {
         if (e.getSource() == adminI.btnregistrarPersonal) {
-            // Aún no existe un formulario de registro de personal en la interfaz.
-            JOptionPane.showMessageDialog(null,
-                    "Formulario de registro de personal (pendiente de conectar a la base de datos).",
-                    "Registrar Personal", JOptionPane.INFORMATION_MESSAGE);
+            RegistroPersonalInterfaz vistaPersonal = new RegistroPersonalInterfaz("Registro de Personal");
+            RegistroPersonalController controller = new RegistroPersonalController(vistaPersonal);
+            vistaPersonal.setVisible(true);
         }
     }
 
@@ -199,7 +210,7 @@ public class AdminCentroController extends PacienteController {
                     adminI.previsualizacionImagen.setText("Error al cargar la imagen");
                     return;
                 }
-                
+
                 adminI.imagenMedicamentoSeleccionada = archivo;
                 Image imagenEscalada = icono.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
                 adminI.previsualizacionImagen.setIcon(new ImageIcon(imagenEscalada));
@@ -243,7 +254,8 @@ public class AdminCentroController extends PacienteController {
         m.setStock(stock);
 
         if (adminI.imagenMedicamentoSeleccionada != null) {
-            String urlRelativa = copiarImagenMedicamento(adminI.imagenMedicamentoSeleccionada, m.getnRegistroSanitario());
+            SeleccionImagenes url = new SeleccionImagenes();
+            String urlRelativa = url.copiarImagenMedicamento(adminI.imagenMedicamentoSeleccionada, m.getnRegistroSanitario());
             m.setUrlFoto(urlRelativa);
         } else {
             m.setUrlFoto("imagenesMedicamento/fotoDefecto.png");
@@ -263,24 +275,6 @@ public class AdminCentroController extends PacienteController {
         cargarMedicamentos();
     }
 
-    /**
-     * Copia el archivo elegido en el JFileChooser a la carpeta
-     * imagenesMedicamento del proyecto, renombrándolo con el número de registro
-     * sanitario para que sea único y fácil de ubicar.
-     */
-    private String copiarImagenMedicamento(File origen, String nRegistroSanitario) {
-        try {
-            String extension = origen.getName().substring(origen.getName().lastIndexOf('.'));
-            String nombreArchivo = nRegistroSanitario + extension;
-            File destino = new File("imagenesMedicamento/" + nombreArchivo);
-            java.nio.file.Files.copy(origen.toPath(), destino.toPath(),
-                    java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-            return "imagenesMedicamento/" + nombreArchivo;
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "No se pudo guardar la imagen: " + ex.getMessage());
-            return "imagenesMedicamento/fotoDefecto.png";
-        }
-    }
 
     private void cargarMedicamentos() {
         medicamentosActuales = new MedicamentosDao().listar();
@@ -294,10 +288,27 @@ public class AdminCentroController extends PacienteController {
     }
 
     // horarios
+    
+    
     private void manejarApartadoHorario(ActionEvent e) {
         if (e.getSource() == adminI.btnCrearHorario) {
             adminI.mostrarFormularioCreacionHorarioApartado();
             agregarListenersFormularioHorario();
+        }
+        for (int i = 0; i < adminI.horaInicio.length; i++) {
+            if (e.getSource() == adminI.horaInicio[i]) {
+                actualizarComboFin(i); // la hora fin se recalcula según la nueva hora de inicio
+            }
+            if (e.getSource() == adminI.horaInicio[i] || e.getSource() == adminI.horaFin[i]) {
+                actualizarComboAlmuerzoIni(i); // el rango de almuerzo depende de inicio y fin de jornada
+            }
+            if (e.getSource() == adminI.almuerzoIni[i]) {
+                actualizarComboAlmuerzoFin(i); // el fin del almuerzo se fija a +1 hora automáticamente
+            }
+            if (e.getSource() == adminI.horaInicio[i] || e.getSource() == adminI.horaFin[i]
+                    || e.getSource() == adminI.almuerzoIni[i] || e.getSource() == adminI.almuerzoFin[i]) {
+                calcularHorasLaborales(i);
+            }
         }
 
         if (e.getSource() == adminI.btnVolver) {
@@ -328,6 +339,10 @@ public class AdminCentroController extends PacienteController {
             adminI.horaFin[i].addActionListener(this);
             adminI.almuerzoIni[i].addActionListener(this);
             adminI.almuerzoFin[i].addActionListener(this);
+            
+            actualizarComboFin(i);
+            actualizarComboAlmuerzoIni(i);
+            actualizarComboAlmuerzoFin(i);
         }
     }
 
@@ -354,6 +369,64 @@ public class AdminCentroController extends PacienteController {
 
         adminI.dialogoVistaPreviaHorario.setVisible(true);
     }
+    
+    /**
+     * Filtra el combo hora Fin para que solo muestre horas
+     *después de la hora de inicio elegida.
+     */
+    private void actualizarComboFin(int i) {
+        String horaIniStr = (String) adminI.horaInicio[i].getSelectedItem();
+        if (horaIniStr == null) 
+            return;
+        LocalTime horaIni = LocalTime.parse(horaIniStr);
+
+        List<String> disponibles = new ArrayList<>();
+        for (String hora : AdministradorCentroInterfaz.HORAS) {
+            if (LocalTime.parse(hora).isAfter(horaIni)) { // solo horas después de la de inicio
+                disponibles.add(hora);
+            }
+        }
+        adminI.horaFin[i].setModel(new DefaultComboBoxModel(disponibles.toArray()));
+    }
+    
+    /**
+     * Filtra el combo almuerzo Inicio para que solo muestre horas
+     * dentro del rango de la jornada (entre hora inicio y hora fin).
+     */
+    private void actualizarComboAlmuerzoIni(int i) {
+        String horaIniStr = (String) adminI.horaInicio[i].getSelectedItem();
+        String horaFinStr = (String) adminI.horaFin[i].getSelectedItem();
+        if (horaIniStr == null || horaFinStr == null) return;
+
+        LocalTime horaIni = LocalTime.parse(horaIniStr);
+        LocalTime horaFin = LocalTime.parse(horaFinStr);
+
+        List<String> disponibles = new ArrayList<>();
+        for (String hora : AdministradorCentroInterfaz.HORAS) {
+            LocalTime h = LocalTime.parse(hora);
+            if (!h.isBefore(horaIni) && !h.isAfter(horaFin)) { // dentro del rango [horaIni, horaFin]
+                disponibles.add(hora);
+            }
+        }
+        adminI.almuerzoIni[i].setModel(new DefaultComboBoxModel(disponibles.toArray()));
+    }
+
+    /**
+     * El almuerzo dura exactamente 1 hora entonces al elegir la hora de inicio
+     * del almuerzo, el combo almuerzo fin solo muestra esa única
+     * opción, sin dejar elegir nada más.
+     */
+    private void actualizarComboAlmuerzoFin(int i) {
+        String almIniStr = (String) adminI.almuerzoIni[i].getSelectedItem();
+        if (almIniStr == null) 
+            return;
+
+        LocalTime almIni = LocalTime.parse(almIniStr);
+        String almFinStr = almIni.plusHours(2).format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        adminI.almuerzoFin[i].setModel(new DefaultComboBoxModel(new String[]{almFinStr}));
+    }
+    
 
     /**
      * Arma el objeto Horario a partir del formulario y lo guarda en la BD.

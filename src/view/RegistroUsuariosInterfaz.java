@@ -1,5 +1,6 @@
 package view;
 
+import model.FechaCalendarioEstilizar;
 import com.github.lgooddatepicker.components.DatePicker;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -203,7 +204,7 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
                 BorderFactory.createEmptyBorder(8, 10, 8, 10)
         ));
-        
+
         campoSisben = new JComboBox(ARREGLO_SISBEN);
         MetodosPublicos.crearComboEstilizado(campoSisben);
 
@@ -275,25 +276,25 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
 
         JPanel columnaInfo = new JPanel();
         columnaInfo.setOpaque(false);
-        columnaInfo.setLayout(new BoxLayout(columnaInfo, BoxLayout.Y_AXIS));
+        columnaInfo.setLayout(new BoxLayout(columnaInfo, BoxLayout.X_AXIS));
 
         JPanel panelInfo = MetodosPublicos.crearPanelInfo("Tener en cuenta",
                 "La imagen que adjuntes debe ser PNG y pesar máximo 5 MB");
         panelInfo.setAlignmentX(Component.LEFT_ALIGNMENT);
         btnRegistrarse.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
-        String reglasContraseña = "La contraseña debe cumplir con:\n" +
-                                "• Al menos 1 Mayúscula\n" +
-                                "• Al menos 1 Minúscula\n" +
-                                "• Al menos 1 Número\n" +
-                                "• Símbolos permitidos: @, #, $, %, &, *, -, _, !, ?.";
+
+        String reglasContraseña = "La contraseña debe cumplir con:\n"
+                + "• Al menos 1 Mayúscula\n"
+                + "• Al menos 1 Minúscula\n"
+                + "• Al menos 1 Número\n"
+                + "• Símbolos permitidos: @, #, $, %, &, *, -, _, !, ?.";
         JPanel panelInfoContraseña = MetodosPublicos.crearPanelInfo("Requisitos Contraseña", reglasContraseña);
         panelInfoContraseña.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
-
+        columnaInfo.setBorder(BorderFactory.createEmptyBorder(15, 10, 10, 10));
+        columnaInfo.add(Box.createHorizontalStrut(20)); 
         columnaInfo.add(panelInfo);
         columnaInfo.add(Box.createVerticalStrut(15));
-        columnaInfo.add(panelInfoContraseña); 
+        columnaInfo.add(panelInfoContraseña);
         columnaInfo.add(Box.createVerticalStrut(15));
         columnaInfo.add(btnRegistrarse);
 
