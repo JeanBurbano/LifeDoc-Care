@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.io.File;
+import java.time.LocalDate;
+import java.time.Period;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -31,6 +33,14 @@ import view.PacienteInterfaz;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MetodosPublicos {
+
+    public static byte calcularEdad(LocalDate fechaNacimiento) {
+        if (fechaNacimiento == null) {
+            return 0;
+        }
+
+        return (byte) Period.between(fechaNacimiento, LocalDate.now()).getYears();
+    }
 
     public static JTextField crearCampoTexto(Color color) {
         JTextField campo = new JTextField(15);

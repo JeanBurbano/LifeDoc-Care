@@ -44,8 +44,19 @@ public class RegistroUsuariosController implements ActionListener {
         LocalDate fechaNacimiento = rI.datePickerNacimiento.getDate();
         String correo = rI.campoCorreo.getText().trim();
         String telefono = rI.campoTelefono.getText().trim();
-//        byte edad = rI
+        byte edad = MetodosPublicos.calcularEdad(fechaNacimiento);
         String contrasena = new String(rI.campoContraseña.getPassword());
+        String grupoSisben = String.valueOf(rI.campoSisben.getSelectedItem());
+
+        boolean validador = (MetodosPublicos.validarNumero(numeroIdentificacion)
+                && MetodosPublicos.validarTamano(numeroIdentificacion, 8, 10))
+                && !primerNombre.isEmpty()
+                && !segundoNombre.isEmpty()
+                && !primerApellido.isEmpty()
+                && !segundoApellido.isEmpty()
+                && !sexoBiologico.isEmpty()
+                && fechaNacimiento != null
+                && !contrasena.isEmpty();
 
         if (idTipoIdentificacion == 0) {
             mostrarError("Selecciona el tipo de documento");
