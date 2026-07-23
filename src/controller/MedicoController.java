@@ -13,6 +13,8 @@ import model.Cita;
 import model.CitaDao;
 import model.HistorialMedico;
 import model.HistorialMedicoDao;
+import model.Medicamentos;
+import model.MedicamentosDao;
 import model.Medico;
 import model.MetodosPublicos;
 import model.UsuarioDao;
@@ -26,6 +28,7 @@ public class MedicoController extends PacienteController {
     private String historialPaciente, historial;
     protected Cita[] citas, citasConsultorio;
     private static List<HistorialMedico> historialM = new ArrayList<HistorialMedico>();
+    private List<Medicamentos> nombresM = new ArrayList<>();
     private HistorialMedicoDao historialdao;
     MedicoInterfaz medico;
 
@@ -42,9 +45,7 @@ public class MedicoController extends PacienteController {
         this.medico.btnNoAsistio.addActionListener(this);
         this.medico.btnGuardarFicha.addActionListener(this);
         this.medico.btnAceptarFicha.addActionListener(this);
-//        this.medico.btnVerDetalles.addActionListener(this);
         this.medico.btnVolverVerDetalles.addActionListener(this);
-//        this.medico.btnReagendarCita.addActionListener(this);
         this.medico.btnActReagendar.addActionListener(this);
         this.medico.btnNoReagendar.addActionListener(this);
     }
@@ -60,6 +61,14 @@ public class MedicoController extends PacienteController {
                 String.valueOf(pacienteI.getUsuario().getEdad()));
         medico.btnDescargar.setEnabled(valor);
     }
+    
+//    private void nombreMedicamentos() {
+//        nombresM = new MedicamentosDao().listarNombres();
+//        medico.campoMedicamento.removeAllItems();
+//        for (Medicamentos m : nombresM) {
+//            medico.campoMedicamento.addItem(m);
+//        }
+//    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -119,7 +128,7 @@ public class MedicoController extends PacienteController {
                 for (Cita clave : citas) {
                     medico.citaVistaMiAgenda(clave.getEspecialidad(),
                             clave.getFechaCita().toString(), clave.getHoraCita().toString(),
-                            clave.getNombrePaciente());
+                            clave.getNombrePaciente(),clave);
                 }
             }
         }
@@ -143,6 +152,7 @@ public class MedicoController extends PacienteController {
         }
         if (e.getSource() == this.medico.btnAsistio) {
             this.medico.mostrarVistaFichaClinica();
+            nombreMedicamentos();
         }
         
         if (e.getSource() == this.medico.btnNoAsistio) {

@@ -33,12 +33,12 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
     public Cita cita, citaSeleccionada;
     public UsuarioDao usuarioDao;
-    public JButton btnMisCitas, btnHistorial, btnComentarios, btnNotificaciones, btnMiAgenda, btnConsultorio, btnBuscar,
+    public JButton btnMisCitas, btnHistorial, btnComentarios, btnNotificaciones, btnMiAgenda, btnConsultorio,
             pruebaFicha, simboloRegresarConfirmacionP, btnAsistio, btnNoAsistio, btnGuardarFicha, btnAceptarFicha,
             btnVolverVerDetalles, btnActReagendar, btnNoReagendar, btnHistorialMedicoPaciente, btnEstado,
             btnBuscarIdHistorialPaciente, btnDescargarHistorialP;
     public JPanel panelPrincipal;
-    public JTextField id, idHistorial;
+    public JTextField idHistorial;
     public ArrayList<JButton> listaBotonesReagendar;
     public ArrayList<JButton> listaBotonesVerDetalles;
     public ArrayList<JButton> listaBotonesAtender;
@@ -55,13 +55,12 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.usuarioDao = new UsuarioDao();
         this.btnMiAgenda = new JButton("Mi Agenda", new ImageIcon("iconsP/schedule.png"));
         this.btnConsultorio = new JButton("Consultorio", new ImageIcon("iconsP/heart.png"));
-        btnBuscar = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
         simboloRegresarConfirmacionP = new JButton("←");
         btnAsistio = new JButton("Asistió", new ImageIcon("iconsP/accept.png"));
         btnNoAsistio = new JButton("No asistió", new ImageIcon("iconsP/quejas.png"));
         btnGuardarFicha = new JButton("Guardar", new ImageIcon("iconsP/accept.png"));
         btnAceptarFicha = new JButton("Aceptar", new ImageIcon("iconsP/accept.png"));
-        btnVolverVerDetalles = new JButton("← Volver");
+        btnVolverVerDetalles = new JButton("Volver", new ImageIcon("iconsP/arrow-left.png"));
         btnActReagendar = new JButton("Aceptar", new ImageIcon("iconsP/accept.png"));
         btnNoReagendar = new JButton("Cancelar", new ImageIcon("iconsP/quejas.png"));
         btnHistorialMedicoPaciente = new JButton("<html><center>Historial Médico<br>Paciente</center></html>", new ImageIcon("iconsP/paciente.png"));
@@ -88,16 +87,13 @@ public class MedicoInterfaz extends PacienteInterfaz {
         listaBotonesAtender = new ArrayList<JButton>();
         listaBotonesEstado = new ArrayList<JButton>();
 
-        MetodosPublicos.estilizarBoton(btnBuscar, (byte) 5);
-        btnBuscar.setPreferredSize(new Dimension(150, 30));
-
         MetodosPublicos.estilizarBoton(btnAsistio, (byte) 5);
         btnAsistio.setBackground(COLOR_VERDE_ACENTO);
-        btnAsistio.setPreferredSize(new Dimension(170, 40));
+        btnAsistio.setPreferredSize(new Dimension(180, 40));
 
         MetodosPublicos.estilizarBoton(btnNoAsistio, (byte) 5);
         btnNoAsistio.setBackground(Color.RED);
-        btnNoAsistio.setPreferredSize(new Dimension(170, 40));
+        btnNoAsistio.setPreferredSize(new Dimension(180, 40));
 
         MetodosPublicos.estilizarBoton(btnGuardarFicha, (byte) 5);
 
@@ -109,11 +105,11 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
         MetodosPublicos.estilizarBoton(btnActReagendar, (byte) 5);
         btnActReagendar.setBackground(COLOR_VERDE_ACENTO);
-        btnActReagendar.setPreferredSize(new Dimension(150, 40));
+        btnActReagendar.setPreferredSize(new Dimension(180, 40));
 
         MetodosPublicos.estilizarBoton(btnNoReagendar, (byte) 5);
         btnNoReagendar.setBackground(Color.RED);
-        btnNoReagendar.setPreferredSize(new Dimension(150, 40));
+        btnNoReagendar.setPreferredSize(new Dimension(180, 40));
 
         MetodosPublicos.estilizarBoton(btnHistorialMedicoPaciente, (byte) 2);
         btnHistorialMedicoPaciente.setMinimumSize(new Dimension(307, 100));
@@ -127,11 +123,6 @@ public class MedicoInterfaz extends PacienteInterfaz {
         super.agregarBotonCuerpo1(btnConsultorio);
 
         botonesRegresar(simboloRegresarConfirmacionP);
-
-        id = new JTextField();
-        id.setFont(new Font("Arial", Font.PLAIN, 18));
-        id.setPreferredSize(new Dimension(240, 30));
-        id.setBorder(BorderFactory.createLineBorder(COLOR_VERDE_ACENTO));
 
         idHistorial = new JTextField();
         idHistorial.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -183,7 +174,6 @@ public class MedicoInterfaz extends PacienteInterfaz {
 //        this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
 //        this.panelBotonesLaterales.add(btnHistorialMedicoPaciente);
 //    }
-
     public void mostrarFormularioHistorialMedicoPaciente() {
         MetodosPublicos.vaciarPanel(panelListaHistorial);
         MetodosPublicos.vaciarPanel(panelFiltros);
@@ -211,7 +201,6 @@ public class MedicoInterfaz extends PacienteInterfaz {
 //    public void mostrarVistaHistorialConHistorial(String historial, String nombre, String edad) {
 //        this.btnDescargarHistorialP = this.btnDescargar;
 //    }
-
     public void mostrarVistaMiAgenda() {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelPrincipal);
@@ -221,7 +210,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.panelPrincipal.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
                 BorderFactory.createEmptyBorder(0, 30, 5, 30)));
-        this.panelPrincipal.setPreferredSize(new Dimension(1455, 563));
+        this.panelPrincipal.setPreferredSize(new Dimension(1455, 500));
         this.cuerpo2.setLayout(new BorderLayout());
         this.cuerpo2.setBorder(new EmptyBorder(10, 40, 40, 40));
 
@@ -263,10 +252,6 @@ public class MedicoInterfaz extends PacienteInterfaz {
         panelBuscar.setBorder(new EmptyBorder(20, 0, 10, 0));
         panelBuscar.setOpaque(false);
 
-        JLabel numeroId = new JLabel("Número de identificación");
-        numeroId.setFont(new Font("arial", Font.PLAIN, 15));
-        numeroId.setBorder(new EmptyBorder(0, 0, 0, Short.MAX_VALUE));
-
         JScrollPane scrollCitas = new JScrollPane(panelPrincipal);
         scrollCitas.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollCitas.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -280,9 +265,6 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
         this.cuerpo2.add(tituloConsultorio, BorderLayout.NORTH);
         this.cuerpo2.add(scrollCitas, BorderLayout.SOUTH);
-        panelBuscar.add(numeroId);
-        panelBuscar.add(id);
-        panelBuscar.add(btnBuscar);
         this.cuerpo2.add(panelBuscar);
 
         MetodosPublicos.refrescarVentana(panelPrincipal);
@@ -626,7 +608,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
-    public void citaVistaMiAgenda(String especialidad, String fechaC, String horaC, String nombrePaciente) {
+    public void citaVistaMiAgenda(String especialidad, String fechaC, String horaC, String nombrePaciente, Cita cita) {
         //se crea el panel donde va a contener la cita de un paciente
         JPanel panelCita = new JPanel();
         panelCita.setLayout(new BorderLayout());
@@ -677,6 +659,14 @@ public class MedicoInterfaz extends PacienteInterfaz {
         MetodosPublicos.estilizarBoton(btnVerDetalles, (byte) 1);
         btnVerDetalles.setPreferredSize(new Dimension(150, 40));
 
+        btnVerDetalles.addActionListener(e -> {
+            this.mostrarDetallesCita(cita);
+        });
+        
+        btnReagendarCita.addActionListener(e -> {
+            this.mostrarVistaConfirmacionReagendar(cita);
+        });
+
         infoIzquierda.add(titulo2);
         infoIzquierda.add(titulo1);
         infoIzquierda.add(fecha);
@@ -693,7 +683,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         MetodosPublicos.refrescarVentana(panelPrincipal);
     }
 
-    public void mostrarVistaConfirmacionReagendar() {
+    public void mostrarVistaConfirmacionReagendar(Cita cita) {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelPrincipal);
 
@@ -813,7 +803,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.panelPrincipal.add(panelCita);
     }
 
-    public void mostrarDetallesCita() {
+    public void mostrarDetallesCita(Cita cita) {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelPrincipal);
 
@@ -844,7 +834,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         titulo1.setForeground(new Color(0, 194, 177));
         titulo1.setFont(new Font("Arial", Font.BOLD, 35));
 
-        JLabel titulo2 = new JLabel("Odontológica");
+        JLabel titulo2 = new JLabel(cita.getEspecialidad());
         titulo2.setFont(new Font("Arial", Font.BOLD, 35));
         titulo2.setForeground(new Color(0, 79, 124));
 
@@ -908,6 +898,22 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.panelPrincipal.add(infoIzquierda, BorderLayout.WEST);
         this.panelPrincipal.add(panelBtnVolver, BorderLayout.SOUTH);
         this.cuerpo2.add(panelPrincipal);
+
+        campoFecha.setText(cita.getFechaCita().toString());
+        campoHora.setText(cita.getHoraCita().toString());
+        campoPaciente.setText(cita.getNombrePaciente());
+
+        Paciente pacienteInfo = usuarioDao.buscarPorId(cita.getIdUsuario());
+        if (pacienteInfo != null) {
+            campoNumeroId.setText(pacienteInfo.getNumeroId());
+        } else {
+            campoNumeroId.setText("No disponible");
+        }
+
+        campoFecha.setEditable(false);
+        campoHora.setEditable(false);
+        campoPaciente.setEditable(false);
+        campoNumeroId.setEditable(false);
 
         MetodosPublicos.refrescarVentana(panelPrincipal);
         MetodosPublicos.refrescarVentana(cuerpo2);
