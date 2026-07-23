@@ -9,13 +9,45 @@ import javax.swing.JOptionPane;
 import java.sql.Date;
 
 public class MedicamentosDao implements Crud<Medicamentos> {
-    
+
     Conexion conectar = new Conexion();
     Connection con;
 
     PreparedStatement ps;
     ResultSet rs;
-    
+
+    public List<Medicamentos> listarNombres() {
+        List<Medicamentos> nombres = new ArrayList<>();
+        String sql = "SELECT nombre FROM medicamento";
+        try {
+            con = conectar.getConection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Medicamentos med = new Medicamentos();
+                med.setNombre(rs.getString("nombre"));
+                nombres.add(med);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.toString(), 
+                    "Error en la consulta", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.toString());
+            }
+        }
+        return nombres;
+    }
 
     @Override
     public List<Medicamentos> listar() {
@@ -30,12 +62,12 @@ public class MedicamentosDao implements Crud<Medicamentos> {
                 + "LEFT JOIN inventario_medicamentos i ON i.id_medicamento = m.n_registro_sanitario "
                 + "LEFT JOIN fotos_medicamento f ON f.id_medicamento = m.n_registro_sanitario AND f.es_actual = 1 "
                 + "ORDER BY m.nombre";
-        
-        try{
+
+        try {
             con = conectar.getConection();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 Medicamentos med = new Medicamentos();
                 med.setnRegistroSanitario(rs.getString("n_registro_sanitario"));
                 med.setNombre(rs.getString("nombre"));
@@ -51,10 +83,10 @@ public class MedicamentosDao implements Crud<Medicamentos> {
                 med.setUrlFoto(rs.getString("url_foto_medicamento"));
                 listamedicamentos.add(med);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.toString(), "Error de consulta del medicamento", JOptionPane.ERROR_MESSAGE);
         }
-        
+
         return listamedicamentos;
     }
 
@@ -65,8 +97,8 @@ public class MedicamentosDao implements Crud<Medicamentos> {
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, 1)";
         String sqlInventario = "INSERT INTO inventario_medicamentos (id_medicamento, stock) VALUES (?, ?)";
         String sqlFoto = "INSERT INTO fotos_medicamento (id_medicamento, url_foto_medicamento, es_actual) VALUES (?, ?, 1)";
-        
-        try{
+
+        try {
             con = conectar.getConection();
 
             ps = con.prepareStatement(sqlMedi);
@@ -89,10 +121,10 @@ public class MedicamentosDao implements Crud<Medicamentos> {
             ps.setString(2, m.getUrlFoto());
             ps.executeUpdate();
             return 1;
-        }catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.toString(), "Error en la inserción de medicamento", JOptionPane.ERROR_MESSAGE);
             return 0;
-        }finally{
+        } finally {
             if (con != null) {
                 try {
                     con.close();
@@ -102,7 +134,7 @@ public class MedicamentosDao implements Crud<Medicamentos> {
                 }
             }
         }
-        
+
     }
 
     @Override
@@ -114,11 +146,10 @@ public class MedicamentosDao implements Crud<Medicamentos> {
     public int setEliminar(int id) {
         return 0;
     }
-    
+
     public int deshabilitar(String nRegistroSanitario) {
         String sql = "UPDATE medicamento SET estado = 0 WHERE n_registro_sanitario = ?";
-        try (Connection c = conectar.getConection(); 
-             PreparedStatement pst = c.prepareStatement(sql)) {
+        try (Connection c = conectar.getConection(); PreparedStatement pst = c.prepareStatement(sql)) {
             pst.setString(1, nRegistroSanitario);
             return pst.executeUpdate();
         } catch (Exception e) {
@@ -126,7 +157,7 @@ public class MedicamentosDao implements Crud<Medicamentos> {
             return 0;
         }
     }
-    
+
     public int habilitar(String nRegistroSanitario) {
         String sql = "UPDATE medicamento SET estado = 1 WHERE n_registro_sanitario = ?";
         try (Connection c = conectar.getConection(); PreparedStatement pst = c.prepareStatement(sql)) {
