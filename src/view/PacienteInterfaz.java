@@ -219,7 +219,7 @@ public class PacienteInterfaz extends JFrame {
                 ));
         this.panelInfoCitas.setOpaque(false);
 
-        this.btnAgendar = new JButton("️Agendar una cita ", new ImageIcon("iconsP/heart.png"));
+        this.btnAgendar = new JButton("️Agendar una cita", new ImageIcon("iconsP/heart.png"));
         MetodosPublicos.estilizarBoton(btnAgendar, (byte) 3);
         this.listaBotonesCancelar = new ArrayList<JButton>();
         this.listaBotonesReagendar = new ArrayList<JButton>();
@@ -670,17 +670,144 @@ public class PacienteInterfaz extends JFrame {
     //Aqui creo el metodo que permitiria vizualsar en el panel cuerpo2 el apartado de notificaciones
     public void mostrarVistaNotificaciones() {
         MetodosPublicos.vaciarPanel(cuerpo2);
-        MetodosPublicos.vaciarPanel(panelContenidoNotificaciones);
         this.cuerpo2.setLayout(new BorderLayout());
         this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));//Padding propio de esta vista
-        this.cuerpo2.add(panelContenidoNotificaciones);
+        JScrollPane scrollNotificaciones = new JScrollPane(panelContenidoNotificaciones);
+        scrollNotificaciones.setOpaque(false);
+        scrollNotificaciones.getViewport().setOpaque(false);
+        this.cuerpo2.add(scrollNotificaciones);
 
-        MetodosPublicos.refrescarVentana(cuerpo2);
         MetodosPublicos.refrescarVentana(panelContenidoNotificaciones);
+        MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
-    public void agregarNotificaciones(JComponent c) {
-        this.panelContenidoNotificaciones.add(c);
+    public void agregarNotificaciones(String encabezado, String descripcion) {
+        //Tarjetita que es la contenedora con bordes redondeados y borde azul corporativo
+        PanelRound tarjeta = new PanelRound();
+        tarjeta.setRoundTopLeft(18);
+        tarjeta.setRoundTopRight(18);
+        tarjeta.setRoundBottomLeft(18);
+        tarjeta.setRoundBottomRight(18);
+        tarjeta.setLayout(new BorderLayout(0, 0));
+        tarjeta.setBackground(Color.WHITE);
+        tarjeta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2, true),
+                new EmptyBorder(16, 18, 16, 20)
+        ));
+        tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, 105));
+        tarjeta.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        //Icono dentro de un circulo de acento
+        PanelRound circuloIcono = new PanelRound();
+        circuloIcono.setRoundTopLeft(100);
+        circuloIcono.setRoundTopRight(100);
+        circuloIcono.setRoundBottomLeft(100);
+        circuloIcono.setRoundBottomRight(100);
+        circuloIcono.setBackground(new Color(0, 79, 124, 25)); //azul corporativo translucido
+        circuloIcono.setLayout(new GridBagLayout());
+        Dimension tamanoCirculo = new Dimension(50, 50);
+        circuloIcono.setPreferredSize(tamanoCirculo);
+        circuloIcono.setMinimumSize(tamanoCirculo);
+        circuloIcono.setMaximumSize(tamanoCirculo);
+
+        // Elegimos un icono al azar entre los 4 disponibles.
+        // ThreadLocalRandom.nextInt(1, 5) genera un numero entre 1 y 4 (el limite superior es exclusivo).
+        int azar = java.util.concurrent.ThreadLocalRandom.current().nextInt(1, 5);
+        String rutaIcono;
+        switch (azar) {
+            case 1:
+                rutaIcono = "iconsP/notificacionesAzar/quality.png";
+                break;
+            case 2:
+                rutaIcono = "iconsP/notificacionesAzar/verified.png";
+                break;
+            case 3:
+                rutaIcono = "iconsP/notificacionesAzar/verify.png";
+                break;
+            default:
+                rutaIcono = "iconsP/notificacionesAzar/excited.png";
+                break;
+        }
+
+        ImageIcon iconoOriginal = new ImageIcon(rutaIcono);
+        Image iconoEscalado = iconoOriginal.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        JLabel icono = new JLabel(new ImageIcon(iconoEscalado));
+        circuloIcono.add(icono);
+
+        JPanel panelIcono = new JPanel(new GridBagLayout());
+        panelIcono.setOpaque(false);
+        panelIcono.setBorder(new EmptyBorder(0, 0, 0, 16));
+        panelIcono.add(circuloIcono);
+
+        //Fila superior: titulo + hora
+        JPanel filaSuperior = new JPanel(new BorderLayout());
+        filaSuperior.setOpaque(false);
+        filaSuperior.setAlignmentX(Component.LEFT_ALIGNMENT);
+        filaSuperior.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
+
+        JLabel lblTitulo = new JLabel(encabezado);
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblTitulo.setForeground(new Color(28, 28, 28));
+
+        JLabel lblHora = new JLabel(java.time.LocalTime.now().format(
+                java.time.format.DateTimeFormatter.ofPattern("HH:mm")));
+        lblHora.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblHora.setForeground(new Color(160, 160, 160));
+
+        filaSuperior.add(lblTitulo, BorderLayout.WEST);
+        filaSuperior.add(lblHora, BorderLayout.EAST);
+
+        //Descripcion
+        JTextArea txtDescripcion = new JTextArea(descripcion);
+        txtDescripcion.setEditable(false);
+        txtDescripcion.setOpaque(false);
+        txtDescripcion.setFocusable(false);
+        txtDescripcion.setLineWrap(true);
+        txtDescripcion.setWrapStyleWord(true);
+        txtDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        txtDescripcion.setForeground(new Color(105, 105, 105));
+        txtDescripcion.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        //Franja de acento inferior detalle con un toque de de modernidad tipo "estado"
+        JPanel franjaEstado = new JPanel();
+        franjaEstado.setOpaque(false);
+        franjaEstado.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        franjaEstado.setAlignmentX(Component.LEFT_ALIGNMENT);
+        franjaEstado.setBorder(new EmptyBorder(8, 0, 0, 0));
+
+        PanelRound puntoEstado = new PanelRound();
+        puntoEstado.setRoundTopLeft(100);
+        puntoEstado.setRoundTopRight(100);
+        puntoEstado.setRoundBottomLeft(100);
+        puntoEstado.setRoundBottomRight(100);
+        puntoEstado.setBackground(COLOR_VERDE_ACENTO);
+        Dimension tamanoPunto = new Dimension(7, 7);
+        puntoEstado.setPreferredSize(tamanoPunto);
+        puntoEstado.setMinimumSize(tamanoPunto);
+        puntoEstado.setMaximumSize(tamanoPunto);
+
+        JLabel lblEstado = new JLabel("  Nueva notificacion");
+        lblEstado.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        lblEstado.setForeground(COLOR_VERDE_ACENTO);
+
+        franjaEstado.add(puntoEstado);
+        franjaEstado.add(lblEstado);
+
+        //Contenido central
+        JPanel contenido = new JPanel();
+        contenido.setOpaque(false);
+        contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
+        contenido.add(filaSuperior);
+        contenido.add(Box.createVerticalStrut(6));
+        contenido.add(txtDescripcion);
+        contenido.add(franjaEstado);
+
+        //Ensamblado final
+        tarjeta.add(panelIcono, BorderLayout.WEST);
+        tarjeta.add(contenido, BorderLayout.CENTER);
+
+        panelContenidoNotificaciones.add(Box.createVerticalStrut(14));
+        panelContenidoNotificaciones.add(tarjeta);
         MetodosPublicos.refrescarVentana(panelContenidoNotificaciones);
     }
 
@@ -832,6 +959,72 @@ public class PacienteInterfaz extends JFrame {
         MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
 
+    private void procesoPanelConInformacionCita(JPanel contenedor, JPanel titulo,
+            String fecha, String hora, String nombreMedico, String estado) {
+        boolean activa = "Activa".equalsIgnoreCase(estado);
+        Color colorEstado = activa ? COLOR_VERDE_ACENTO : new Color(200, 60, 60);
+
+        PanelRound tarjeta = new PanelRound();
+        tarjeta.setRoundTopLeft(14);
+        tarjeta.setRoundTopRight(14);
+        tarjeta.setRoundBottomLeft(14);
+        tarjeta.setRoundBottomRight(14);
+        tarjeta.setBackground(Color.WHITE);
+        tarjeta.setLayout(new BorderLayout(15, 0));
+        tarjeta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2, true),
+                new EmptyBorder(15, 20, 15, 20)));
+        tarjeta.setAlignmentX(Component.LEFT_ALIGNMENT);
+        tarjeta.setMaximumSize(new Dimension(Integer.MAX_VALUE, 140));
+
+        JPanel panelContenido = new JPanel();
+        panelContenido.setOpaque(false);
+        panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
+        titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel lblFecha = new JLabel("Fecha: " + fecha);
+        lblFecha.setFont(new Font("Arial", Font.PLAIN, 16));
+        lblFecha.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel lblHora = new JLabel("Hora: " + hora);
+        lblHora.setFont(new Font("Arial", Font.PLAIN, 16));
+        lblHora.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel lblMedico = new JLabel(nombreMedico);
+        lblMedico.setFont(new Font("Arial", Font.PLAIN, 16));
+        lblMedico.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        panelContenido.add(titulo);
+        panelContenido.add(Box.createVerticalStrut(4));
+        panelContenido.add(lblFecha);
+        panelContenido.add(lblHora);
+        panelContenido.add(lblMedico);
+
+        PanelRound insignia = new PanelRound();
+        insignia.setRoundTopLeft(20);
+        insignia.setRoundTopRight(20);
+        insignia.setRoundBottomLeft(20);
+        insignia.setRoundBottomRight(20);
+        insignia.setBackground(colorEstado);
+        insignia.setLayout(new GridBagLayout());
+        insignia.setPreferredSize(new Dimension(100, 30));
+        JLabel lblEstado = new JLabel(estado);
+        lblEstado.setForeground(Color.WHITE);
+        lblEstado.setFont(new Font("Arial", Font.BOLD, 13));
+        insignia.add(lblEstado);
+
+        JPanel panelDerecha = new JPanel(new GridBagLayout());
+        panelDerecha.setOpaque(false);
+        panelDerecha.add(insignia);
+
+        tarjeta.add(panelContenido, BorderLayout.CENTER);
+        tarjeta.add(panelDerecha, BorderLayout.EAST);
+
+        contenedor.setOpaque(false);
+        contenedor.setLayout(new BorderLayout());
+        contenedor.add(tarjeta, BorderLayout.CENTER);
+    }
+
     public void agregarAlPanelMiscitas(JPanel titulo, String fecha, String hora, String nombreMedico) {
         JPanel panelBotones = new JPanel(), panelContenido = new JPanel(), c = new JPanel();
         panelBotones.setOpaque(false);
@@ -878,6 +1071,27 @@ public class PacienteInterfaz extends JFrame {
         this.listaBotonesCancelar.add(btnCancelarCita);
         this.panelInfoCitas.add(c);
         MetodosPublicos.refrescarVentana(panelInfoCitas);
+    }
+
+    public void agregarAlPanelHistorialCitas(JPanel titulo, String fecha, String hora, String nombreMedico, String estado) {
+        JPanel c = new JPanel();
+        procesoPanelConInformacionCita(c, titulo, fecha, hora, nombreMedico, estado);
+        this.panelListaHistorial.add(c);
+        this.panelListaHistorial.add(Box.createVerticalStrut(12));
+        MetodosPublicos.refrescarVentana(panelListaHistorial);
+    }
+
+    public void mostrarMensajeHistorialVacio() {
+        MetodosPublicos.vaciarPanel(panelListaHistorial);
+        JLabel lbl = new JLabel("No tienes historial de citas", new ImageIcon("iconsP/info.png"), JLabel.CENTER);
+        lbl.setHorizontalTextPosition(JLabel.CENTER);
+        lbl.setVerticalTextPosition(JLabel.BOTTOM);
+        lbl.setFont(new Font("Arial", Font.BOLD, 20));
+        lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelListaHistorial.add(Box.createVerticalGlue());
+        panelListaHistorial.add(lbl);
+        panelListaHistorial.add(Box.createVerticalGlue());
+        MetodosPublicos.refrescarVentana(panelListaHistorial);
     }
 
     public void limpiarPanelHorarios() {

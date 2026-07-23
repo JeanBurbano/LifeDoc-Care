@@ -56,8 +56,8 @@ public class EnvioCorreos {
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
-        // Se usa un Authenticator para que la sesion quede autenticada de una vez;
-        // asi Transport.send(mimeMessage) ya sabe con que credenciales conectarse.
+        //Se usa un Authenticator para que la sesion quede autenticada de una vez.
+        //asi Transport.send(mimeMessage) ya sabe con que credenciales conectarse.
         session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {

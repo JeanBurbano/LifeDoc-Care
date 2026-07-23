@@ -39,6 +39,7 @@ public class CreadorPdf {
             public boolean accept(File f) {
                 return f.getName().toLowerCase().endsWith(".pdf") || f.isDirectory();
             }
+
             @Override
             public String getDescription() {
                 return "Archivos PDF (*.pdf)";
@@ -61,7 +62,8 @@ public class CreadorPdf {
             Document documento = new Document();
             PdfWriter.getInstance(documento, archivoOut);
             documento.open();
-            Paragraph parrafo = new Paragraph("Historial Clínico\n" + mensaje);
+            Paragraph parrafo = new Paragraph("Historial Clínico\n"
+                    + "LifeDocCare" + mensaje);
             parrafo.setAlignment(1);
             documento.add(parrafo);
             documento.close();

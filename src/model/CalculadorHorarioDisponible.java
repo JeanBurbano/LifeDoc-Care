@@ -26,7 +26,7 @@ public class CalculadorHorarioDisponible {
             case SATURDAY:
                 return "Sabado";
             default:
-                return null; // Domingo: la clinica no trabaja
+                return null; //Domingo la clinica no trabaja hombre seg.
         }
     }
 
@@ -50,7 +50,7 @@ public class CalculadorHorarioDisponible {
         if (diaHorario == null) {
             return disponibles;
         }
-        
+  
         LocalTime inicio = LocalTime.parse(diaHorario.getHoraInicio());
         LocalTime fin = LocalTime.parse(diaHorario.getHoraFin());
         LocalTime descansoInicio = LocalTime.parse(diaHorario.getDescansoInicio());

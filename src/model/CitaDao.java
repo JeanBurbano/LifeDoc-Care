@@ -15,11 +15,27 @@ public class CitaDao implements Crud<Cita> {
     // setAgregar devuelve esto cuando el medico ya tiene otra cita en esa fecha,hora.
     public static final int CONFLICTO_HORARIO = -1;
 
+    public Conexion conectar = new Conexion();
+
     public CitaDao() {
 
     }
 
-    public static Conexion conectar = new Conexion();
+    public int setReagendar(int idCita, int idMedico, LocalDate nuevaFecha, LocalTime nuevaHora) {
+        String sql = "UPDATE cita SET fecha_cita = ?, hora_cita = ? WHERE id_cita = ? AND id_Medico = ?";
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setObject(1, nuevaFecha);
+            ps.setObject(2, nuevaHora);
+            ps.setInt(3, idCita);
+            ps.setInt(4, idMedico);
+            return ps.executeUpdate();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return CONFLICTO_HORARIO;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
     public List<LocalTime> listarHorasOcupadas(int idMedico, LocalDate fecha) {
         List<LocalTime> horas = new ArrayList<>();
@@ -36,6 +52,52 @@ public class CitaDao implements Crud<Cita> {
             e.printStackTrace();
         }
         return horas;
+    }
+
+    public Cita[] listarTodasPorUsuario(int idUsuario) {
+        List<Cita> citas = new ArrayList<>();
+
+        String sql = "SELECT c.id_cita, c.estado, c.hora_cita, c.fecha_cita, "
+                + "c.id_Usuario, up.primer_nombre, up.primer_apellido, "
+                + "c.id_Medico, um.primer_nombre AS medico_nombre, um.primer_apellido AS medico_apellido, "
+                + "e.nombre_especialidad, "
+                + "c.id_usuario_agenda "
+                + "FROM cita c "
+                + "JOIN usuario up ON up.id_usuario = c.id_Usuario "
+                + "JOIN medico m ON m.id_medico = c.id_Medico "
+                + "JOIN usuario um ON um.id_usuario = m.id_usuario "
+                + "JOIN especialidad e ON e.id_especialidad = m.id_especialidad "
+                + "WHERE c.id_Usuario = ? "
+                + "ORDER BY c.fecha_cita DESC, c.hora_cita DESC";
+
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String nombrePaciente = rs.getString("primer_nombre") + " "
+                            + rs.getString("primer_apellido");
+
+                    String nombreMedico = rs.getString("medico_nombre") + " "
+                            + rs.getString("medico_apellido");
+
+                    citas.add(new Cita(
+                            rs.getByte("id_cita"),
+                            rs.getBoolean("estado"),
+                            rs.getTime("hora_cita").toLocalTime(),
+                            rs.getDate("fecha_cita").toLocalDate(),
+                            rs.getByte("id_Usuario"),
+                            nombrePaciente,
+                            rs.getByte("id_Medico"),
+                            nombreMedico,
+                            rs.getString("nombre_especialidad"),
+                            rs.getByte("id_usuario_agenda")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return citas.toArray(new Cita[0]);
     }
 
     public Cita[] listarPorUsuario(int idUsuario) {
@@ -121,6 +183,39 @@ public class CitaDao implements Crud<Cita> {
     @Override
     public List<Cita> listar() {
         List<Cita> citas = new ArrayList<>();
+        String sql = "SELECT c.id_cita, c.estado, c.hora_cita, c.fecha_cita, "
+                + "c.id_Usuario, up.primer_nombre, up.primer_apellido, "
+                + "c.id_Medico, um.primer_nombre AS medico_nombre, um.primer_apellido AS medico_apellido, "
+                + "e.nombre_especialidad, "
+                + "c.id_usuario_agenda "
+                + "FROM cita c "
+                + "JOIN usuario up ON up.id_usuario = c.id_Usuario "
+                + "JOIN medico m ON m.id_medico = c.id_Medico "
+                + "JOIN usuario um ON um.id_usuario = m.id_usuario "
+                + "JOIN especialidad e ON e.id_especialidad = m.id_especialidad "
+                + "ORDER BY c.fecha_cita DESC, c.hora_cita DESC";
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String nombrePaciente = rs.getString("primer_nombre") + " " + rs.getString("primer_apellido");
+                    String nombreMedico = rs.getString("medico_nombre") + " " + rs.getString("medico_apellido");
+                    citas.add(new Cita(
+                            rs.getByte("id_cita"),
+                            rs.getBoolean("estado"),
+                            rs.getTime("hora_cita").toLocalTime(),
+                            rs.getDate("fecha_cita").toLocalDate(),
+                            rs.getByte("id_Usuario"),
+                            nombrePaciente,
+                            rs.getByte("id_Medico"),
+                            nombreMedico,
+                            rs.getString("nombre_especialidad"),
+                            rs.getByte("id_usuario_agenda")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return citas;
     }
 

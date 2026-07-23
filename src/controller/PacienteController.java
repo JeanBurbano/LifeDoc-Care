@@ -9,8 +9,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
@@ -25,6 +27,7 @@ import model.HorarioDao;
 import model.HorarioDia;
 import model.Medico;
 import model.MedicoDao;
+import model.MetodosPublicos;
 import model.Paciente;
 import model.UsuarioDao;
 import view.EditarPerfilInterfaz;
@@ -33,17 +36,40 @@ import view.Titulo;
 
 public class PacienteController implements ActionListener {
 
+    //variables de clase
     private static List<Foro> foro = new ArrayList<Foro>();
+    private final static byte MEDICINA_GENERAL = 1;
+    private final static byte DERMATOLOGIA = 3;
+    private final static byte ODONTOLOGIA = 2;
+
     private Paciente usurio;
     private CitaDao citadao;
     private MedicoDao medicodao;
     private ForoDao forodao;
-    protected PacienteInterfaz pacienteI;//protected para que el hijo lo acceda directo
+    protected PacienteInterfaz pacienteI;
+
     private Medico[] medicos;
     private Medico medicoSeleccionado;
+    private int especialidadSeleccionada; // 1 = Medico General, 2 = Odontologia, 3 = Dermatologia
+
     protected Cita[] citas;
     private boolean verificador;
     private String historial;
+    private Cita citaAReagendar;
+
+    private boolean estadoNotificacion;
+
+    public PacienteController(PacienteInterfaz pacienteI) {
+        this.pacienteI = pacienteI;
+        this.usurio = this.pacienteI.getUsuario();
+        this.citadao = new CitaDao();
+        this.medicodao = new MedicoDao();
+        this.forodao = new ForoDao();
+        agregaMauseClick();
+        agregarActionListener();
+        inicializarForo();
+        this.estadoNotificacion = true;
+    }
 
     private void agregaMauseClick() {
         pacienteI.labelFotoPerfil.addMouseListener(new MouseAdapter() {
@@ -80,80 +106,22 @@ public class PacienteController implements ActionListener {
         this.pacienteI.btnMisCitas.doClick();
     }
 
-    //funcion para rellenar foro si es null
     private void inicializarForo() {
         if (foro == null || foro.isEmpty()) {
             foro = forodao.listar();
         }
     }
 
-    //constructor
-    public PacienteController(PacienteInterfaz pacienteI) {
-        this.pacienteI = pacienteI;
-        this.usurio = this.pacienteI.getUsuario();
-        this.citadao = new CitaDao();
-        this.medicodao = new MedicoDao();
-        this.forodao = new ForoDao();
-        agregaMauseClick();
-        agregarActionListener();
-        inicializarForo();
-    }
-
-    //funsion 
-    private void mostrarHorasDisponibles(LocalDate fecha) {
-        pacienteI.limpiarPanelHorarios();
-        Horario horarioMedico = new HorarioDao().obtenerPorMedico(medicoSeleccionado.getId_medico());
-        HorarioDia diaHorario = CalculadorHorarioDisponible.buscarDiaParaFecha(horarioMedico, fecha);
-        if (diaHorario == null) {
-            pacienteI.mostrarMensajeSinDisponibilidad("El medico no atiende este dia.");
-            return;
+    private void botonesFuncionalesMedicos(int n) {
+        this.especialidadSeleccionada = n;
+        pacienteI.listaBotonesMedicos.clear();
+        medicos = medicodao.listarPorEspecialidad(n);
+        String[] nombreMedicos = new String[medicos.length];
+        for (int i = 0; i < medicos.length; i++) {
+            nombreMedicos[i] = medicos[i].getPrimerNombre() + " " + medicos[i].getPrimerApellido();
         }
-        List<java.time.LocalTime> ocupadas = citadao.listarHorasOcupadas(medicoSeleccionado.getId_medico(), fecha);
-        List<java.time.LocalTime> disponibles = CalculadorHorarioDisponible.calcularDisponibles(diaHorario, ocupadas);
-        if (disponibles.isEmpty()) {
-            pacienteI.mostrarMensajeSinDisponibilidad("No hay horas disponibles para este dia.");
-            return;
-        }
-        for (java.time.LocalTime hora : disponibles) {
-            JButton btnHora = pacienteI.agregarBotonHoraDisponible(hora.toString());
-            btnHora.addActionListener((ActionEvent ev) -> confirmarCita(fecha, hora));
-        }
-    }
-
-    //funcion para agregar el listener al calendario
-    private void agregarListenerCalendario() {
-        pacienteI.calendario.addCalendarListener(new CalendarListener() {
-            @Override
-            public void selectedDateChanged(CalendarSelectionEvent event) {
-                LocalDate fechaSeleccionada = event.getNewDate();
-                if (fechaSeleccionada == null || medicoSeleccionado == null) {
-                    return;
-                }
-                mostrarHorasDisponibles(fechaSeleccionada);
-            }
-
-            @Override
-            public void yearMonthChanged(YearMonthChangeEvent event) {
-                // como tal no se necesita hacer nada aqui pero el metodo es obligatorio
-            }
-        });
-    }
-
-    private void confirmarCita(LocalDate fecha, java.time.LocalTime hora) {
-        Cita nuevaCita = new Cita((byte) 0, true, hora, fecha, (byte) usurio.getIdUsuario(), null,
-                (byte) medicoSeleccionado.getId_medico(), null, null, (byte) usurio.getIdUsuario());
-        
-        int resultado = citadao.setAgregar(nuevaCita);
-
-        if (resultado == CitaDao.CONFLICTO_HORARIO) {
-            JOptionPane.showMessageDialog(pacienteI, "Esa hora acaba de ser tomada, elige otra.");
-            mostrarHorasDisponibles(fecha);
-        } else if (resultado > 0) {
-            JOptionPane.showMessageDialog(pacienteI, "Cita agendada correctamente.");
-            pacienteI.btnMisCitas.doClick();
-        } else {
-            JOptionPane.showMessageDialog(pacienteI, "No se pudo agendar, intenta nuevamente.");
-        }
+        pacienteI.mostrarVistaSeleccionMedico(nombreMedicos);
+        actionListenerParaBotonesDeVectores(pacienteI.listaBotonesMedicos, "Agenda una ", "Cita");
     }
 
     private void actionListenerParaBotonesDeVectores(ArrayList<JButton> vectorBotones, String primero, String segundo) {
@@ -168,21 +136,121 @@ public class PacienteController implements ActionListener {
         }
     }
 
+    private void agregarListenerCalendario() {
+        pacienteI.calendario.addCalendarListener(new CalendarListener() {
+            @Override
+            public void selectedDateChanged(CalendarSelectionEvent event) {
+                LocalDate fechaSeleccionada = event.getNewDate();
+                if (fechaSeleccionada == null || medicoSeleccionado == null) {
+                    return;
+                }
+                mostrarHorasDisponibles(fechaSeleccionada);
+            }
+
+            @Override
+            public void yearMonthChanged(YearMonthChangeEvent event) {
+                //no se necesita hacer nada aqui
+            }
+        });
+    }
+
+    private void mostrarHorasDisponibles(LocalDate fecha) {
+        pacienteI.limpiarPanelHorarios();
+
+        Horario horarioMedico = new HorarioDao().obtenerPorMedico(medicoSeleccionado.getId_medico());
+        HorarioDia diaHorario = CalculadorHorarioDisponible.buscarDiaParaFecha(horarioMedico, fecha);
+        if (diaHorario == null) {
+            pacienteI.mostrarMensajeSinDisponibilidad("El medico no atiende este dia.");
+            return;
+        }
+
+        List<LocalTime> ocupadas = citadao.listarHorasOcupadas(medicoSeleccionado.getId_medico(), fecha);
+        if (citaAReagendar != null && fecha.equals(citaAReagendar.getFechaCita())) {
+            ocupadas.remove(citaAReagendar.getHoraCita());
+        }
+        List<LocalTime> disponibles = CalculadorHorarioDisponible.calcularDisponibles(diaHorario, ocupadas);
+        if (disponibles.isEmpty()) {
+            pacienteI.mostrarMensajeSinDisponibilidad("No hay horas disponibles para este dia.");
+            return;
+        }
+
+        for (LocalTime hora : disponibles) {
+            JButton btnHora = pacienteI.agregarBotonHoraDisponible(hora.toString());
+            btnHora.addActionListener((ActionEvent ev) -> {
+                btnHora.setEnabled(false);
+                confirmarCita(fecha, hora);
+            });
+        }
+    }
+
+    protected void procesoNotificacion(String encabezado, String descripcion) {
+        if (estadoNotificacion) {
+            pacienteI.btnNotificaciones.setIcon(new ImageIcon("iconsP/notification.png"));
+            estadoNotificacion = false;
+        }
+        pacienteI.agregarNotificaciones(encabezado, descripcion);
+        MetodosPublicos.reproducirSonido("notificacion.wav");
+    }
+
+    protected void procesoConfirmarCitaVerdadero(LocalDate fecha, LocalTime hora) {
+        JOptionPane.showMessageDialog(pacienteI, "Cita agendada correctamente.");
+        procesoNotificacion("Cita confirmada",
+                "Tu cita con el Dr(a). " + medicoSeleccionado.getPrimerNombre()
+                + " " + medicoSeleccionado.getPrimerApellido()
+                + " ha sido programada para el " + fecha + " a las " + hora + ".");
+//        switch (especialidadSeleccionada) {
+//            case MEDICINA_GENERAL:
+//                this.pacienteI.btnMedicoGeneral.setEnabled(false);
+//                break;
+//            case ODONTOLOGIA:
+//                this.pacienteI.btnOdontologia.setEnabled(false);
+//                break;
+//            case DERMATOLOGIA:
+//                this.pacienteI.btnDermatologia.setEnabled(false);
+//                break;
+//        }
+        procesoBtnMisCitas();
+    }
+
+    private void confirmarCita(LocalDate fecha, LocalTime hora) {
+        if (citaAReagendar != null) {
+            int resultado = citadao.setReagendar(citaAReagendar.getIdCita(), medicoSeleccionado.getId_medico(), fecha, hora);
+            if (resultado == CitaDao.CONFLICTO_HORARIO) {
+                JOptionPane.showMessageDialog(pacienteI, "Esa hora acaba de ser tomada, elige otra.");
+                mostrarHorasDisponibles(fecha);
+            } else if (resultado > 0) {
+                JOptionPane.showMessageDialog(pacienteI, "Cita reagendada correctamente.");
+                procesoNotificacion("Cita reagendada",
+                        "Tu cita con el Dr(a). " + medicoSeleccionado.getPrimerNombre()
+                        + " " + medicoSeleccionado.getPrimerApellido()
+                        + " ahora es el " + fecha + " a las " + hora + ".");
+                citaAReagendar = null;
+                procesoBtnMisCitas();
+            } else {
+                JOptionPane.showMessageDialog(pacienteI, "No se pudo reagendar, intenta nuevamente.");
+            }
+            return;
+        }
+
+        Cita nuevaCita = new Cita((byte) 0, true, hora, fecha, (byte) usurio.getIdUsuario(), null,
+                (byte) medicoSeleccionado.getId_medico(), null, null, (byte) usurio.getIdUsuario());
+
+        int resultado = citadao.setAgregar(nuevaCita);
+
+        if (resultado == CitaDao.CONFLICTO_HORARIO) {
+            JOptionPane.showMessageDialog(pacienteI, "Esa hora acaba de ser tomada, elige otra.");
+            mostrarHorasDisponibles(fecha);
+        } else if (resultado > 0) {
+            procesoConfirmarCitaVerdadero(fecha, hora);
+        } else {
+            JOptionPane.showMessageDialog(pacienteI, "No se pudo agendar, intenta nuevamente.");
+        }
+    }
+
     private void estaditodeBotonesComentarios(JButton boton1, JButton boton2, JButton boton3) {
         boton1.setEnabled(false);
         boton2.setEnabled(true);
         boton3.setEnabled(true);
-    }
-
-    private void botonesFuncionalesMedicos(int n) {
-        pacienteI.listaBotonesMedicos.clear();
-        medicos = medicodao.listarPorEspecialidad(n);
-        String[] nombreMedicos = new String[medicos.length];
-        for (int i = 0; i < medicos.length; i++) {
-            nombreMedicos[i] = medicos[i].getPrimerNombre() + " " + medicos[i].getPrimerApellido();
-        }
-        pacienteI.mostrarVistaSeleccionMedico(nombreMedicos);
-        actionListenerParaBotonesDeVectores(pacienteI.listaBotonesMedicos, "Agenda una ", "Cita");
     }
 
     private void proceso(String mensaje, boolean valor) {
@@ -191,109 +259,231 @@ public class PacienteController implements ActionListener {
         pacienteI.btnDescargar.setEnabled(valor);
     }
 
+    private int mapearEspecialidadAnumero(String especialidad) {
+        if (especialidad == null) {
+            return MEDICINA_GENERAL;
+        }
+        switch (especialidad) {
+            case "Odontologia":
+                return ODONTOLOGIA;
+            case "Dermatologia":
+                return DERMATOLOGIA;
+            default:
+                return MEDICINA_GENERAL;
+        }
+    }
+
+    private void iniciarReagendamiento(Cita citaOriginal) {
+        this.citaAReagendar = citaOriginal;
+        this.especialidadSeleccionada = mapearEspecialidadAnumero(citaOriginal.getEspecialidad());
+        Medico[] medicosEspecialidad = medicodao.listarPorEspecialidad(especialidadSeleccionada);
+        for (Medico m : medicosEspecialidad) {
+            if (m.getId_medico() == citaOriginal.getIdMedico()) {
+                this.medicoSeleccionado = m;
+                break;
+            }
+        }
+        pacienteI.mostrarVistaAgendamientoCita(new Titulo("Reagendar ", "Cita", 50));
+        agregarListenerCalendario();
+    }
+
+    protected void procesoBtnMisCitas() {
+        this.citaAReagendar = null; //Esto lo pongo por si quedo a medias un reagendamiento anterior
+        pacienteI.habilitarBotonesMenu(pacienteI.btnMisCitas);
+        pacienteI.mostrarVistaMisCitas();
+        this.pacienteI.listaBotonesCancelar.clear();
+        this.pacienteI.listaBotonesReagendar.clear();
+        this.citas = citadao.listarPorUsuario(usurio.getIdUsuario());
+        if (citas == null || citas.length == 0) {
+            pacienteI.agregarAlPanelMiscitas();
+        } else {
+            int i = 0;
+            for (Cita clave : citas) {
+                pacienteI.agregarAlPanelMiscitas(new Titulo("Cita ", clave.getEspecialidad(), 30).getPanelTitulo(),
+                        clave.getFechaCita().toString(), clave.getHoraCita().toString(),
+                        "Nombre Medico(a): " + clave.getNombreMedico());
+
+                pacienteI.listaBotonesCancelar.get(i).addActionListener((ActionEvent e) -> {
+                    int n = citadao.setEliminar(clave.getIdCita());
+                    if (n > 0) {
+                        procesoNotificacion("Cita cancelada", "Tu cita con el Dr(a). " + clave.getNombreMedico()
+                                + " ha sido cancelada correctamente.");
+                        procesoBtnMisCitas();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No se pudo cancelar su cita por favor intentalo mas tarde");
+                    }
+                });
+
+                pacienteI.listaBotonesReagendar.get(i).addActionListener((ActionEvent e) -> {
+                    iniciarReagendamiento(clave);
+                });
+                i++;
+            }
+        }
+    }
+
+    protected void procesoBtnHistorial() {
+        pacienteI.habilitarBotonesMenu(pacienteI.btnHistorial);
+        pacienteI.btnHistorialCitas.setEnabled(true);
+        pacienteI.btnHistorialCitas.doClick();
+    }
+
+    protected void procesoBtnComentarios() {
+        pacienteI.habilitarBotonesMenu(pacienteI.btnComentarios);
+        pacienteI.mostrarVistaComentarios();
+        pacienteI.btnSugerencias.doClick();
+    }
+
+    protected void procesoBtnNotificaciones() {
+        if (!estadoNotificacion) {
+            pacienteI.btnNotificaciones.setIcon(new ImageIcon("iconsP/bell.png"));
+            estadoNotificacion = true;
+        }
+        pacienteI.habilitarBotonesMenu(pacienteI.btnNotificaciones);
+        pacienteI.mostrarVistaNotificaciones();
+    }
+
+    protected void procesoBtnSugerencia() {
+        estaditodeBotonesComentarios(pacienteI.btnSugerencias, pacienteI.btnQuejas, pacienteI.btnForo);
+        this.verificador = true;
+        pacienteI.construirFormularioComentario();
+    }
+
+    protected void procesoBtnQuejas() {
+        estaditodeBotonesComentarios(pacienteI.btnQuejas, pacienteI.btnSugerencias, pacienteI.btnForo);
+        this.verificador = false;
+        pacienteI.construirFormularioComentario();
+    }
+
+    protected void procesoBtnForo() {
+        estaditodeBotonesComentarios(pacienteI.btnForo, pacienteI.btnQuejas, pacienteI.btnSugerencias);
+        pacienteI.mostarPanelComentarioVacio();
+        if (foro != null && !foro.isEmpty()) {
+            for (Foro clave : foro) {
+                pacienteI.agregarAlPanelComentarios(clave.getTipoMensaje(), clave.getAsunto(),
+                        clave.getNombreUsuario(), clave.getDescripcion());
+            }
+        }
+    }
+
+    protected void procesoBtnEnviar() {
+        String asunto = pacienteI.campoAsunto.getText().trim();
+        String descripcion = pacienteI.areaDescripcion.getText().trim();
+        if (asunto.isEmpty() || descripcion.isEmpty()) {
+            JOptionPane.showMessageDialog(pacienteI, "Los campos deben contener algo");
+        } else {
+            String tipoMensaje = verificador ? "Sugerencia" : "Queja";
+            Foro nuevoComentario = new Foro(tipoMensaje, asunto, descripcion, usurio.getIdUsuario());
+            int filasInsertadas = forodao.setAgregar(nuevoComentario);
+            if (filasInsertadas > 0) {
+                nuevoComentario = new Foro(nuevoComentario.getTipoMensaje(), nuevoComentario.getAsunto(),
+                        nuevoComentario.getDescripcion(), usurio.getPrimerNombre());
+                foro.add(0, nuevoComentario);
+                JOptionPane.showMessageDialog(pacienteI, "Tu " + tipoMensaje.toLowerCase() + " fue enviada correctamente");
+                pacienteI.campoAsunto.setText("");
+                pacienteI.areaDescripcion.setText("");
+            } else {
+                JOptionPane.showMessageDialog(pacienteI, "No se pudo enviar tu " + tipoMensaje.toLowerCase() + ", intenta nuevamente");
+            }
+        }
+    }
+
+    private void estadoBotonesHistial(boolean estado) {
+        pacienteI.btnHistorialCitas.setEnabled(estado);
+        pacienteI.btnHistorialMedico.setEnabled(!estado);
+    }
+
+    protected void procesoBtnHistorialCitas() {
+        estadoBotonesHistial(false);
+        pacienteI.mostrarVistaHistorial();
+        Cita[] citasHistorial = citadao.listarTodasPorUsuario(pacienteI.getUsuario().getIdUsuario());
+        if (citasHistorial == null || citasHistorial.length == 0) {
+            pacienteI.mostrarMensajeHistorialVacio();
+        } else {
+            for (Cita clave : citasHistorial) {
+                String estadoCita = clave.getEstado() ? "Activa" : "Cancelada";
+                pacienteI.agregarAlPanelHistorialCitas(
+                        new Titulo("Cita ", clave.getEspecialidad(), 30).getPanelTitulo(),
+                        clave.getFechaCita().toString(),
+                        clave.getHoraCita().toString(),
+                        "Dr(a). " + clave.getNombreMedico(),
+                        estadoCita);
+            }
+        }
+    }
+
+    protected void procesoBtnHistorialMedico() {
+        estadoBotonesHistial(true);
+        UsuarioDao usuDao = new UsuarioDao();
+        this.historial = usuDao.historialMedico(pacienteI.getUsuario().getIdUsuario());
+        if (historial == null) {
+            proceso("No tienes historial medico", false);
+        } else {
+            proceso(historial, true);
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == pacienteI.btnCerrarSesion) {
             this.pacienteI.dispose();
+            return;
         }
         if (e.getSource() == pacienteI.btnMisCitas) {
-            pacienteI.habilitarBotonesMenu(pacienteI.btnMisCitas);
-            pacienteI.mostrarVistaMisCitas();
-            this.pacienteI.listaBotonesCancelar.clear();
-            this.pacienteI.listaBotonesReagendar.clear();
-            this.citas = citadao.listarPorUsuario(usurio.getIdUsuario());
-            if (citas == null || citas.length == 0) {
-                pacienteI.agregarAlPanelMiscitas();
-            } else {
-                for (Cita clave : citas) {
-                    pacienteI.agregarAlPanelMiscitas(new Titulo("Cita ", clave.getEspecialidad(), 30).getPanelTitulo(),
-                            clave.getFechaCita().toString(), clave.getHoraCita().toString(),
-                            "Nombre Medico(a): " + clave.getNombreMedico());
-                }
-            }
+            procesoBtnMisCitas();
+            return;
         }
         if (e.getSource() == pacienteI.btnHistorial) {
-            pacienteI.habilitarBotonesMenu(pacienteI.btnHistorial);
-            pacienteI.btnHistorialCitas.setEnabled(true);
-            pacienteI.btnHistorialCitas.doClick();
+            procesoBtnHistorial();
+            return;
         }
         if (e.getSource() == pacienteI.btnComentarios) {
-            pacienteI.habilitarBotonesMenu(pacienteI.btnComentarios);
-            pacienteI.mostrarVistaComentarios();
-            pacienteI.btnSugerencias.doClick();
+            procesoBtnComentarios();
+            return;
         }
         if (e.getSource() == pacienteI.btnNotificaciones) {
-            pacienteI.habilitarBotonesMenu(pacienteI.btnNotificaciones);
-            pacienteI.mostrarVistaNotificaciones();
+            procesoBtnNotificaciones();
+            return;
         }
         if (e.getSource() == pacienteI.btnAgendar) {
             pacienteI.mostrarVistaTipoConsulta(new Titulo("Agendamiento de ", "Cita"));
+            return;
         }
         if (e.getSource() == pacienteI.btnOdontologia) {
             botonesFuncionalesMedicos(2);
+            return;
         }
         if (e.getSource() == pacienteI.btnDermatologia) {
             botonesFuncionalesMedicos(3);
+            return;
         }
         if (e.getSource() == pacienteI.btnMedicoGeneral) {
             botonesFuncionalesMedicos(1);
+            return;
         }
         if (e.getSource() == pacienteI.btnSugerencias) {
-            estaditodeBotonesComentarios(pacienteI.btnSugerencias, pacienteI.btnQuejas, pacienteI.btnForo);
-            this.verificador = true;
-            pacienteI.construirFormularioComentario();
+            procesoBtnSugerencia();
+            return;
         }
         if (e.getSource() == pacienteI.btnQuejas) {
-            estaditodeBotonesComentarios(pacienteI.btnQuejas, pacienteI.btnSugerencias, pacienteI.btnForo);
-            this.verificador = false;
-            pacienteI.construirFormularioComentario();
+            procesoBtnQuejas();
+            return;
         }
         if (e.getSource() == pacienteI.btnForo) {
-            estaditodeBotonesComentarios(pacienteI.btnForo, pacienteI.btnQuejas, pacienteI.btnSugerencias);
-            pacienteI.mostarPanelComentarioVacio();
-            if (foro != null && !foro.isEmpty()) {
-                for (Foro clave : foro) {
-                    pacienteI.agregarAlPanelComentarios(clave.getTipoMensaje(), clave.getAsunto(),
-                            clave.getNombreUsuario(), clave.getDescripcion());
-                }
-            }
+            procesoBtnForo();
+            return;
         }
         if (e.getSource() == pacienteI.btnEnviar) {
-            String asunto = pacienteI.campoAsunto.getText().trim();
-            String descripcion = pacienteI.areaDescripcion.getText().trim();
-            if (asunto.isEmpty() || descripcion.isEmpty()) {
-                JOptionPane.showMessageDialog(pacienteI, "Los campos deben contener algo");
-            } else {
-                String tipoMensaje = verificador ? "Sugerencia" : "Queja";
-                Foro nuevoComentario = new Foro(tipoMensaje, asunto, descripcion, usurio.getIdUsuario());
-                int filasInsertadas = forodao.setAgregar(nuevoComentario);
-                if (filasInsertadas > 0) {
-                    nuevoComentario = new Foro(nuevoComentario.getTipoMensaje(), nuevoComentario.getAsunto(),
-                            nuevoComentario.getDescripcion(), usurio.getPrimerNombre());
-                    foro.add(0, nuevoComentario);
-                    JOptionPane.showMessageDialog(pacienteI, "Tu " + tipoMensaje.toLowerCase() + " fue enviada correctamente");
-                    pacienteI.campoAsunto.setText("");
-                    pacienteI.areaDescripcion.setText("");
-                } else {
-                    JOptionPane.showMessageDialog(pacienteI, "No se pudo enviar tu " + tipoMensaje.toLowerCase() + ", intenta nuevamente");
-                }
-            }
+            procesoBtnEnviar();
+            return;
         }
         if (e.getSource() == pacienteI.btnHistorialCitas) {
-            pacienteI.btnHistorialCitas.setEnabled(false);
-            pacienteI.btnHistorialMedico.setEnabled(true);
-            pacienteI.mostrarVistaHistorial();
+            procesoBtnHistorialCitas();
+            return;
         }
         if (e.getSource() == pacienteI.btnHistorialMedico) {
-            pacienteI.btnHistorialMedico.setEnabled(false);
-            pacienteI.btnHistorialCitas.setEnabled(true);
-            UsuarioDao usuDao = new UsuarioDao();
-            this.historial = usuDao.historialMedico(pacienteI.getUsuario().getIdUsuario());
-            if (historial == null) {
-                proceso("No tienes historial medico", false);
-            } else {
-                proceso(historial, true);
-            }
+            procesoBtnHistorialMedico();
+            return;
         }
         if (e.getSource() == pacienteI.btnDescargar) {
             CreadorPdf.constructorCreadorPdf("historial_clinico_" + pacienteI.getUsuario().getPrimerNombre(), historial);

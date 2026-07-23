@@ -20,7 +20,7 @@ import model.Paciente;
 
 public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
 
-    private final static String ARREGLO_COLUMNAS[] = {"Id", "Nombre Completo", "Edad", "Correo", "Numero Celular", "Rol"};
+    private final static String ARREGLO_COLUMNAS[] = {"Id", "Nombre Completo", "Edad", "Correo", "Numero Celular", "Rol","Estado"};
     public JPanel panelUsuarios, panelBotones;
     public JButton btnRol, btnHabilitar, btnDesabilitar, btnLimpiar;
     public DefaultTableModel mDefaultTableModel;
@@ -110,9 +110,12 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
             String nombreCompleto = String.join(" ",
                     p.getPrimerNombre(), segundoNombre, p.getPrimerApellido(), segundoApellido)
                     .replaceAll("\\s+", " ").trim();
+            String rol = (p.getId_rol() == 1) ? "Administrador del sistema" : p.getId_rol() == 2 ? "Administrador del centro"
+                    : p.getId_rol() == 3 ? "Medico" : p.getId_rol() == 4 ? "Operario" : "Paciente";
+            String estado = p.getEstado() ? "Activo" : "Deshabilitado";
             mDefaultTableModel.addRow(new Object[]{
                 p.getIdUsuario(), nombreCompleto, p.getEdad(), p.getCorreoElectronico(),
-                p.getNumeroTelefonico(), p.getId_rol()
+                p.getNumeroTelefonico(), rol, estado
             });
         }
     }

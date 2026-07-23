@@ -27,6 +27,7 @@ public class LoginController implements ActionListener {
     private static final int MINUTOS_BLOQUEO = 5;
     //Variables de instancia
     private RecuperacionContrasenaInterfaz rc;
+    private RegistroUsuariosInterfaz ur;
     private Login lg;
     private UsuarioDao usuDao = new UsuarioDao();
     private Paciente usu;
@@ -38,7 +39,7 @@ public class LoginController implements ActionListener {
         Thread hiloOjo = new Thread(() -> {
             lg.lblOjo.addMouseListener(new MouseAdapter() {
                 boolean isVisible = false;
-                
+
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     isVisible = !isVisible;
@@ -75,13 +76,13 @@ public class LoginController implements ActionListener {
         });
         hiloVistaRecu.start();
     }
-    
+
     private void agregarActionListenerABotonesDeLogin() {
         this.lg.bRegistar.addActionListener(this);
         this.lg.bIngresar.addActionListener(this);
     }
-    
-    public LoginController(Login lg, RecuperacionContrasenaInterfaz rc) {
+
+    public LoginController(Login lg, RecuperacionContrasenaInterfaz rc, RegistroUsuariosInterfaz ur) {
         this.lg = lg;
         ojodelLogin();
         agregarActionListenerABotonesDeLogin();
@@ -89,32 +90,32 @@ public class LoginController implements ActionListener {
         vistaRecuperarContrasena();
         this.c = 0;
         this.bloqueado = false;
+        this.ur = ur;
     }
-    
+
     public void abrirVistaRegistro() {
         Thread hiloVistasRegistro = new Thread(() -> {
-            RegistroUsuariosInterfaz ru = new RegistroUsuariosInterfaz("Registro");
-            RegistroUsuariosController cRu = new RegistroUsuariosController(ru);
-            ru.setDefaultCloseOperation(EXIT_ON_CLOSE);
-            ru.setExtendedState(MAXIMIZED_BOTH);
-            ru.setVisible(true);
+            RegistroUsuariosController cRu = new RegistroUsuariosController(ur);
+            ur.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            ur.setExtendedState(MAXIMIZED_BOTH);
+            ur.setVisible(true);
         });
         hiloVistasRegistro.start();
     }
-    
+
     private void estadoDeCosas(boolean estado) {
         this.lg.bIngresar.setEnabled(estado);
         this.lg.bRegistar.setEnabled(estado);
         this.lg.titulo2.setEnabled(estado);
     }
-    
+
     private boolean estadito(String id, String contrasena) {
         return (MetodosPublicos.validarTamano(id, 8, 10)
                 && MetodosPublicos.validarNumero(id))
                 && (MetodosPublicos.validarTamano(contrasena, 8)
                 && MetodosPublicos.validarContrasena(contrasena));
     }
-    
+
     private void creaUsuSegunRol(byte id_rol, String id, String contrasena) {
         switch (id_rol) {
             case 1:
@@ -137,7 +138,7 @@ public class LoginController implements ActionListener {
                 this.usu = usuDao.login(id, contrasena);
                 break;
             default:
-            
+
         }
     }
 
@@ -195,7 +196,7 @@ public class LoginController implements ActionListener {
         temporizador.setRepeats(false);
         temporizador.start();
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == lg.bIngresar) {
@@ -276,7 +277,7 @@ public class LoginController implements ActionListener {
                 JOptionPane.showMessageDialog(lg, mensaje);
             }
         }
-        
+
         if (e.getSource() == lg.bRegistar) {
             abrirVistaRegistro();
         }

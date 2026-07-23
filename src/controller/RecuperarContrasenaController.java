@@ -15,15 +15,19 @@ public class RecuperarContrasenaController implements ActionListener {
     private EnvioCorreos envioCorreos;
     private UsuarioDao usuDao;
 
+    private void agregarActionListener() {
+        this.p.btnCorreo.addActionListener(this);
+        this.p.btnSms.addActionListener(this);
+        this.p.btnContinuar.addActionListener(this);
+        this.p.flecha.addActionListener(this);
+    }
+
     public RecuperarContrasenaController(RecuperacionContrasenaInterfaz p) {
         this.usuDao = new UsuarioDao();
         this.validador = 0;
         this.p = p;
         this.p.vistaMetodoDerecuperacion();
-        this.p.btnCorreo.addActionListener(this);
-        this.p.btnSms.addActionListener(this);
-        this.p.btnContinuar.addActionListener(this);
-        this.p.flecha.addActionListener(this);
+        agregarActionListener();
     }
 
     @Override
@@ -43,9 +47,9 @@ public class RecuperarContrasenaController implements ActionListener {
                     JOptionPane.showMessageDialog(p, "El campo correo electronico es obligatorio");
                 } else if (!MetodosPublicos.validarFormatoCorreoGmail(correo)) {
                     JOptionPane.showMessageDialog(p, "El correo debe tener el formato .....@gmail.com");
-                } else if(!usuDao.validarCampoIdBs(correo, "usuario", "correo_electronico")){
+                } else if (!usuDao.validarCampoIdBs(correo, "usuario", "correo_electronico")) {
                     JOptionPane.showMessageDialog(p, "El corre no esta disponible");
-                }else{
+                } else {
                     this.envioCorreos = new EnvioCorreos(p);
                     boolean enviado = envioCorreos.enviarCorreoRecuperacion();
                     if (enviado) {
