@@ -106,7 +106,7 @@ public class AdminCentroController extends PacienteController {
             agregarListenerBotonesTabla();
         }
     }
-    
+
     private void agregarListenerBotonEstadoMedicamento() {
         adminI.tablaMedicamentoR.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -120,7 +120,7 @@ public class AdminCentroController extends PacienteController {
             }
         });
     }
-    
+
     private void alternarEstadoMedicamento(int fila) {
         Medicamentos m = medicamentosActuales.get(fila);
         MedicamentosDao dao = new MedicamentosDao();
@@ -178,27 +178,34 @@ public class AdminCentroController extends PacienteController {
             adminI.campoCategoriaM.addItem(c);
         }
     }
+    private ImageIcon icono;
+    private File archivo;
 
     private void seleccionarImagenMedicamento() {
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png"));
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imágenes (JPG, PNG)",
+                "jpg", "jpeg", "png");
+        fileChooser.setFileFilter(filtro);
         int resultado = fileChooser.showOpenDialog(null);
-        if (resultado == JFileChooser.APPROVE_OPTION) {
-            return;
-        }
-        File archivo = fileChooser.getSelectedFile();
-        ImageIcon icono = new ImageIcon(archivo.getAbsolutePath());
-        
-        if (icono.getIconWidth() <= 0) {
-            adminI.previsualizacionImagen.setIcon(null);
-            adminI.previsualizacionImagen.setText("Error al cargar imagen");
-            return;
-        }
 
-        adminI.imagenMedicamentoSeleccionada = archivo;
-        Image imagenEscalada = icono.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
-        adminI.previsualizacionImagen.setIcon(new ImageIcon(imagenEscalada));
-        adminI.previsualizacionImagen.setText("");
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            archivo = fileChooser.getSelectedFile();
+
+            if (archivo != null) {
+                icono = new ImageIcon(archivo.getAbsolutePath());
+
+                if (icono.getIconWidth() <= 0) {
+                    adminI.previsualizacionImagen.setIcon(null);
+                    adminI.previsualizacionImagen.setText("Error al cargar la imagen");
+                    return;
+                }
+                
+                adminI.imagenMedicamentoSeleccionada = archivo;
+                Image imagenEscalada = icono.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
+                adminI.previsualizacionImagen.setIcon(new ImageIcon(imagenEscalada));
+                adminI.previsualizacionImagen.setText("");
+            }
+        }
     }
 
     private void guardarMedicamento() {
@@ -215,12 +222,12 @@ public class AdminCentroController extends PacienteController {
         }
 
         String textoStock = adminI.campoStock.getText().trim();
-        if (!textoStock.matches("\\d+")) { 
+        if (!textoStock.matches("\\d+")) {
             JOptionPane.showMessageDialog(null, "El stock debe ser un número entero.",
                     "Dato inválido", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        int stock = Integer.parseInt(textoStock); 
+        int stock = Integer.parseInt(textoStock);
 
         TipoMedicamento tipo = (TipoMedicamento) adminI.campoTipoM.getSelectedItem();
         CategoriaMedicamento categoria = (CategoriaMedicamento) adminI.campoCategoriaM.getSelectedItem();
@@ -238,11 +245,11 @@ public class AdminCentroController extends PacienteController {
         if (adminI.imagenMedicamentoSeleccionada != null) {
             String urlRelativa = copiarImagenMedicamento(adminI.imagenMedicamentoSeleccionada, m.getnRegistroSanitario());
             m.setUrlFoto(urlRelativa);
-        }else {
+        } else {
             m.setUrlFoto("imagenesMedicamento/fotoDefecto.png");
         }
 
-        int resultado = new MedicamentosDao().setAgregar(m); 
+        int resultado = new MedicamentosDao().setAgregar(m);
 
         if (resultado > 0) {
             JOptionPane.showMessageDialog(null,
@@ -255,6 +262,7 @@ public class AdminCentroController extends PacienteController {
         adminI.habilitarBotonesMenu(adminI.btnInventarioMedicamentos);
         cargarMedicamentos();
     }
+
     /**
      * Copia el archivo elegido en el JFileChooser a la carpeta
      * imagenesMedicamento del proyecto, renombrándolo con el número de registro
@@ -273,7 +281,7 @@ public class AdminCentroController extends PacienteController {
             return "imagenesMedicamento/fotoDefecto.png";
         }
     }
-    
+
     private void cargarMedicamentos() {
         medicamentosActuales = new MedicamentosDao().listar();
         for (Medicamentos m : medicamentosActuales) {
@@ -433,7 +441,7 @@ public class AdminCentroController extends PacienteController {
         double horasLaborales = minutosLaborales / 60.0;
         adminI.lblHoras[i].setText(String.format("%.1fh", horasLaborales));
         adminI.lblHoras[i].setForeground(Color.DARK_GRAY);
-    
+
     }
 
     // tabla de horarios

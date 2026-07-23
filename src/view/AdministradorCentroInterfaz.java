@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -311,8 +312,21 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
         // tabla
         tablaMedicamentoR = new JTable(listaMedicamentoR);
+        tablaMedicamentoR.setRowHeight(60);
         tablaMedicamentoR.getColumnModel().getColumn(0).setCellRenderer(new FotoMedicamentoRenderer());
-        tablaMedicamentoR.getColumnModel().getColumn(0).setPreferredWidth(40);
+        tablaMedicamentoR.getColumnModel().getColumn(0).setPreferredWidth(80);
+        tablaMedicamentoR.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tablaMedicamentoR.getColumnModel().getColumn(2).setPreferredWidth(150);
+        tablaMedicamentoR.getColumnModel().getColumn(3).setPreferredWidth(250);
+        tablaMedicamentoR.getColumnModel().getColumn(8).setCellRenderer(new BotonEstadoRenderer());
+
+        FilaInhabilitadaRenderer rendererFila = new FilaInhabilitadaRenderer();
+        for (int col = 1; col < 8; col++) { // columnas 1 a 7 donde la 0 ya tiene su propio renderer de foto y la 8 el de botón
+            tablaMedicamentoR.getColumnModel().getColumn(col).setCellRenderer(rendererFila);
+        }
+
+        tablaMedicamentoR.getColumnModel().getColumn(8).setCellRenderer(new BotonEstadoRenderer());
+        tablaMedicamentoR.getTableHeader().setReorderingAllowed(false); //elimina que las tablas se reorganicen
         miscrollListaMedicamento = new JScrollPane(tablaMedicamentoR);
         miscrollListaMedicamento.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         miscrollListaMedicamento.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -328,13 +342,22 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         diseñoColumnaTa.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
 
         // etilo de las filas
-        tablaMedicamentoR.setFont(new Font("Arial", Font.PLAIN, 13));
+        tablaMedicamentoR.setFont(new Font("Arial", Font.PLAIN, 15));
+        tablaMedicamentoR.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 5));
         tablaMedicamentoR.setForeground(Color.DARK_GRAY);
         tablaMedicamentoR.setBackground(Color.WHITE);
+        tablaMedicamentoR.setModel(modelo);
 
         MetodosPublicos.refrescarVentana(inventarioM);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
+
+    DefaultTableModel modelo = new DefaultTableModel(diseñoColumnaTa, listaMedicamentoR) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; // Ninguna celda será editable
+        }
+    };
 
     public void mostrarAñadirMedicamentoApartado() {
         MetodosPublicos.vaciarPanel(cuerpo2);
@@ -844,33 +867,50 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
             return this;
         }
 
-        
     }
+
     private class FotoMedicamentoRenderer extends JLabel implements TableCellRenderer {
 
-            public FotoMedicamentoRenderer() {
-                setHorizontalAlignment(SwingConstants.CENTER);
-                setOpaque(true);
-            }
-
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column) {
-                setBackground(isSelected ? table.getSelectionBackground() : Color.WHITE);
-                setIcon(null);
-                setText("");
-
-                if (value != null) {
-                    ImageIcon icono = new ImageIcon(value.toString());
-                    if (icono.getIconWidth() > 0) { // el archivo sí existe y se pudo cargar
-                        Image escalada = icono.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-                        setIcon(new ImageIcon(escalada));
-                    } else {
-                        setText("Sin foto");
-                    }
-                }
-                return this;
-            }
+        public FotoMedicamentoRenderer() {
+            setHorizontalAlignment(SwingConstants.CENTER);
+            setOpaque(true);
         }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            boolean habilitado = "Habilitado".equals(table.getValueAt(row, 7));
+            setBackground(isSelected ? table.getSelectionBackground() : Color.WHITE);
+            setIcon(null);
+            setText("");
+
+            if (value != null) {
+                ImageIcon icono = new ImageIcon(value.toString());
+                if (icono.getIconWidth() > 0) { // el archivo sí existe y se pudo cargar
+                    Image escalada = icono.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                    setIcon(new ImageIcon(escalada));
+                } else {
+                    setText("Sin foto");
+                }
+            }
+            return this;
+        }
+    }
+
+    private class FilaInhabilitadaRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            boolean habilitado = "Habilitado".equals(table.getValueAt(row, 7)); // columna ESTADO
+            if (!isSelected) {
+                c.setBackground(habilitado ? Color.WHITE : new Color(230, 230, 230)); // gris suave si está inhabilitado
+                c.setForeground(habilitado ? Color.DARK_GRAY : Color.GRAY);
+            }
+            return c;
+        }
+    }
 
 }
