@@ -49,7 +49,6 @@ import view.RegistroPersonalInterfaz;
 public class AdminCentroController extends PacienteController {
 
     AdministradorCentroInterfaz adminI;
-    
 
     // Columnas de la tabla de horarios
     private static final int COLUMNA_ASIGNAR = 3;
@@ -275,7 +274,6 @@ public class AdminCentroController extends PacienteController {
         cargarMedicamentos();
     }
 
-
     private void cargarMedicamentos() {
         medicamentosActuales = new MedicamentosDao().listar();
         for (Medicamentos m : medicamentosActuales) {
@@ -288,8 +286,6 @@ public class AdminCentroController extends PacienteController {
     }
 
     // horarios
-    
-    
     private void manejarApartadoHorario(ActionEvent e) {
         if (e.getSource() == adminI.btnCrearHorario) {
             adminI.mostrarFormularioCreacionHorarioApartado();
@@ -339,7 +335,7 @@ public class AdminCentroController extends PacienteController {
             adminI.horaFin[i].addActionListener(this);
             adminI.almuerzoIni[i].addActionListener(this);
             adminI.almuerzoFin[i].addActionListener(this);
-            
+
             actualizarComboFin(i);
             actualizarComboAlmuerzoIni(i);
             actualizarComboAlmuerzoFin(i);
@@ -369,15 +365,16 @@ public class AdminCentroController extends PacienteController {
 
         adminI.dialogoVistaPreviaHorario.setVisible(true);
     }
-    
+
     /**
-     * Filtra el combo hora Fin para que solo muestre horas
-     *después de la hora de inicio elegida.
+     * Filtra el combo hora Fin para que solo muestre horas después de la hora
+     * de inicio elegida.
      */
     private void actualizarComboFin(int i) {
         String horaIniStr = (String) adminI.horaInicio[i].getSelectedItem();
-        if (horaIniStr == null) 
+        if (horaIniStr == null) {
             return;
+        }
         LocalTime horaIni = LocalTime.parse(horaIniStr);
 
         List<String> disponibles = new ArrayList<>();
@@ -388,15 +385,17 @@ public class AdminCentroController extends PacienteController {
         }
         adminI.horaFin[i].setModel(new DefaultComboBoxModel(disponibles.toArray()));
     }
-    
+
     /**
-     * Filtra el combo almuerzo Inicio para que solo muestre horas
-     * dentro del rango de la jornada (entre hora inicio y hora fin).
+     * Filtra el combo almuerzo Inicio para que solo muestre horas dentro del
+     * rango de la jornada (entre hora inicio y hora fin).
      */
     private void actualizarComboAlmuerzoIni(int i) {
         String horaIniStr = (String) adminI.horaInicio[i].getSelectedItem();
         String horaFinStr = (String) adminI.horaFin[i].getSelectedItem();
-        if (horaIniStr == null || horaFinStr == null) return;
+        if (horaIniStr == null || horaFinStr == null) {
+            return;
+        }
 
         LocalTime horaIni = LocalTime.parse(horaIniStr);
         LocalTime horaFin = LocalTime.parse(horaFinStr);
@@ -413,20 +412,20 @@ public class AdminCentroController extends PacienteController {
 
     /**
      * El almuerzo dura exactamente 1 hora entonces al elegir la hora de inicio
-     * del almuerzo, el combo almuerzo fin solo muestra esa única
-     * opción, sin dejar elegir nada más.
+     * del almuerzo, el combo almuerzo fin solo muestra esa única opción, sin
+     * dejar elegir nada más.
      */
     private void actualizarComboAlmuerzoFin(int i) {
         String almIniStr = (String) adminI.almuerzoIni[i].getSelectedItem();
-        if (almIniStr == null) 
+        if (almIniStr == null) {
             return;
+        }
 
         LocalTime almIni = LocalTime.parse(almIniStr);
-        String almFinStr = almIni.plusHours(2).format(DateTimeFormatter.ofPattern("HH:mm"));
+        String almFinStr = almIni.plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"));
 
         adminI.almuerzoFin[i].setModel(new DefaultComboBoxModel(new String[]{almFinStr}));
     }
-    
 
     /**
      * Arma el objeto Horario a partir del formulario y lo guarda en la BD.
@@ -540,7 +539,14 @@ public class AdminCentroController extends PacienteController {
                 } else if (columna == COLUMNA_EDITAR) {
                     editarHorario(fila);
                 } else if (columna == COLUMNA_ELIMINAR) {
-                    eliminarHorario(fila);
+
+                    int respuesta = JOptionPane.showConfirmDialog(null,
+                            "¿Seguro que deseas eliminar este horario?",
+                            "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+
+                    if (respuesta == JOptionPane.YES_OPTION) {
+                        eliminarHorario(fila);
+                    }
                 }
             }
         });
