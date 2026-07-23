@@ -144,6 +144,22 @@ public class CitaDao implements Crud<Cita> {
             return 0;
         }
     }
+    
+    public int reagendar(int idCita, java.time.LocalDate nuevaFecha, java.time.LocalTime nuevaHora, int idConsultorio) {
+        String sql = "UPDATE cita SET fecha_cita = ?, hora_cita = ?, id_consultorio = ? WHERE id_cita = ?";
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setObject(1, nuevaFecha);
+            ps.setObject(2, nuevaHora);
+            ps.setInt(3, idConsultorio);
+            ps.setInt(4, idCita);
+            return ps.executeUpdate();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return CONFLICTO_HORARIO;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
     @Override
     public int setActualizar(Cita tr) {
