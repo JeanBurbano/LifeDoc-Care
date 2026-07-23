@@ -44,7 +44,6 @@ public class RegistroUsuariosController implements ActionListener {
         LocalDate fechaNacimiento = rI.datePickerNacimiento.getDate();
         String correo = rI.campoCorreo.getText().trim();
         String telefono = rI.campoTelefono.getText().trim();
-//        byte edad = rI
         String contrasena = new String(rI.campoContraseña.getPassword());
 
         if (idTipoIdentificacion == 0) {

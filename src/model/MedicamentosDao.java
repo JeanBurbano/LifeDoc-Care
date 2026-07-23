@@ -24,9 +24,7 @@ public class MedicamentosDao implements Crud<Medicamentos> {
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Medicamentos med = new Medicamentos();
-                med.setNombre(rs.getString("nombre"));
-                nombres.add(med);
+                nombres.add(new Medicamentos(rs.getString("n_registro_sanitario"), rs.getString("nombre")));
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.toString(), 
