@@ -14,21 +14,29 @@ import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
 
-public class RegistroUsuariosInterfaz extends PacienteInterfaz {
+public class RegistroUsuariosInterfaz extends JFrame {
 
     final static String[] ARREGLO_ID = {"", "Registro civil", "Targeta Identidad", "Cedula Ciudadania",};
     final static String[] ARREGLO_SEXO = {"", "Femenino", "Masculino"};
     final static String[] ARREGLO_SISBEN = {"", "No aplica", "A", "B", "C", "D"};
 
+    protected JLabel fondoVentana;
+    public JPanel encabezado;
+    public JPanel cuerpo1;
+    public JPanel cuerpo2;
     public JPanel creacionPerfil; //panel del titulo
     public JPanel volver; //panel del boton de volver
     public JPanel identificacion, datos, fotoF; //panel de las tres secciones de registro
@@ -56,6 +64,21 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
 
     public RegistroUsuariosInterfaz(String nombreInterfaz) {
         super(nombreInterfaz);
+
+        this.fondoVentana = new JLabel(new ImageIcon("Fondo1_watermark.jpeg"));
+        this.fondoVentana.setOpaque(true);
+        this.fondoVentana.setLayout(new BoxLayout(fondoVentana, BoxLayout.Y_AXIS));
+        this.setContentPane(fondoVentana);
+        this.fondoVentana.setBorder(new EmptyBorder(0, 10, 5, 10));
+
+        this.encabezado = new JPanel();
+        this.encabezado.setBorder(new EmptyBorder(40, 40, 0, 40));
+        this.encabezado.setLayout(new BorderLayout());
+        this.encabezado.setOpaque(false);
+        this.cuerpo1 = new JPanel();
+        this.cuerpo1.setOpaque(false);
+        this.cuerpo2 = new JPanel();
+        this.cuerpo2.setOpaque(false);
 
         this.encabezado.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.cuerpo1.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -203,7 +226,7 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
                 BorderFactory.createEmptyBorder(8, 10, 8, 10)
         ));
-        
+
         campoSisben = new JComboBox(ARREGLO_SISBEN);
         MetodosPublicos.crearComboEstilizado(campoSisben);
 
@@ -281,19 +304,18 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
                 "La imagen que adjuntes debe ser PNG y pesar máximo 5 MB");
         panelInfo.setAlignmentX(Component.LEFT_ALIGNMENT);
         btnRegistrarse.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
-        String reglasContraseña = "La contraseña debe cumplir con:\n" +
-                                "• Al menos 1 Mayúscula\n" +
-                                "• Al menos 1 Minúscula\n" +
-                                "• Al menos 1 Número\n" +
-                                "• Símbolos permitidos: @, #, $, %, &, *, -, _, !, ?.";
+
+        String reglasContraseña = "La contraseña debe cumplir con:\n"
+                + "• Al menos 1 Mayúscula\n"
+                + "• Al menos 1 Minúscula\n"
+                + "• Al menos 1 Número\n"
+                + "• Símbolos permitidos: @, #, $, %, &, *, -, _, !, ?.";
         JPanel panelInfoContraseña = MetodosPublicos.crearPanelInfo("Requisitos Contraseña", reglasContraseña);
         panelInfoContraseña.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
 
         columnaInfo.add(panelInfo);
         columnaInfo.add(Box.createVerticalStrut(15));
-        columnaInfo.add(panelInfoContraseña); 
+        columnaInfo.add(panelInfoContraseña);
         columnaInfo.add(Box.createVerticalStrut(15));
         columnaInfo.add(btnRegistrarse);
 
@@ -302,7 +324,15 @@ public class RegistroUsuariosInterfaz extends PacienteInterfaz {
 
         this.cuerpo2.add(filaFoto);
 
-        MetodosPublicos.refrescarVentana(cuerpo2);
-        MetodosPublicos.refrescarVentana(cuerpo1);
+        JScrollPane scrollFormulario = new JScrollPane(cuerpo2);
+        scrollFormulario.setOpaque(false);
+        scrollFormulario.getViewport().setOpaque(false);
+        scrollFormulario.setBorder(null);
+        scrollFormulario.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollFormulario.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        this.fondoVentana.add(encabezado);
+        this.fondoVentana.add(cuerpo1);
+        this.fondoVentana.add(scrollFormulario);
     }
 }

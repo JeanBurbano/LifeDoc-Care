@@ -37,102 +37,139 @@ public class RegistroUsuariosController implements ActionListener {
         int idTipoIdentificacion = rI.campoTipoId.getSelectedIndex();
         String numeroIdentificacion = rI.campoNumeroID.getText().trim();
         String primerNombre = rI.campoPrimerNombre.getText().trim();
-        String segundoNombre = rI.campoSegundoNombre.getText().trim();
         String primerApellido = rI.campoPrimerApellido.getText().trim();
-        String segundoApellido = rI.campoSegundoApellido.getText().trim();
         String sexoBiologico = String.valueOf(rI.comboSexo.getSelectedItem());
         LocalDate fechaNacimiento = rI.datePickerNacimiento.getDate();
         String correo = rI.campoCorreo.getText().trim();
         String telefono = rI.campoTelefono.getText().trim();
-        byte edad = MetodosPublicos.calcularEdad(fechaNacimiento);
         String contrasena = new String(rI.campoContraseña.getPassword());
         String grupoSisben = String.valueOf(rI.campoSisben.getSelectedItem());
 
-        boolean validador = (MetodosPublicos.validarNumero(numeroIdentificacion)
-                && MetodosPublicos.validarTamano(numeroIdentificacion, 8, 10))
-                && !primerNombre.isEmpty()
-                && !segundoNombre.isEmpty()
-                && !primerApellido.isEmpty()
-                && !segundoApellido.isEmpty()
-                && !sexoBiologico.isEmpty()
-                && fechaNacimiento != null
-                && !contrasena.isEmpty();
+        boolean validador = ((idTipoIdentificacion > -1)
+                && (!numeroIdentificacion.isEmpty() && !primerNombre.isEmpty()
+                && !primerApellido.isEmpty() && !sexoBiologico.isEmpty() && !correo.isEmpty()
+                && !contrasena.isEmpty() && !grupoSisben.isEmpty())
+                && fechaNacimiento != null);
 
-        if (idTipoIdentificacion == 0) {
-            mostrarError("Selecciona el tipo de documento");
-            return;
-        }
-        if (!MetodosPublicos.validarNumero(numeroIdentificacion)
-                || !MetodosPublicos.validarTamano(numeroIdentificacion, 8, 10)) {
-            mostrarError("Campo id debe contener 8 o 10 caracteres");
-            return;
-        }
-        if (primerNombre.isEmpty()) {
-            mostrarError("El primer nombre es obligatorio");
-            return;
-        }
-        if (primerApellido.isEmpty()) {
-            mostrarError("El primer apellido es obligatorio");
-            return;
-        }
-        if (sexoBiologico.isEmpty()) {
-            mostrarError("Selecciona el sexo biológico");
-            return;
-        }
-        if (fechaNacimiento == null) {
-            mostrarError("Selecciona la fecha de nacimiento");
-            return;
-        }
-        int edadCalculada = Period.between(fechaNacimiento, LocalDate.now()).getYears();
-        if (edadCalculada < 0 || edadCalculada > 120) {
-            mostrarError("La fecha de nacimiento no es válida");
-            return;
-        }
-        if (!MetodosPublicos.validarFormatoCorreoGmail(correo)) {
-            mostrarError("El correo debe tener un formato válido de Gmail (ejemplo@gmail.com)");
-            return;
-        }
-        if (!telefono.isEmpty() && (!MetodosPublicos.validarNumero(telefono) || telefono.length() != 10)) {
-            mostrarError("El número de teléfono debe tener 10 dígitos");
-            return;
-        }
-        if (!MetodosPublicos.validarContrasena(contrasena)) {
-            mostrarError("La contraseña debe incluir mayúscula, minúscula, número y un carácter especial ($ @ # % & * - _ ! ?)");
-            return;
-        }
-        if (rI.campoSisben.getSelectedIndex() == 0) {
-            mostrarError("Selecciona el grupo Sisbén (o 'No aplica' si no estás registrado)");
-            return;
-        }
-        String sisben = String.valueOf(rI.campoSisben.getSelectedItem());
+        if (validador) {
+            // validariamos que si tiene segundo nombre le asignamos si no le asignamos null
+            String segundoNombre = rI.campoSegundoNombre.getText().trim();
+            String segundoApellido = rI.campoSegundoApellido.getText().trim();
+            byte edad = MetodosPublicos.calcularEdad(fechaNacimiento);
 
-        if (usuarioDao.validarCampoIdBs(numeroIdentificacion, "usuario", "numero_identificacion")) {
-            mostrarError("Ya existe un usuario registrado con ese número de identificación");
-            return;
-        }
+            // validador2 reglas finas de formato (letras, edad vs documento, correo, telefono, contraseña)
+            String mensaje2 = "";
 
-        int idUsuarioGenerado = usuarioDao.registrarUsuario(
-                ID_ROL_PACIENTE,
-                idTipoIdentificacion,
-                numeroIdentificacion,
-                primerNombre,
-                segundoNombre,
-                primerApellido,
-                segundoApellido,
-                correo,
-                contrasena,
-                fechaNacimiento,
-                sexoBiologico,
-                telefono,
-                (byte) edadCalculada,
-                sisben
-        );
+            if (!MetodosPublicos.validarSoloLetras(primerNombre)) {
+                mensaje2 += "El primer nombre solo debe contener letras\n";
+            }
+            if (!segundoNombre.isEmpty() && !MetodosPublicos.validarSoloLetras(segundoNombre)) {
+                mensaje2 += "El segundo nombre solo debe contener letras\n";
+            }
+            if (!MetodosPublicos.validarSoloLetras(primerApellido)) {
+                mensaje2 += "El primer apellido solo debe contener letras\n";
+            }
+            if (!segundoApellido.isEmpty() && !MetodosPublicos.validarSoloLetras(segundoApellido)) {
+                mensaje2 += "El segundo apellido solo debe contener letras\n";
+            }
+            if (!MetodosPublicos.validarNumero(numeroIdentificacion)
+                    || !MetodosPublicos.validarTamano(numeroIdentificacion, 8, 10)) {
+                mensaje2 += "El numero de identificacion debe tener entre 8 y 10 digitos\n";
+            }
 
-        if (idUsuarioGenerado != -1) {
-            JOptionPane.showMessageDialog(rI, "Cuenta creada correctamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
-            volverALogin();
+            // Edad vs tipo de documento
+            final int TI_REGISTRO_CIVIL = 1;    // ajusta al indice real de tu combo
+            final int TI_TARJETA_IDENTIDAD = 2; // ajusta al indice real de tu combo
+            final int TI_CEDULA = 3;            // ajusta al indice real de tu combo
+
+            if (edad < 7 && idTipoIdentificacion != TI_REGISTRO_CIVIL) {
+                mensaje2 += "Para menores de 7 años el documento debe ser Registro Civil\n";
+            } else if (edad >= 7 && edad < 18 && idTipoIdentificacion != TI_TARJETA_IDENTIDAD) {
+                mensaje2 += "Para menores de edad (7 a 17 años) el documento debe ser Tarjeta de Identidad\n";
+            } else if (edad >= 18 && idTipoIdentificacion != TI_CEDULA) {
+                mensaje2 += "Para mayores de edad el documento debe ser Cedula de Ciudadania\n";
+            }
+
+            if (!MetodosPublicos.validarFormatoCorreoGmail(correo)) {
+                mensaje2 += "El correo debe tener un formato valido de Gmail (ejemplo@gmail.com)\n";
+            }
+            if (!telefono.isEmpty() && (!MetodosPublicos.validarNumero(telefono) || telefono.length() != 10)) {
+                mensaje2 += "El numero de telefono debe tener 10 digitos\n";
+            }
+            if (!MetodosPublicos.validarContrasena(contrasena)) {
+                mensaje2 += "La contraseña debe incluir mayuscula, minuscula, numero y caracter especial ($ @ # % & * - _ ! ?)\n";
+            }
+            if (rI.campoSisben.getSelectedIndex() == 0) {
+                mensaje2 += "Selecciona el grupo Sisben (o 'No aplica' si no estas registrado)\n";
+            }
+
+            boolean validador2 = mensaje2.isEmpty();
+
+            if (!validador2) {
+                mostrarError(mensaje2);
+                return;
+            }
+
+            if (usuarioDao.validarCampoIdBs(numeroIdentificacion, "usuario", "numero_identificacion")) {
+                mostrarError("Ya existe un usuario registrado con ese numero de identificacion");
+                return;
+            }
+
+            String sisben = String.valueOf(rI.campoSisben.getSelectedItem());
+            int idUsuarioGenerado = usuarioDao.registrarUsuario(
+                    ID_ROL_PACIENTE,
+                    idTipoIdentificacion,
+                    numeroIdentificacion,
+                    primerNombre,
+                    segundoNombre,
+                    primerApellido,
+                    segundoApellido,
+                    correo,
+                    contrasena,
+                    fechaNacimiento,
+                    sexoBiologico,
+                    telefono,
+                    edad,
+                    sisben
+            );
+
+            if (idUsuarioGenerado != -1) {
+                JOptionPane.showMessageDialog(rI, "Cuenta creada correctamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+                volverALogin();
+            } else {
+                mostrarError("No se pudo completar el registro. Intenta de nuevo");
+            }
+
         } else {
-            mostrarError("No se pudo completar el registro. Intenta de nuevo");
+            String mensaje = "";
+            if (idTipoIdentificacion < 0) {
+                mensaje += "Debe seleccionar un tipo de documento\n";
+            }
+            if (numeroIdentificacion.isEmpty()) {
+                mensaje += "El campo numero de identificacion esta vacio\n";
+            }
+            if (primerNombre.isEmpty()) {
+                mensaje += "El campo primer nombre esta vacio\n";
+            }
+            if (primerApellido.isEmpty()) {
+                mensaje += "El campo primer apellido esta vacio\n";
+            }
+            if (sexoBiologico.isEmpty() || sexoBiologico.equals("null")) {
+                mensaje += "Debe seleccionar el sexo biologico\n";
+            }
+            if (correo.isEmpty()) {
+                mensaje += "El campo correo esta vacio\n";
+            }
+            if (contrasena.isEmpty()) {
+                mensaje += "El campo contraseña esta vacio\n";
+            }
+            if (grupoSisben.isEmpty() || grupoSisben.equals("null")) {
+                mensaje += "Debe seleccionar el grupo Sisben\n";
+            }
+            if (fechaNacimiento == null) {
+                mensaje += "Debe seleccionar la fecha de nacimiento\n";
+            }
+            mostrarError(mensaje);
         }
     }
 

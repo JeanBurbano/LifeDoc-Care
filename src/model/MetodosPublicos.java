@@ -203,8 +203,7 @@ public class MetodosPublicos {
                 BorderFactory.createLineBorder(new Color(225, 225, 225), 1, true),
                 BorderFactory.createEmptyBorder(15, 18, 15, 18)
         ));
-        panelInfo.setPreferredSize(new Dimension(420, 90));
-        panelInfo.setMaximumSize(new Dimension(420, 90));
+        panelInfo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel lblTitulo = new JLabel(titulo, new ImageIcon("iconsP/info.png"), SwingConstants.CENTER);
 
@@ -222,6 +221,13 @@ public class MetodosPublicos {
         panelInfo.add(lblDescripcion);
 
         return panelInfo;
+    }
+
+    public static boolean validarSoloLetras(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return false;
+        }
+        return texto.matches("^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ ]+$");
     }
 
     //Aqui para estilizar formularios

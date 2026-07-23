@@ -9,6 +9,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.LayoutManager;
+import java.awt.Toolkit;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -21,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
-import model.Paciente;
 
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
@@ -36,7 +36,7 @@ public class EditarPerfilInterfaz extends JFrame {
     public JPanel contenedor2, cuerpo2, encabezado, panelBotones;
 
     public EditarPerfilInterfaz(String nombreInterfaz, String nombre, String edad, String correo,
-            String telefono, String sexo, String fechan, String grupos,String ruta) {
+            String telefono, String sexo, String fechan, String grupos, String ruta) {
         //nombre interfaz
         super(nombreInterfaz);
         //el contenedor del JFrame
@@ -107,15 +107,19 @@ public class EditarPerfilInterfaz extends JFrame {
         this.cuerpo2 = new JPanel();
         this.cuerpo2.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
         this.cuerpo1.setBackground(COLOR_AZUL_CORPORATIVO);
-        this.cuerpo1.setPreferredSize(new Dimension(1520, 326));
         this.cuerpo1.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.cuerpo1.add(fotoPerfil);
 
         this.cuerpo2.setBackground(COLOR_VENTANA);
-        this.cuerpo2.setPreferredSize(new Dimension(1520, 326));
         this.cuerpo2.setLayout(new BorderLayout());
 
-        this.editar = new JButton("Editar",new ImageIcon("iconsP/pen.png"));
+        Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+        int anchoDisponible = pantalla.width - 80; // menos algo de margen
+
+        this.cuerpo1.setPreferredSize(new Dimension(anchoDisponible, 326));
+        this.cuerpo2.setPreferredSize(new Dimension(anchoDisponible, 326));
+
+        this.editar = new JButton("Editar", new ImageIcon("iconsP/pen.png"));
         MetodosPublicos.estilizarBoton(editar, (byte) 1);
         JPanel panelConField = new JPanel();
         panelConField.setBackground(COLOR_VENTANA);
@@ -200,13 +204,12 @@ public class EditarPerfilInterfaz extends JFrame {
         panel7.add(new JLabel("Puntaje Sisben"));
         panel7.add(fieldGrupoS);
 
-        JPanel panelconboton = new JPanel();
-        panelconboton.setLayout(new FlowLayout());
-        panelconboton.setBorder(new EmptyBorder(30, 0, 0, 380));
+        JPanel panelconboton = new JPanel(new BorderLayout());
         panelconboton.setOpaque(miEstadito);
-        this.guardar = new JButton("Guardar",new ImageIcon("iconsP/save.png"));
+        panelconboton.setBorder(new EmptyBorder(30, 0, 0, 0));
+        this.guardar = new JButton("Guardar", new ImageIcon("iconsP/save.png"));
         this.guardar.setEnabled(miEstadito);
-        panelconboton.add(guardar);
+        panelconboton.add(guardar, BorderLayout.EAST);
         MetodosPublicos.estilizarBoton(guardar, (byte) 5);
         panelConField.add(panel1);
         panelConField.add(panel2);
