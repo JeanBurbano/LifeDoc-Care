@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package view;
+package model;
 
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
@@ -11,6 +11,8 @@ import java.awt.Font;
 import java.time.LocalDate;
 import java.util.Locale;
 import javax.swing.BorderFactory;
+import view.PacienteInterfaz;
+import view.PacienteInterfaz;
 
 /**
  *

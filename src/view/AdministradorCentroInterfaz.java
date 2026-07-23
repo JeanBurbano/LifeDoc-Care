@@ -1,5 +1,6 @@
 package view;
 
+import model.FechaCalendarioEstilizar;
 import model.GeneradorHorarios;
 import com.github.lgooddatepicker.components.DatePicker;
 import java.awt.BorderLayout;
@@ -259,7 +260,13 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         listaPersonalR.addColumn("  "); // columna extra para un botón de acción por fila
 
         // Se crea la tabla con ese modelo y se envuelve en un scroll
-        tablaPersonalR = new JTable(listaPersonalR);
+        tablaPersonalR = new JTable(listaPersonalR) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // ninguna celda es editable con doble clic
+            }
+        };
+        tablaPersonalR.getTableHeader().setReorderingAllowed(false);
         miscrollListaPersonal = new JScrollPane(tablaPersonalR);
         miscrollListaPersonal.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS); // scroll horizontal siempre visible
         miscrollListaPersonal.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); // scroll vertical siempre visible
@@ -311,7 +318,13 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         listaMedicamentoR.addColumn("  ");
 
         // tabla
-        tablaMedicamentoR = new JTable(listaMedicamentoR);
+        tablaMedicamentoR = new JTable(listaMedicamentoR) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // ninguna celda es editable con doble clic
+            }
+        };
+        tablaMedicamentoR.getTableHeader().setReorderingAllowed(false); // no deje reorganizar
         tablaMedicamentoR.setRowHeight(60);
         tablaMedicamentoR.getColumnModel().getColumn(0).setCellRenderer(new FotoMedicamentoRenderer());
         tablaMedicamentoR.getColumnModel().getColumn(0).setPreferredWidth(80);
@@ -319,11 +332,6 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         tablaMedicamentoR.getColumnModel().getColumn(2).setPreferredWidth(150);
         tablaMedicamentoR.getColumnModel().getColumn(3).setPreferredWidth(250);
         tablaMedicamentoR.getColumnModel().getColumn(8).setCellRenderer(new BotonEstadoRenderer());
-
-        FilaInhabilitadaRenderer rendererFila = new FilaInhabilitadaRenderer();
-        for (int col = 1; col < 8; col++) { // columnas 1 a 7 donde la 0 ya tiene su propio renderer de foto y la 8 el de botón
-            tablaMedicamentoR.getColumnModel().getColumn(col).setCellRenderer(rendererFila);
-        }
 
         tablaMedicamentoR.getColumnModel().getColumn(8).setCellRenderer(new BotonEstadoRenderer());
         tablaMedicamentoR.getTableHeader().setReorderingAllowed(false); //elimina que las tablas se reorganicen
@@ -346,18 +354,11 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         tablaMedicamentoR.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 5));
         tablaMedicamentoR.setForeground(Color.DARK_GRAY);
         tablaMedicamentoR.setBackground(Color.WHITE);
-        tablaMedicamentoR.setModel(modelo);
+        //tablaMedicamentoR.setModel(modelo);
 
         MetodosPublicos.refrescarVentana(inventarioM);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
-
-    DefaultTableModel modelo = new DefaultTableModel(diseñoColumnaTa, listaMedicamentoR) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false; // Ninguna celda será editable
-        }
-    };
 
     public void mostrarAñadirMedicamentoApartado() {
         MetodosPublicos.vaciarPanel(cuerpo2);
@@ -491,7 +492,12 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         listaHorarioM.addColumn("  "); //columna reservada para el botón editar en cada fila
 
         // Tabla y scroll
-        tablaHorarioM = new JTable(listaHorarioM);
+        tablaHorarioM = new JTable(listaHorarioM) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // ninguna celda es editable con doble clic
+            }
+        };
         tablaHorarioM.setRowHeight(36);
         tablaHorarioM.getColumnModel().getColumn(3).setCellRenderer(
                 new BotonTablaRenderer("Asignar", PacienteInterfaz.COLOR_VERDE_ACENTO));
@@ -897,20 +903,6 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         }
     }
 
-    private class FilaInhabilitadaRenderer extends DefaultTableCellRenderer {
 
-        @Override
-        public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-            boolean habilitado = "Habilitado".equals(table.getValueAt(row, 7)); // columna ESTADO
-            if (!isSelected) {
-                c.setBackground(habilitado ? Color.WHITE : new Color(230, 230, 230)); // gris suave si está inhabilitado
-                c.setForeground(habilitado ? Color.DARK_GRAY : Color.GRAY);
-            }
-            return c;
-        }
-    }
 
 }
