@@ -178,7 +178,6 @@ public class MedicoInterfaz extends PacienteInterfaz {
         campo.setBackground(Color.WHITE);
     }
 
-//    @Override
 //    public void mostrarVistaHistorial() {
 //        super.mostrarVistaHistorial();
 //        this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
