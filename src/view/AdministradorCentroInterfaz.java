@@ -12,7 +12,9 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.io.File;
 import java.time.LocalDate;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -27,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -80,7 +83,9 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     public DatePicker campoFechaVencimiento; // Fecha de vencimiento (con calendario LGoodDatePicker)
     public JTextArea campoDescripcionMedicamento; // Descripción del medicamento
     public JLabel previsualizacionImagen; // Muestra la imagen seleccionada del medicamento
-    public java.io.File imagenMedicamentoSeleccionada; // Archivo de imagen elegido en el JFileChooser
+    public File imagenMedicamentoSeleccionada; // Archivo de imagen elegido en el JFileChooser
+    public JComboBox campoCategoriaM; // categoria del medicamento
+    public JTextField campoStock; //stock de ese medicamento en el inventario
 
     //formlario para crear horario
     public JTextField campoNombreHorario; // Nombre que el usuario le da al horario
@@ -93,7 +98,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     public JComboBox[] almuerzoIni = new JComboBox[6]; //Hora de inicio de almuerzo por día
     public JComboBox[] almuerzoFin = new JComboBox[6]; // Hora de fin de almuerzo por día
     public JLabel[] lblHoras = new JLabel[6]; //Muestra las horas laborales calculadas por día
-    
+
     //mostrar el horario de forma grafica antes de guardar
     public String comboMesHorario; // mes al que se aplicará el horario
     public JTextField campoMes;
@@ -118,12 +123,12 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     };
 
     //Días de la semana y mes que se muestran en el formulario de horario
-    public static final String[] DIAS_SEMANA = {"Lunes", "Martes", "Miercoles", "Jueves", 
-                                                "Viernes", "Sabado"};
+    public static final String[] DIAS_SEMANA = {"Lunes", "Martes", "Miercoles", "Jueves",
+        "Viernes", "Sabado"};
     public static final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                                          "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", 
-                                          "Diciembre"};
-    
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre",
+        "Diciembre"};
+
     // Horas disponibles en los combos de hora (07:00 a 17:00 cada 30 min).
     // Se llenará en el constructor llamando a la clase  GeneradorHorarios()
     public static String[] HORAS;
@@ -135,9 +140,8 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     public JButton btnCancelarAsignacion; // cierra la ventana sin asignar
     public JLabel lblHorarioSeleccionado; // muestra qué horario se está asignando
     public int filaHorarioSeleccionada; // fila de la tabla que se está asignando actualmente
-    
 
-    public AdministradorCentroInterfaz(String nombreInterfaz,Paciente usuario) {
+    public AdministradorCentroInterfaz(String nombreInterfaz, Paciente usuario) {
         super(nombreInterfaz, usuario);
 
         //Generar las horas disponibles para los combos de horario
@@ -213,7 +217,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     @Override
     public void habilitarBotonesMenu(JButton botonActivo) {
         super.habilitarBotonesMenu(botonActivo);
-        
+
         if (botonActivo != btnPersonalCentro && !btnPersonalCentro.isEnabled()) {
             this.btnPersonalCentro.setEnabled(true);
         }
@@ -282,20 +286,19 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     }
 
     public void mostrarVistaInventarioMedicamentoApartado() {
-        MetodosPublicos.vaciarPanel(cuerpo2); // limpia el panel principal
-        MetodosPublicos.vaciarPanel(inventarioM); // limpia el panel de esta vista
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(inventarioM);
 
-        // ---- Título de la vista ----
+        //titulo
         JLabel tituloMedicamentoRegistrado = new JLabel("Medicamentos Registrados");
         tituloMedicamentoRegistrado.setFont(new Font("arial", Font.BOLD, 20));
         tituloMedicamentoRegistrado.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
         this.inventarioM.add(tituloMedicamentoRegistrado); // se agrega el título
 
-        // ---- Botón de añadir medicamento, al lado del título ----
         this.inventarioM.add(Box.createHorizontalStrut(10)); // espacio entre título y botón
         this.inventarioM.add(btnAñadirMedicamento);
 
-        // ---- Modelo y columnas de la tabla de medicamentos ----
+        //campos de la tabla
         listaMedicamentoR = new DefaultTableModel();
         listaMedicamentoR.addColumn("FOTO MEDICAMENTO");
         listaMedicamentoR.addColumn("NÚMERO REGISTRO SANITARIO");
@@ -304,50 +307,72 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         listaMedicamentoR.addColumn("FECHA VENCIMIETO");
         listaMedicamentoR.addColumn("CANTIDAD");
         listaMedicamentoR.addColumn("STOCK");
-        listaMedicamentoR.addColumn("ULTIMA ACTUALIZACIÓN");
+        listaMedicamentoR.addColumn("ESTADO");
         listaMedicamentoR.addColumn("  ");
 
-        // ---- Tabla y scroll ----
+        // tabla
         tablaMedicamentoR = new JTable(listaMedicamentoR);
+        tablaMedicamentoR.setRowHeight(60);
+        tablaMedicamentoR.getColumnModel().getColumn(0).setCellRenderer(new FotoMedicamentoRenderer());
+        tablaMedicamentoR.getColumnModel().getColumn(0).setPreferredWidth(80);
+        tablaMedicamentoR.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tablaMedicamentoR.getColumnModel().getColumn(2).setPreferredWidth(150);
+        tablaMedicamentoR.getColumnModel().getColumn(3).setPreferredWidth(250);
+        tablaMedicamentoR.getColumnModel().getColumn(8).setCellRenderer(new BotonEstadoRenderer());
+
+        FilaInhabilitadaRenderer rendererFila = new FilaInhabilitadaRenderer();
+        for (int col = 1; col < 8; col++) { // columnas 1 a 7 donde la 0 ya tiene su propio renderer de foto y la 8 el de botón
+            tablaMedicamentoR.getColumnModel().getColumn(col).setCellRenderer(rendererFila);
+        }
+
+        tablaMedicamentoR.getColumnModel().getColumn(8).setCellRenderer(new BotonEstadoRenderer());
+        tablaMedicamentoR.getTableHeader().setReorderingAllowed(false); //elimina que las tablas se reorganicen
         miscrollListaMedicamento = new JScrollPane(tablaMedicamentoR);
         miscrollListaMedicamento.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         miscrollListaMedicamento.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        // ---- Ubicación dentro de cuerpo2 ----
         cuerpo2.setLayout(new BorderLayout());
         cuerpo2.add(inventarioM, BorderLayout.NORTH);
         cuerpo2.add(miscrollListaMedicamento, BorderLayout.CENTER);
 
-        // ---- Estilo del encabezado de la tabla ----
+        // estilo de la tabla
         JTableHeader diseñoColumnaTa = tablaMedicamentoR.getTableHeader();
         diseñoColumnaTa.setFont(new Font("arial", Font.BOLD, 14));
         diseñoColumnaTa.setForeground(Color.WHITE);
         diseñoColumnaTa.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
 
-        // ---- Estilo de las filas ----
-        tablaMedicamentoR.setFont(new Font("Arial", Font.PLAIN, 13));
+        // etilo de las filas
+        tablaMedicamentoR.setFont(new Font("Arial", Font.PLAIN, 15));
+        tablaMedicamentoR.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 5));
         tablaMedicamentoR.setForeground(Color.DARK_GRAY);
         tablaMedicamentoR.setBackground(Color.WHITE);
+        tablaMedicamentoR.setModel(modelo);
 
         MetodosPublicos.refrescarVentana(inventarioM);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
+    DefaultTableModel modelo = new DefaultTableModel(diseñoColumnaTa, listaMedicamentoR) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; // Ninguna celda será editable
+        }
+    };
+
     public void mostrarAñadirMedicamentoApartado() {
-        MetodosPublicos.vaciarPanel(cuerpo2); // limpia el panel principal
-        MetodosPublicos.vaciarPanel(añadirM); // limpia el panel de este formulario
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(añadirM);
         añadirM.setLayout(new BorderLayout()); // título arriba, contenido en el centro
         añadirM.setOpaque(false); // sin fondo propio
 
-        // ---- Título del formulario ----
         JLabel tituloAñadir = new JLabel("Añadir Nuevo Medicamento");
         tituloAñadir.setFont(new Font("Arial", Font.BOLD, 20));
         tituloAñadir.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
         tituloAñadir.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // aire alrededor del título
         añadirM.add(tituloAñadir, BorderLayout.NORTH);
 
-        // ---- Panel contenedor: formulario a la izquierda, imagen a la derecha ----
-        JPanel contenido = new JPanel(new BorderLayout(20, 0)); // 20px de espacio horizontal entre ambos
+        //distribucion del formulario
+        JPanel contenido = new JPanel(new BorderLayout(20, 0));
         contenido.setOpaque(false);
         contenido.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -383,7 +408,6 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         JScrollPane scrollDescrip = new JScrollPane(campoDescripcionMedicamento); // scroll por si el texto crece
         scrollDescrip.setBorder(BorderFactory.createEmptyBorder()); // sin borde propio (ya lo tiene el JTextArea)
 
-        
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1; // ocupa 1 sola columna
@@ -391,24 +415,33 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         gbc.gridx = 1;
         formuM.add(MetodosPublicos.crearCampoConEtiqueta("Nombre:", campoNombreM), gbc);
 
-        
         gbc.gridx = 0;
         gbc.gridy = 1;
         formuM.add(MetodosPublicos.crearCampoConEtiqueta("Fecha de Vencimiento:", campoFechaVencimiento), gbc);
         gbc.gridx = 1;
         formuM.add(MetodosPublicos.crearCampoConEtiqueta("Cantidad:", campoCantidad), gbc);
 
-        
         gbc.gridx = 0;
         gbc.gridy = 2;
+        gbc.gridwidth = 1;
         formuM.add(MetodosPublicos.crearCampoConEtiqueta("Tipo de Medicamento:", campoTipoM), gbc);
+        campoCategoriaM = new JComboBox();
+        MetodosPublicos.crearComboEstilizado(campoCategoriaM);
+        gbc.gridx = 1;
+        formuM.add(MetodosPublicos.crearCampoConEtiqueta("Categoría:", campoCategoriaM), gbc);
+        campoCategoriaM.setPreferredSize(new Dimension(200, 35));
 
-        
+        campoStock = MetodosPublicos.crearCampoTexto();
         gbc.gridx = 0;
         gbc.gridy = 3;
-        gbc.gridwidth = 2; // ocupa ambas columnas
-        gbc.fill = GridBagConstraints.BOTH; // se estira en ancho y alto
-        gbc.weighty = 1.0; // toma todo el espacio vertical restante
+        formuM.add(MetodosPublicos.crearCampoConEtiqueta("Stock:", campoStock), gbc);
+        campoStock.setPreferredSize(new Dimension(200, 35));
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
         formuM.add(MetodosPublicos.crearCampoConEtiqueta("Descripción:", scrollDescrip), gbc);
 
         contenido.add(formuM, BorderLayout.CENTER); // el formulario va en el centro
@@ -419,7 +452,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         contenido.add(panelImagen, BorderLayout.EAST); // el panel de imagen va a la derecha
 
         // Botón para guardar el medicamento, debajo del formulario 
-        JPanel panelBotonGuardar = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        JPanel panelBotonGuardar = new JPanel(new FlowLayout(java.awt.FlowLayout.RIGHT));
         panelBotonGuardar.setOpaque(false);
         panelBotonGuardar.add(btnGuardarMedicamento);
         contenido.add(panelBotonGuardar, BorderLayout.SOUTH);
@@ -456,7 +489,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         listaHorarioM.addColumn("  "); //columna reservada para el botón asignar en cada fila
         listaHorarioM.addColumn("  "); //columna reservada para el botón eliminar en cada fila
         listaHorarioM.addColumn("  "); //columna reservada para el botón editar en cada fila
-        
+
         // Tabla y scroll
         tablaHorarioM = new JTable(listaHorarioM);
         tablaHorarioM.setRowHeight(36);
@@ -479,7 +512,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         JTableHeader diseñoColumnaTab = tablaHorarioM.getTableHeader();
         diseñoColumnaTab.setFont(new Font("arial", Font.BOLD, 14));
         diseñoColumnaTab.setForeground(Color.WHITE);
-        diseñoColumnaTab.setBackground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO); 
+        diseñoColumnaTab.setBackground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
 
         //Estilo de las filas
         tablaHorarioM.setFont(new Font("Arial", Font.PLAIN, 13));
@@ -531,7 +564,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
         //Sección 1: Información básica del horario
         JPanel seccionInfo = new JPanel(new BorderLayout(8, 0));
-        seccionInfo.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        seccionInfo.setLayout(new java.awt.FlowLayout(FlowLayout.LEFT));
         seccionInfo.setOpaque(false);
         seccionInfo.setAlignmentX(Component.LEFT_ALIGNMENT);
         seccionInfo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
@@ -563,10 +596,10 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
         parteFija.add(MetodosPublicos.crearFila("Color de etiqueta:", comboColorEtiqueta));
         parteFija.add(Box.createVerticalStrut(20));
-        
+
         //Sección 2: Días de la semana
         JPanel seccionDias = new JPanel(new BorderLayout(8, 0));
-        seccionDias.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        seccionDias.setLayout(new java.awt.FlowLayout(FlowLayout.LEFT));
         seccionDias.setOpaque(false);
         seccionDias.setAlignmentX(Component.LEFT_ALIGNMENT);
         seccionDias.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
@@ -632,7 +665,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     }
 
     public void mostrarAsignacionHorarioMedicoApartado(String nombreHorario, int fila) {
-        
+
         this.filaHorarioSeleccionada = fila;
 
         dialogoAsignarMedico = new JDialog();
@@ -661,7 +694,6 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         contenido.add(lblHorarioSeleccionado);
         contenido.add(Box.createVerticalStrut(20));
 
-        
         comboMedicoAsignar = new JComboBox();
         MetodosPublicos.crearComboEstilizado(comboMedicoAsignar);
         comboConsultorioHorario = new JComboBox();
@@ -674,7 +706,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         filaConsultorio.setAlignmentX(Component.LEFT_ALIGNMENT);
         contenido.add(filaConsultorio);
         contenido.add(Box.createVerticalStrut(30));
-        
+
         comboMesHorario = MESES[LocalDate.now().getMonthValue() - 1];
         campoMes = new JTextField(comboMesHorario);
         campoMes.setEditable(false);
@@ -684,7 +716,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
                 BorderFactory.createEmptyBorder(6, 10, 6, 10)
         ));
-        comboAnioHorario = new JTextField(String.valueOf(LocalDate.now().getYear())); 
+        comboAnioHorario = new JTextField(String.valueOf(LocalDate.now().getYear()));
         comboAnioHorario.setEditable(false); // solo lectura
         comboAnioHorario.setFont(new Font("Arial", Font.PLAIN, 13));
         comboAnioHorario.setBackground(new Color(240, 240, 240)); // gris claro  para que se note que no es editable
@@ -692,8 +724,8 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
                 BorderFactory.createEmptyBorder(6, 10, 6, 10)
         ));
-        
-        JPanel  filaMes = MetodosPublicos.crearFila("Mes de aplicación:", campoMes);
+
+        JPanel filaMes = MetodosPublicos.crearFila("Mes de aplicación:", campoMes);
         filaMes.setAlignmentX(Component.LEFT_ALIGNMENT);
         contenido.add(filaMes);
         contenido.add(Box.createVerticalStrut(30));
@@ -713,95 +745,91 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         btnConfirmarAsignacion.setFont(new Font("Arial", Font.BOLD, 13));
         btnConfirmarAsignacion.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
         btnConfirmarAsignacion.setForeground(Color.WHITE);
-        
 
         filaBotones.add(btnCancelarAsignacion);
         filaBotones.add(btnConfirmarAsignacion);
         contenido.add(filaBotones);
 
         dialogoAsignarMedico.add(contenido, BorderLayout.CENTER);
-        
+
     }
-    
-    
-public void mostrarVistaPreviaHorarioApartado(boolean[] diasActivos, String[] horasPorDia) {
-    //Ventana emergente para mostrar el horario graficamente
-    dialogoVistaPreviaHorario = new JDialog(); // ventana nueva, independiente de la principal
-    dialogoVistaPreviaHorario.setTitle("Vista Previa del Horario");
-    dialogoVistaPreviaHorario.setModal(true); // bloquea el resto de la app mientras está abierta
-    dialogoVistaPreviaHorario.setSize(650, 300);
-    dialogoVistaPreviaHorario.setLocationRelativeTo(null); // se centra en la pantalla
-    dialogoVistaPreviaHorario.setLayout(new BorderLayout(0, 10)); // título arriba, horario en medio, botones abajo
 
-    JLabel titulo = new JLabel("Días asignados", SwingConstants.CENTER);
-    titulo.setFont(new Font("Arial", Font.BOLD, 16));
-    titulo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // espacio interno alrededor del título
-    dialogoVistaPreviaHorario.add(titulo, BorderLayout.NORTH);
+    public void mostrarVistaPreviaHorarioApartado(boolean[] diasActivos, String[] horasPorDia) {
+        //Ventana emergente para mostrar el horario graficamente
+        dialogoVistaPreviaHorario = new JDialog(); // ventana nueva, independiente de la principal
+        dialogoVistaPreviaHorario.setTitle("Vista Previa del Horario");
+        dialogoVistaPreviaHorario.setModal(true); // bloquea el resto de la app mientras está abierta
+        dialogoVistaPreviaHorario.setSize(650, 300);
+        dialogoVistaPreviaHorario.setLocationRelativeTo(null); // se centra en la pantalla
+        dialogoVistaPreviaHorario.setLayout(new BorderLayout(0, 10)); // título arriba, horario en medio, botones abajo
 
-    JPanel HorarioSemanalGrafico = new JPanel(new GridLayout(1, 6, 6, 6));
-    HorarioSemanalGrafico.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+        JLabel titulo = new JLabel("Días asignados", SwingConstants.CENTER);
+        titulo.setFont(new Font("Arial", Font.BOLD, 16));
+        titulo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // espacio interno alrededor del título
+        dialogoVistaPreviaHorario.add(titulo, BorderLayout.NORTH);
 
-    String[] nombresDias = {"Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"};
+        JPanel HorarioSemanalGrafico = new JPanel(new GridLayout(1, 6, 6, 6));
+        HorarioSemanalGrafico.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
 
-    for (int i = 0; i < 6; i++) { // recorre los 6 días 
-        JPanel tarjeta = new JPanel(); // una casilla del horario para un solo día
-        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS)); // el contenido de arriba hacia abajo
-        tarjeta.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY)); // borde delgado para que se vea como celda
+        String[] nombresDias = {"Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"};
 
-        JLabel lblDia = new JLabel(nombresDias[i], SwingConstants.CENTER);
-        lblDia.setFont(new Font("Arial", Font.BOLD, 15));
-        lblDia.setForeground(Color.WHITE);
-        lblDia.setAlignmentX(Component.CENTER_ALIGNMENT);
-        tarjeta.add(lblDia);
+        for (int i = 0; i < 6; i++) { // recorre los 6 días 
+            JPanel tarjeta = new JPanel(); // una casilla del horario para un solo día
+            tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS)); // el contenido de arriba hacia abajo
+            tarjeta.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY)); // borde delgado para que se vea como celda
 
-        if (diasActivos[i]) { // si el día está activo, se pinta de verde y se muestran las horas
-            tarjeta.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
-            tarjeta.setOpaque(true); 
+            JLabel lblDia = new JLabel(nombresDias[i], SwingConstants.CENTER);
+            lblDia.setFont(new Font("Arial", Font.BOLD, 15));
+            lblDia.setForeground(Color.WHITE);
+            lblDia.setAlignmentX(Component.CENTER_ALIGNMENT);
+            tarjeta.add(lblDia);
 
-            // Se divide el texto de horas en varias líneas pequeñas. una por cada línea del arregl
-            String[] lineas = horasPorDia[i].split("\n");
-            for (String linea : lineas) {
-                JLabel lblLinea = new JLabel(linea, SwingConstants.CENTER);
-                lblLinea.setFont(new Font("Arial", Font.PLAIN, 13));
-                lblLinea.setForeground(Color.WHITE);
-                lblLinea.setAlignmentX(Component.CENTER_ALIGNMENT);
-                tarjeta.add(lblLinea);
+            if (diasActivos[i]) { // si el día está activo, se pinta de verde y se muestran las horas
+                tarjeta.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
+                tarjeta.setOpaque(true);
+
+                // Se divide el texto de horas en varias líneas pequeñas. una por cada línea del arregl
+                String[] lineas = horasPorDia[i].split("\n");
+                for (String linea : lineas) {
+                    JLabel lblLinea = new JLabel(linea, SwingConstants.CENTER);
+                    lblLinea.setFont(new Font("Arial", Font.PLAIN, 13));
+                    lblLinea.setForeground(Color.WHITE);
+                    lblLinea.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    tarjeta.add(lblLinea);
+                }
+            } else { // si el día no está activo, se muestra en gris con un guion
+                JLabel lblInactivo = new JLabel("—", SwingConstants.CENTER);
+                tarjeta.setBackground(new Color(0x8B, 0x8B, 0x8B));
+                lblInactivo.setForeground(Color.WHITE);
+                lblInactivo.setAlignmentX(Component.CENTER_ALIGNMENT);
+                tarjeta.add(lblInactivo);
             }
-        } else { // si el día no está activo, se muestra en gris con un guion
-            JLabel lblInactivo = new JLabel("—", SwingConstants.CENTER);
-            tarjeta.setBackground(new Color(0x8B,0x8B,0x8B));
-            lblInactivo.setForeground(Color.WHITE);
-            lblInactivo.setAlignmentX(Component.CENTER_ALIGNMENT);
-            tarjeta.add(lblInactivo);
+
+            HorarioSemanalGrafico.add(tarjeta); // se agrega la tarjeta de este día a la matriz
         }
 
-        HorarioSemanalGrafico.add(tarjeta); // se agrega la tarjeta de este día a la matriz
+        dialogoVistaPreviaHorario.add(HorarioSemanalGrafico, BorderLayout.CENTER);
+
+        // Botones Cancelar / Confirmar
+        JPanel filaBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+        btnCancelarVistaPrevia = new JButton("Cancelar");
+        btnConfirmarGuardarHorario = new JButton("Confirmar y Guardar");
+        btnConfirmarGuardarHorario.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
+        btnConfirmarGuardarHorario.setForeground(Color.WHITE);
+        btnCancelarVistaPrevia.setBackground(Color.RED);
+        btnCancelarVistaPrevia.setForeground(Color.WHITE);
+        filaBotones.add(btnCancelarVistaPrevia);
+        filaBotones.add(btnConfirmarGuardarHorario);
+        dialogoVistaPreviaHorario.add(filaBotones, BorderLayout.SOUTH);
+
     }
 
-    dialogoVistaPreviaHorario.add(HorarioSemanalGrafico, BorderLayout.CENTER);
-
-    // Botones Cancelar / Confirmar
-    JPanel filaBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-    btnCancelarVistaPrevia = new JButton("Cancelar");
-    btnConfirmarGuardarHorario = new JButton("Confirmar y Guardar");
-    btnConfirmarGuardarHorario.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
-    btnConfirmarGuardarHorario.setForeground(Color.WHITE);
-    btnCancelarVistaPrevia.setBackground(Color.RED);
-    btnCancelarVistaPrevia.setForeground(Color.WHITE);
-    filaBotones.add(btnCancelarVistaPrevia);
-    filaBotones.add(btnConfirmarGuardarHorario);
-    dialogoVistaPreviaHorario.add(filaBotones, BorderLayout.SOUTH);
-
-    
-}
-    
-    
-   
     /**
-     * Dibuja el botón "Asignar" en la columna de acción de la tabla
-     * de horarios.
+     * Dibuja el botón "Asignar" en la columna de acción de la tabla de
+     * horarios.
      */
-    private class BotonTablaRenderer  extends JButton implements TableCellRenderer {
+    private class BotonTablaRenderer extends JButton implements TableCellRenderer {
+
         public BotonTablaRenderer(String texto, Color color) {
             setText(texto);
             setFont(new Font("Arial", Font.BOLD, 16));
@@ -816,8 +844,73 @@ public void mostrarVistaPreviaHorarioApartado(boolean[] diasActivos, String[] ho
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                 boolean isSelected, boolean hasFocus, int row, int column) {
-            return this; // se reutiliza el mismo botón para pintar cualquier fila
+            return this; // se reutiliza el mismo botón para  cualquier fila
         }
     }
-    
+
+    //lo mismo que en lo de aignar solo que este es para habilitar e inhabilitar el medicamento
+    private class BotonEstadoRenderer extends JButton implements TableCellRenderer {
+
+        public BotonEstadoRenderer() {
+            setFont(new Font("Arial", Font.BOLD, 12));
+            setContentAreaFilled(false);
+            setBorderPainted(false);
+            setFocusPainted(false);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            boolean habilitado = "Habilitado".equals(table.getValueAt(row, 8)); // columna ESTADO
+            setText(habilitado ? "Inhabilitar" : "Habilitar");
+            setForeground(habilitado ? Color.RED : PacienteInterfaz.COLOR_VERDE_ACENTO);
+            return this;
+        }
+
+    }
+
+    private class FotoMedicamentoRenderer extends JLabel implements TableCellRenderer {
+
+        public FotoMedicamentoRenderer() {
+            setHorizontalAlignment(SwingConstants.CENTER);
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            boolean habilitado = "Habilitado".equals(table.getValueAt(row, 7));
+            setBackground(isSelected ? table.getSelectionBackground() : Color.WHITE);
+            setIcon(null);
+            setText("");
+
+            if (value != null) {
+                ImageIcon icono = new ImageIcon(value.toString());
+                if (icono.getIconWidth() > 0) { // el archivo sí existe y se pudo cargar
+                    Image escalada = icono.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                    setIcon(new ImageIcon(escalada));
+                } else {
+                    setText("Sin foto");
+                }
+            }
+            return this;
+        }
+    }
+
+    private class FilaInhabilitadaRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            boolean habilitado = "Habilitado".equals(table.getValueAt(row, 7)); // columna ESTADO
+            if (!isSelected) {
+                c.setBackground(habilitado ? Color.WHITE : new Color(230, 230, 230)); // gris suave si está inhabilitado
+                c.setForeground(habilitado ? Color.DARK_GRAY : Color.GRAY);
+            }
+            return c;
+        }
+    }
+
 }
