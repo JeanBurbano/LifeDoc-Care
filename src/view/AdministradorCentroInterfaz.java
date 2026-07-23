@@ -903,20 +903,6 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         }
     }
 
-//    private class FilaInhabilitadaRenderer extends DefaultTableCellRenderer {
-//
-//        @Override
-//        public java.awt.Component getTableCellRendererComponent(JTable table, Object value,
-//                boolean isSelected, boolean hasFocus, int row, int column) {
-//            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-//
-//            boolean habilitado = "Habilitado".equals(table.getValueAt(row, 7)); // columna ESTADO
-//            if (!isSelected) {
-//                c.setBackground(habilitado ? Color.WHITE : new Color(230, 230, 230)); // gris suave si está inhabilitado
-//                c.setForeground(habilitado ? Color.DARK_GRAY : Color.GRAY);
-//            }
-//            return c;
-//        }
-//    }
+
 
 }

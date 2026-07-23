@@ -6,6 +6,7 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -18,6 +19,7 @@ import model.PersonalCentro;
 import model.PersonalCentroDao;
 import model.Rol;
 import model.RolDao;
+import model.UsuarioDao;
 
 import view.RegistroPersonalInterfaz;
 
@@ -27,180 +29,113 @@ import view.RegistroPersonalInterfaz;
  */
 public class RegistroPersonalController extends RegistroUsuariosController {
 
-    RegistroPersonalInterfaz vista;
-    RolDao rolDao;
-    MedicoDao medicoDao;
-    OperarioDao operarioDao;
-    PersonalCentroDao personalDao;
+    private RegistroPersonalInterfaz rpI;
+    private UsuarioDao usuarioDao;
+    private MedicoDao medicoDao;
+    private OperarioDao operarioDao;
+    private RolDao rolDao;
 
     private List<Rol> roles = new ArrayList<>();
 
-    public RegistroPersonalController(RegistroPersonalInterfaz vista) {
-        super(vista);
+    public RegistroPersonalController(RegistroPersonalInterfaz rpI) {
+        super(rpI); // Hereda los actionListeners del R.usuarios
+        this.rpI = rpI;
+        this.usuarioDao = new UsuarioDao();
+        this.medicoDao = new MedicoDao();
+        this.operarioDao = new OperarioDao();
+        this.rolDao = new RolDao();
 
-        if (this.vista != null) {
-        this.vista.btnRegistrarse.removeActionListener(this);
-        this.vista.btnVolverA.removeActionListener(this);
-
-        this.vista.btnVolverA.addActionListener(this);
-        this.vista.btnRegistrarse.addActionListener(this);
-        
-        cargarRoles();
-    }
+        cargarComboRoles();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == vista.btnRegistrarse) {
-            registrar();
-        } else if (e.getSource() == vista.btnVolverA) {
-            volverALogin();
+
+    private void cargarComboRoles() {
+        rpI.campoRol.removeAllItems();
+        List<Rol> listaRoles = rolDao.listar();
+        for (Rol r : listaRoles) {
+            rpI.campoRol.addItem(r.getNombreRol());
         }
-    }
-
-    private void cargarRoles() {
-        roles = new RolDao().listar();
-        vista.campoRol.removeAllItems();
-        for (Rol r : roles) {
-            vista.campoRol.addItem(r.getNombreRol());
-        }
-    }
-
-    private void registrar() {
-        int idTipoIdentificacion = vista.campoTipoId.getSelectedIndex();
-        String numeroIdentificacion = vista.campoNumeroID.getText().trim();
-        String primerNombre = vista.campoPrimerNombre.getText().trim();
-        String segundoNombre = vista.campoSegundoNombre.getText().trim();
-        String primerApellido = vista.campoPrimerApellido.getText().trim();
-        String segundoApellido = vista.campoSegundoApellido.getText().trim();
-        String sexoBiologico = String.valueOf(vista.comboSexo.getSelectedItem());
-        LocalDate fechaNacimiento = vista.datePickerNacimiento.getDate();
-        String correo = vista.campoCorreo.getText().trim();
-        String telefono = vista.campoTelefono.getText().trim();
-        String contrasena = new String(vista.campoContraseña.getPassword());
-
-        if (!validarCampos(idTipoIdentificacion, numeroIdentificacion, primerNombre,
-                primerApellido, sexoBiologico, fechaNacimiento, correo, telefono, contrasena)) {
-            return;
-        }
-
-        if (personalDao.validarCampoIdBs(numeroIdentificacion, "usuario", "numero_identificacion")) {
-            JOptionPane.showMessageDialog(null, "El número de identificación ingresado ya está registrado en el sistema");
-            return;
-        }
-
-        PersonalCentro personal = new PersonalCentro();
-        personal.setIdTipoIdentificacion(idTipoIdentificacion);
-        personal.setNumeroIdentificacion(numeroIdentificacion);
-        personal.setPrimerNombre(primerNombre);
-        personal.setSegundoNombre(segundoNombre);
-        personal.setPrimerApellido(primerApellido);
-        personal.setSegundoApellido(segundoApellido);
-        personal.setCorreoElectronico(correo);
-        personal.setContrasena(contrasena);
-        personal.setFechaNacimiento(fechaNacimiento);
-        personal.setSexoBiologico(sexoBiologico);
-        personal.setNumeroCelular(telefono);
-        personal.setSisben(" ");
-        personal.setEstado(true);
-
-        if (personal.getEdad() < 18) {
-            JOptionPane.showMessageDialog(null, " El personal del centro médico debe ser mayor de edad (18+ años)");
-            return;
-        }
-
-        int indiceSeleccionado = vista.campoRol.getSelectedIndex() - 1; // Restamos 1 por el ítem "Seleccione un rol..."
-        Rol rolSeleccionado = roles.get(indiceSeleccionado);
-        personal.setIdRol(rolSeleccionado.getIdRol());
-
-        int idUsuarioGenerado = personalDao.setAgregar(personal);
-
-        if (idUsuarioGenerado != -1) {
-            boolean registroEspecificoExitoso = false;
-            String nombreRol = rolSeleccionado.getNombreRol();
-
-            // Verifica qué rol se seleccionó para vincular la tabla correspondiente
-            if (nombreRol.equalsIgnoreCase("Medico") || nombreRol.equalsIgnoreCase("Médico")) {
-                Medico medico = new Medico();
-                medico.setIdUsuario(idUsuarioGenerado); // Vincula la FK del usuario recién creado
-                registroEspecificoExitoso = (medicoDao.setAgregar(medico) > 0);
-
-            } else if (nombreRol.equalsIgnoreCase("Operario")) {
-                Operario operario = new Operario();
-                operario.setIdUsuario(idUsuarioGenerado);
-                registroEspecificoExitoso = (operarioDao.setAgregar(operario) > 0);
-
-            } else {
-                // En caso de que exista un rol que no requiera tabla hija específica (ej. Administrador)
-                registroEspecificoExitoso = true;
-            }
-
-            // 6. CONFIRMACIÓN AL USUARIO
-            if (registroEspecificoExitoso) {
-                JOptionPane.showMessageDialog(vista,
-                        "El " + nombreRol + " ha sido registrado exitosamente en el sistema.",
-                        "Registro Exitoso", javax.swing.JOptionPane.INFORMATION_MESSAGE);
-                volverALogin();
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Ocurrió un error al intentar registrar el usuario en la base de datos.");
-        }
-    }
-
-    private void volverALogin() {
-        vista.dispose();
     }
     
-    private boolean validarCampos(
-            int idTipoIdentificacion, 
-            String numeroIdentificacion, 
-            String primerNombre, 
-            String primerApellido, 
-            String sexoBiologico, 
-            LocalDate fechaNacimiento, 
-            String correo, 
-            String telefono, 
-            String contrasena) {
-
-        if (idTipoIdentificacion <= 0) {
-            JOptionPane.showMessageDialog(null, "Selecciona el tipo de documento");
-            return false;
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == rpI.btnRegistrarse) {
+            registrarPersonal();
+        } else if (e.getSource() == rpI.btnVolverA) {
+            super.actionPerformed(e);
         }
-        if (!MetodosPublicos.validarNumero(numeroIdentificacion)
-                || !MetodosPublicos.validarTamano(numeroIdentificacion, 8, 10)) {
-            JOptionPane.showMessageDialog(null, "Campo id debe contener 8 o 10 caracteres");
-            return false;
-        }
-        if (primerNombre.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "El primer nombre es obligatorio");
-            return false;
-        }
-        if (primerApellido.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "El primer apellido es obligatorio");
-            return false;
-        }
-        if (sexoBiologico.isEmpty() || vista.comboSexo.getSelectedIndex() <= 0) {
-            JOptionPane.showMessageDialog(null, "Selecciona el sexo biológico");
-            return false;
-        }
-        if (fechaNacimiento == null) {
-            JOptionPane.showMessageDialog(null, "Selecciona la fecha de nacimiento");
-            return false;
-        }
-        if (!MetodosPublicos.validarFormatoCorreoGmail(correo)) {
-            JOptionPane.showMessageDialog(null, "El correo debe tener un formato válido de Gmail (ejemplo@gmail.com)");
-            return false;
-        }
-        if (!telefono.isEmpty() && (!MetodosPublicos.validarNumero(telefono) || telefono.length() != 10)) {
-            JOptionPane.showMessageDialog(null, "El número de teléfono debe tener 10 dígitos");
-            return false;
-        }
-        if (!MetodosPublicos.validarContrasena(contrasena)) {
-            JOptionPane.showMessageDialog(null, "La contraseña debe incluir mayúscula, minúscula, número y un carácter especial ($ @ # % & * - _ ! ?)");
-            return false;
-        }
-
-        return true;
     }
+
+    private void registrarPersonal() {
+        // 1. Validar el campo único/nuevo del personal (Rol)
+        if (rpI.campoRol.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(rpI, "Selecciona un rol válido para el personal", "Datos inválidos", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String rolSeleccionado = String.valueOf(rpI.campoRol.getSelectedItem());
+        
+        // Asignamos el ID de rol correspondiente (3 = Médico, 4 = Operario)
+        int idRol = (rolSeleccionado.equalsIgnoreCase("Medico") || rolSeleccionado.equalsIgnoreCase("Médico")) ? 3 : 4;
+        
+        // 2. Para registrar el usuario base aprovechando la transacción de UsuarioDao
+        int idTipoIdentificacion = rpI.campoTipoId.getSelectedIndex() + 3; // 'Cedula Ciudadania' en BD es 3
+        String numeroIdentificacion = rpI.campoNumeroID.getText().trim();
+        String primerNombre = rpI.campoPrimerNombre.getText().trim();
+        String segundoNombre = rpI.campoSegundoNombre.getText().trim();
+        String primerApellido = rpI.campoPrimerApellido.getText().trim();
+        String segundoApellido = rpI.campoSegundoApellido.getText().trim();
+        String sexoBiologico = String.valueOf(rpI.comboSexo.getSelectedItem());
+        LocalDate fechaNacimiento = rpI.datePickerNacimiento.getDate();
+        String correo = rpI.campoCorreo.getText().trim();
+        String telefono = rpI.campoTelefono.getText().trim();
+        String contrasena = new String(rpI.campoContraseña.getPassword());
+        String sisben = String.valueOf(rpI.campoSisben.getSelectedItem());
+
+        int edadCalculada = (fechaNacimiento != null) ? Period.between(fechaNacimiento, LocalDate.now()).getYears() : 0;
+
+        // Registrar el usuario pasando idRol dinámico (3 o 4)
+        int idUsuarioGenerado = usuarioDao.registrarUsuario(
+                idRol,
+                idTipoIdentificacion,
+                numeroIdentificacion,
+                primerNombre,
+                segundoNombre,
+                primerApellido,
+                segundoApellido,
+                correo,
+                contrasena,
+                fechaNacimiento,
+                sexoBiologico,
+                telefono,
+                (byte) edadCalculada,
+                sisben
+        );
+
+        // 3. Vincular con la tabla específica (Medico u Operario) si el usuario fue creado exitosamente
+        if (idUsuarioGenerado != -1) {
+            int resultado = 0;
+
+            if (idRol == 3) {
+                Medico m = new Medico();
+                m.setId_medico(idUsuarioGenerado);
+                resultado = medicoDao.setAgregar(m);
+            } else if (idRol == 4) {
+                Operario op = new Operario();
+                op.setId_usuario(idUsuarioGenerado);
+                resultado = operarioDao.setAgregar(op);
+            }
+
+            if (resultado > 0) {
+                JOptionPane.showMessageDialog(rpI, "Personal registrado exitosamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+                this.rpI.dispose();
+            } else {
+                JOptionPane.showMessageDialog(rpI, "Error al guardar los datos específicos del personal", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(rpI, "No se pudo completar el registro del personal. Verifique los datos introducidos.", "Error de registro", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    
 
 }
