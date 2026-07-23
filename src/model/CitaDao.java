@@ -240,7 +240,7 @@ public class CitaDao implements Crud<Cita> {
         }
     }
     
-    public int reagendar(int idCita, java.time.LocalDate nuevaFecha, java.time.LocalTime nuevaHora, int idConsultorio) {
+    public int reagendar(int idCita, int idConsultorio, LocalDate nuevaFecha, LocalTime nuevaHora) {
         String sql = "UPDATE cita SET fecha_cita = ?, hora_cita = ?, id_consultorio = ? WHERE id_cita = ?";
         try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setObject(1, nuevaFecha);

@@ -106,8 +106,8 @@ public class OperarioController extends PacienteController {
         return consultorioDao.listar();
     }
     
-    public int reagendarCita(int idCita, LocalDate nuevaFecha, LocalTime nuevaHora, int idConsultorio) {
-        return citaDao.reagendar(idCita, nuevaFecha, nuevaHora, idConsultorio);
+    public int reagendarCita(int idCita, int idMedico, LocalDate nuevaFecha, LocalTime nuevaHora) {
+        return citaDao.reagendar(idCita, idMedico, nuevaFecha, nuevaHora);
     }
     
     public void agregarActionListener(OperarioInterfaz vista) {
@@ -140,5 +140,13 @@ public class OperarioController extends PacienteController {
             vista.habilitarBotonesMenu(vista.btnConsultas);
             vista.mostrarVistaConsultas();
         }
-    }               
+    }
+
+    // Por herencia, PacienteController.confirmarCita() llama a procesoBtnMisCitas()
+    // tras agendar/reagendar, lo que cambia la pantalla a "Mis Citas" (vista personal
+    // del paciente). Para el operario eso no aplica: la notificación de confirmación
+    // ya se envió antes (procesoNotificacion), asi que aquí no hacemos nada.
+    @Override
+    protected void procesoBtnMisCitas() {
+    }
 }
