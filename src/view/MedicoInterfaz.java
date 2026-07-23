@@ -7,6 +7,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -15,34 +16,46 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import model.Cita;
 import model.MetodosPublicos;
 import model.Paciente;
+import model.PacienteDao;
+import model.UsuarioDao;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MedicoInterfaz extends PacienteInterfaz {
 
+    public Cita cita, citaSeleccionada;
+    public UsuarioDao usuarioDao;
     public JButton btnMisCitas, btnHistorial, btnComentarios, btnNotificaciones, btnMiAgenda, btnConsultorio, btnBuscar,
-            pruebaFicha, simboloRegresarConfirmacionP, btnAsistio, btnNoAsistio, btnGuardarFicha, btnAceptarFicha, 
-            btnVolverVerDetalles, btnActReagendar, btnNoReagendar, btnHistorialMedicoPaciente,
+            pruebaFicha, simboloRegresarConfirmacionP, btnAsistio, btnNoAsistio, btnGuardarFicha, btnAceptarFicha,
+            btnVolverVerDetalles, btnActReagendar, btnNoReagendar, btnHistorialMedicoPaciente, btnEstado,
             btnBuscarIdHistorialPaciente, btnDescargarHistorialP;
     public JPanel panelPrincipal;
     public JTextField id, idHistorial;
     public ArrayList<JButton> listaBotonesReagendar;
     public ArrayList<JButton> listaBotonesVerDetalles;
+    public ArrayList<JButton> listaBotonesAtender;
+    public ArrayList<JButton> listaBotonesEstado;
+    public JTextArea campoDiagnostico, campoObservaciones;
+    public JTextField campoPrimerN, campoSegundoN, campoCorreo, campoFechaN, campoPrimerA, campoSegundoA, campoNumeroT,
+            campoNumeroId;
+    public JComboBox campoMedicamento, campoTipoId, campoSexoBio;
 
     ;
 
     public MedicoInterfaz(String nombreInterfaz, Paciente usuario) {
         super(nombreInterfaz, usuario);
+        this.usuarioDao = new UsuarioDao();
         this.btnMiAgenda = new JButton("Mi Agenda", new ImageIcon("iconsP/schedule.png"));
         this.btnConsultorio = new JButton("Consultorio", new ImageIcon("iconsP/heart.png"));
         btnBuscar = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
-        pruebaFicha = new JButton("Atender", new ImageIcon("iconsP/accept.png"));
         simboloRegresarConfirmacionP = new JButton("←");
         btnAsistio = new JButton("Asistió", new ImageIcon("iconsP/accept.png"));
         btnNoAsistio = new JButton("No asistió", new ImageIcon("iconsP/quejas.png"));
@@ -54,29 +67,42 @@ public class MedicoInterfaz extends PacienteInterfaz {
         btnHistorialMedicoPaciente = new JButton("<html><center>Historial Médico<br>Paciente</center></html>", new ImageIcon("iconsP/paciente.png"));
         btnBuscarIdHistorialPaciente = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
 
+        campoDiagnostico = new JTextArea();
+        campoObservaciones = new JTextArea();
+
+        campoPrimerN = new JTextField();
+        campoSegundoN = new JTextField();
+        campoCorreo = new JTextField();
+        campoFechaN = new JTextField();
+        campoPrimerA = new JTextField();
+        campoSegundoA = new JTextField();
+        campoNumeroT = new JTextField();
+        campoNumeroId = new JTextField();
+
+        campoMedicamento = new JComboBox();
+        campoTipoId = new JComboBox();
+        campoSexoBio = new JComboBox();
+
         listaBotonesVerDetalles = new ArrayList<JButton>();
         listaBotonesReagendar = new ArrayList<JButton>();
+        listaBotonesAtender = new ArrayList<JButton>();
+        listaBotonesEstado = new ArrayList<JButton>();
 
         MetodosPublicos.estilizarBoton(btnBuscar, (byte) 5);
-        btnBuscar.setPreferredSize(new Dimension(130, 30));
-
-        MetodosPublicos.estilizarBoton(pruebaFicha, (byte) 1);
-        pruebaFicha.setPreferredSize(new Dimension(150, 40));
+        btnBuscar.setPreferredSize(new Dimension(150, 30));
 
         MetodosPublicos.estilizarBoton(btnAsistio, (byte) 5);
         btnAsistio.setBackground(COLOR_VERDE_ACENTO);
-        btnAsistio.setPreferredSize(new Dimension(160, 40));
+        btnAsistio.setPreferredSize(new Dimension(170, 40));
 
         MetodosPublicos.estilizarBoton(btnNoAsistio, (byte) 5);
         btnNoAsistio.setBackground(Color.RED);
-        btnNoAsistio.setPreferredSize(new Dimension(160, 40));
-
-        pruebaFicha.setPreferredSize(new Dimension(150, 40));
+        btnNoAsistio.setPreferredSize(new Dimension(170, 40));
 
         MetodosPublicos.estilizarBoton(btnGuardarFicha, (byte) 5);
 
         MetodosPublicos.estilizarBoton(btnAceptarFicha, (byte) 5);
-        btnAceptarFicha.setPreferredSize(new Dimension(150, 40));
+        btnAceptarFicha.setPreferredSize(new Dimension(160, 40));
 
         MetodosPublicos.estilizarBoton(btnVolverVerDetalles, (byte) 1);
         btnVolverVerDetalles.setPreferredSize(new Dimension(150, 40));
@@ -94,8 +120,8 @@ public class MedicoInterfaz extends PacienteInterfaz {
         btnHistorialMedicoPaciente.setMaximumSize(new Dimension(307, 100));
 
         MetodosPublicos.estilizarBoton(btnBuscarIdHistorialPaciente, (byte) 5);
-        btnBuscarIdHistorialPaciente.setMinimumSize(new Dimension(130, 30));
-        btnBuscarIdHistorialPaciente.setMaximumSize(new Dimension(130, 30));
+        btnBuscarIdHistorialPaciente.setMinimumSize(new Dimension(140, 30));
+        btnBuscarIdHistorialPaciente.setMaximumSize(new Dimension(140, 30));
 
         super.agregarBotonCuerpo1(btnMiAgenda);
         super.agregarBotonCuerpo1(btnConsultorio);
@@ -152,12 +178,12 @@ public class MedicoInterfaz extends PacienteInterfaz {
         campo.setBackground(Color.WHITE);
     }
 
-    @Override
-    public void mostrarVistaHistorial() {
-        super.mostrarVistaHistorial();
-        this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
-        this.panelBotonesLaterales.add(btnHistorialMedicoPaciente);
-    }
+//    @Override
+//    public void mostrarVistaHistorial() {
+//        super.mostrarVistaHistorial();
+//        this.panelBotonesLaterales.add(Box.createRigidArea(new Dimension(0, 30)));
+//        this.panelBotonesLaterales.add(btnHistorialMedicoPaciente);
+//    }
 
     public void mostrarFormularioHistorialMedicoPaciente() {
         MetodosPublicos.vaciarPanel(panelListaHistorial);
@@ -181,11 +207,11 @@ public class MedicoInterfaz extends PacienteInterfaz {
         MetodosPublicos.refrescarVentana(panelListaHistorial);
         MetodosPublicos.refrescarVentana(panelFiltros);
     }
-    
-    @Override
-    public void mostrarVistaHistorialConHistorial(String historial, String nombre, String edad) {
-        this.btnDescargarHistorialP = this.btnDescargar;
-    }
+
+//    @Override
+//    public void mostrarVistaHistorialConHistorial(String historial, String nombre, String edad) {
+//        this.btnDescargarHistorialP = this.btnDescargar;
+//    }
 
     public void mostrarVistaMiAgenda() {
         MetodosPublicos.vaciarPanel(cuerpo2);
@@ -265,9 +291,11 @@ public class MedicoInterfaz extends PacienteInterfaz {
         MetodosPublicos.refrescarVentana(scrollCitas);
     }
 
-    public void mostrarVistaConfirmacionAsistencia() {
+    public void mostrarVistaConfirmacionAsistencia(Cita cita) {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelPrincipal);
+
+        this.citaSeleccionada = cita;
 
         //se crea el panel donde se va a mostrar la confirmacion del paciente
         this.panelPrincipal.setLayout(new FlowLayout());
@@ -352,36 +380,36 @@ public class MedicoInterfaz extends PacienteInterfaz {
         primerN.setFont(new Font("arial", Font.PLAIN, 15));
         primerN.setBorder(new EmptyBorder(15, 0, 0, 0));
 
-        JTextField campoPrimerN = new JTextField();
+        campoPrimerN = new JTextField();
         campo(18, 270, 35, campoPrimerN);
 
         JLabel segundoN = new JLabel("Segundo nombre");
         segundoN.setFont(new Font("arial", Font.PLAIN, 15));
         segundoN.setBorder(new EmptyBorder(50, 0, 0, 0));
 
-        JTextField campoSegundoN = new JTextField();
+        campoSegundoN = new JTextField();
         campo(18, 270, 35, campoSegundoN);
 
         JLabel correo = new JLabel("Correo electrónico");
         correo.setFont(new Font("arial", Font.PLAIN, 15));
         correo.setBorder(new EmptyBorder(50, 0, 0, 0));
 
-        JTextField campoCorreo = new JTextField();
+        campoCorreo = new JTextField();
         campo(18, 270, 35, campoCorreo);
 
         JLabel fechaN = new JLabel("Fecha de nacimiento");
         fechaN.setFont(new Font("arial", Font.PLAIN, 15));
         fechaN.setBorder(new EmptyBorder(50, 0, 0, 0));
 
-        JTextField campoFechaN = new JTextField();
+        campoFechaN = new JTextField();
         campo(18, 270, 35, campoFechaN);
 
         JLabel tipoId = new JLabel("Tipo de identificación");
         tipoId.setFont(new Font("arial", Font.PLAIN, 15));
         tipoId.setBorder(new EmptyBorder(50, 0, 0, 0));
 
-        String listaIds[] = {"", "Registro civil", "Tarjeta de identidad", "Cédula"};
-        JComboBox campoTipoId = new JComboBox(listaIds);
+        String listaIds[] = {"", "Registro civil", "Tarjeta de identidad", "Cedula de ciudadania"};
+        campoTipoId = new JComboBox(listaIds);
         MetodosPublicos.crearComboEstilizado(campoTipoId);
         campoComboBox(18, 270, 35, campoTipoId);
 
@@ -391,21 +419,21 @@ public class MedicoInterfaz extends PacienteInterfaz {
         primerA.setBorder(new EmptyBorder(8, 0, 0, 0));
         primerA.setBorder(new EmptyBorder(15, 0, 0, 0));
 
-        JTextField campoPrimerA = new JTextField();
+        campoPrimerA = new JTextField();
         campo(18, 270, 35, campoPrimerA);
 
         JLabel segundoA = new JLabel("Segundo apellido");
         segundoA.setFont(new Font("arial", Font.PLAIN, 15));
         segundoA.setBorder(new EmptyBorder(50, 0, 0, 0));
 
-        JTextField campoSegundoA = new JTextField();
+        campoSegundoA = new JTextField();
         campo(18, 270, 35, campoSegundoA);
 
         JLabel numeroT = new JLabel("Número de telefono");
         numeroT.setFont(new Font("arial", Font.PLAIN, 15));
         numeroT.setBorder(new EmptyBorder(50, 0, 0, 0));
 
-        JTextField campoNumeroT = new JTextField();
+        campoNumeroT = new JTextField();
         campo(18, 270, 35, campoNumeroT);
 
         JLabel sexoBio = new JLabel("Sexo biológico");
@@ -413,7 +441,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         sexoBio.setBorder(new EmptyBorder(50, 0, 0, 0));
 
         String listaSB[] = {"", "Femenino", "Masculino"};
-        JComboBox campoSexoBio = new JComboBox(listaSB);
+        campoSexoBio = new JComboBox(listaSB);
         MetodosPublicos.crearComboEstilizado(campoSexoBio);
         campoComboBox(18, 270, 35, campoSexoBio);
 
@@ -421,17 +449,28 @@ public class MedicoInterfaz extends PacienteInterfaz {
         numeroId.setFont(new Font("arial", Font.PLAIN, 15));
         numeroId.setBorder(new EmptyBorder(50, 0, 0, 0));
 
-        JTextField campoNumeroId = new JTextField();
+        campoNumeroId = new JTextField();
         campo(18, 270, 35, campoNumeroId);
 
+        //se bloquean los datos porque son solo de visualizar
+        campoPrimerN.setEditable(false);
+        campoSegundoN.setEditable(false);
+        campoCorreo.setEditable(false);
+        campoFechaN.setEditable(false);
+        campoPrimerA.setEditable(false);
+        campoSegundoA.setEditable(false);
+        campoNumeroT.setEditable(false);
+        campoNumeroId.setEditable(false);
+        campoTipoId.setEnabled(false);
+        campoSexoBio.setEnabled(false);
+
         //datos a ingresar de la consulta
-        JLabel diagnostico = new JLabel("Diagnóstico");
+        JLabel diagnostico = new JLabel("Diagnóstico *");
         diagnostico.setFont(new Font("arial", Font.BOLD, 24));
         diagnostico.setBorder(new EmptyBorder(35, 0, 10, 0));
         diagnostico.setAlignmentX(Component.LEFT_ALIGNMENT);
         diagnostico.setForeground(COLOR_AZUL_CORPORATIVO);
 
-        JTextArea campoDiagnostico = new JTextArea();
         campoDiagnostico.setFont(new Font("Arial", Font.PLAIN, 18));
         campoDiagnostico.setLineWrap(true);
         campoDiagnostico.setWrapStyleWord(true);
@@ -452,18 +491,17 @@ public class MedicoInterfaz extends PacienteInterfaz {
         medicamento.setForeground(COLOR_AZUL_CORPORATIVO);
 
         String listaMed[] = {""};
-        JComboBox campoMedicamento = new JComboBox(listaMed);
+        campoMedicamento = new JComboBox(listaMed);
         MetodosPublicos.crearComboEstilizado(campoMedicamento);
         campoComboBox(18, 270, 35, campoMedicamento);
         campoMedicamento.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel observaciones = new JLabel("Observaciones");
+        JLabel observaciones = new JLabel("Observaciones *");
         observaciones.setFont(new Font("arial", Font.BOLD, 24));
         observaciones.setBorder(new EmptyBorder(10, 0, 10, 0));
         observaciones.setAlignmentX(Component.LEFT_ALIGNMENT);
         observaciones.setForeground(COLOR_AZUL_CORPORATIVO);
 
-        JTextArea campoObservaciones = new JTextArea();
         campoObservaciones.setFont(new Font("Arial", Font.PLAIN, 18));
         campoObservaciones.setLineWrap(true);
         campoObservaciones.setWrapStyleWord(true);
@@ -523,8 +561,32 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.cuerpo2.add(panelPrincipal, BorderLayout.WEST);
         this.cuerpo2.add(panelDiagnostico, BorderLayout.EAST);
 
+        System.out.println("id_usuario buscado: " + this.citaSeleccionada.getIdUsuario());
+        Paciente paciente = usuarioDao.buscarPorId(this.citaSeleccionada.getIdUsuario());
+        System.out.println("Paciente encontrado: " + (paciente != null));
+        if (paciente != null) {
+            System.out.println("Nombre: " + paciente.getPrimerNombre());
+            this.cargarInfoPaciente(paciente);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró información del paciente.");
+        }
+
         MetodosPublicos.refrescarVentana(panelPrincipal);
         MetodosPublicos.refrescarVentana(cuerpo2);
+    }
+
+    public void cargarInfoPaciente(Paciente p) {
+        campoPrimerN.setText(p.getPrimerNombre());
+        campoSegundoN.setText(p.getSegundoNombre());
+        campoPrimerA.setText(p.getPrimerApellido());
+        campoSegundoA.setText(p.getSegundoApellido());
+        campoCorreo.setText(p.getCorreoElectronico());
+        campoNumeroT.setText(p.getNumeroTelefonico());
+        campoFechaN.setText(p.getFechaNacimiento().toString());
+        campoNumeroId.setText(p.getNumeroId());
+
+        campoSexoBio.setSelectedItem(p.getSexoBiologico());
+        campoTipoId.setSelectedItem(p.getTipoId());
     }
 
     public void mostrarVistaConfirmacionFichaGuardada() {
@@ -606,10 +668,10 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
         JLabel paciente = new JLabel("Paciente: " + nombrePaciente);
         paciente.setFont(new Font("arial", Font.PLAIN, 15));
-        
+
         JButton btnReagendarCita = new JButton("Reagendar", new ImageIcon("iconsP/reagendar.png"));
         JButton btnVerDetalles = new JButton("Ver detalles", new ImageIcon("iconsP/magnifying-glass.png"));
-        
+
         MetodosPublicos.estilizarBoton(btnReagendarCita, (byte) 1);
         btnReagendarCita.setPreferredSize(new Dimension(150, 40));
 
@@ -673,7 +735,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
-    public void citaVistaConsultorio() {
+    public void citaVistaConsultorio(String especialidad, String fechaC, String horaC, String nombrePaciente, Cita cita) {
         //se crea el panel donde va a contener la cita de un paciente
         JPanel panelCita = new JPanel();
         panelCita.setLayout(new BorderLayout());
@@ -695,7 +757,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         infoDerecha.setBorder(new EmptyBorder(15, 0, 0, 0));
         infoDerecha.setOpaque(false);
 
-        JLabel titulo1 = new JLabel("Odontologica");
+        JLabel titulo1 = new JLabel(especialidad);
         titulo1.setForeground(new Color(0, 194, 177));
         titulo1.setFont(new Font("Arial", Font.BOLD, 20));
         titulo1.setBorder(new EmptyBorder(0, 0, 0, 100));
@@ -704,29 +766,16 @@ public class MedicoInterfaz extends PacienteInterfaz {
         titulo2.setFont(new Font("Arial", Font.BOLD, 20));
         titulo2.setForeground(new Color(0, 79, 124));
 
-        JLabel fecha = new JLabel("Fecha: ");
+        JLabel fecha = new JLabel("Fecha: " + fechaC);
         fecha.setFont(new Font("arial", Font.PLAIN, 15));
+        fecha.setBorder(new EmptyBorder(0, 0, 0, Short.MAX_VALUE));
 
-        JTextField campoFecha = new JTextField();
-        campoFecha.setFont(new Font("Arial", Font.PLAIN, 15));
-        campoFecha.setPreferredSize(new Dimension(240, 20));
-        campoFecha.setBorder(null);
-
-        JLabel hora = new JLabel("Hora: ");
+        JLabel hora = new JLabel("Hora: " + horaC);
         hora.setFont(new Font("arial", Font.PLAIN, 15));
+        hora.setBorder(new EmptyBorder(0, 0, 0, Short.MAX_VALUE));
 
-        JTextField campoHora = new JTextField();
-        campoHora.setFont(new Font("Arial", Font.PLAIN, 15));
-        campoHora.setPreferredSize(new Dimension(240, 20));
-        campoHora.setBorder(null);
-
-        JLabel paciente = new JLabel("Paciente: ");
+        JLabel paciente = new JLabel("Paciente: " + nombrePaciente);
         paciente.setFont(new Font("arial", Font.PLAIN, 15));
-
-        JTextField campoPaciente = new JTextField();
-        campoPaciente.setFont(new Font("Arial", Font.PLAIN, 15));
-        campoPaciente.setPreferredSize(new Dimension(240, 20));
-        campoPaciente.setBorder(null);
 
         JLabel titulo = new JLabel("Estado de");
         titulo.setFont(new Font("Arial", Font.BOLD, 20));
@@ -737,24 +786,31 @@ public class MedicoInterfaz extends PacienteInterfaz {
         tituloS.setForeground(new Color(0, 194, 177));
         tituloS.setFont(new Font("Arial", Font.BOLD, 20));
 
-        JButton btnEstado = new JButton("En sala de espera", new ImageIcon("iconsP/happy-face.png"));
+        pruebaFicha = new JButton("Atender", new ImageIcon("iconsP/accept.png"));
+        MetodosPublicos.estilizarBoton(pruebaFicha, (byte) 1);
+        pruebaFicha.setPreferredSize(new Dimension(150, 40));
+
+        pruebaFicha.addActionListener(e -> {
+            this.mostrarVistaConfirmacionAsistencia(cita);
+        });
+
+        btnEstado = new JButton("En sala de espera", new ImageIcon("iconsP/happy-face.png"));
         MetodosPublicos.estilizarBoton(btnEstado, (byte) 1);
         btnEstado.setPreferredSize(new Dimension(190, 40));
 
         infoIzquierda.add(titulo2);
         infoIzquierda.add(titulo1);
         infoIzquierda.add(fecha);
-        infoIzquierda.add(campoFecha);
         infoIzquierda.add(hora);
-        infoIzquierda.add(campoHora);
         infoIzquierda.add(paciente);
-        infoIzquierda.add(campoPaciente);
         infoDerecha.add(titulo);
         infoDerecha.add(tituloS);
-        infoDerecha.add(this.pruebaFicha);
+        infoDerecha.add(pruebaFicha);
         infoDerecha.add(btnEstado);
         panelCita.add(infoDerecha, BorderLayout.EAST);
         panelCita.add(infoIzquierda, BorderLayout.WEST);
+        this.listaBotonesAtender.add(pruebaFicha);
+        this.listaBotonesEstado.add(btnEstado);
         this.panelPrincipal.add(panelCita);
     }
 
