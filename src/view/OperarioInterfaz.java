@@ -34,7 +34,6 @@ import javax.swing.border.EmptyBorder;
 import model.CalculadorPago;
 import model.Cita;
 import model.CitaDao;
-import model.Consultorio;
 import model.CreadorPdf;
 import model.DatosPagoCita;
 import model.MetodosPublicos;

@@ -62,13 +62,13 @@ public class MedicoController extends PacienteController {
         medico.btnDescargar.setEnabled(valor);
     }
     
-//    private void nombreMedicamentos() {
-//        nombresM = new MedicamentosDao().listarNombres();
-//        medico.campoMedicamento.removeAllItems();
-//        for (Medicamentos m : nombresM) {
-//            medico.campoMedicamento.addItem(m);
-//        }
-//    }
+    private void nombreMedicamentos() {
+        nombresM = new MedicamentosDao().listarNombres();
+        medico.campoMedicamento.removeAllItems();
+        for (Medicamentos m : nombresM) {
+            medico.campoMedicamento.addItem(m);
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
