@@ -28,8 +28,12 @@ public class RegistroUsuariosController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == rI.btnRegistrarse) {
             registrar();
-        } else if (e.getSource() == rI.btnVolverA) {
+            return;
+        }
+
+        if (e.getSource() == rI.btnVolverA) {
             volverALogin();
+            return;
         }
     }
 
@@ -77,25 +81,36 @@ public class RegistroUsuariosController implements ActionListener {
                 mensaje2 += "El numero de identificacion debe tener entre 8 y 10 digitos\n";
             }
 
-            // Edad vs tipo de documento
-            final int TI_REGISTRO_CIVIL = 1;    // ajusta al indice real de tu combo
-            final int TI_TARJETA_IDENTIDAD = 2; // ajusta al indice real de tu combo
-            final int TI_CEDULA = 3;            // ajusta al indice real de tu combo
+            if (edad > -1 && edad < 117) {
+                // Edad vs tipo de documento
+                final int TI_REGISTRO_CIVIL = 1;    // ajusta al indice real de tu combo
+                final int TI_TARJETA_IDENTIDAD = 2; // ajusta al indice real de tu combo
+                final int TI_CEDULA = 3;            // ajusta al indice real de tu combo
 
-            if (edad < 7 && idTipoIdentificacion != TI_REGISTRO_CIVIL) {
-                mensaje2 += "Para menores de 7 años el documento debe ser Registro Civil\n";
-            } else if (edad >= 7 && edad < 18 && idTipoIdentificacion != TI_TARJETA_IDENTIDAD) {
-                mensaje2 += "Para menores de edad (7 a 17 años) el documento debe ser Tarjeta de Identidad\n";
-            } else if (edad >= 18 && idTipoIdentificacion != TI_CEDULA) {
-                mensaje2 += "Para mayores de edad el documento debe ser Cedula de Ciudadania\n";
+                if (edad < 7 && idTipoIdentificacion != TI_REGISTRO_CIVIL) {
+                    mensaje2 += "Para menores de 7 años el documento debe ser Registro Civil\n";
+                } else if (edad >= 7 && edad < 18 && idTipoIdentificacion != TI_TARJETA_IDENTIDAD) {
+                    mensaje2 += "Para menores de edad (7 a 17 años) el documento debe ser Tarjeta de Identidad\n";
+                } else if (idTipoIdentificacion != TI_CEDULA) {
+                    mensaje2 += "Para mayores de edad el documento debe ser Cedula de Ciudadania\n";
+                }
+            } else {
+                mensaje2 += "No se permiten personas con tal capacidad de edad\n";
             }
 
             if (!MetodosPublicos.validarFormatoCorreoGmail(correo)) {
                 mensaje2 += "El correo debe tener un formato valido de Gmail (ejemplo@gmail.com)\n";
             }
-            if (!telefono.isEmpty() && (!MetodosPublicos.validarNumero(telefono) || telefono.length() != 10)) {
-                mensaje2 += "El numero de telefono debe tener 10 digitos\n";
+            if (!telefono.isEmpty()) {
+                if (!MetodosPublicos.validarNumero(telefono)) {
+                    mensaje2 += "El numero de telefono debe contener solo numeros\n";
+                } else if (telefono.length() != 10) {
+                    mensaje2 += "El numero de telefono debe tener 10 digitos\n";
+                } else if (!String.valueOf(telefono.charAt(0)).equals("3")) {
+                    mensaje2 += "El numero de telefono debe ser colombiano\n";
+                }
             }
+
             if (!MetodosPublicos.validarContrasena(contrasena)) {
                 mensaje2 += "La contraseña debe incluir mayuscula, minuscula, numero y caracter especial ($ @ # % & * - _ ! ?)\n";
             }
@@ -112,6 +127,11 @@ public class RegistroUsuariosController implements ActionListener {
 
             if (usuarioDao.validarCampoIdBs(numeroIdentificacion, "usuario", "numero_identificacion")) {
                 mostrarError("Ya existe un usuario registrado con ese numero de identificacion");
+                return;
+            }
+
+            if (usuarioDao.validarCampoIdBs(correo, "usuario", "correo_electronico")) {
+                mostrarError("Ya existe un usuario registrado con ese Correo electronico");
                 return;
             }
 

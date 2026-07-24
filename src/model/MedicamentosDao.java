@@ -18,16 +18,20 @@ public class MedicamentosDao implements Crud<Medicamentos> {
 
     public List<Medicamentos> listarNombres() {
         List<Medicamentos> nombres = new ArrayList<>();
-        String sql = "SELECT nombre FROM medicamento";
+        String sql = "SELECT n_registro_sanitario,nombre FROM medicamento";
         try {
             con = conectar.getConection();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
+            if (rs == null) {
+                System.out.println("sadasdasdas");
+                return nombres;
+            }
             while (rs.next()) {
                 nombres.add(new Medicamentos(rs.getString("n_registro_sanitario"), rs.getString("nombre")));
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.toString(), 
+            JOptionPane.showMessageDialog(null, e.toString(),
                     "Error en la consulta", JOptionPane.ERROR_MESSAGE);
         } finally {
             try {
