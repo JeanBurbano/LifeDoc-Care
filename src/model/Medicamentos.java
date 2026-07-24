@@ -19,8 +19,7 @@ public class Medicamentos {
     
     public Medicamentos(){}
 
-    public Medicamentos(String nRegistroSanitario, String nombre) {
-        this.nRegistroSanitario = nRegistroSanitario;
+    public Medicamentos(String nombre) {
         this.nombre = nombre;
     }
 

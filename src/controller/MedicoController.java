@@ -64,9 +64,8 @@ public class MedicoController extends PacienteController {
     
     private void nombreMedicamentos() {
         nombresM = new MedicamentosDao().listarNombres();
-        medico.campoMedicamento.removeAllItems();
         for (Medicamentos m : nombresM) {
-            medico.campoMedicamento.addItem(m);
+            medico.campoMedicamento.addItem(m.getNombre());
         }
     }
 

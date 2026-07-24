@@ -81,6 +81,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         campoMedicamento = new JComboBox();
         campoTipoId = new JComboBox();
         campoSexoBio = new JComboBox();
+        campoMedicamento.insertItemAt(null, 0);
 
         listaBotonesVerDetalles = new ArrayList<JButton>();
         listaBotonesReagendar = new ArrayList<JButton>();
