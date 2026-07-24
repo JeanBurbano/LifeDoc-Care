@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import model.FechaCalendarioEstilizar;
 import model.MetodosPublicos;
 
 public class RegistroUsuariosInterfaz extends JFrame {
