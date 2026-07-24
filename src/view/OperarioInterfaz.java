@@ -34,7 +34,7 @@ import javax.swing.border.EmptyBorder;
 import model.CalculadorPago;
 import model.Cita;
 import model.CitaDao;
-import model.Consultorio;
+import model.CreadorPdf;
 import model.DatosPagoCita;
 import model.MetodosPublicos;
 import static model.MetodosPublicos.estilizarBoton;
@@ -244,7 +244,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
     // ---------------------------- MODULO DE PAGOS ----------------------------
 
     // Punto de entrada del botón "Pagos": muestra el buscador de paciente,
-    // igual que en Consultas, para listar SUS citas pendientes de pago.
+    // igual que en Consultas, para listar sus citas pendientes de pago.
     public void mostrarVistaPagos() {
         vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
@@ -831,6 +831,35 @@ public class OperarioInterfaz extends PacienteInterfaz {
         btnFinalizar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnFinalizar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
         
+        JButton btnDescargarFactura = new JButton("Descargar factura (PDF)", new ImageIcon("iconsP/descargar.png"));
+        estilizarBoton(btnDescargarFactura, (byte) 4);
+        btnDescargarFactura.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnDescargarFactura.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+
+        btnDescargarFactura.addActionListener(e -> {
+            String contenidoFactura = "\n\n"
+                    + "Factura Digital No: " + codigoFactura + "\n"
+                    + "Fecha/Hora Emisión: " + fechaHoraFactura + "\n\n"
+                    + "DATOS DEL PACIENTE\n"
+                    + "Nombre: " + nombrePaciente + "\n"
+                    + "Identificación: " + identificacion + "\n"
+                    + "Régimen: " + regimen + "\n"
+                    + "Clasificación SISBEN: " + clasificacionSisben + "\n\n"
+                    + "DETALLE DE LA CITA\n"
+                    + "Especialidad: " + especialidad + "\n"
+                    + "Médico Asignado: " + nombreMedico + "\n"
+                    + "Fecha y Hora: " + fechaCitaTexto + "\n\n"
+                    + "DETALLE DEL PAGO\n"
+                    + "Valor consulta: " + CalculadorPago.formatearPesos(valorConsulta) + "\n"
+                    + "Subsidio: " + CalculadorPago.formatearPesos(montoSubsidio) + "\n"
+                    + "Valor neto pagado: " + CalculadorPago.formatearPesos(valorNeto) + "\n"
+                    + "Método de pago: " + metodoPago;
+
+            String nombreArchivo = "factura_" + codigoFactura;
+            CreadorPdf.constructorCreadorPdf(nombreArchivo, "Factura");
+            
+        });
+        
         btnFinalizar.addActionListener(e -> {
             btnPagos.setEnabled(true);
             btnPagos.doClick();
@@ -847,6 +876,8 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelConfirmacion.add(btnCredito);
         panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 12)));
         panelConfirmacion.add(btnTransferencia);
+        panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 20)));
+        panelConfirmacion.add(btnDescargarFactura);
         panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 30)));
         panelConfirmacion.add(btnFinalizar);
  
@@ -1308,13 +1339,6 @@ public class OperarioInterfaz extends PacienteInterfaz {
             }
         });
 
-        List<Consultorio> consultorios = controlador.listarConsultorios();
-        JComboBox cmbConsultorio = new JComboBox();
-        for (Consultorio consultorio : consultorios) {
-            cmbConsultorio.addItem("Consultorio " + consultorio.getNumeroConsultorio());
-        }
-        estilizarComboBox(cmbConsultorio);
-
         JButton btnConfirmar = new JButton("Confirmar Reagendamiento");
         estilizarBoton(btnConfirmar, (byte) 5);
         btnConfirmar.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -1335,10 +1359,10 @@ public class OperarioInterfaz extends PacienteInterfaz {
                 return;
             }
             LocalTime nuevaHora = LocalTime.parse(horaSeleccionada);
-            Consultorio consultorioSeleccionado = consultorios.get(cmbConsultorio.getSelectedIndex());
-            int idConsultorio = consultorioSeleccionado.getIdConsultorio();
-
-            int resultado = controlador.reagendarCita(citaAReagendar.getIdCita(), nuevaFecha, nuevaHora, idConsultorio);
+            
+            int idMedico = citaAReagendar.getIdMedico();
+            
+            int resultado = controlador.reagendarCita(citaAReagendar.getIdCita(), idMedico, nuevaFecha, nuevaHora);
 
             if (resultado == CitaDao.CONFLICTO_HORARIO) {
                 javax.swing.JOptionPane.showMessageDialog(this,
@@ -1364,8 +1388,6 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelReagendar.add(Box.createRigidArea(new Dimension(0, 15)));
         panelReagendar.add(MetodosPublicos.crearCampoConEtiqueta("Hora:", cmbNuevaHora));
         panelReagendar.add(Box.createRigidArea(new Dimension(0, 15)));
-        panelReagendar.add(MetodosPublicos.crearCampoConEtiqueta("Consultorio:", cmbConsultorio));
-        panelReagendar.add(Box.createRigidArea(new Dimension(0, 25)));
         panelReagendar.add(btnConfirmar);
 
         cuerpo2.add(panelReagendar, new GridBagConstraints());

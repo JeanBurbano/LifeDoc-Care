@@ -106,8 +106,10 @@ public class OperarioController extends PacienteController {
         return consultorioDao.listar();
     }
     
-    public int reagendarCita(int idCita, LocalDate nuevaFecha, LocalTime nuevaHora, int idConsultorio) {
-        return citaDao.reagendar(idCita, nuevaFecha, nuevaHora, idConsultorio);
+    public int reagendarCita(int idCita, int idConsultorio, LocalDate nuevaFecha, LocalTime nuevaHora) {
+        
+        return citaDao.reagendar(idCita,idConsultorio, nuevaFecha, nuevaHora);
+        
     }
     
     public void agregarActionListener(OperarioInterfaz vista) {
@@ -141,4 +143,12 @@ public class OperarioController extends PacienteController {
             vista.mostrarVistaConsultas();
         }
     }               
+
+    // Tras agendar/reagendar con éxito, el Operario no debe ver "Mis Citas"
+    // (esa vista es la personal del paciente, no le corresponde). En vez de
+    // eso vuelve a la pantalla de búsqueda, lista para el siguiente paciente.
+   
+    protected void despuesDeConfirmarCita() {
+        vista.AgendarCita();
+    }
 }
