@@ -1,12 +1,15 @@
 package view;
 
 //import
+import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
+import javax.swing.ImageIcon;
 
 /*clase abstracta LayoutView 
   se escogio ese nombre ya que hace referencia directa a la estructura de layout:
@@ -27,29 +30,47 @@ public abstract class LayoutView extends JFrame {
     public JPanel cuerpo1;
     public JPanel cuerpo2;
 
-    public LayoutView() {
+    public LayoutView(String nombreVentana) {
+        //Nonbre de la ventana
+        super(nombreVentana);
+        if (!(fondoVentana.getIcon() != null)) {
+            init();
+        }
+    }
 
-        boolean opaque = false;
+    private void init() {
+        boolean opaque = true;
 
-        //Asigno como contenedor a fondoVentana
-//        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-//        int alto=screenSize.he;
-//        int ancho = screenSize.width;
-//        
-        setContentPane(fondoVentana);
+        //Obtener las dimensiones de la pantalla
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int ancho = screenSize.width;
+        int alto = screenSize.height;
+        //Cargar la imagen original
+        ImageIcon iconoOriginal = new ImageIcon("Fondo1_watermark.jpeg");
+        //Escalar la imagen al tamaño de la pantalla Image.SCALE_SMOOTH ofrece mejor calidad visual
+        Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+        //Crear un nuevo ImageIcon con la imagen ya escalada
+        ImageIcon iconoEscalado = new ImageIcon(imagenEscalada);
+        //Configurar el JLabel con la imagen escalada
+        fondoVentana.setIcon(iconoEscalado);
+        //Establecer que el tamaño del JLabel sea el de la pantalla
+        fondoVentana.setBounds(0, 0, ancho, alto);
+        //Estableces el JLabel como contenedor
         fondoVentana.setOpaque(opaque);
-
+        fondoVentana.setLayout(new BorderLayout());
+        setContentPane(fondoVentana);
         //Encabezado
         encabezado = new JPanel();
-        encabezado.setOpaque(opaque);
-
+        encabezado.setOpaque(!opaque);
         //Cuerpo1 es el panel de botones
         cuerpo1 = new JPanel();
-        cuerpo1.setOpaque(opaque);
-
+        cuerpo1.setOpaque(!opaque);
         //cuerpo2 panel donde cambia la vista
         cuerpo2 = new JPanel();
-        cuerpo2.setOpaque(opaque);
-
+        cuerpo2.setOpaque(!opaque);
+        //Se arma la estructura de la plantilla
+        fondoVentana.add(encabezado, BorderLayout.NORTH);
+        fondoVentana.add(cuerpo1, BorderLayout.CENTER);
+        fondoVentana.add(cuerpo2, BorderLayout.SOUTH);
     }
 }
