@@ -99,7 +99,7 @@ public class PacienteInterfaz extends JFrame {
     
     public PacienteInterfaz(String nombreInterfaz) {
         super(nombreInterfaz);
-        
+      
         this.fondoVentana = new JLabel(new ImageIcon("Fondo1_watermark.jpeg"));
         this.fondoVentana.setOpaque(true);
         this.fondoVentana.setLayout(new BoxLayout(fondoVentana, BoxLayout.Y_AXIS));
