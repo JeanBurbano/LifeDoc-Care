@@ -14,30 +14,23 @@ import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import model.FechaCalendarioEstilizar;
 import model.MetodosPublicos;
 
-public class RegistroUsuariosInterfaz extends JFrame {
+public class RegistroUsuariosInterfaz extends LayoutView {
 
     final static String[] ARREGLO_ID = {"", "Registro civil", "Targeta Identidad", "Cedula Ciudadania",};
     final static String[] ARREGLO_SEXO = {"", "Femenino", "Masculino"};
     final static String[] ARREGLO_SISBEN = {"", "No aplica", "A", "B", "C", "D"};
 
-    protected JLabel fondoVentana;
-    public JPanel encabezado;
-    public JPanel cuerpo1;
-    public JPanel cuerpo2;
     public JPanel creacionPerfil; //panel del titulo
     public JPanel volver; //panel del boton de volver
     public JPanel identificacion, datos, fotoF; //panel de las tres secciones de registro
@@ -65,40 +58,23 @@ public class RegistroUsuariosInterfaz extends JFrame {
 
     public RegistroUsuariosInterfaz(String nombreInterfaz) {
         super(nombreInterfaz);
+       
+        encabezado.setBorder(new EmptyBorder(40, 40, 0, 40));
+        encabezado.setLayout(new BorderLayout());
+        encabezado.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        this.fondoVentana = new JLabel(new ImageIcon("Fondo1_watermark.jpeg"));
-        this.fondoVentana.setOpaque(true);
-        this.fondoVentana.setLayout(new BoxLayout(fondoVentana, BoxLayout.Y_AXIS));
-        this.setContentPane(fondoVentana);
-        this.fondoVentana.setBorder(new EmptyBorder(0, 10, 5, 10));
+        cuerpo1.setLayout(new BoxLayout(cuerpo1, BoxLayout.Y_AXIS));
+        cuerpo1.setAlignmentX(Component.LEFT_ALIGNMENT);
+        cuerpo1.setBorder(BorderFactory.createEmptyBorder());
 
-        this.encabezado = new JPanel();
-        this.encabezado.setBorder(new EmptyBorder(40, 40, 0, 40));
-        this.encabezado.setLayout(new BorderLayout());
-        this.encabezado.setOpaque(false);
-        this.cuerpo1 = new JPanel();
-        this.cuerpo1.setOpaque(false);
-        this.cuerpo2 = new JPanel();
-        this.cuerpo2.setOpaque(false);
+        cuerpo2.setAlignmentX(Component.LEFT_ALIGNMENT);
+        cuerpo2.setLayout(new BoxLayout(cuerpo2, BoxLayout.Y_AXIS));
 
-        this.encabezado.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.cuerpo1.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.cuerpo2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.cuerpo2.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-
-        this.cuerpo1.setBorder(BorderFactory.createEmptyBorder());
-        this.cuerpo1.setLayout(new BoxLayout(cuerpo1, BoxLayout.Y_AXIS));
-        this.cuerpo2.setLayout(new BoxLayout(cuerpo2, BoxLayout.Y_AXIS));
-
-        this.cuerpo1.setBorder(BorderFactory.createEmptyBorder());
-        this.cuerpo1.setLayout(new BoxLayout(cuerpo1, BoxLayout.Y_AXIS));
-        this.cuerpo2.setLayout(new BoxLayout(cuerpo2, BoxLayout.Y_AXIS));
-
-        this.creacionPerfil = new JPanel();
-        this.volver = new JPanel();
-        this.identificacion = new JPanel();
-        this.datos = new JPanel();
-        this.fotoF = new JPanel();
+        creacionPerfil = new JPanel();
+        volver = new JPanel();
+        identificacion = new JPanel();
+        datos = new JPanel();
+        fotoF = new JPanel();
         creacionPerfil.setOpaque(false);
         volver.setOpaque(false);
         identificacion.setOpaque(false);
@@ -106,54 +82,54 @@ public class RegistroUsuariosInterfaz extends JFrame {
         fotoF.setOpaque(false);
 
         //Botones
-        this.btnVolverA = new JButton("← Volver");
+        btnVolverA = new JButton("← Volver");
         btnVolverA.setForeground(PacienteInterfaz.COLOR_VERDE_ACENTO);
         btnVolverA.setFont(new Font("Arial", Font.BOLD, 18));
         btnVolverA.setContentAreaFilled(false);
         btnVolverA.setBorderPainted(false);
         btnVolverA.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        this.btnRegistrarse = new JButton("Registrarme");
+        btnRegistrarse = new JButton("Registrarme");
         MetodosPublicos.estilizarBoton(btnRegistrarse, (byte) 5);
 
         //Encabezado
         creacionPerfil.setLayout(new BoxLayout(creacionPerfil, BoxLayout.Y_AXIS));
 
-        this.tituloCreacion = new JLabel("Crear una Cuenta");
-        this.tituloCreacion.setFont(new Font("Arial", Font.PLAIN, 33));
-        this.tituloCreacion.setForeground(Color.BLACK);
-        this.tituloCreacion.setAlignmentX(Component.LEFT_ALIGNMENT);
+        tituloCreacion = new JLabel("Crear una Cuenta");
+        tituloCreacion.setFont(new Font("Arial", Font.PLAIN, 33));
+        tituloCreacion.setForeground(Color.BLACK);
+        tituloCreacion.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        this.panelLifeDoc = new Titulo("LifeDoc", "Care").getPanelTitulo();
-        this.panelLifeDoc.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.panelLifeDoc.setMaximumSize(panelLifeDoc.getPreferredSize());
+        panelLifeDoc = new Titulo("LifeDoc", "Care").getPanelTitulo();
+        panelLifeDoc.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panelLifeDoc.setMaximumSize(panelLifeDoc.getPreferredSize());
 
-        this.creacionPerfil.add(tituloCreacion);
-        this.creacionPerfil.add(panelLifeDoc);
+        creacionPerfil.add(tituloCreacion);
+        creacionPerfil.add(panelLifeDoc);
 
-        this.volver.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        this.volver.add(btnVolverA);
+        volver.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        volver.add(btnVolverA);
 
-        this.encabezado.add(volver, BorderLayout.EAST);
-        this.encabezado.add(creacionPerfil, BorderLayout.WEST);
+        encabezado.add(volver, BorderLayout.EAST);
+        encabezado.add(creacionPerfil, BorderLayout.WEST);
 
         //Sección 1: Identificación
-        this.identificacion.setLayout(new BorderLayout(8, 0));
-        this.identificacion.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.identificacion.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
+        identificacion.setLayout(new BorderLayout(8, 0));
+        identificacion.setAlignmentX(Component.LEFT_ALIGNMENT);
+        identificacion.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
 
-        this.tloSeccion1 = new JLabel("Identificación");
+        tloSeccion1 = new JLabel("Identificación");
         tloSeccion1.setFont(new Font("Arial", Font.BOLD, 22));
         tloSeccion1.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
 
         JSeparator sep1 = new JSeparator();
         sep1.setForeground(new Color(225, 225, 225));
 
-        this.identificacion.add(tloSeccion1, BorderLayout.WEST);
-        this.identificacion.add(sep1, BorderLayout.CENTER);
+        identificacion.add(tloSeccion1, BorderLayout.WEST);
+        identificacion.add(sep1, BorderLayout.CENTER);
 
-        this.cuerpo2.add(identificacion);
-        this.cuerpo2.add(Box.createVerticalStrut(20));
+        cuerpo2.add(identificacion);
+        cuerpo2.add(Box.createVerticalStrut(20));
 
         camposIde = new JPanel(new GridBagLayout());
         camposIde.setOpaque(false);
@@ -177,26 +153,24 @@ public class RegistroUsuariosInterfaz extends JFrame {
         camposIde.setAlignmentX(Component.LEFT_ALIGNMENT);
         camposIde.setMaximumSize(camposIde.getPreferredSize());
 
-        this.cuerpo2.add(camposIde);
-        this.cuerpo2.add(Box.createVerticalStrut(30));
-
+        cuerpo2.add(camposIde);
+        cuerpo2.add(Box.createVerticalStrut(30));
         //Sección 2: Datos personales
-        this.datos.setLayout(new BorderLayout(8, 0));
-        this.datos.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.datos.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
+        datos.setLayout(new BorderLayout(8, 0));
+        datos.setAlignmentX(Component.LEFT_ALIGNMENT);
+        datos.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
 
-        this.tloSeccion2 = new JLabel("Datos personales");
+        tloSeccion2 = new JLabel("Datos personales");
         tloSeccion2.setFont(new Font("Arial", Font.BOLD, 22));
         tloSeccion2.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
-
         JSeparator sep2 = new JSeparator();
         sep2.setForeground(new Color(225, 225, 225));
 
-        this.datos.add(tloSeccion2, BorderLayout.WEST);
-        this.datos.add(sep2, BorderLayout.CENTER);
+        datos.add(tloSeccion2, BorderLayout.WEST);
+        datos.add(sep2, BorderLayout.CENTER);
 
-        this.cuerpo2.add(datos);
-        this.cuerpo2.add(Box.createVerticalStrut(20));
+        cuerpo2.add(datos);
+        cuerpo2.add(Box.createVerticalStrut(20));
 
         camposDatos = new JPanel(new GridBagLayout());
         camposDatos.setOpaque(false);
@@ -268,26 +242,26 @@ public class RegistroUsuariosInterfaz extends JFrame {
         camposDatos.setAlignmentX(Component.LEFT_ALIGNMENT);
         camposDatos.setMaximumSize(camposDatos.getPreferredSize());
 
-        this.cuerpo2.add(camposDatos);
-        this.cuerpo2.add(Box.createVerticalStrut(30));
+        cuerpo2.add(camposDatos);
+        cuerpo2.add(Box.createVerticalStrut(30));
 
         //Sección 3: Foto frontal 
-        this.fotoF.setLayout(new BorderLayout(8, 0));
-        this.fotoF.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.fotoF.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
+        fotoF.setLayout(new BorderLayout(8, 0));
+        fotoF.setAlignmentX(Component.LEFT_ALIGNMENT);
+        fotoF.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
 
-        this.tloSeccion3 = new JLabel("Foto frontal *");
+        tloSeccion3 = new JLabel("Foto frontal *");
         tloSeccion3.setFont(new Font("Arial", Font.BOLD, 22));
         tloSeccion3.setForeground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
 
         JSeparator sep3 = new JSeparator();
         sep3.setForeground(new Color(225, 225, 225));
 
-        this.fotoF.add(tloSeccion3, BorderLayout.WEST);
-        this.fotoF.add(sep3, BorderLayout.CENTER);
+        fotoF.add(tloSeccion3, BorderLayout.WEST);
+        fotoF.add(sep3, BorderLayout.CENTER);
 
-        this.cuerpo2.add(fotoF);
-        this.cuerpo2.add(Box.createVerticalStrut(20));
+        cuerpo2.add(fotoF);
+        cuerpo2.add(Box.createVerticalStrut(20));
 
         JPanel filaFoto = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
         filaFoto.setOpaque(false);
@@ -323,17 +297,6 @@ public class RegistroUsuariosInterfaz extends JFrame {
         filaFoto.add(panelFoto);
         filaFoto.add(columnaInfo);
 
-        this.cuerpo2.add(filaFoto);
-
-        JScrollPane scrollFormulario = new JScrollPane(cuerpo2);
-        scrollFormulario.setOpaque(false);
-        scrollFormulario.getViewport().setOpaque(false);
-        scrollFormulario.setBorder(null);
-        scrollFormulario.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollFormulario.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-        this.fondoVentana.add(encabezado);
-        this.fondoVentana.add(cuerpo1);
-        this.fondoVentana.add(scrollFormulario);
+        cuerpo2.add(filaFoto);
     }
 }

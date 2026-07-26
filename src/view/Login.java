@@ -51,7 +51,7 @@ public class Login extends JFrame {
         this.panel1.setLayout(new FlowLayout());//Aqui le asigno al panel1 la distribucion FlowLayout
         this.panel1.setBackground(Color.WHITE);//Aqui establesco el color de fondo del panel1
         this.titulo1 = new JLabel(new ImageIcon("logo.png"));//Aqui creo una etiqueta con la imagen
-        this.idLabel = new JLabel("ID*");//Aqui creo una etiqueta correo electronico
+        this.idLabel = new JLabel("Numero Identificacion *");//Aqui creo una etiqueta correo electronico
         this.idLabel.setOpaque(true);
         this.idLabel.setBackground(new Color(230, 247, 246));
         this.idLabel.setAlignmentX(Component.LEFT_ALIGNMENT);

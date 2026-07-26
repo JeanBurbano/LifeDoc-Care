@@ -37,16 +37,22 @@ import view.Titulo;
 public class PacienteController implements ActionListener {
 
     //variables de clase
-    private static List<Foro> foro = new ArrayList<Foro>();
+    private static List<Cita> CITAS = new ArrayList();
+    private static List<Foro> foro = new ArrayList();
     private final static byte MEDICINA_GENERAL = 1;
     private final static byte DERMATOLOGIA = 3;
     private final static byte ODONTOLOGIA = 2;
 
+    //variables
     private Paciente usurio;
     private CitaDao citadao;
     private MedicoDao medicodao;
     private ForoDao forodao;
+
     protected PacienteInterfaz pacienteI;
+    protected ArrayList<JButton> listaBotonesReagendar;
+    protected ArrayList<JButton> listaBotonesCancelar;
+    protected ArrayList<JButton> listaBotonesMedicos;
 
     private Medico[] medicos;
     private Medico medicoSeleccionado;
@@ -76,8 +82,8 @@ public class PacienteController implements ActionListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 EditarPerfilInterfaz vista = new EditarPerfilInterfaz("Editar Perfil", usurio.getPrimerNombre(),
-                        String.valueOf(usurio.getEdad()), usurio.getCorreoElectronico(), usurio.getNumeroTelefonico(),
-                        usurio.getSexoBiologico(), String.valueOf(usurio.getFechaNacimiento()), usurio.getSisben(), usurio.getFotoPerfil());
+                        String.valueOf(usurio.getEdad()), usurio.getCorreo(), usurio.getNumeroCelular(),
+                        usurio.getSexoBiologico(), String.valueOf(usurio.getFechaNacimiento()), String.valueOf(usurio.getSisben()), usurio.getFotoPeril());
                 EditarPerfilController cedI = new EditarPerfilController(vista, usurio.getIdUsuario());
                 vista.setDefaultCloseOperation(EXIT_ON_CLOSE);
                 vista.setExtendedState(MAXIMIZED_BOTH);
@@ -198,17 +204,17 @@ public class PacienteController implements ActionListener {
                 "Tu cita con el Dr(a). " + medicoSeleccionado.getPrimerNombre()
                 + " " + medicoSeleccionado.getPrimerApellido()
                 + " ha sido programada para el " + fecha + " a las " + hora + ".");
-//        switch (especialidadSeleccionada) {
-//            case MEDICINA_GENERAL:
-//                this.pacienteI.btnMedicoGeneral.setEnabled(false);
-//                break;
-//            case ODONTOLOGIA:
-//                this.pacienteI.btnOdontologia.setEnabled(false);
-//                break;
-//            case DERMATOLOGIA:
-//                this.pacienteI.btnDermatologia.setEnabled(false);
-//                break;
-//        }
+        switch (especialidadSeleccionada) {
+            case MEDICINA_GENERAL:
+                this.pacienteI.btnMedicoGeneral.setEnabled(false);
+                break;
+            case ODONTOLOGIA:
+                this.pacienteI.btnOdontologia.setEnabled(false);
+                break;
+            case DERMATOLOGIA:
+                this.pacienteI.btnDermatologia.setEnabled(false);
+                break;
+        }
         procesoBtnMisCitas();
     }
 
@@ -291,8 +297,8 @@ public class PacienteController implements ActionListener {
         this.citaAReagendar = null; //Esto lo pongo por si quedo a medias un reagendamiento anterior
         pacienteI.habilitarBotonesMenu(pacienteI.btnMisCitas);
         pacienteI.mostrarVistaMisCitas();
-        this.pacienteI.listaBotonesCancelar.clear();
-        this.pacienteI.listaBotonesReagendar.clear();
+        listaBotonesCancelar.clear();
+        listaBotonesReagendar.clear();
         this.citas = citadao.listarPorUsuario(usurio.getIdUsuario());
         if (citas == null || citas.length == 0) {
             pacienteI.agregarAlPanelMiscitas();
@@ -303,7 +309,7 @@ public class PacienteController implements ActionListener {
                         clave.getFechaCita().toString(), clave.getHoraCita().toString(),
                         "Nombre Medico(a): " + clave.getNombreMedico());
 
-                pacienteI.listaBotonesCancelar.get(i).addActionListener((ActionEvent e) -> {
+                listaBotonesCancelar.get(i).addActionListener((ActionEvent e) -> {
                     int n = citadao.setEliminar(clave.getIdCita());
                     if (n > 0) {
                         procesoNotificacion("Cita cancelada", "Tu cita con el Dr(a). " + clave.getNombreMedico()
@@ -314,7 +320,7 @@ public class PacienteController implements ActionListener {
                     }
                 });
 
-                pacienteI.listaBotonesReagendar.get(i).addActionListener((ActionEvent e) -> {
+                listaBotonesReagendar.get(i).addActionListener((ActionEvent e) -> {
                     iniciarReagendamiento(clave);
                 });
                 i++;
@@ -325,6 +331,7 @@ public class PacienteController implements ActionListener {
     protected void procesoBtnHistorial() {
         pacienteI.habilitarBotonesMenu(pacienteI.btnHistorial);
         pacienteI.btnHistorialCitas.setEnabled(true);
+//        pacienteI.prepararVistaBaseHistorial();
         pacienteI.btnHistorialCitas.doClick();
     }
 
@@ -434,15 +441,19 @@ public class PacienteController implements ActionListener {
             return;
         }
         if (e.getSource() == pacienteI.btnHistorial) {
-            procesoBtnHistorial();
+//            procesoBtnHistorial();
+            pacienteI.mostrarVistaHistorial();
+            pacienteI.construirPanelVistaHistorialConHistorial();
             return;
         }
         if (e.getSource() == pacienteI.btnComentarios) {
-            procesoBtnComentarios();
+//            procesoBtnComentarios();
+            pacienteI.mostrarVistaComentarios();
             return;
         }
         if (e.getSource() == pacienteI.btnNotificaciones) {
-            procesoBtnNotificaciones();
+//            procesoBtnNotificaciones();
+            pacienteI.mostrarVistaNotificaciones();
             return;
         }
         if (e.getSource() == pacienteI.btnAgendar) {

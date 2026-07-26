@@ -10,6 +10,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 
 /*clase abstracta LayoutView 
   se escogio ese nombre ya que hace referencia directa a la estructura de layout:
@@ -20,33 +22,34 @@ import javax.swing.ImageIcon;
 public abstract class LayoutView extends JFrame {
 
     //Variables constantes static - variables de Clase
-    public static final JLabel fondoVentana = new JLabel();
+    private static ImageIcon iconoOriginal = new ImageIcon("Fondo1_watermark.jpeg");
     public static final Color COLOR_AZUL_CORPORATIVO = new Color(0, 79, 124);
     public static final Color COLOR_VERDE_ACENTO = new Color(0, 194, 177);
     public static final Color COLOR_GRIS_SUBTITULO = new Color(100, 120, 130);
 
     //Variables de instacia
+    public JLabel fondoVentana;
+    public JPanel panelContenido;
     public JPanel encabezado;
     public JPanel cuerpo1;
     public JPanel cuerpo2;
 
     public LayoutView(String nombreVentana) {
-        //Nonbre de la ventana
+        //Nombre de la ventana
         super(nombreVentana);
-        if (!(fondoVentana.getIcon() != null)) {
-            init();
-        }
+        init();
     }
 
     private void init() {
         boolean opaque = true;
 
+        //Inicializo fondoVentana
+        fondoVentana = new JLabel();
         //Obtener las dimensiones de la pantalla
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int ancho = screenSize.width;
         int alto = screenSize.height;
-        //Cargar la imagen original
-        ImageIcon iconoOriginal = new ImageIcon("Fondo1_watermark.jpeg");
+
         //Escalar la imagen al tamaño de la pantalla Image.SCALE_SMOOTH ofrece mejor calidad visual
         Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
         //Crear un nuevo ImageIcon con la imagen ya escalada
@@ -69,8 +72,23 @@ public abstract class LayoutView extends JFrame {
         cuerpo2 = new JPanel();
         cuerpo2.setOpaque(!opaque);
         //Se arma la estructura de la plantilla
-        fondoVentana.add(encabezado, BorderLayout.NORTH);
-        fondoVentana.add(cuerpo1, BorderLayout.CENTER);
-        fondoVentana.add(cuerpo2, BorderLayout.SOUTH);
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+        panelSuperior.setOpaque(!opaque);
+        panelSuperior.add(encabezado, BorderLayout.NORTH);
+        panelSuperior.add(cuerpo1, BorderLayout.SOUTH);
+
+        panelContenido = new JPanel(new BorderLayout());
+        panelContenido.setBorder(new EmptyBorder(5, 10, 0, 10));
+        panelContenido.setOpaque(!opaque);
+        panelContenido.add(panelSuperior, BorderLayout.NORTH);
+        panelContenido.add(cuerpo2, BorderLayout.CENTER);
+        JScrollPane scrollFormulario = new JScrollPane(panelContenido);
+        scrollFormulario.setOpaque(!opaque);
+        scrollFormulario.getViewport().setOpaque(!opaque);
+        scrollFormulario.setBorder(null);
+        scrollFormulario.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollFormulario.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        fondoVentana.add(scrollFormulario, BorderLayout.CENTER);
     }
 }

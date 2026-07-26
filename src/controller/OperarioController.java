@@ -30,7 +30,7 @@ public class OperarioController extends PacienteController {
     private CitaDao citaDao;
     private ConsultorioDao consultorioDao;
     private HorarioDao horarioDao;
-    
+
     public OperarioController(OperarioInterfaz vista) {
         super(vista);
         this.vista = vista;
@@ -42,76 +42,76 @@ public class OperarioController extends PacienteController {
         vista.setControlador(this);
         agregarActionListener(vista);
     }
-    
+
     public void buscarPaciente(String id) {
         Paciente paciente = pacienteDao.buscarPorId(id);
 
         if (paciente != null) {
             vista.cargarDatosPaciente(
-                paciente.getNumeroId(),
-                paciente.getPrimerNombre(),
-                paciente.getSegundoNombre(),
-                paciente.getPrimerApellido(),
-                paciente.getSegundoApellido(),
-                paciente.getCorreoElectronico(),
-                paciente.getNumeroTelefonico(),
-                paciente.getFechaNacimiento() != null ? paciente.getFechaNacimiento().toString() : "",
-                paciente.getSexoBiologico()
+                    paciente.getNumeroIdentificacion(),
+                    paciente.getPrimerNombre(),
+                    paciente.getSegundoNombre(),
+                    paciente.getPrimerApellido(),
+                    paciente.getSegundoApellido(),
+                    paciente.getCorreo(),
+                    paciente.getNumeroIdentificacion(),
+                    paciente.getFechaNacimiento() != null ? paciente.getFechaNacimiento().toString() : "",
+                    paciente.getSexoBiologico()
             );
             JOptionPane.showMessageDialog(vista,
-                "Paciente encontrado y cargado correctamente.",
-                "Éxito",
-                JOptionPane.INFORMATION_MESSAGE);
+                    "Paciente encontrado y cargado correctamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(vista,
-                "No se encontró paciente con ID: " + id,
-                "Paciente no encontrado",
-                JOptionPane.ERROR_MESSAGE);
+                    "No se encontró paciente con ID: " + id,
+                    "Paciente no encontrado",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     public boolean registrarPago(int idCita, String descripcion, double valorNeto, String metodoParaBD) {
         int filasInsertadas = datosPagoCitaDao.crear(idCita, descripcion, valorNeto, metodoParaBD);
         return filasInsertadas > 0;
     }
-    
+
     public List<DatosPagoCita> buscarCitasPendientesPago(int idUsuarioPaciente) {
         return datosPagoCitaDao.listarCitasPendientesPago(idUsuarioPaciente);
     }
-    
+
     public Paciente buscarPacientePorId(String id) {
         return pacienteDao.buscarPorId(id);
     }
-    
+
     public Cita[] listarCitasPorUsuario(int idUsuario) {
         return citaDao.listarPorUsuario(idUsuario);
     }
-    
+
     public boolean cancelarCita(int idCita) {
         int resultado = citaDao.setEliminar(idCita);
         return resultado > 0;
     }
-    
+
     public List<LocalTime> calcularHorasDisponiblesReagendar(int idMedico, LocalDate fecha) {
         Horario horarioMedico = horarioDao.obtenerPorMedico(idMedico);
         HorarioDia diaHorario = CalculadorHorarioDisponible.buscarDiaParaFecha(horarioMedico, fecha);
         if (diaHorario == null) {
             return null;
-        }   
+        }
         List<LocalTime> ocupadas = citaDao.listarHorasOcupadas(idMedico, fecha);
         return CalculadorHorarioDisponible.calcularDisponibles(diaHorario, ocupadas);
     }
-    
+
     public List<Consultorio> listarConsultorios() {
         return consultorioDao.listar();
     }
-    
+
     public int reagendarCita(int idCita, int idConsultorio, LocalDate nuevaFecha, LocalTime nuevaHora) {
-        
-        return citaDao.reagendar(idCita,idConsultorio, nuevaFecha, nuevaHora);
-        
+
+        return citaDao.reagendar(idCita, idConsultorio, nuevaFecha, nuevaHora);
+
     }
-    
+
     public void agregarActionListener(OperarioInterfaz vista) {
         vista.btnAgendarCitas.addActionListener(this);
         vista.btnPagos.addActionListener(this);
@@ -123,7 +123,7 @@ public class OperarioController extends PacienteController {
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
         this.vista = (OperarioInterfaz) pacienteI;
-        
+
         if (e.getSource() == vista.btnAgendarCitas) {
             this.vista.btnAgendarCitas.setEnabled(false);
             vista.habilitarBotonesMenu(vista.btnAgendarCitas);
@@ -142,12 +142,11 @@ public class OperarioController extends PacienteController {
             vista.habilitarBotonesMenu(vista.btnConsultas);
             vista.mostrarVistaConsultas();
         }
-    }               
+    }
 
     // Tras agendar/reagendar con éxito, el Operario no debe ver "Mis Citas"
     // (esa vista es la personal del paciente, no le corresponde). En vez de
     // eso vuelve a la pantalla de búsqueda, lista para el siguiente paciente.
-   
     protected void despuesDeConfirmarCita() {
         vista.AgendarCita();
     }

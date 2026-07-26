@@ -2,7 +2,7 @@ package model;
 
 import java.time.LocalDate;
 
-public class Operario extends Paciente{
+public class Operario extends Usuario{
     private int id_operario;
     
     public Operario(int id_usuario, byte id_rol, String tipoId, String numeroId, 
