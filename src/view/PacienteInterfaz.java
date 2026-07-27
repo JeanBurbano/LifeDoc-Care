@@ -12,7 +12,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.LayoutManager;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
@@ -32,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
 import model.Paciente;
+import model.Usuario;
 
 public class PacienteInterfaz extends LayoutView {
 
@@ -41,7 +41,7 @@ public class PacienteInterfaz extends LayoutView {
     public static final Color COLOR_GRIS_SUBTITULO = new Color(100, 120, 130);
 
     //Aqui creo los componentes que basicamente llevara todo
-    private Paciente usuario;
+    private Usuario usuario;
     private JPanel panelBienvenida;//Aqui creo el JPanel de bienbenida ejemplo:Bienbenido alejo! lifedoccare
     private JPanel panelSesionUsuario;//Aqui creo el JPanel que lelva el boton cerrar sesion y foto de perfil
     private PanelRound panelFotoPerfil;
@@ -105,12 +105,12 @@ public class PacienteInterfaz extends LayoutView {
     public JPanel panelHorarios;
     public JScrollPane scrollHorarios;
 
-    public PacienteInterfaz(String nombreInterfaz, Paciente usuario) {
+    public PacienteInterfaz(String nombreInterfaz, Usuario usuario) {
         super(nombreInterfaz);
         init(usuario);
     }
 
-    private void init(Paciente usuario) {
+    private void init(Usuario usuario) {
         boolean opaque = false;
         this.usuario = usuario;
 
@@ -433,7 +433,7 @@ public class PacienteInterfaz extends LayoutView {
         scrollHorarios.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
     }
 
-    protected void construirPanelVistaHistorial() {
+    public void construirPanelVistaHistorial() {
         MetodosPublicos.vaciarPanel(panelHistorial);
         panelHistorial.add(panelBarraBusqueda, BorderLayout.NORTH);
         panelHistorial.add(scrollHistorial, BorderLayout.CENTER);
@@ -498,24 +498,28 @@ public class PacienteInterfaz extends LayoutView {
     //Aqui creo el metodo que me permitiria vizualizar en el JPanel cuerpo2 el apartado de mis citas
     public void mostrarVistaMisCitas() {
         MetodosPublicos.vaciarPanel(cuerpo2);
+        cuerpo2.setBorder(new EmptyBorder(0,0,0,0));
         cuerpo2.add(panelVistaMiscitas, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     public void mostrarVistaHistorial() {
         MetodosPublicos.vaciarPanel(cuerpo2);
+        cuerpo2.setBorder(new EmptyBorder(0,0,0,0));
         cuerpo2.add(panelVistaHistorial, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     public void mostrarVistaComentarios() {
         MetodosPublicos.vaciarPanel(cuerpo2);
+        cuerpo2.setBorder(new EmptyBorder(0,0,0,0));
         cuerpo2.add(panelVistaComentarios, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     public void mostrarVistaNotificaciones() {
         MetodosPublicos.vaciarPanel(cuerpo2);
+        cuerpo2.setBorder(new EmptyBorder(0,0,0,0));
         cuerpo2.add(panelVistaNotificacion, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
@@ -659,6 +663,11 @@ public class PacienteInterfaz extends LayoutView {
         scrollComentarios.setOpaque(false);
         scrollComentarios.getViewport().setOpaque(false);
         scrollComentarios.setBorder(null);
+        Dimension dimension = new Dimension(800, 543);
+        scrollComentarios.setPreferredSize(dimension);
+        scrollComentarios.setMaximumSize(dimension);
+        dimension = new Dimension(700, 400);
+        scrollComentarios.setMinimumSize(dimension);
         this.panelComentarios.add(scrollComentarios);
         MetodosPublicos.refrescarVentana(panelComentarios1);
         MetodosPublicos.refrescarVentana(panelComentarios);
@@ -1057,7 +1066,7 @@ public class PacienteInterfaz extends LayoutView {
         MetodosPublicos.refrescarVentana(panelHorarios);
     }
 
-    public Paciente getUsuario() {
+    public Usuario getUsuario() {
         return this.usuario;
     }
 }

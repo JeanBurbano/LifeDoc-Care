@@ -10,12 +10,14 @@ import java.time.LocalDate;
  *
  * @author lunaa
  */
-public class Medicos extends Paciente{
-     private int id_usuarioM;
+public class Medicos extends Usuario {
+
+    private int id_usuarioM;
     private int id_medico;
     private String especialidad;
-    
-    public Medicos(){}
+
+    public Medicos() {
+    }
 
     public Medicos(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
             String correo, LocalDate fechaNacimiento, String sexoBiologico, String numeroTelefonico, byte edad, boolean estado, String sisben, String fotoPerfil, String especialidad) {
@@ -32,10 +34,10 @@ public class Medicos extends Paciente{
                 sexoBiologico,
                 numeroTelefonico,
                 edad,
-                estado,
                 sisben,
+                estado,
                 fotoPerfil);
-        this.id_usuarioM=id_usuario;
+        this.id_usuarioM = id_usuario;
         this.especialidad = especialidad;
     }
 

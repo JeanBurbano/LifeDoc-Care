@@ -56,7 +56,7 @@ public class MedicoDao implements Crud<Medico> {
             while (rs.next()) {
                 Medico m = new Medico();
                 m.setId_medico(rs.getInt(1));
-                m.setNumeroId(rs.getString(2));
+                m.setNumeroIdentificacion(rs.getString(2));
                 m.setEspecialidad(rs.getString(3));
                 m.setPrimerNombre(rs.getString(4));
                 m.setPrimerApellido(rs.getString(5));
@@ -88,9 +88,9 @@ public class MedicoDao implements Crud<Medico> {
         try {
             con = conectar.getConection();
             ps = con.prepareStatement(sql);
-            
+
             ps.setInt(1, tr.getId_medico());
-            ps.setString(2, tr.getNumeroId());
+            ps.setString(2, tr.getNumeroIdentificacion());
             ps.setString(3, tr.getEspecialidad());
             ps.setString(4, tr.getPrimerNombre());
             ps.setString(5, tr.getPrimerApellido());
@@ -118,10 +118,10 @@ public class MedicoDao implements Crud<Medico> {
     @Override
     public int setActualizar(Medico tr) {
         String sql = "UPDATE medico SET id_especialidad = ? WHERE id_medico = ?";
-        try{
+        try {
             con = conectar.getConection();
             ps = con.prepareStatement(sql);
-            
+
             ps.setString(1, tr.getEspecialidad());
             ps.setInt(2, tr.getId_medico());
             ps.executeUpdate();

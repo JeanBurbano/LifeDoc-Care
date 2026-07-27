@@ -18,15 +18,15 @@ public class PacienteDao  {
                 + "FROM usuario u "
                 + "JOIN paciente p ON p.id_usuario = u.id_usuario "
                 + "WHERE u.numero_identificacion = ? AND u.id_rol = 5";
-        
+
         Connection con = conectar.getConection();
         if (con == null) {
             javax.swing.JOptionPane.showMessageDialog(null,
                     "No se pudo conectar a la base de datos.\nVerifica que la base de datos (MySQL) este activo.",
                     "Error de conexion",
                     javax.swing.JOptionPane.ERROR_MESSAGE);
-            return null; 
-            
+            return null;
+
         }
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, numeroIdentificacion);
@@ -47,7 +47,7 @@ public class PacienteDao  {
                             tipoIdentificacion = "Tarjeta de identidad";
                             break;
                     }
-                    
+
                     paciente = new Paciente(
                             rs.getInt("id_usuario"),
                             rs.getByte("id_rol"),
@@ -68,7 +68,7 @@ public class PacienteDao  {
                     );
                 }
             }
-    }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return paciente;

@@ -33,12 +33,11 @@ import view.PacienteInterfaz;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MetodosPublicos {
-
+   
     public static byte calcularEdad(LocalDate fechaNacimiento) {
         if (fechaNacimiento == null) {
             return 0;
         }
-
         return (byte) Period.between(fechaNacimiento, LocalDate.now()).getYears();
     }
 

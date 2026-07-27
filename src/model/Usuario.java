@@ -2,7 +2,7 @@ package model;
 
 import java.time.LocalDate;
 
-public abstract class Usuario {
+public class Usuario {
 
     private int idUsuario;
     private byte idRol;
@@ -15,30 +15,76 @@ public abstract class Usuario {
     private String primerApellido;
     private String segundoApellido;
     private String correo;
-    private String contraseña;
+    private String contrasena;
     private LocalDate fechaNacimiento;
     private String sexoBiologico;
     private String numeroCelular;
     private byte edad;
-    private char sisben;
+    private String sisben;
     private boolean estado;
     private String fotoPerfil;
 
+    public Usuario() {
+
+    }
+
+    private void cargarTipoRol() {
+        switch (idRol) {
+            case 1:
+                rol = "Administrador del sistema";
+                break;
+            case 2:
+                rol = "Administrador del centro";
+                break;
+            case 3:
+                rol = "Medico";
+                break;
+            case 4:
+                rol = "Operario";
+                break;
+            case 5:
+                rol = "Paciente";
+                break;
+            default:
+                rol = "Paciente";
+                break;
+        }
+    }
+
+    public void cargarTipoIdentificacion() {
+        switch (idIipoIdentificacion) {
+            case 1:
+                tipoIdentificacion = "Registro civil";
+                break;
+            case 2:
+                tipoIdentificacion = "Tarjeta de identidad";
+                break;
+            case 3:
+                tipoIdentificacion = "Cedula de ciudadania";
+                break;
+            default:
+                tipoIdentificacion = "Tarjeta de identidad";
+                break;
+        }
+    }
+
     public Usuario(int idUsuario, byte idRol, byte idTipoIdentificacion,
             String numeroIdentificacion, String primerNombre, String segundoNombre,
-            String primerApellido, String segundoApellido, String correo, String contraseña,
-            LocalDate fechaNacimiento, String sexoBiologico, String numeroCelular, byte edad, char sisben, boolean estado, String fotoPerfil) {
+            String primerApellido, String segundoApellido, String correo, String contrasena,
+            LocalDate fechaNacimiento, String sexoBiologico, String numeroCelular, byte edad, String sisben, boolean estado, String fotoPerfil) {
 
         this.idUsuario = idUsuario;
         this.idRol = idRol;
+        cargarTipoRol();
         this.idIipoIdentificacion = idTipoIdentificacion;
+        cargarTipoIdentificacion();
         this.numeroIdentificacion = numeroIdentificacion;
         this.primerNombre = primerNombre;
         this.segundoNombre = segundoNombre.isEmpty() ? "null" : segundoNombre;
         this.primerApellido = primerApellido;
         this.segundoApellido = segundoApellido.isEmpty() ? "null" : segundoApellido;
         this.correo = correo;
-        this.contraseña = contraseña;
+        this.contrasena = contrasena;
         this.fechaNacimiento = fechaNacimiento;
         this.sexoBiologico = sexoBiologico;
         this.numeroCelular = numeroCelular;
@@ -46,6 +92,11 @@ public abstract class Usuario {
         this.sisben = sisben;
         this.estado = estado;
         this.fotoPerfil = fotoPerfil;
+    }
+
+    public Usuario(String primerNombre, String primerApellido) {
+        this.primerNombre = primerNombre;
+        this.primerApellido = primerApellido;
     }
 
     public int getIdUsuario() {
@@ -136,12 +187,12 @@ public abstract class Usuario {
         this.correo = correo;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getContrasena() {
+        return contrasena;
     }
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+    public void setContrasena(String contraseña) {
+        this.contrasena = contraseña;
     }
 
     public LocalDate getFechaNacimiento() {
@@ -176,11 +227,11 @@ public abstract class Usuario {
         this.edad = edad;
     }
 
-    public char getSisben() {
+    public String getSisben() {
         return sisben;
     }
 
-    public void setSisben(char sisben) {
+    public void setSisben(String sisben) {
         this.sisben = sisben;
     }
 
@@ -196,7 +247,7 @@ public abstract class Usuario {
         return fotoPerfil;
     }
 
-    public void setFotoPerfil() {
+    public void setFotoPerfil(String fotoPerfil) {
         this.fotoPerfil = fotoPerfil;
     }
 }

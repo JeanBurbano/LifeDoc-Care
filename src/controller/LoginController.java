@@ -8,9 +8,10 @@ import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import model.Hashed;
 import model.MetodosPublicos;
 import model.UsuarioDao;
-import model.Paciente;
+import model.Usuario;
 import view.AdministradorCentroInterfaz;
 import view.AdministradorDelSistemaInterfaz;
 import view.Login;
@@ -30,7 +31,7 @@ public class LoginController implements ActionListener {
     private RegistroUsuariosInterfaz ur;
     private Login lg;
     private UsuarioDao usuDao = new UsuarioDao();
-    private Paciente usu;
+    private Usuario usu;
     private byte c;
     private boolean bloqueado;
 
@@ -82,6 +83,7 @@ public class LoginController implements ActionListener {
         this.lg.bIngresar.addActionListener(this);
     }
 
+    //Controlador
     public LoginController(Login lg, RecuperacionContrasenaInterfaz rc, RegistroUsuariosInterfaz ur) {
         this.lg = lg;
         ojodelLogin();
@@ -91,6 +93,7 @@ public class LoginController implements ActionListener {
         this.c = 0;
         this.bloqueado = false;
         this.ur = ur;
+        RegistroUsuariosController.inisializarRegistroPersonas();
     }
 
     public void abrirVistaRegistro() {
@@ -116,32 +119,6 @@ public class LoginController implements ActionListener {
                 && MetodosPublicos.validarContrasena(contrasena));
     }
 
-    private void creaUsuSegunRol(byte id_rol, String id, String contrasena) {
-        switch (id_rol) {
-            case 1:
-                //Aqui se crearia usuario administrador del sistema pero como todavia no esta contruido la clase no lo hago
-                this.usu = usuDao.login(id, contrasena);
-                break;
-            case 2:
-                //Aqui se crearia usuario administrador del centro pero como todavia no esta contruido la clase no lo hago
-                this.usu = usuDao.login(id, contrasena);
-                break;
-            case 3:
-                //Aqui se crearia medico del sistema pero como todavia no esta contruido la clase no lo hago
-                this.usu = usuDao.login(id, contrasena);
-                break;
-            case 4:
-                //Aqui se crearia usuario operarario pero como todavia no esta contruido la clase no lo hago
-                this.usu = usuDao.login(id, contrasena);
-                break;
-            case 5:
-                this.usu = usuDao.login(id, contrasena);
-                break;
-            default:
-
-        }
-    }
-
     //Este metodo tadavi no se si ponerlo en el abirInterfaz para abrir las vistas sin problemas
     private void verInterfaz(PacienteInterfaz p) {
         p.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -150,27 +127,27 @@ public class LoginController implements ActionListener {
     }
 
     //Metodo reutilizable abre la interfaz correspondiente segun el rol del usuario que inicio sesion
-    private void abrirInterfazSegunRol(Paciente usuario) {
-        switch (usuario.getId_rol()) {
+    private void abrirInterfazSegunRol(Usuario usuario) {
+        switch (usuario.getIdRol()) {
             case 1:
-                AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz("Administrador del sistema", usuario);
-                AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
-                verInterfaz(adminSistem);
+//                AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz("Administrador del sistema", usuario);
+//                AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
+//                verInterfaz(adminSistem);
                 break;
             case 2:
-                AdministradorCentroInterfaz adminI = new AdministradorCentroInterfaz("Administrador del centro", usuario);
-                AdminCentroController adminC = new AdminCentroController(adminI);
-                verInterfaz(adminI);
+//                AdministradorCentroInterfaz adminI = new AdministradorCentroInterfaz("Administrador del centro", usuario);
+//                AdminCentroController adminC = new AdminCentroController(adminI);
+//                verInterfaz(adminI);
                 break;
             case 3:
-                MedicoInterfaz i = new MedicoInterfaz("Medico", usuario);
-                MedicoController mc = new MedicoController(i);
-                verInterfaz(i);
+//                MedicoInterfaz i = new MedicoInterfaz("Medico", usuario);
+//                MedicoController mc = new MedicoController(i);
+//                verInterfaz(i);
                 break;
             case 4:
-                OperarioInterfaz opI = new OperarioInterfaz("Operario", usuario);
-                OperarioController controller = new OperarioController(opI);
-                verInterfaz(opI);
+//                OperarioInterfaz opI = new OperarioInterfaz("Operario", usuario);
+//                OperarioController controller = new OperarioController(opI);
+//                verInterfaz(opI);
                 break;
             case 5:
                 PacienteInterfaz p = new PacienteInterfaz("Paciente", usuario);
@@ -201,80 +178,71 @@ public class LoginController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == lg.bIngresar) {
             estadoDeCosas(false);
-            String id = this.lg.getId();
-            String contrasena = this.lg.getPassword();
+            String id = lg.getId();
+            String contrasena = lg.getPassword();
             if (c >= MAX_INTENTOS) {
                 bloquearFormularioTemporalmente();
                 this.lg.limpiar();
             } else if (estadito(id, contrasena)) {
-                estadoDeCosas(true);
-                byte idRol = usuDao.sacarIdRol(id, contrasena);
-                creaUsuSegunRol(idRol, id, contrasena);
-                if (usu != null && usu.getEstado()) {
-                    this.c = 0;
-                    this.lg.dispose();
-                    if (usu.getSexoBiologico().equals("Masculino")) {
-                        MetodosPublicos.reproducirSonido("bienvenido.wav");
-                    } else {
-                        MetodosPublicos.reproducirSonido("bienvenida.wav");
-                    }
-                    abrirInterfazSegunRol(usu);
-                } else {
-                    boolean verificardor = usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion");
-                    if (usu == null && !verificardor) {
-                        JOptionPane.showMessageDialog(lg, "El usuario no existe");
-                    } else if (usu == null && usuDao.validarCampoIdBs(id, "usuario", "numero_identificacion")) {
-                        JOptionPane.showMessageDialog(lg, "contrsena incorrecta incorrecta");
-                    } else {
-                        if (!usu.getEstado()) {
-                            JOptionPane.showMessageDialog(lg, "El usuario esta inabilitado");
+                usu = RegistroUsuariosController.consultarPersona(id);
+                if (usu != null) {
+                    if (usu.isEstado() && Hashed.verifyPassword(contrasena, usu.getContrasena())) {
+                        c = 0;
+                        if (usu.getSexoBiologico().equals("Masculino")) {
+                            MetodosPublicos.reproducirSonido("bienvenido.wav");
                         } else {
-                            JOptionPane.showMessageDialog(lg, "La contrasena es incorrecta");
+                            MetodosPublicos.reproducirSonido("bienvenida.wav");
                         }
+                        abrirInterfazSegunRol(usu);
+                    } else {
+                        if (!Hashed.verifyPassword(contrasena, usu.getContrasena())) {
+                            JOptionPane.showMessageDialog(lg, "contrasena incorrecta incorrecta");
+                        } else {
+                            if (!usu.isEstado()) {
+                                JOptionPane.showMessageDialog(lg, "El usuario esta inabilitado");
+                            } else {
+                                JOptionPane.showMessageDialog(lg, "La contrasena es incorrecta");
+                            }
+                        }
+                        c++;
                     }
-                    this.c++;
+                } else {
+                    c++;
+                    JOptionPane.showMessageDialog(lg, "El usuario no existe");
                 }
                 estadoDeCosas(true);
-                this.usu = null;
+                usu = null;
                 id = null;
                 contrasena = null;
             } else {
-                String mensaje = null;
-                estadoDeCosas(true);
+                String mensaje = "";
                 this.c++;
                 if (id.isEmpty()) {
-                    mensaje = "Campo id es obligatorio.\n";
+                    mensaje += "Campo id es obligatorio.\n";
                 } else {
                     if (!MetodosPublicos.validarTamano(id, 8, 10)) {
-                        mensaje = "Campo id debe contener 8 o 10 caracteres.\n";
+                        mensaje += "Campo id debe contener 8 o 10 caracteres.\n";
                     }
                     if (!MetodosPublicos.validarNumero(id)) {
-                        mensaje = (mensaje == null) ? "Campo id contiene caracteres invalidos.\n"
-                                : mensaje + "Campo id contiene caracteres invalidos.\n";
+                        mensaje += "Campo id contiene caracteres invalidos.\n";
                     }
                 }
                 if (contrasena.isEmpty()) {
-                    mensaje = (mensaje == null) ? "Campo Contrasena es obligatorio.\n"
-                            : mensaje + "Campo Contrasena es obligatorio.\n";
+                    mensaje += "Campo Contrasena es obligatorio.\n";
                 } else {
                     if (!MetodosPublicos.validarTamano(contrasena, 8)) {
-                        mensaje = (mensaje == null) ? "El campo contrasena debe dcontener como minimo 8 caracteres.\n"
-                                : mensaje + "El campo contrasena debe dcontener como minimo 8 caracteres.\n";
+                        mensaje += "El campo contrasena debe dcontener como minimo 8 caracteres.\n";
                     }
                     if (!MetodosPublicos.validarContrasena(contrasena)) {
-                        mensaje = (mensaje == null) ? "La contrasena debe de cumplir con estos parametros\n"
-                                + "1 Mayuscula,\n"
-                                + "1 Minuscula\n"
-                                + "1 Numero\n"
-                                + "1 Simbolos permitidos @, #, $, %, &, *, -, _, !, ?.\n"
-                                : mensaje + "La contrasena debe de cumplir con estos parametros\n"
+                        mensaje += "La contrasena debe de cumplir con estos parametros\n"
                                 + "1 Mayuscula,\n"
                                 + "1 Minuscula\n"
                                 + "1 Numero\n"
                                 + "1 Simbolos permitidos @, #, $, %, &, *, -, _, !, ?.\n";
                     }
                 }
-                JOptionPane.showMessageDialog(lg, mensaje);
+                JOptionPane.showMessageDialog(lg, mensaje,"Advertencia",JOptionPane.WARNING_MESSAGE);
+                estadoDeCosas(true);
             }
         }
 
