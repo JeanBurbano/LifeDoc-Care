@@ -498,28 +498,28 @@ public class PacienteInterfaz extends LayoutView {
     //Aqui creo el metodo que me permitiria vizualizar en el JPanel cuerpo2 el apartado de mis citas
     public void mostrarVistaMisCitas() {
         MetodosPublicos.vaciarPanel(cuerpo2);
-        cuerpo2.setBorder(new EmptyBorder(0,0,0,0));
+        cuerpo2.setBorder(new EmptyBorder(0, 0, 0, 0));
         cuerpo2.add(panelVistaMiscitas, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     public void mostrarVistaHistorial() {
         MetodosPublicos.vaciarPanel(cuerpo2);
-        cuerpo2.setBorder(new EmptyBorder(0,0,0,0));
+        cuerpo2.setBorder(new EmptyBorder(0, 0, 0, 0));
         cuerpo2.add(panelVistaHistorial, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     public void mostrarVistaComentarios() {
         MetodosPublicos.vaciarPanel(cuerpo2);
-        cuerpo2.setBorder(new EmptyBorder(0,0,0,0));
+        cuerpo2.setBorder(new EmptyBorder(0, 0, 0, 0));
         cuerpo2.add(panelVistaComentarios, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     public void mostrarVistaNotificaciones() {
         MetodosPublicos.vaciarPanel(cuerpo2);
-        cuerpo2.setBorder(new EmptyBorder(0,0,0,0));
+        cuerpo2.setBorder(new EmptyBorder(0, 0, 0, 0));
         cuerpo2.add(panelVistaNotificacion, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
@@ -985,7 +985,7 @@ public class PacienteInterfaz extends LayoutView {
         MetodosPublicos.refrescarVentana(panelInfoCitas);
     }
 
-    public void agregarAlPanelMiscitas(JPanel titulo, String fecha, String hora, String nombreMedico) {
+    public void agregarAlPanelMiscitas(JPanel titulo, String fecha, String hora, String nombreMedico, JButton btnCancelarCita, JButton btnReagendarCita) {
         JPanel panelBotones = new JPanel(), panelContenido = new JPanel(), c = new JPanel();
         panelBotones.setOpaque(false);
         panelBotones.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 5));
@@ -1017,8 +1017,8 @@ public class PacienteInterfaz extends LayoutView {
         panelContenido.add(lblHora);
         panelContenido.add(lblMedico);
 
-        JButton btnReagendarCita = new JButton("Reagendar");
-        JButton btnCancelarCita = new JButton("Cancelar");
+        btnReagendarCita = new JButton("Reagendar");
+        btnCancelarCita = new JButton("Cancelar");
         MetodosPublicos.estilizarBoton(btnReagendarCita, (byte) 7);
         MetodosPublicos.estilizarBoton(btnCancelarCita, (byte) 6);
         panelBotones.add(btnCancelarCita);

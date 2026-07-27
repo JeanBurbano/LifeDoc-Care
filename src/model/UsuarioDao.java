@@ -488,7 +488,7 @@ public class UsuarioDao implements Crud<Paciente> {
         return registrarUsuario(
                 p.getIdRol(), Integer.parseInt(p.getTipoIdentificacion()), p.getNumeroIdentificacion(),
                 p.getPrimerNombre(), p.getSegundoNombre(), p.getPrimerApellido(), p.getSegundoApellido(),
-                p.getCorreo(), p.getContraseña(), p.getFechaNacimiento(),
+                p.getCorreo(), p.getContrasena(), p.getFechaNacimiento(),
                 p.getSexoBiologico(), p.getNumeroCelular(), p.getEdad(), String.valueOf(p.getSisben())
         );
     }

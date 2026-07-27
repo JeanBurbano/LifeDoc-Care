@@ -66,6 +66,10 @@ public class PacienteController implements ActionListener {
 
     private boolean estadoNotificacion;
 
+    public PacienteController() {
+
+    }
+
     public PacienteController(PacienteInterfaz pacienteI) {
         init(pacienteI);
     }
@@ -79,9 +83,9 @@ public class PacienteController implements ActionListener {
         agregarActionListener();
         inicializarForo();
         estadoNotificacion = true;
-        listaBotonesCancelar = new ArrayList<>();
-        listaBotonesReagendar = new ArrayList<>();
-        listaBotonesMedicos = new ArrayList<>();
+        listaBotonesCancelar = new ArrayList<JButton>();
+        listaBotonesReagendar = new ArrayList<JButton>();
+        listaBotonesMedicos = new ArrayList<JButton>();
     }
 
     private void agregaMauseClick() {
@@ -301,8 +305,9 @@ public class PacienteController implements ActionListener {
     }
 
     protected void procesoBtnMisCitas() {
-        //citaAReagendar = null; 
+//        citaAReagendar = null; 
         pacienteI.habilitarBotonesMenu(pacienteI.btnMisCitas);
+        MetodosPublicos.vaciarPanel(pacienteI.panelInfoCitas);
         pacienteI.mostrarVistaMisCitas();
         this.citas = citadao.listarPorUsuario(usurio.getIdUsuario());
         if (citas == null || citas.length == 0) {
@@ -310,10 +315,12 @@ public class PacienteController implements ActionListener {
         } else {
             int i = 0;
             for (Cita clave : citas) {
+                JButton botoncancelar = new JButton();
+                JButton botonReagendar = new JButton();
                 pacienteI.agregarAlPanelMiscitas(new Titulo("Cita ", clave.getEspecialidad(), 30).getPanelTitulo(),
                         clave.getFechaCita().toString(), clave.getHoraCita().toString(),
-                        "Nombre Medico(a): " + clave.getNombreMedico());
-
+                        "Nombre Medico(a): " + clave.getNombreMedico(), botoncancelar, botonReagendar);
+                listaBotonesCancelar.add(botoncancelar);
                 listaBotonesCancelar.get(i).addActionListener((ActionEvent e) -> {
                     LocalDateTime ahora = LocalDateTime.now();
 
@@ -322,7 +329,7 @@ public class PacienteController implements ActionListener {
                     long horasRestantes = java.time.temporal.ChronoUnit.HOURS.between(ahora, fechaHoraCita);
 
                     if (horasRestantes >= 4) {
-                        int r = JOptionPane.showConfirmDialog(pacienteI,"Estás seguro de cancelar esta cita", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                        int r = JOptionPane.showConfirmDialog(pacienteI, "Estás seguro de cancelar esta cita", "Advertencia", JOptionPane.WARNING_MESSAGE);
 
                         if (r == 0) {
                             int n = citadao.setEliminar(clave.getIdCita());
@@ -343,7 +350,7 @@ public class PacienteController implements ActionListener {
                                 "Error de cancelación", JOptionPane.ERROR_MESSAGE);
                     }
                 });
-
+                listaBotonesReagendar.add(botonReagendar);
                 listaBotonesReagendar.get(i).addActionListener((ActionEvent e) -> {
 //                    iniciarReagendamiento(clave);
                     System.out.println("ya casi empesamos por aqui");

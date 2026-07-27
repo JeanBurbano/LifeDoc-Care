@@ -26,10 +26,4 @@ public class Paciente extends Usuario {
 
         this.idPaciente = idPaciente;
     }
-
-    public Paciente(byte idRol, String idTipoIdentificacion, String numeroIdentificacion, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
-            String correo, LocalDate fechaNacimiento, String sexoBiologico, String numeroClular, byte edad, boolean estado, String sisben, String fotoPerfil) {
-        super( idRol, idTipoIdentificacion, numeroIdentificacion, primerNombre, segundoNombre, primerApellido, segundoApellido,
-                correo, fechaNacimiento, sexoBiologico, numeroClular, edad, estado, sisben, fotoPerfil);
-    }
 }
