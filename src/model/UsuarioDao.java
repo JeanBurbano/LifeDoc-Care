@@ -36,38 +36,25 @@ public class UsuarioDao implements Crud<Paciente> {
             this.rs = ps.executeQuery();
 
             if (rs.next()) {
-                String tipoIdentificacion;
-                switch (rs.getInt("id_tipo_identificacion")) {
-                    case 1:
-                        tipoIdentificacion = "Registro civil";
-                        break;
-                    case 2:
-                        tipoIdentificacion = "Tarjeta de identidad";
-                        break;
-                    case 3:
-                        tipoIdentificacion = "Cedula de ciudadania";
-                        break;
-                    default:
-                        tipoIdentificacion = "Tarjeta de identidad";
-                        break;
-                }
                 usu = new Paciente(
                         rs.getInt("id_usuario"),
                         rs.getByte("id_rol"),
-                        tipoIdentificacion,
+                        rs.getByte("id_tipo_identificacion"),
                         rs.getString("numero_identificacion"),
                         rs.getString("primer_nombre"),
                         rs.getString("segundo_nombre"),
                         rs.getString("primer_apellido"),
                         rs.getString("segundo_apellido"),
                         rs.getString("correo_electronico"),
+                        "***********",
                         rs.getDate("fecha_nacimiento").toLocalDate(),
                         rs.getString("sexo_biologico"),
                         rs.getString("numero_celular"),
                         rs.getByte("edad"),
-                        rs.getBoolean("estado"),
                         rs.getString("sisben"),
-                        rs.getString("url_foto_perfil")
+                        rs.getBoolean("estado"),
+                        rs.getString("url_foto_perfil"),
+                        1
                 );
             }
         } catch (SQLException e) {

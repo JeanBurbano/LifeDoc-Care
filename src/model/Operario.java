@@ -6,17 +6,15 @@ public class Operario extends Usuario {
 
     private int id_operario;
 
-    public Operario(int id_usuario, byte id_rol, String tipoId, String numeroId,
+    public Operario(int id_usuario, byte id_rol, byte tipoId, String numeroId,
             String primerNombre, String segundoNombre, String primerApellido,
-            String segundoApellido, String correo, LocalDate fechaNacimiento,
+            String segundoApellido, String correo, String contrasena, LocalDate fechaNacimiento,
             String sexoBiologico, String numeroTelefonico, byte edad,
-            boolean estado, String sisben, String fotoPerfil) {
+            String sisben, boolean estado, String fotoPerfil) {
 
-        super(id_usuario, id_rol, tipoId, numeroId,
-                primerNombre, segundoNombre, primerApellido,
-                segundoApellido, correo, fechaNacimiento,
-                sexoBiologico, numeroTelefonico, edad,
-                sisben, estado, fotoPerfil);
+        super(id_usuario, id_rol, tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
+                correo, contrasena, fechaNacimiento, sexoBiologico, numeroTelefonico, edad, sisben, estado,
+                fotoPerfil);
     }
 
     public Operario(int id_operario, String primerNombre, String primerApellido) {

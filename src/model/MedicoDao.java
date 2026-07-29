@@ -15,7 +15,7 @@ public class MedicoDao implements Crud<Medico> {
     PreparedStatement ps;
     ResultSet rs;
 
-    public Medico[] listarPorEspecialidad(int idEspecialidad) {
+    public List<Medico> listarPorEspecialidad(int idEspecialidad) {
         List<Medico> medicos = new ArrayList<>();
         String sql = "SELECT m.id_medico, u.primer_nombre, u.primer_apellido "
                 + "FROM medico m "
@@ -38,7 +38,7 @@ public class MedicoDao implements Crud<Medico> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return medicos.toArray(new Medico[0]);
+        return medicos;
     }
 
     @Override

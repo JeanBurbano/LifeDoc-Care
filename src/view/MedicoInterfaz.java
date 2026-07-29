@@ -26,6 +26,7 @@ import model.Cita;
 import model.MetodosPublicos;
 import model.Paciente;
 import model.PacienteDao;
+import model.Usuario;
 import model.UsuarioDao;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
@@ -50,7 +51,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
     ;
 
-    public MedicoInterfaz(String nombreInterfaz, Paciente usuario) {
+    public MedicoInterfaz(String nombreInterfaz, Usuario usuario) {
         super(nombreInterfaz, usuario);
         this.usuarioDao = new UsuarioDao();
         this.btnMiAgenda = new JButton("Mi Agenda", new ImageIcon("iconsP/schedule.png"));

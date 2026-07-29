@@ -562,6 +562,10 @@ public class PacienteInterfaz extends LayoutView {
         MetodosPublicos.refrescarVentana(panelHistorial);
     }
 
+    public void vaciarPanel() {
+
+    }
+
     public void agregarAlPanelHistorialCitas(JPanel titulo, String fecha, String hora, String nombreMedico, String estado) {
         JPanel contenedor = new JPanel();
         boolean activa = "Activa".equalsIgnoreCase(estado);
@@ -623,6 +627,7 @@ public class PacienteInterfaz extends LayoutView {
         contenedor.setLayout(new BorderLayout());
         contenedor.add(tarjeta, BorderLayout.CENTER);
         this.panelListaHistorial.add(contenedor);
+        this.panelListaHistorial.add(Box.createVerticalStrut(50));
         MetodosPublicos.refrescarVentana(panelListaHistorial);
         MetodosPublicos.refrescarVentana(panelHistorial);
     }
@@ -873,7 +878,7 @@ public class PacienteInterfaz extends LayoutView {
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
-    public void mostrarVistaSeleccionMedico(String[] medicos) {
+    public void mostrarVistaSeleccionMedico(String[] medicos, ArrayList listaBotonesMedicos) {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelSeleccionConsulta);
 
@@ -888,15 +893,12 @@ public class PacienteInterfaz extends LayoutView {
         this.panelSeleccionConsulta.add(panelTitulo);
         this.panelSeleccionConsulta.add(descripcion);
         this.panelSeleccionConsulta.add(Box.createRigidArea(new Dimension(0, 25)));
-        titulo = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo elimianr para ahorrar memoria o algo asi por el estilo creo
-        descripcion = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo eliminar para ahorrar memoria o algo asi por el estilo creo
-        panelTitulo = null;//Ya quedo agregado a panelSeleccionConsulta por ende lo puedo eliminar para ahorrar memoria o algo asi por el estilo creo
 
         for (String nombreMedico : medicos) {
             JButton botonMedico = new JButton(nombreMedico, new ImageIcon("iconsP/avatar.png"));//Creo boton con el nombre del medico
             MetodosPublicos.estilizarBoton(botonMedico, (byte) 4);//Agrego estilo al boton
             MetodosPublicos.prepararBotonTarjeta(botonMedico, 380, 55);//Agrego tamano estable 
-            this.listaBotonesMedicos.add(botonMedico);
+            listaBotonesMedicos.add(botonMedico);
             this.panelSeleccionConsulta.add(botonMedico);
             this.panelSeleccionConsulta.add(Box.createRigidArea(new Dimension(0, 10)));
         }
@@ -1017,8 +1019,6 @@ public class PacienteInterfaz extends LayoutView {
         panelContenido.add(lblHora);
         panelContenido.add(lblMedico);
 
-        btnReagendarCita = new JButton("Reagendar");
-        btnCancelarCita = new JButton("Cancelar");
         MetodosPublicos.estilizarBoton(btnReagendarCita, (byte) 7);
         MetodosPublicos.estilizarBoton(btnCancelarCita, (byte) 6);
         panelBotones.add(btnCancelarCita);

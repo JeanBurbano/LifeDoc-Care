@@ -135,14 +135,14 @@ public class LoginController implements ActionListener {
 //                verInterfaz(adminSistem);
                 break;
             case 2:
-//                AdministradorCentroInterfaz adminI = new AdministradorCentroInterfaz("Administrador del centro", usuario);
-//                AdminCentroController adminC = new AdminCentroController(adminI);
-//                verInterfaz(adminI);
+                AdministradorCentroInterfaz adminI = new AdministradorCentroInterfaz("Administrador del centro", usuario);
+                AdminCentroController adminC = new AdminCentroController(adminI);
+                verInterfaz(adminI);
                 break;
             case 3:
-//                MedicoInterfaz i = new MedicoInterfaz("Medico", usuario);
-//                MedicoController mc = new MedicoController(i);
-//                verInterfaz(i);
+                MedicoInterfaz i = new MedicoInterfaz("Medico", usuario);
+                MedicoController mc = new MedicoController(i);
+                verInterfaz(i);
                 break;
             case 4:
 //                OperarioInterfaz opI = new OperarioInterfaz("Operario", usuario);

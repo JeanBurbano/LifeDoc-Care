@@ -50,19 +50,16 @@ public class CalculadorHorarioDisponible {
         if (diaHorario == null) {
             return disponibles;
         }
-  
+
         LocalTime inicio = LocalTime.parse(diaHorario.getHoraInicio());
         LocalTime fin = LocalTime.parse(diaHorario.getHoraFin());
         LocalTime descansoInicio = LocalTime.parse(diaHorario.getDescansoInicio());
         LocalTime descansoFin = LocalTime.parse(diaHorario.getDescansoFin());
-
         LocalTime actual = inicio;
         while (!actual.plusMinutes(DURACION_CITA_MIN).isAfter(fin)) {
             LocalTime finSlot = actual.plusMinutes(DURACION_CITA_MIN);
-
             boolean chocaConAlmuerzo = actual.isBefore(descansoFin) && finSlot.isAfter(descansoInicio);
             boolean ocupado = horasOcupadas != null && horasOcupadas.contains(actual);
-
             if (!chocaConAlmuerzo && !ocupado) {
                 disponibles.add(actual);
             }

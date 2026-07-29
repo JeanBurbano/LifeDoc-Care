@@ -84,7 +84,7 @@ public class OperarioController extends PacienteController {
     }
 
     public Cita[] listarCitasPorUsuario(int idUsuario) {
-        return citaDao.listarPorUsuario(idUsuario);
+        return citaDao.listarPorUsuario(idUsuario).toArray(new Cita[0]);
     }
 
     public boolean cancelarCita(int idCita) {

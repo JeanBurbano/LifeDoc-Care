@@ -100,7 +100,7 @@ public class CitaDao implements Crud<Cita> {
         return citas.toArray(new Cita[0]);
     }
 
-    public Cita[] listarPorUsuario(int idUsuario) {
+    public List<Cita> listarPorUsuario(int idUsuario) {
         List<Cita> citas = new ArrayList<>();
         String sql = "SELECT c.id_cita, c.estado, c.hora_cita, c.fecha_cita, "
                 + "c.id_Usuario, up.primer_nombre, up.primer_apellido, "
@@ -137,7 +137,7 @@ public class CitaDao implements Crud<Cita> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return citas.toArray(new Cita[0]);
+        return citas;
     }
 
     public Cita[] listarPorMedico(int idMedico) {

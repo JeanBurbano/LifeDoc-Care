@@ -12,23 +12,10 @@ public class Medico extends Usuario {
 
     }
 
-    public Medico(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
-            String correo, LocalDate fechaNacimiento, String sexoBiologico, String numeroTelefonico, byte edad, boolean estado, String sisben, String fotoPerfil, String especialidad) {
-        super(id_usuario,
-                id_rol,
-                tipoId,
-                numeroId,
-                primerNombre,
-                segundoNombre,
-                primerApellido,
-                segundoApellido,
-                correo,
-                fechaNacimiento,
-                sexoBiologico,
-                numeroTelefonico,
-                edad,
-                sisben,
-                estado,
+    public Medico(int id_usuario, byte id_rol, byte tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String correo, String contrasena, LocalDate fechaNacimiento, String sexoBiologico, String numeroTelefonico, byte edad, String sisben, boolean estado, String fotoPerfil, String especialidad) {
+        super(id_usuario, id_rol, tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
+                correo, contrasena, fechaNacimiento, sexoBiologico, numeroTelefonico, edad, sisben, estado,
                 fotoPerfil);
         this.id_usuarioM = id_usuario;
         this.especialidad = especialidad;
