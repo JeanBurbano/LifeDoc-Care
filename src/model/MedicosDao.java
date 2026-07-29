@@ -36,7 +36,7 @@ public class MedicosDao implements Crud<Medicos>{
             while(rs.next()){
                 Medicos m = new Medicos();
                 m.setId_medico(rs.getInt(1));
-                m.setNumeroId(rs.getString(2));
+                m.setNumeroIdentificacion(rs.getString(2));
                 m.setEspecialidad(rs.getString(3));
                 m.setPrimerNombre(rs.getString(4));
                 m.setPrimerApellido(rs.getString(5));

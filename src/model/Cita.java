@@ -31,6 +31,21 @@ public class Cita {
         this.idUsuarioAgenda = idUsuarioAgenda;
     }
 
+    // constructor de copia, se usa cuando hay que cambiar el estado de una cita
+    // sin perder el resto de los datos (los campos son final, no hay setters)
+    public Cita(Cita origen, boolean nuevoEstado) {
+        this.idCita = origen.idCita;
+        this.estado = nuevoEstado;
+        this.horaCita = origen.horaCita;
+        this.fechaCita = origen.fechaCita;
+        this.idUsuario = origen.idUsuario;
+        this.nombrePaciente = origen.nombrePaciente;
+        this.idMedico = origen.idMedico;
+        this.nombreMedico = origen.nombreMedico;
+        this.especialidad = origen.especialidad;
+        this.idUsuarioAgenda = origen.idUsuarioAgenda;
+    }
+
     public int getIdCita() {
         return idCita;
     }
@@ -69,5 +84,30 @@ public class Cita {
 
     public String getEspecialidad() {
         return especialidad;
+    }
+
+    // dos citas se consideran iguales si son del mismo medico en la misma
+    // fecha y hora, esto es lo que permite detectar choques de horario
+    // cuando se usa el hashSet global setCitas
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Cita)) {
+            return false;
+        }
+        Cita otra = (Cita) obj;
+        return idMedico == otra.idMedico
+                && fechaCita.equals(otra.fechaCita)
+                && horaCita.equals(otra.horaCita);
+    }
+
+    @Override
+    public int hashCode() {
+        int resultado = Integer.hashCode(idMedico);
+        resultado = 31 * resultado + fechaCita.hashCode();
+        resultado = 31 * resultado + horaCita.hashCode();
+        return resultado;
     }
 }
