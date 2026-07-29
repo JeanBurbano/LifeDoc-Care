@@ -40,8 +40,8 @@ import model.MetodosPublicos;
 import static model.MetodosPublicos.estilizarBoton;
 import static model.MetodosPublicos.estilizarComboBox;
 import static model.MetodosPublicos.refrescarVentana;
-import static model.MetodosPublicos.vaciarPanel;
 import model.Paciente;
+import model.Usuario;
 
 public class OperarioInterfaz extends PacienteInterfaz {
 
@@ -75,7 +75,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
     private Paciente pacienteConsultasActual;
 
-    public OperarioInterfaz(String nombreInterfaz, Paciente usuario) {
+    public OperarioInterfaz(String nombreInterfaz, Usuario usuario) {
         super(nombreInterfaz, usuario);
 
         this.listaBotonesCancelarOpeario = new ArrayList<JButton>();
@@ -94,7 +94,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
     }
 
     public void AgendarCita() {
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout(15, 15));
         cuerpo2.setBorder(new EmptyBorder(20, 40, 20, 40));
@@ -245,7 +245,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
     // Punto de entrada del botón "Pagos": muestra el buscador de paciente,
     // igual que en Consultas, para listar sus citas pendientes de pago.
     public void mostrarVistaPagos() {
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout(0, 15));
         cuerpo2.setBorder(new EmptyBorder(20, 40, 20, 40));
@@ -301,7 +301,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
             }
 
             List<DatosPagoCita> citasPendientes = controlador.buscarCitasPendientesPago(paciente.getIdUsuario());
-            vaciarPanel(panelListaPagos);
+            MetodosPublicos.vaciarPanel(panelListaPagos);
             if (citasPendientes.isEmpty()) {
                 JLabel lblSinPagos = new JLabel("Este paciente no tiene citas pendientes de pago.");
                 lblSinPagos.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -366,7 +366,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
     // Abre el panel de cobro (PanelPagos) para la cita elegida.
     private void mostrarPanelPagoParaCita(DatosPagoCita datosPago) {
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout());
         PanelPagos panelPagos = new PanelPagos(datosPago);
@@ -704,7 +704,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
             String especialidad, String nombreMedico, LocalDate fechaCita, java.time.LocalTime horaCita,
             double valorConsulta, double montoSubsidio, double valorNeto, String metodoPago) {
 
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout(25, 0));
         cuerpo2.setBorder(new EmptyBorder(20, 40, 20, 40));
@@ -1082,7 +1082,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
     }
 
     private void construirVistaListaCitas(boolean esGestionCitas) {
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout(0, 15));
         cuerpo2.setBorder(new EmptyBorder(20, 40, 20, 40));
@@ -1169,7 +1169,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
     }
 
     private void cargarListaCitas(JPanel panelListaCitas, boolean esGestionCitas) {
-        vaciarPanel(panelListaCitas);
+        MetodosPublicos.vaciarPanel(panelListaCitas);
         this.listaBotonesCancelarOpeario.clear();
         this.listaBotonesReagendarOpeario.clear();
 
@@ -1279,7 +1279,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
     }
 
     private void mostrarVistaReagendarCita(Cita citaAReagendar) {
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new GridBagLayout());
         cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));

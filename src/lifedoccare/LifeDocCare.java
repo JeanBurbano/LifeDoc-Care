@@ -13,11 +13,12 @@ import javax.swing.UIManager;
 public class LifeDocCare {
 
     public static void main(String[] args) {
+
         JFrame.setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
-        try{
-        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-        }catch(Exception e){
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Login lg = new Login();

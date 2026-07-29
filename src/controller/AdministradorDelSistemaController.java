@@ -70,7 +70,7 @@ public class AdministradorDelSistemaController extends PacienteController {
 
     private void procesoBtnRol() {
         adminSistem.vistaUsuarios();
-        adminSistem.cargarUsuarios(usuarioDao.listar());
+//        adminSistem.cargarUsuarios(usuarioDao.listar());
         adminSistem.btnRol.setEnabled(false);
         adminSistem.habilitarBotonesMenu(adminSistem.btnRol);
     }

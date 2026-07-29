@@ -7,6 +7,8 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.Period;
@@ -33,7 +35,23 @@ import view.PacienteInterfaz;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MetodosPublicos {
-   
+
+    //Esto es para los JTextField que solo aceptan numeros
+    public static void soloNumeros(JTextField campo, int longitudMaxima) {
+        campo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent evt) {
+                char tecla = evt.getKeyChar();
+                if (!Character.isDigit(tecla)) {
+                    evt.consume();
+                }
+                if (campo.getText().length() >= longitudMaxima) {
+                    evt.consume();
+                }
+            }
+        });
+    }
+
     public static byte calcularEdad(LocalDate fechaNacimiento) {
         if (fechaNacimiento == null) {
             return 0;

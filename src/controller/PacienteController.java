@@ -5,28 +5,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.Cita;
-import model.CitaDao;
 import model.CreadorPdf;
 import model.MetodosPublicos;
 import model.Usuario;
 import model.UsuarioDao;
 import view.EditarPerfilInterfaz;
 import view.PacienteInterfaz;
-import view.Titulo;
 
 public class PacienteController implements ActionListener {
 
     //variables
     private Usuario usurio;
-    private CitaDao citadao;
 
     protected PacienteInterfaz pacienteI;
     private GestorCitas gestorCita;
@@ -54,7 +49,6 @@ public class PacienteController implements ActionListener {
         gestorCita = new GestorCitas(this.pacienteI, this);
         gestorForo = new GestorForo(this.pacienteI);
         usurio = this.pacienteI.getUsuario();
-        citadao = new CitaDao();
         agregaMauseClick();
         agregarActionListener();
         estadoNotificacion = true;
@@ -70,46 +64,40 @@ public class PacienteController implements ActionListener {
         listaBotonesReagendar.add(btnReagendar);
     }
 
-    protected long calcularHorasRestantes(Cita clave) {
-        LocalDateTime ahora = LocalDateTime.now();
-        LocalDateTime fechaHoraCita = clave.getFechaCita().atTime(clave.getHoraCita());
-        return ChronoUnit.HOURS.between(ahora, fechaHoraCita);
-    }
-
-    protected boolean isPuedeCancelar(Cita clave) {
-        return calcularHorasRestantes(clave) >= 4;
-    }
-
     protected void agregarListenerBotonesCancelar(int i, Cita clave) {
         listaBotonesCancelar.get(i).addActionListener((ActionEvent e) -> {
-//            if (isPuedeCancelar(clave)) {
+            if (gestorCita.tieneAntelacionSuficiente(clave)) {
                 int r = JOptionPane.showConfirmDialog(pacienteI, "Estás seguro de cancelar esta cita", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 if (r == 0) {
-                    boolean validador = gestorCita.isEliminarCita(clave);
-                    if (validador) {
-                        int n = citadao.setEliminar(clave.getIdCita());
-                        if (n > 0) {
-                            procesoNotificacion("Cita cancelada", "Tu cita con el Dr(a). " + clave.getNombreMedico()
-                                    + " ha sido cancelada correctamente.");
-                            gestorCita.procesoBtnMiscitas();
-                        } else {
-                            JOptionPane.showMessageDialog(pacienteI, "No se pudo cancelar su cita, intente más tarde.", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
+                    boolean cancelada = gestorCita.cancelarCita(clave);
+                    if (cancelada) {
+                        procesoNotificacion("Cita cancelada", "Tu cita con el Dr(a). " + clave.getNombreMedico()
+                                + " ha sido cancelada correctamente.");
+                        gestorCita.procesoBtnMiscitas();
                     } else {
                         JOptionPane.showMessageDialog(pacienteI, "No se pudo cancelar su cita, intente más tarde.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
                     JOptionPane.showMessageDialog(pacienteI, "No decidiste cancelar la cita.");
                 }
-//            } else {
-//                JOptionPane.showMessageDialog(pacienteI, "No se puede cancelar con menos de 4 horas de antelación.", "Error de cancelación", JOptionPane.ERROR_MESSAGE);
-//            }
+            } else {
+                JOptionPane.showMessageDialog(pacienteI, "No se puede cancelar con menos de 4 horas de antelación.", "Error de cancelación", JOptionPane.ERROR_MESSAGE);
+            }
         });
     }
 
     protected void agregarListenerBotonesReagendar(int i, Cita clave) {
         listaBotonesReagendar.get(i).addActionListener((ActionEvent e) -> {
-            System.out.println("esta en proceso");
+            if (gestorCita.tieneAntelacionSuficiente(clave)) {
+                int r = JOptionPane.showConfirmDialog(pacienteI, "Estás seguro de reagendar esta cita", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                if (r == 0) {
+                    //esta en elaboracion
+                } else {
+                    JOptionPane.showMessageDialog(pacienteI, "No decidiste reagendar la cita.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(pacienteI, "No se puede reagendar con menos de 4 horas de antelación.", "Error de reagendamiento", JOptionPane.ERROR_MESSAGE);
+            }
         });
     }
 
@@ -185,22 +173,8 @@ public class PacienteController implements ActionListener {
     }
 
     protected void procesoBtnHistorialCitas() {
-        pacienteI.construirPanelVistaHistorial();
         estadoBotonesHistial(false);
-        Cita[] citasHistorial = citadao.listarTodasPorUsuario(pacienteI.getUsuario().getIdUsuario());
-        if (citasHistorial == null || citasHistorial.length == 0) {
-            pacienteI.mostrarMensajeHistorialVacio();
-        } else {
-            for (Cita clave : citasHistorial) {
-                String estadoCita = clave.getEstado() ? "Activa" : "Cancelada";
-                pacienteI.agregarAlPanelHistorialCitas(
-                        new Titulo("Cita ", clave.getEspecialidad(), 30).getPanelTitulo(),
-                        clave.getFechaCita().toString(),
-                        clave.getHoraCita().toString(),
-                        "Dr(a). " + clave.getNombreMedico(),
-                        estadoCita);
-            }
-        }
+        gestorCita.procesoBtnHistorialCitas();
     }
 
     protected void procesoBtnHistorialMedico() {

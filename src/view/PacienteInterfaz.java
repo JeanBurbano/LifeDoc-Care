@@ -280,7 +280,6 @@ public class PacienteInterfaz extends LayoutView {
         panelHistorial.setLayout(new BorderLayout());
         panelHistorial.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 4));
         panelHistorial.setOpaque(opaque);
-        construirPanelVistaHistorial();
 
         areaHistorialMedico = new JTextArea();
         areaHistorialMedico.setOpaque(opaque);
@@ -563,7 +562,8 @@ public class PacienteInterfaz extends LayoutView {
     }
 
     public void vaciarPanel() {
-
+        MetodosPublicos.vaciarPanel(panelListaHistorial);
+        MetodosPublicos.refrescarVentana(panelListaHistorial);
     }
 
     public void agregarAlPanelHistorialCitas(JPanel titulo, String fecha, String hora, String nombreMedico, String estado) {
@@ -626,8 +626,13 @@ public class PacienteInterfaz extends LayoutView {
         contenedor.setOpaque(false);
         contenedor.setLayout(new BorderLayout());
         contenedor.add(tarjeta, BorderLayout.CENTER);
+        Dimension dimension = new Dimension(800, 200);
+        contenedor.setSize(dimension);
+        contenedor.setMaximumSize(dimension);
+        dimension = new Dimension(300, 100);
+        contenedor.setMinimumSize(dimension);
         this.panelListaHistorial.add(contenedor);
-        this.panelListaHistorial.add(Box.createVerticalStrut(50));
+        this.panelListaHistorial.add(Box.createVerticalStrut(10));
         MetodosPublicos.refrescarVentana(panelListaHistorial);
         MetodosPublicos.refrescarVentana(panelHistorial);
     }
@@ -1026,7 +1031,10 @@ public class PacienteInterfaz extends LayoutView {
 
         c.add(panelContenido, BorderLayout.WEST);
         c.add(panelBotones, BorderLayout.EAST);
-
+        Dimension dimension = new Dimension(830, 150);
+        c.setMaximumSize(dimension);
+        dimension = new Dimension(300, 100);
+        c.setMinimumSize(dimension);
         this.panelInfoCitas.add(c);
         MetodosPublicos.refrescarVentana(panelInfoCitas);
     }

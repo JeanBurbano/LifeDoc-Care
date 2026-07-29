@@ -161,8 +161,12 @@ public class Login extends JFrame {
             password.setEchoChar('*');
         }
     }
-    
-    public void limpiar(){
+
+    public JTextField getField() {
+        return this.id;
+    }
+
+    public void limpiar() {
         this.id.setText("");
         this.password.setText("");
     }

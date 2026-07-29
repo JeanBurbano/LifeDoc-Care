@@ -3,13 +3,17 @@ package controller;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.Timer;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.Hashed;
 import model.MetodosPublicos;
+import model.RegistroPersonasDao;
 import model.UsuarioDao;
 import model.Usuario;
 import view.AdministradorCentroInterfaz;
@@ -34,6 +38,19 @@ public class LoginController implements ActionListener {
     private Usuario usu;
     private byte c;
     private boolean bloqueado;
+
+    //Controlador
+    public LoginController(Login lg, RecuperacionContrasenaInterfaz rc, RegistroUsuariosInterfaz ur) {
+        this.lg = lg;
+        ojodelLogin();
+        agregarActionListenerABotonesDeLogin();
+        MetodosPublicos.soloNumeros(lg.getField(), 10);
+        this.rc = rc;
+        vistaRecuperarContrasena();
+        this.c = 0;
+        this.bloqueado = false;
+        this.ur = ur;
+    }
 
     //Este metodo me hace el proceso para el ojo que permite ver la contrasena
     private void ojodelLogin() {
@@ -83,19 +100,6 @@ public class LoginController implements ActionListener {
         this.lg.bIngresar.addActionListener(this);
     }
 
-    //Controlador
-    public LoginController(Login lg, RecuperacionContrasenaInterfaz rc, RegistroUsuariosInterfaz ur) {
-        this.lg = lg;
-        ojodelLogin();
-        agregarActionListenerABotonesDeLogin();
-        this.rc = rc;
-        vistaRecuperarContrasena();
-        this.c = 0;
-        this.bloqueado = false;
-        this.ur = ur;
-        RegistroUsuariosController.inisializarRegistroPersonas();
-    }
-
     public void abrirVistaRegistro() {
         Thread hiloVistasRegistro = new Thread(() -> {
             RegistroUsuariosController cRu = new RegistroUsuariosController(ur);
@@ -113,9 +117,7 @@ public class LoginController implements ActionListener {
     }
 
     private boolean estadito(String id, String contrasena) {
-        return (MetodosPublicos.validarTamano(id, 8, 10)
-                && MetodosPublicos.validarNumero(id))
-                && (MetodosPublicos.validarTamano(contrasena, 8)
+        return MetodosPublicos.validarTamano(id, 8, 10) && (MetodosPublicos.validarTamano(contrasena, 8)
                 && MetodosPublicos.validarContrasena(contrasena));
     }
 
@@ -130,9 +132,9 @@ public class LoginController implements ActionListener {
     private void abrirInterfazSegunRol(Usuario usuario) {
         switch (usuario.getIdRol()) {
             case 1:
-//                AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz("Administrador del sistema", usuario);
-//                AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
-//                verInterfaz(adminSistem);
+                AdministradorDelSistemaInterfaz adminSistem = new AdministradorDelSistemaInterfaz("Administrador del sistema", usuario);
+                AdministradorDelSistemaController cp = new AdministradorDelSistemaController(adminSistem);
+                verInterfaz(adminSistem);
                 break;
             case 2:
                 AdministradorCentroInterfaz adminI = new AdministradorCentroInterfaz("Administrador del centro", usuario);
@@ -145,9 +147,9 @@ public class LoginController implements ActionListener {
                 verInterfaz(i);
                 break;
             case 4:
-//                OperarioInterfaz opI = new OperarioInterfaz("Operario", usuario);
-//                OperarioController controller = new OperarioController(opI);
-//                verInterfaz(opI);
+                OperarioInterfaz opI = new OperarioInterfaz("Operario", usuario);
+                OperarioController controller = new OperarioController(opI);
+                verInterfaz(opI);
                 break;
             case 5:
                 PacienteInterfaz p = new PacienteInterfaz("Paciente", usuario);
@@ -184,9 +186,11 @@ public class LoginController implements ActionListener {
                 bloquearFormularioTemporalmente();
                 this.lg.limpiar();
             } else if (estadito(id, contrasena)) {
-                usu = RegistroUsuariosController.consultarPersona(id);
+                usu = new RegistroPersonasDao().getUsuario(id);
                 if (usu != null) {
                     if (usu.isEstado() && Hashed.verifyPassword(contrasena, usu.getContrasena())) {
+                        usu.setContrasena(null);
+                        usu.setContrasena("**@@@@$$$???<<>>");
                         c = 0;
                         if (usu.getSexoBiologico().equals("Masculino")) {
                             MetodosPublicos.reproducirSonido("bienvenido.wav");
@@ -241,9 +245,10 @@ public class LoginController implements ActionListener {
                                 + "1 Simbolos permitidos @, #, $, %, &, *, -, _, !, ?.\n";
                     }
                 }
-                JOptionPane.showMessageDialog(lg, mensaje,"Advertencia",JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(lg, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
                 estadoDeCosas(true);
             }
+            lg.limpiar();
         }
 
         if (e.getSource() == lg.bRegistar) {

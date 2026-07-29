@@ -8,8 +8,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -25,7 +23,6 @@ import view.RegistroUsuariosInterfaz;
 public class RegistroUsuariosController implements ActionListener {
 
     private static UsuarioDao usuarioDao = new UsuarioDao();
-    private static HashMap<String, Usuario> registroPersonas = new HashMap<>();
     protected static int id = 0;
     private static final byte ID_ROL_PACIENTE = 5;
     public static final int TI_REGISTRO_CIVIL = 1;
@@ -44,52 +41,13 @@ public class RegistroUsuariosController implements ActionListener {
         this.rI.btnRegistrarse.addActionListener(this);
         this.rI.btnVolverA.addActionListener(this);
         this.rI.btnSeleccionarFoto.addActionListener(this);
+        MetodosPublicos.soloNumeros(rI.campoNumeroID, 10);
+        MetodosPublicos.soloNumeros(rI.campoTelefono, 10);
         rutaImagen = "fotosPerfil/fotoDefecto.png";
     }
 
     private String iE(boolean condicionInvalida, String valor, String mensaje) {
         return condicionInvalida ? valor + mensaje : valor;
-    }
-
-    protected static void inisializarRegistroPersonas() {
-        if (registroPersonas.isEmpty()) {
-            RegistroPersonasDao rDao = new RegistroPersonasDao();
-            List<Usuario> usuarios = rDao.listar();
-            for (Usuario clave : usuarios) {
-                registroPersonas.put(clave.getNumeroIdentificacion(), clave);
-                id++;
-                System.out.println(id + " : " + clave.getIdUsuario() + " - " + clave.getPrimerNombre());
-            }
-            usuarios = null;
-        }
-    }
-
-    protected void registrarPersona(Usuario p) {
-        if (!registroPersonas.containsKey(p.getNumeroIdentificacion())) {
-            registroPersonas.put(p.getNumeroIdentificacion(), p);
-        } else {
-            JOptionPane.showMessageDialog(null, "Ya existe este usuario");
-        }
-    }
-
-    protected static Usuario consultarPersona(String numeroIdentificacion) {
-        return registroPersonas.get(numeroIdentificacion);
-    }
-
-    protected static boolean consultarPersonaBoolean(String numeroIdentificacion) {
-        return registroPersonas.get(numeroIdentificacion) != null;
-    }
-
-    protected static void actualizarPersona(Usuario p) {
-        registroPersonas.put(p.getNumeroIdentificacion(), p);
-    }
-
-    private void eliminarPersona(String numeroIdentificacion) {
-        registroPersonas.remove(numeroIdentificacion);
-    }
-
-    protected static boolean validarTamanoAlegro() {
-        return registroPersonas.isEmpty();
     }
 
     @Override
@@ -113,12 +71,12 @@ public class RegistroUsuariosController implements ActionListener {
             String primerApellido, String sexoBiologico, String correo, String contrasena, String grupoSisben, LocalDate fechaNacimiento) {
         String mensaje = "";
         mensaje = iE(idTipoIdentificacion < 0, mensaje, "Debe seleccionar un tipo de documento\n");
-        mensaje = iE(numeroIdentificacion == null || numeroIdentificacion.isEmpty(), mensaje, "El campo numero de identificacion esta vacio\n");
-        mensaje = iE(primerNombre == null || primerNombre.isEmpty(), mensaje, "El campo primer nombre esta vacio\n");
-        mensaje = iE(primerApellido == null || primerApellido.isEmpty(), mensaje, "El campo primer apellido esta vacio\n");
+        mensaje = iE(numeroIdentificacion.isEmpty(), mensaje, "El campo numero de identificacion esta vacio\n");
+        mensaje = iE(primerNombre.isEmpty(), mensaje, "El campo primer nombre esta vacio\n");
+        mensaje = iE(primerApellido.isEmpty(), mensaje, "El campo primer apellido esta vacio\n");
         mensaje = iE(sexoBiologico.isEmpty() || sexoBiologico.equals("null"), mensaje, "Debe seleccionar el sexo biologico\n");
-        mensaje = iE(correo == null || correo.isEmpty(), mensaje, "El campo correo esta vacio\n");
-        mensaje = iE(contrasena == null || contrasena.isEmpty(), mensaje, "El campo contraseña esta vacio\n");
+        mensaje = iE(correo.isEmpty(), mensaje, "El campo correo esta vacio\n");
+        mensaje = iE(contrasena.isEmpty(), mensaje, "El campo contraseña esta vacio\n");
         mensaje = iE(grupoSisben.isEmpty() || grupoSisben.equals("null"), mensaje, "Debe seleccionar el grupo Sisben\n");
         mensaje = iE(fechaNacimiento == null, mensaje, "Debe seleccionar la fecha de nacimiento\n");
         return mensaje;
@@ -195,7 +153,6 @@ public class RegistroUsuariosController implements ActionListener {
                 && fechaNacimiento != null);
 
         if (validador) {
-
             String segundoNombre = rI.campoSegundoNombre.getText().trim();
             String segundoApellido = rI.campoSegundoApellido.getText().trim();
             byte edad = MetodosPublicos.calcularEdad(fechaNacimiento);
@@ -203,24 +160,22 @@ public class RegistroUsuariosController implements ActionListener {
             String mensaje2 = validacionesCriterios(primerNombre, segundoNombre, primerApellido,
                     segundoApellido, numeroIdentificacion, correo, telefono, contrasena);
             mensaje2 += validacionEdadTipoDocumento(edad, idTipoIdentificacion);
-
             if (!(mensaje2.isEmpty())) {
                 mostrarError(mensaje2);
                 return;
             }
+            if (usuarioDao.validarCampoIdBs(numeroIdentificacion, "usuario", "id_usuario")) {
+                mensaje2 += "Ya existe un usuario registrado con ese numero de identificacion\n";
 
-            if (!(consultarPersona(numeroIdentificacion) == null)) {
-                mostrarError("Ya existe un usuario registrado con ese numero de identificacion");
-                return;
             }
-
             if (usuarioDao.validarCampoIdBs(correo, "usuario", "correo_electronico")) {
-                mostrarError("Ya existe un usuario registrado con ese Correo electronico");
+                mensaje2 += "Ya existe un usuario registrado con ese Correo electronico\n";
+            }
+            if (!(mensaje2.isEmpty())) {
+                mostrarError(mensaje2);
                 return;
             }
-
             String sisben = String.valueOf(rI.campoSisben.getSelectedItem());
-
             String contrasenaHashed = Hashed.hashPassword(contrasena);
             Usuario usu = new Usuario(
                     id,
@@ -241,15 +196,12 @@ public class RegistroUsuariosController implements ActionListener {
                     true,
                     rutaImagen);
             int idUsuarioGenerado = new RegistroPersonasDao().setAgregar(usu);
-
             if (idUsuarioGenerado > 0) {
                 JOptionPane.showMessageDialog(rI, "Cuenta creada correctamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
-                registrarPersona(usu);
                 volverALogin();
             } else {
                 mostrarError("No se pudo completar el registro. Intenta de nuevo");
             }
-
         } else {
             String mensaje = validacionesTodosCampoCompleto(idTipoIdentificacion, numeroIdentificacion, primerNombre,
                     primerApellido, sexoBiologico, correo, contrasena, grupoSisben, fechaNacimiento);
