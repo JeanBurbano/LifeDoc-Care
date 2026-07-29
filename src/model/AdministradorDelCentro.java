@@ -2,7 +2,7 @@ package model;
 
 import java.time.LocalDate;
 
-public class AdministradorDelCentro extends Paciente {
+public class AdministradorDelCentro extends Usuario {
 
     private int id_usuarioA;
     private int id_administrador_centro;
@@ -12,10 +12,13 @@ public class AdministradorDelCentro extends Paciente {
         this.id_administrador_centro = id_administrador_centro;
     }
 
-    public AdministradorDelCentro(int id_usuario, byte id_rol, String tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
-            String correo, LocalDate fechaNacimiento, String sexoBiologico, String numeroTelefonico, byte edad, boolean estado, String sisben, String fotoPerfil) {
+    public AdministradorDelCentro(int id_usuario, byte id_rol, byte tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String correo, String contrasena, LocalDate fechaNacimiento, String sexoBiologico, String numeroTelefonico, byte edad, String sisben, boolean estado,
+            String fotoPerfil) {
+
         super(id_usuario, id_rol, tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
-                correo, fechaNacimiento, sexoBiologico, numeroTelefonico, edad, estado, sisben, fotoPerfil);
+                correo, contrasena, fechaNacimiento, sexoBiologico, numeroTelefonico, edad, sisben, estado,
+                fotoPerfil);
         this.id_usuarioA = id_usuario;
     }
 

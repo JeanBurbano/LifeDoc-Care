@@ -16,11 +16,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import model.MetodosPublicos;
-import model.Paciente;
+
+import model.Usuario;
 
 public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
 
-    private final static String ARREGLO_COLUMNAS[] = {"Id", "Nombre Completo", "Edad", "Correo", "Numero Celular", "Rol","Estado"};
+    private final static String ARREGLO_COLUMNAS[] = {"Id", "Nombre Completo", "Edad", "Correo", "Numero Celular", "Rol", "Estado"};
     public JPanel panelUsuarios, panelBotones;
     public JButton btnRol, btnHabilitar, btnDesabilitar, btnLimpiar;
     public DefaultTableModel mDefaultTableModel;
@@ -35,7 +36,7 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
         this.panelUsuarios.add(scrollPane, BorderLayout.CENTER);
     }
 
-    public AdministradorDelSistemaInterfaz(String nombreInterfaz, Paciente usuario) {
+    public AdministradorDelSistemaInterfaz(String nombreInterfaz, Usuario usuario) {
         super(nombreInterfaz, usuario);
         this.panelUsuarios = new JPanel();
         this.panelUsuarios.setLayout(new BorderLayout());
@@ -102,20 +103,20 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
         }
     }
 
-    public void cargarUsuarios(List<Paciente> usuarios) {
+    public void cargarUsuarios(List<Usuario> usuarios) {
         mDefaultTableModel.setRowCount(0); //Limpia filas no columnas
-        for (Paciente p : usuarios) {
+        for (Usuario p : usuarios) {
             String segundoNombre = (p.getSegundoNombre() == null) ? "" : p.getSegundoNombre();
             String segundoApellido = (p.getSegundoApellido() == null) ? "" : p.getSegundoApellido();
             String nombreCompleto = String.join(" ",
                     p.getPrimerNombre(), segundoNombre, p.getPrimerApellido(), segundoApellido)
                     .replaceAll("\\s+", " ").trim();
-            String rol = (p.getId_rol() == 1) ? "Administrador del sistema" : p.getId_rol() == 2 ? "Administrador del centro"
-                    : p.getId_rol() == 3 ? "Medico" : p.getId_rol() == 4 ? "Operario" : "Paciente";
-            String estado = p.getEstado() ? "Activo" : "Deshabilitado";
+            String rol = (p.getIdRol() == 1) ? "Administrador del sistema" : p.getIdRol() == 2 ? "Administrador del centro"
+                    : p.getIdRol() == 3 ? "Medico" : p.getIdRol() == 4 ? "Operario" : "Paciente";
+            String estado = p.isEstado() ? "Activo" : "Deshabilitado";
             mDefaultTableModel.addRow(new Object[]{
-                p.getIdUsuario(), nombreCompleto, p.getEdad(), p.getCorreoElectronico(),
-                p.getNumeroTelefonico(), rol, estado
+                p.getIdUsuario(), nombreCompleto, p.getEdad(), p.getCorreo(),
+                p.getNumeroCelular(), rol, estado
             });
         }
     }

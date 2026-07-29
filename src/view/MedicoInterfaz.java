@@ -26,6 +26,7 @@ import model.Cita;
 import model.MetodosPublicos;
 import model.Paciente;
 import model.PacienteDao;
+import model.Usuario;
 import model.UsuarioDao;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
@@ -50,7 +51,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
     ;
 
-    public MedicoInterfaz(String nombreInterfaz, Paciente usuario) {
+    public MedicoInterfaz(String nombreInterfaz, Usuario usuario) {
         super(nombreInterfaz, usuario);
         this.usuarioDao = new UsuarioDao();
         this.btnMiAgenda = new JButton("Mi Agenda", new ImageIcon("iconsP/schedule.png"));
@@ -177,7 +178,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
 //    }
     public void mostrarFormularioHistorialMedicoPaciente() {
         MetodosPublicos.vaciarPanel(panelListaHistorial);
-        MetodosPublicos.vaciarPanel(panelFiltros);
+        MetodosPublicos.vaciarPanel(panelBarraBusqueda);
 
         this.panelPrincipal.setLayout(new FlowLayout(FlowLayout.CENTER));
 
@@ -186,7 +187,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         tituloIdPaciente.setForeground(COLOR_AZUL_CORPORATIVO);
         tituloIdPaciente.setBorder(new EmptyBorder(170, 200, 50, 200));
 
-        this.panelHistorial.remove(this.panelFiltros);
+        this.panelHistorial.remove(this.panelBarraBusqueda);
         this.panelHistorial.remove(this.scrollHistorial);
         this.panelPrincipal.add(tituloIdPaciente);
         this.panelPrincipal.add(idHistorial);
@@ -195,7 +196,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.panelHistorial.add(panelPrincipal, BorderLayout.CENTER);
 
         MetodosPublicos.refrescarVentana(panelListaHistorial);
-        MetodosPublicos.refrescarVentana(panelFiltros);
+        MetodosPublicos.refrescarVentana(panelBarraBusqueda);
     }
 
 //    @Override
@@ -562,13 +563,13 @@ public class MedicoInterfaz extends PacienteInterfaz {
         campoSegundoN.setText(p.getSegundoNombre());
         campoPrimerA.setText(p.getPrimerApellido());
         campoSegundoA.setText(p.getSegundoApellido());
-        campoCorreo.setText(p.getCorreoElectronico());
-        campoNumeroT.setText(p.getNumeroTelefonico());
+        campoCorreo.setText(p.getCorreo());
+        campoNumeroT.setText(p.getNumeroCelular());
         campoFechaN.setText(p.getFechaNacimiento().toString());
-        campoNumeroId.setText(p.getNumeroId());
+        campoNumeroId.setText(p.getNumeroIdentificacion());
 
         campoSexoBio.setSelectedItem(p.getSexoBiologico());
-        campoTipoId.setSelectedItem(p.getTipoId());
+        campoTipoId.setSelectedItem(p.getTipoIdentificacion());
     }
 
     public void mostrarVistaConfirmacionFichaGuardada() {
@@ -663,7 +664,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         btnVerDetalles.addActionListener(e -> {
             this.mostrarDetallesCita(cita);
         });
-        
+
         btnReagendarCita.addActionListener(e -> {
             this.mostrarVistaConfirmacionReagendar(cita);
         });
@@ -906,7 +907,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
         Paciente pacienteInfo = usuarioDao.buscarPorId(cita.getIdUsuario());
         if (pacienteInfo != null) {
-            campoNumeroId.setText(pacienteInfo.getNumeroId());
+            campoNumeroId.setText(pacienteInfo.getNumeroIdentificacion());
         } else {
             campoNumeroId.setText("No disponible");
         }
