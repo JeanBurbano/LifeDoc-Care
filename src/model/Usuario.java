@@ -80,9 +80,9 @@ public class Usuario {
         cargarTipoIdentificacion();
         this.numeroIdentificacion = numeroIdentificacion;
         this.primerNombre = primerNombre;
-        this.segundoNombre = segundoNombre.isEmpty() ? "null" : segundoNombre;
+        this.segundoNombre = segundoNombre.isEmpty() ? "" : segundoNombre;
         this.primerApellido = primerApellido;
-        this.segundoApellido = segundoApellido.isEmpty() ? "null" : segundoApellido;
+        this.segundoApellido = segundoApellido.isEmpty() ? "" : segundoApellido;
         this.correo = correo;
         this.contrasena = contrasena;
         this.fechaNacimiento = fechaNacimiento;

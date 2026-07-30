@@ -34,6 +34,10 @@ public class RegistroUsuariosController implements ActionListener {
 
     public RegistroUsuariosController(RegistroUsuariosInterfaz rI) {
         init(rI);
+        MetodosPublicos.soloLetras(this.rI.campoPrimerNombre, 30);
+        MetodosPublicos.soloLetras(this.rI.campoSegundoNombre, 30);
+        MetodosPublicos.soloLetras(this.rI.campoPrimerApellido, 30);
+        MetodosPublicos.soloLetras(this.rI.campoSegundoApellido, 30);
     }
 
     protected void init(RegistroUsuariosInterfaz rI) {

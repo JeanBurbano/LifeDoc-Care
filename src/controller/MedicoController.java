@@ -50,24 +50,29 @@ public class MedicoController extends PacienteController {
         this.medico.btnNoReagendar.addActionListener(this);
     }
 
-    private void habilitarBotonesHistorial(JButton botonA, JButton boton2, JButton boton3) {
-        botonA.setEnabled(false);
-        boton2.setEnabled(true);
-        boton3.setEnabled(true);
-    }
-
     private void proceso(String mensaje, boolean valor) {
         medico.mostrarVistaHistorialConHistorial(mensaje, medico.getUsuario().getPrimerNombre(),
                 String.valueOf(pacienteI.getUsuario().getEdad()));
         medico.btnDescargar.setEnabled(valor);
     }
-    
+
     private void nombreMedicamentos() {
         nombresM = new MedicamentosDao().listarNombres();
         medico.campoMedicamento.removeAllItems();
         for (Medicamentos m : nombresM) {
             medico.campoMedicamento.addItem(m);
         }
+    }
+
+    @Override
+    protected void estadoBotonesHistial(boolean estado) {
+        if(medico.btnHistorialMedicoPaciente.isEnabled()){
+            medico.btnHistorialMedicoPaciente.setEnabled(!estado);
+        }else if(!medico.btnHistorialMedicoPaciente.isEnabled()){
+            
+        }
+        pacienteI.btnHistorialCitas.setEnabled(!estado);
+        pacienteI.btnHistorialMedico.setEnabled(estado);
     }
 
     @Override
@@ -78,12 +83,12 @@ public class MedicoController extends PacienteController {
 //            habilitarBotonesHistorial(this.medico.btnHistorialCitas, this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialMedico);
 //            medico.btnHistorialCitas.doClick();
 //        }
-//        
+
 //        if (e.getSource() == this.medico.btnHistorialCitas) {
 //            habilitarBotonesHistorial(this.medico.btnHistorialCitas, this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialMedico);
-//            pacienteI.mostrarVistaHistorial();
+        ////            pacienteI.mostrarVistaHistorial();
 //        }
-//        
+        
 //        if (e.getSource() == this.medico.btnHistorialMedico) {
 //            habilitarBotonesHistorial(this.medico.btnHistorialMedico, this.medico.btnHistorialCitas, this.medico.btnHistorialMedicoPaciente);
 //            UsuarioDao usuDao = new UsuarioDao();
@@ -94,28 +99,28 @@ public class MedicoController extends PacienteController {
 //                proceso(historial, true);
 //            }
 //        }
-//        
-//        if (e.getSource() == this.medico.btnHistorialMedicoPaciente) {
-//            this.medico.mostrarFormularioHistorialMedicoPaciente();
-//            habilitarBotonesHistorial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
-//        }
-//        
-//        if (e.getSource() == this.medico.btnBuscarIdHistorialPaciente) {
-//            habilitarBotonesHistorial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
-//            String idHistorial = medico.idHistorial.getText().trim();
-//            if (idHistorial.isBlank()) {
-//                JOptionPane.showMessageDialog(medico, "Por favor ingresa un numero de identificación");
-//            } else {
-//                UsuarioDao usuDao = new UsuarioDao();
-//                this.historialPaciente = usuDao.historialMedicoPorId(idHistorial);
-//                if (historialPaciente == null) {
-//                    proceso("Este paciente no tiene un historial medico", false);
-//                } else {
-//                    proceso(historialPaciente, true);
-//                }
-//            }
-//        }
         
+        if (e.getSource() == this.medico.btnHistorialMedicoPaciente) {
+            this.medico.mostrarFormularioHistorialMedicoPaciente();
+//            estadoBotonesHistial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
+        }
+
+        if (e.getSource() == this.medico.btnBuscarIdHistorialPaciente) {
+//            estadoBotonesHistial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
+            String idHistorial = medico.idHistorial.getText().trim();
+            if (idHistorial.isBlank()) {
+                JOptionPane.showMessageDialog(medico, "Por favor ingresa un numero de identificación");
+            } else {
+                UsuarioDao usuDao = new UsuarioDao();
+                this.historialPaciente = usuDao.historialMedicoPorId(idHistorial);
+                if (historialPaciente == null) {
+                    proceso("Este paciente no tiene un historial medico", false);
+                } else {
+                    proceso(historialPaciente, true);
+                }
+            }
+        }
+
         if (e.getSource() == this.medico.btnMiAgenda || e.getSource() == this.medico.btnVolverVerDetalles || e.getSource() == this.medico.btnNoReagendar) {
             this.medico.mostrarVistaMiAgenda();
             this.medico.btnMiAgenda.setEnabled(false);
@@ -128,11 +133,11 @@ public class MedicoController extends PacienteController {
                 for (Cita clave : citas) {
                     medico.citaVistaMiAgenda(clave.getEspecialidad(),
                             clave.getFechaCita().toString(), clave.getHoraCita().toString(),
-                            clave.getNombrePaciente(),clave);
+                            clave.getNombrePaciente(), clave);
                 }
             }
         }
-        
+
         if (e.getSource() == this.medico.btnConsultorio || e.getSource() == this.medico.simboloRegresarConfirmacionP || e.getSource() == this.medico.btnNoAsistio || e.getSource() == this.medico.btnAceptarFicha) {
             this.medico.mostrarVistaConsultorio();
             this.medico.btnConsultorio.setEnabled(false);
@@ -154,11 +159,11 @@ public class MedicoController extends PacienteController {
             this.medico.mostrarVistaFichaClinica();
             nombreMedicamentos();
         }
-        
+
         if (e.getSource() == this.medico.btnNoAsistio) {
             historialdao.actualizarEstadoCita(medico.citaSeleccionada.getIdCita());
         }
-        
+
         if (e.getSource() == this.medico.btnGuardarFicha) {
             String diagnostico = medico.campoDiagnostico.getText().trim();
             String medicamento = (String) medico.campoMedicamento.getSelectedItem();
@@ -193,7 +198,7 @@ public class MedicoController extends PacienteController {
                 }
             }
         }
-        
+
         if (e.getSource() == this.medico.btnAceptarFicha) {
             this.medico.mostrarVistaConsultorio();
             this.medico.btnConsultorio.setEnabled(false);

@@ -15,6 +15,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -93,6 +95,17 @@ public class OperarioInterfaz extends PacienteInterfaz {
         refrescarVentana(cuerpo1);
     }
 
+    private void bloquearBtn(JTextField campo) {
+        campo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent evt) {
+                if (campo.getText().isEmpty()) {
+                    btnAgendarCita.setEnabled(false);
+                }
+            }
+        });
+    }
+
     public void AgendarCita() {
         MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
@@ -108,6 +121,8 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
         txtBuscarID = new JTextField(15);
         txtBuscarID.setFont(new Font("Arial", Font.PLAIN, 16));
+        MetodosPublicos.soloNumeros(txtBuscarID, 10);
+        bloquearBtn(txtBuscarID);
 
         btnBuscarPaciente = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
         estilizarBoton(btnBuscarPaciente, (byte) 5);
@@ -158,6 +173,15 @@ public class OperarioInterfaz extends PacienteInterfaz {
         txtFechaNacimiento = new JTextField(20);
         txtSexo = new JTextField(20);
 
+        txtPrimerNombre.setEditable(false);
+        txtSegundoNombre.setEditable(false);
+        txtPrimerApellido.setEditable(false);
+        txtSegundoApellido.setEditable(false);
+        txtCorreo.setEditable(false);
+        txtTelefono.setEditable(false);
+        txtFechaNacimiento.setEditable(false);
+        txtSexo.setEditable(false);
+
         addFormField(panelFormulario, gbc, "Primer Nombre:", txtPrimerNombre, 0);
         addFormField(panelFormulario, gbc, "Segundo Nombre:", txtSegundoNombre, 1);
         addFormField(panelFormulario, gbc, "Primer Apellido:", txtPrimerApellido, 2);
@@ -170,6 +194,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelCentral.add(panelResumen, BorderLayout.WEST);
         panelCentral.add(panelFormulario, BorderLayout.CENTER);
 
+        btnAgendarCita.setEnabled(false);
         cuerpo2.add(panelBusqueda, BorderLayout.NORTH);
         cuerpo2.add(panelCentral, BorderLayout.CENTER);
         cuerpo2.add(btnAgendarCita, BorderLayout.SOUTH);

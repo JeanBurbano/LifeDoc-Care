@@ -35,6 +35,7 @@ import model.MedicamentosDao;
 import model.MedicoDao;
 import model.Medicos;
 import model.MedicosDao;
+import model.MetodosPublicos;
 import model.OperarioDao;
 import model.PersonalCentroDao;
 import model.RolDao;
@@ -78,7 +79,6 @@ public class AdminCentroController extends PacienteController {
         this.adminI.btnCrearHorario.addActionListener(this);
         this.adminI.btnVolver.addActionListener(this);
         this.adminI.btnGuardarHorario.addActionListener(this);
-
     }
 
     @Override
