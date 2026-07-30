@@ -11,6 +11,7 @@ import model.MetodosPublicos;
 public class RegistroPersonalInterfaz extends RegistroUsuariosInterfaz{
     
     public JComboBox<String> campoRol;
+    public JComboBox<String> especialidad;
     private static final String[] ARREGLO_ID_PERSONAL = {"Cedula Ciudadania"};
     private JScrollPane scroll;
     
@@ -25,6 +26,9 @@ public class RegistroPersonalInterfaz extends RegistroUsuariosInterfaz{
         this.campoRol = new JComboBox<>();
         MetodosPublicos.crearComboEstilizado(campoRol);
         
+        this.especialidad = new JComboBox<>();
+        MetodosPublicos.crearComboEstilizado(especialidad);
+        
         GridBagConstraints gbDatos = new GridBagConstraints();
         gbDatos.insets = new Insets(0, 0, 0, 30);
         gbDatos.anchor = GridBagConstraints.WEST;
@@ -35,7 +39,8 @@ public class RegistroPersonalInterfaz extends RegistroUsuariosInterfaz{
         gbDatos.gridx = 2; 
         gbDatos.insets = new Insets(0, 0, 0, 0);
         camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("Rol del Personal *", campoRol), gbDatos);
-        
+        gbDatos.gridx = 3;
+        camposDatos.add(MetodosPublicos.crearCampoConEtiqueta("especialidad *", especialidad), gbDatos);
         
         MetodosPublicos.refrescarVentana(cuerpo2);
         

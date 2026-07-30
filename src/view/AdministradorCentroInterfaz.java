@@ -248,10 +248,9 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
         // ---- Modelo y columnas de la tabla de personal ----
         listaPersonalR = new DefaultTableModel(); // modelo de datos vacío para la tabla
-        listaPersonalR.addColumn("FOTO DE PERFIL");
         listaPersonalR.addColumn("TIPO DOCUMENTO");
         listaPersonalR.addColumn("NÚMERO DOCUMENTO");
-        listaPersonalR.addColumn("NOMBRE COMPLETO");
+        listaPersonalR.addColumn("NOMBRE");
         listaPersonalR.addColumn("EDAD");
         listaPersonalR.addColumn("SEXO");
         listaPersonalR.addColumn("CORREO");
@@ -487,9 +486,10 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         listaHorarioM.addColumn("ETIQUETA");
         listaHorarioM.addColumn("NOMBRE");
         listaHorarioM.addColumn("FECHA CREACIÓN");
+        listaHorarioM.addColumn("ESTADO");
         listaHorarioM.addColumn("  "); //columna reservada para el botón asignar en cada fila
-        listaHorarioM.addColumn("  "); //columna reservada para el botón eliminar en cada fila
-        listaHorarioM.addColumn("  "); //columna reservada para el botón editar en cada fila
+        listaHorarioM.addColumn("  "); //columna reservada para el botón ediar en cada fila
+        listaHorarioM.addColumn("  "); //columna reservada para el botón inhabilitar en cada fila
 
         // Tabla y scroll
         tablaHorarioM = new JTable(listaHorarioM) {
@@ -503,8 +503,6 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
                 new BotonTablaRenderer("Asignar", PacienteInterfaz.COLOR_VERDE_ACENTO));
         tablaHorarioM.getColumnModel().getColumn(4).setCellRenderer(
                 new BotonTablaRenderer("Editar", PacienteInterfaz.COLOR_AZUL_CORPORATIVO));
-        tablaHorarioM.getColumnModel().getColumn(5).setCellRenderer(
-                new BotonTablaRenderer("Eliminar", Color.RED));
         miscrollListaHorarioM = new JScrollPane(tablaHorarioM);
         miscrollListaHorarioM.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         miscrollListaHorarioM.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -844,13 +842,31 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
             setFocusPainted(false);
             setBorderPainted(false);
             setOpaque(true);
-            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // manito al pasar el mouse
+            
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                 boolean isSelected, boolean hasFocus, int row, int column) {
             return this; // se reutiliza el mismo botón para  cualquier fila
+        }
+    }
+    
+    private class BotonEstadoHorarioRenderer extends JButton implements TableCellRenderer {
+        public BotonEstadoHorarioRenderer() {
+            setFont(new Font("Arial", Font.BOLD, 12));
+            setContentAreaFilled(false);
+            setBorderPainted(false);
+            setFocusPainted(false);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            boolean habilitado = "Habilitado".equals(table.getValueAt(row, 3)); // columna ESTADO
+            setText(habilitado ? "Inhabilitar" : "Habilitar");
+            setForeground(habilitado ? Color.RED : PacienteInterfaz.COLOR_VERDE_ACENTO);
+            return this;
         }
     }
 
@@ -867,7 +883,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                 boolean isSelected, boolean hasFocus, int row, int column) {
-            boolean habilitado = "Habilitado".equals(table.getValueAt(row, 8)); // columna ESTADO
+            boolean habilitado = "Habilitado".equals(table.getValueAt(row, 7)); // columna ESTADO
             setText(habilitado ? "Inhabilitar" : "Habilitar");
             setForeground(habilitado ? Color.RED : PacienteInterfaz.COLOR_VERDE_ACENTO);
             return this;

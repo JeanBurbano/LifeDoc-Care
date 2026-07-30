@@ -67,11 +67,11 @@ public class HorarioDao implements Crud<Horario> {
     @Override
     public List<Horario> listar() {
         List<Horario> listaHorarios = new ArrayList<Horario>();
-        String sql = "SELECT h.id_horario, h.nombre, h.color_etiqueta, h.fecha_creacion, "
-                + "hd.dia_semana, hd.hora_inicio, hd.hora_fin, hd.descanso_inicio, hd.descanso_fin "
-                + "FROM horarios h "
-                + "LEFT JOIN horario_dias hd ON hd.id_horarios = h.id_horario "
-                + "ORDER BY h.id_horario";
+        String sql = "SELECT h.id_horario, h.nombre, h.color_etiqueta, h.fecha_creacion, h.estado, "
+                   + "hd.dia_semana, hd.hora_inicio, hd.hora_fin, hd.descanso_inicio, hd.descanso_fin "
+                   + "FROM horarios h "
+                   + "LEFT JOIN horario_dias hd ON hd.id_horarios = h.id_horario "
+                   + "ORDER BY h.id_horario";
         try {
             con = conectar.getConection();
             ps = con.prepareStatement(sql);
@@ -89,6 +89,7 @@ public class HorarioDao implements Crud<Horario> {
                     horarioActual.setNombre(rs.getString("nombre"));
                     horarioActual.setColorEtiqueta(rs.getString("color_etiqueta"));
                     horarioActual.setFechaCreacion(rs.getString("fecha_creacion"));
+                    horarioActual.setEstado(rs.getInt("estado") == 1);
                     horarioActual.setDias(new ArrayList<HorarioDia>());
                     listaHorarios.add(horarioActual);
                     idHorarioAnterior = idHorario;
@@ -187,34 +188,29 @@ public class HorarioDao implements Crud<Horario> {
 
     @Override
     public int setEliminar(int id) {
-        try {
-            con = conectar.getConection();
-            ps = con.prepareStatement("DELETE FROM horario_dias WHERE id_horarios = ?");
-            ps.setInt(1, id);
-            ps.executeUpdate();
-
-            ps = con.prepareStatement("DELETE FROM horarios WHERE id_horario = ?");
-            ps.setInt(1, id);
-            ps.executeUpdate();
-            return 1;
+        return 0;
+    }
+    
+    public int habilitar(int idHorario) {
+        String sql = "UPDATE horarios SET estado = 1 WHERE id_horario = ?";
+        try (Connection c = conectar.getConection(); PreparedStatement pst = c.prepareStatement(sql)) {
+            pst.setInt(1, idHorario);
+            return pst.executeUpdate();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                    e.toString(),
-                    "Error en la Eliminación" + e.getMessage(),
-                    JOptionPane.ERROR_MESSAGE
-            );
+            JOptionPane.showMessageDialog(null, e.toString(), "Error al habilitar el horario", JOptionPane.ERROR_MESSAGE);
             return 0;
-        } finally {
-            if (con != null) {
-                try {
-                    con.close();
-                    ps.close();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, e.toString());
-                }
-            }
         }
-
+    }
+    
+    public int deshabilitar(int idHorario) {
+        String sql = "UPDATE horarios SET estado = 0 WHERE id_horario = ?";
+        try (Connection c = conectar.getConection(); PreparedStatement pst = c.prepareStatement(sql)) {
+            pst.setInt(1, idHorario);
+            return pst.executeUpdate();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.toString(), "Error al inhabilitar el horario", JOptionPane.ERROR_MESSAGE);
+            return 0;
+        }
     }
 
     public static String indiceANombreDia(int indice) {

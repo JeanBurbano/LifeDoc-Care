@@ -43,6 +43,8 @@ import model.SeleccionImagenes;
 
 import model.TipoMedicamento;
 import model.TipoMedicamentoDao;
+import model.Usuario;
+import model.UsuarioDao;
 import view.ConstructorFilaHorario;
 import view.AdministradorCentroInterfaz;
 import view.RegistroPersonalInterfaz;
@@ -54,7 +56,7 @@ public class AdminCentroController extends PacienteController {
     // Columnas de la tabla de horarios
     private static final int COLUMNA_ASIGNAR = 3;
     private static final int COLUMNA_EDITAR = 4;
-    private static final int COLUMNA_ELIMINAR = 5;
+    private static final int COLUMNA_ESTADO = 6;
 
     private List<Horario> horariosActuales = new ArrayList<>();
     private List<Medicos> medicosActuales = new ArrayList<>();
@@ -62,6 +64,7 @@ public class AdminCentroController extends PacienteController {
     private List<TipoMedicamento> tiposActuales = new ArrayList<>();
     private List<CategoriaMedicamento> categoriasActuales = new ArrayList<>();
     private List<Medicamentos> medicamentosActuales = new ArrayList<>();
+    private List<Usuario> personalCentro = new ArrayList<>();
 
     public AdminCentroController(AdministradorCentroInterfaz adminI) {
         super(adminI);
@@ -100,6 +103,7 @@ public class AdminCentroController extends PacienteController {
             adminI.mostrarVistaPersonalCentroApartado();
             adminI.btnPersonalCentro.setEnabled(false);
             adminI.habilitarBotonesMenu(adminI.btnPersonalCentro);
+            cargarPersonal();
         }
 
         if (e.getSource() == adminI.btnInventarioMedicamentos) {
@@ -155,6 +159,17 @@ public class AdminCentroController extends PacienteController {
             vistaPersonal.setVisible(true);
         }
     }
+    
+    private void cargarPersonal() {
+    List<Usuario> personal = new UsuarioDao().listarPersonal();
+    for (Usuario u : personal) {
+        adminI.listaPersonalR.addRow(new Object[]{
+            u.getTipoIdentificacion(), u.getNumeroIdentificacion(),
+            u.getPrimerNombre() + " " + u.getPrimerApellido(), u.getEdad(), u.getSexoBiologico(),
+            u.getCorreo(), u.getNumeroCelular(), u.getRol(), "" 
+        });
+    }
+}
 
     //inventario de medicamentos 
     private void manejarApartadoMedicamento(ActionEvent e) {
@@ -228,6 +243,14 @@ public class AdminCentroController extends PacienteController {
                 || adminI.campoFechaVencimiento.getDate() == null) {
             JOptionPane.showMessageDialog(null, "Por favor completa todos los campos obligatorios.",
                     "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        String nrs = adminI.campoNRS.getText().trim();
+        if (nrs.length() != 14) {
+            JOptionPane.showMessageDialog(null,
+                    "El Número de Registro Sanitario debe tener exactamente 14 caracteres.",
+                    "Dato inválido", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -520,7 +543,10 @@ public class AdminCentroController extends PacienteController {
     private void cargarHorarios() {
         horariosActuales = new HorarioDao().listar();
         for (Horario h : horariosActuales) {
-            adminI.listaHorarioM.addRow(new Object[]{h.getColorEtiqueta(), h.getNombre(), h.getFechaCreacion(), "", "", ""});
+            adminI.listaHorarioM.addRow(new Object[]{
+                h.getColorEtiqueta(), h.getNombre(), h.getFechaCreacion(),
+                h.isEstado() ? "Habilitado" : "Inhabilitado", "", "", ""
+            });
         }
     }
 
@@ -538,15 +564,8 @@ public class AdminCentroController extends PacienteController {
                     abrirAsignacion(fila);
                 } else if (columna == COLUMNA_EDITAR) {
                     editarHorario(fila);
-                } else if (columna == COLUMNA_ELIMINAR) {
-
-                    int respuesta = JOptionPane.showConfirmDialog(null,
-                            "¿Seguro que deseas eliminar este horario?",
-                            "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-
-                    if (respuesta == JOptionPane.YES_OPTION) {
-                        eliminarHorario(fila);
-                    }
+                } else if (columna == COLUMNA_ESTADO) {
+                    alternarEstadoHorario(fila);
                 }
             }
         });
@@ -605,18 +624,19 @@ public class AdminCentroController extends PacienteController {
         // Pendiente,me falta setActualizar en HorarioDao
     }
 
-    private void eliminarHorario(int fila) {
-        int idHorario = horariosActuales.get(fila).getId();
-        int respuesta = JOptionPane.showConfirmDialog(null,
-                "¿Seguro que deseas eliminar este horario?",
-                "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+    private void alternarEstadoHorario(int fila) {
+        Horario h = horariosActuales.get(fila);
+        HorarioDao dao = new HorarioDao();
 
-        if (respuesta == JOptionPane.YES_OPTION) {
-            new HorarioDao().setEliminar(idHorario);
-            adminI.mostrarVistaHorarioMedicoApartado();
-            cargarHorarios();
-            agregarListenerBotonesTabla();
+        if (h.isEstado()) {
+            dao.deshabilitar(h.getId());
+        } else {
+            dao.habilitar(h.getId());
         }
+
+        adminI.mostrarVistaHorarioMedicoApartado();
+        cargarHorarios();
+        agregarListenerBotonesTabla();
     }
 
     private void manejarTablaHorarios(ActionEvent e) {

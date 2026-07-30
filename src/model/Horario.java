@@ -20,6 +20,7 @@ public class Horario {
     private Integer idConsultorio;
     private Integer mes;
     private Integer anio;
+    private boolean estado;
 
     public Integer getIdMedico() {
         return idMedico;
@@ -94,6 +95,14 @@ public class Horario {
 
     public void setFechaCreacion(String fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
+    }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
     }
     
     

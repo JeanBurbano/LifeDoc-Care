@@ -225,6 +225,164 @@ public class UsuarioDao implements Crud<Paciente> {
         }
         return idGenerado;
     }
+    
+    /**
+     * Registra un usuario con rol Médico (id_rol = 3): inserta en
+     * "usuario" y en "medico" dentro de una sola transacción.
+     */
+    public int registrarMedico(int idTipoIdentificacion, String numeroIdentificacion,
+            String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String correoElectronico, String contrasena, LocalDate fechaNacimiento,
+            String sexoBiologico, String numeroCelular, byte edad, String sisben, int idEspecialidad) {
+
+        int idGenerado = -1;
+        String sqlUsuario = "INSERT INTO usuario "
+                + "(id_rol, id_tipo_identificacion, numero_identificacion, primer_nombre, segundo_nombre, "
+                + "primer_apellido, segundo_apellido, correo_electronico, contrasena, fecha_nacimiento, "
+                + "sexo_biologico, numero_celular, edad, sisben) "
+                + "VALUES (3, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlMedico = "INSERT INTO medico (id_usuario, id_especialidad) VALUES (?, ?)";
+
+        PreparedStatement psMedico = null;
+        try {
+            this.con = conectar.getConection();
+            con.setAutoCommit(false);
+
+            this.ps = con.prepareStatement(sqlUsuario, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, idTipoIdentificacion);
+            ps.setString(2, numeroIdentificacion);
+            ps.setString(3, primerNombre);
+            ps.setString(4, (segundoNombre == null || segundoNombre.isBlank()) ? null : segundoNombre);
+            ps.setString(5, primerApellido);
+            ps.setString(6, (segundoApellido == null || segundoApellido.isBlank()) ? null : segundoApellido);
+            ps.setString(7, correoElectronico);
+            ps.setString(8, contrasena);
+            ps.setDate(9, java.sql.Date.valueOf(fechaNacimiento));
+            ps.setString(10, sexoBiologico);
+            ps.setString(11, (numeroCelular == null || numeroCelular.isBlank()) ? null : numeroCelular);
+            ps.setByte(12, edad);
+            ps.setString(13, sisben);
+
+            int filas = ps.executeUpdate();
+            if (filas > 0) {
+                this.rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    idGenerado = rs.getInt(1);
+                }
+            }
+            if (idGenerado == -1) {
+                throw new SQLException("No se pudo generar el usuario.");
+            }
+
+            psMedico = con.prepareStatement(sqlMedico);
+            psMedico.setInt(1, idGenerado);
+            psMedico.setInt(2, idEspecialidad);
+            if (psMedico.executeUpdate() <= 0) {
+                throw new SQLException("No se pudo vincular el médico con el usuario generado.");
+            }
+
+            con.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            idGenerado = -1;
+            try {
+                if (con != null) con.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (psMedico != null) psMedico.close();
+                if (ps != null) ps.close();
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return idGenerado;
+    }
+
+    
+    public int registrarOperario(int idTipoIdentificacion, String numeroIdentificacion,
+            String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String correoElectronico, String contrasena, LocalDate fechaNacimiento,
+            String sexoBiologico, String numeroCelular, byte edad, String sisben) {
+
+        int idGenerado = -1;
+        String sqlUsuario = "INSERT INTO usuario "
+                + "(id_rol, id_tipo_identificacion, numero_identificacion, primer_nombre, segundo_nombre, "
+                + "primer_apellido, segundo_apellido, correo_electronico, contrasena, fecha_nacimiento, "
+                + "sexo_biologico, numero_celular, edad, sisben) "
+                + "VALUES (4, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlOperario = "INSERT INTO operario (id_usuario) VALUES (?)";
+
+        PreparedStatement psOperario = null;
+        try {
+            this.con = conectar.getConection();
+            con.setAutoCommit(false);
+
+            this.ps = con.prepareStatement(sqlUsuario, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, idTipoIdentificacion);
+            ps.setString(2, numeroIdentificacion);
+            ps.setString(3, primerNombre);
+            ps.setString(4, (segundoNombre == null || segundoNombre.isBlank()) ? null : segundoNombre);
+            ps.setString(5, primerApellido);
+            ps.setString(6, (segundoApellido == null || segundoApellido.isBlank()) ? null : segundoApellido);
+            ps.setString(7, correoElectronico);
+            ps.setString(8, contrasena);
+            ps.setDate(9, java.sql.Date.valueOf(fechaNacimiento));
+            ps.setString(10, sexoBiologico);
+            ps.setString(11, (numeroCelular == null || numeroCelular.isBlank()) ? null : numeroCelular);
+            ps.setByte(12, edad);
+            ps.setString(13, sisben);
+
+            int filas = ps.executeUpdate();
+            if (filas > 0) {
+                this.rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    idGenerado = rs.getInt(1);
+                }
+            }
+            if (idGenerado == -1) {
+                throw new SQLException("No se pudo generar el usuario.");
+            }
+
+            psOperario = con.prepareStatement(sqlOperario);
+            psOperario.setInt(1, idGenerado);
+            if (psOperario.executeUpdate() <= 0) {
+                throw new SQLException("No se pudo vincular el operario con el usuario generado.");
+            }
+
+            con.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            idGenerado = -1;
+            try {
+                if (con != null) con.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (psOperario != null) psOperario.close();
+                if (ps != null) ps.close();
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return idGenerado;
+    }
+    
+    
 
     public boolean actualizarCampoUsuario(int id_usuario, String nombreCampo, String nuevoValor) {
         boolean validador = false;
@@ -468,6 +626,60 @@ public class UsuarioDao implements Crud<Paciente> {
             }
         }
         return lista;
+    }
+    
+    public List<Usuario> listarPersonal() {
+        List<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT u.id_usuario, u.id_rol, u.id_tipo_identificacion, u.numero_identificacion, "
+                + "u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido, "
+                + "u.correo_electronico, u.fecha_nacimiento, u.sexo_biologico, u.numero_celular, "
+                + "u.edad, u.sisben, u.estado, f.url_foto_perfil "
+                + "FROM usuario u "
+                + "LEFT JOIN fotos_perfil f ON f.id_usuario = u.id_usuario AND f.es_actual = 1 "
+                + "WHERE u.id_rol IN (3, 4) "
+                + "ORDER BY u.primer_apellido, u.primer_nombre";
+        try {
+            this.con = conectar.getConection();
+            this.ps = con.prepareStatement(sql);
+            this.rs = ps.executeQuery();
+            while (rs.next()) {
+                Usuario u = new Usuario(
+                        rs.getInt("id_usuario"),
+                        rs.getByte("id_rol"),
+                        rs.getByte("id_tipo_identificacion"),
+                        rs.getString("numero_identificacion"),
+                        rs.getString("primer_nombre"),
+                        nullASeguro(rs.getString("segundo_nombre")), 
+                        rs.getString("primer_apellido"),
+                        nullASeguro(rs.getString("segundo_apellido")),
+                        rs.getString("correo_electronico"),
+                        "***********", // no se expone la contraseña real
+                        rs.getDate("fecha_nacimiento").toLocalDate(),
+                        rs.getString("sexo_biologico"),
+                        rs.getString("numero_celular"),
+                        rs.getByte("edad"),
+                        rs.getString("sisben"),
+                        rs.getBoolean("estado"),
+                        rs.getString("url_foto_perfil")
+                );
+                lista.add(u);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return lista;
+    }
+    
+    private String nullASeguro(String valor) {
+        return valor == null ? "" : valor;
     }
 
     @Override

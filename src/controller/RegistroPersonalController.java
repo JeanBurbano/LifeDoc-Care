@@ -10,13 +10,12 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import model.Especialidad;
+import model.EspecialidadDao;
 import model.Medico;
 import model.MedicoDao;
-import model.MetodosPublicos;
 import model.Operario;
 import model.OperarioDao;
-import model.PersonalCentro;
-import model.PersonalCentroDao;
 import model.Rol;
 import model.RolDao;
 import model.UsuarioDao;
@@ -34,8 +33,10 @@ public class RegistroPersonalController extends RegistroUsuariosController {
     private MedicoDao medicoDao;
     private OperarioDao operarioDao;
     private RolDao rolDao;
+    private EspecialidadDao especialidadDao;
 
     private List<Rol> roles = new ArrayList<>();
+    private List<Especialidad> especialidad = new ArrayList<>();
 
     public RegistroPersonalController(RegistroPersonalInterfaz rpI) {
         super(rpI); // Hereda los actionListeners del R.usuarios
@@ -44,6 +45,7 @@ public class RegistroPersonalController extends RegistroUsuariosController {
         this.medicoDao = new MedicoDao();
         this.operarioDao = new OperarioDao();
         this.rolDao = new RolDao();
+        this.especialidadDao = new EspecialidadDao();
 
         cargarComboRoles();
     }
@@ -57,6 +59,14 @@ public class RegistroPersonalController extends RegistroUsuariosController {
         }
     }
     
+    private void cargarComboEspecialidad() {
+        rpI.especialidad.removeAllItems();
+        List<Especialidad> listaEsp = especialidadDao.listar();
+        for (Especialidad e : listaEsp) {
+            rpI.campoRol.addItem(e.getNombreEsp());
+        }
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == rpI.btnRegistrarse) {
@@ -67,7 +77,7 @@ public class RegistroPersonalController extends RegistroUsuariosController {
     }
 
     private void registrarPersonal() {
-        // 1. Validar el campo único/nuevo del personal (Rol)
+        //  Validar el campo único/nuevo del personal (Rol)
         if (rpI.campoRol.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(rpI, "Selecciona un rol válido para el personal", "Datos inválidos", JOptionPane.WARNING_MESSAGE);
             return;
@@ -75,10 +85,10 @@ public class RegistroPersonalController extends RegistroUsuariosController {
 
         String rolSeleccionado = String.valueOf(rpI.campoRol.getSelectedItem());
         
-        // Asignamos el ID de rol correspondiente (3 = Médico, 4 = Operario)
+        // Asignamos el ID de rol correspondiente 
         int idRol = (rolSeleccionado.equalsIgnoreCase("Medico") || rolSeleccionado.equalsIgnoreCase("Médico")) ? 3 : 4;
         
-        // 2. Para registrar el usuario base aprovechando la transacción de UsuarioDao
+        // Para registrar el usuario base aprovechando la transacción de UsuarioDao
         int idTipoIdentificacion = rpI.campoTipoId.getSelectedIndex() + 3; // 'Cedula Ciudadania' en BD es 3
         String numeroIdentificacion = rpI.campoNumeroID.getText().trim();
         String primerNombre = rpI.campoPrimerNombre.getText().trim();
@@ -112,7 +122,7 @@ public class RegistroPersonalController extends RegistroUsuariosController {
                 sisben
         );
 
-        // 3. Vincular con la tabla específica (Medico u Operario) si el usuario fue creado exitosamente
+        // Vincular con la tabla específica del rol si el usuario fue creado exitosamente
         if (idUsuarioGenerado != -1) {
             int resultado = 0;
 
