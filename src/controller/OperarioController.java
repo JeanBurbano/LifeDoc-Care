@@ -62,6 +62,7 @@ public class OperarioController extends PacienteController {
                     "Paciente encontrado y cargado correctamente.",
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
+            vista.btnAgendarCita.setEnabled(true);
         } else {
             JOptionPane.showMessageDialog(vista,
                     "No se encontró paciente con ID: " + id,

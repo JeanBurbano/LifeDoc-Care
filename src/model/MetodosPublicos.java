@@ -52,6 +52,34 @@ public class MetodosPublicos {
         });
     }
 
+    public static void soloLetras(JTextField campo, int longitudMaxima) {
+        campo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent evt) {
+                int key = evt.getKeyChar();
+
+                boolean mayusculas = key >= 65 && key <= 90;
+                boolean minusculas = key >= 97 && key <= 122;
+
+                if (!(mayusculas || minusculas)) evt.consume();
+                
+                if(campo.getText().length() >=longitudMaxima) evt.consume();
+                
+            }
+        });
+    }
+
+    public static void tamanoField(JTextField campo, int longitudMaxima) {
+        campo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent evt) {
+                if (campo.getText().length() >= longitudMaxima) {
+                    evt.consume();
+                }
+            }
+        });
+    }
+
     public static byte calcularEdad(LocalDate fechaNacimiento) {
         if (fechaNacimiento == null) {
             return 0;
@@ -91,6 +119,7 @@ public class MetodosPublicos {
         boton.setFocusPainted(false);
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         boton.setOpaque(true);
+        boton.putClientProperty("JButton.buttonType", "roundRect");
 
         switch (estilo) {
             case 1://Botones del menu cuerpo1

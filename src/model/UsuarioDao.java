@@ -426,7 +426,7 @@ public class UsuarioDao implements Crud<Paciente> {
 
     @Override
     public List<Paciente> listar() {
-        List<Paciente> lista = new ArrayList<>();
+        List<Paciente> lista = null;
         String sql = "SELECT id_usuario, id_rol, primer_nombre, segundo_nombre, primer_apellido, "
                 + "segundo_apellido, edad, correo_electronico, numero_celular, estado "
                 + "FROM usuario";
