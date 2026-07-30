@@ -212,7 +212,6 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         btnregistrarPersonal.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnAñadirMedicamento.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnCrearHorario.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
     }
 
     //Habilitar e inhabilitar los botones
@@ -390,7 +389,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         campoNRS = MetodosPublicos.crearCampoTexto(); // campo para el número de registro sanitario
         campoNombreM = MetodosPublicos.crearCampoTexto(); // campo para el nombre del medicamento
         campoCantidad = MetodosPublicos.crearCampoTexto(); // campo para la cantidad
-
+        MetodosPublicos.tamanoField(campoNRS, 14);
         campoTipoM = new JComboBox(); // combo vacío: el Controlador lo llenará con los tipos desde la BD
         MetodosPublicos.crearComboEstilizado(campoTipoM); // se le aplica el estilo, sin tocar sus datos
 
@@ -903,7 +902,5 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
             return this;
         }
     }
-
-
 
 }

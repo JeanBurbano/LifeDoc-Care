@@ -14,7 +14,7 @@ public class PacienteDao {
         String sql = "SELECT u.id_usuario, u.id_rol, u.id_tipo_identificacion, u.numero_identificacion, "
                 + "u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido, "
                 + "u.correo_electronico, u.fecha_nacimiento, u.sexo_biologico, u.numero_celular, "
-                + "u.edad, u.estado, u.sisben "
+                + "u.edad, u.estado, u.sisben, p.id_paciente "
                 + "FROM usuario u "
                 + "JOIN paciente p ON p.id_usuario = u.id_usuario "
                 + "WHERE u.numero_identificacion = ? AND u.id_rol = 5";
@@ -39,9 +39,9 @@ public class PacienteDao {
                             rs.getByte("id_tipo_identificacion"),
                             rs.getString("numero_identificacion"),
                             rs.getString("primer_nombre"),
-                            rs.getString("segundo_nombre"),
+                            rs.getString("segundo_nombre") == null ? "No aplica" : rs.getString("segundo_nombre"),
                             rs.getString("primer_apellido"),
-                            rs.getString("segundo_apellido"),
+                            rs.getString("segundo_apellido") == null ? "No aplica" : rs.getString("segundo_apellido"),
                             rs.getString("correo_electronico"),
                             "************",
                             rs.getDate("fecha_nacimiento").toLocalDate(),
@@ -51,7 +51,7 @@ public class PacienteDao {
                             rs.getString("sisben"),
                             rs.getBoolean("estado"),
                             null, // es null puesto que aqui no necesitamos la foto de perfil
-                            rs.getInt("")
+                            rs.getInt("id_paciente")
                     );
                 }
             }
