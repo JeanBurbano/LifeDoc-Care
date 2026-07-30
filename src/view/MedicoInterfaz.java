@@ -184,6 +184,8 @@ public class MedicoInterfaz extends PacienteInterfaz {
         tituloIdPaciente.setFont(new Font("arial", Font.BOLD, 28));
         tituloIdPaciente.setForeground(COLOR_AZUL_CORPORATIVO);
         tituloIdPaciente.setBorder(new EmptyBorder(170, 200, 50, 200));
+        
+        MetodosPublicos.soloNumeros(idHistorial, 10);
 
         this.panelHistorial.remove(this.panelBarraBusqueda);
         this.panelHistorial.remove(this.scrollHistorial);
