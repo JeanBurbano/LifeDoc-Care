@@ -133,8 +133,8 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
         this.panelPrincipal = new JPanel();
         this.panelPrincipal.setOpaque(false);
-        panelLateralBotonesHistorial.add(Box.createRigidArea(new Dimension(0, 30)));
-        panelLateralBotonesHistorial.add(btnHistorialMedicoPaciente);
+//        panelLateralBotonesHistorial.add(Box.createRigidArea(new Dimension(0, 30)));
+//        panelLateralBotonesHistorial.add(btnHistorialMedicoPaciente);
     }
 
     @Override
@@ -198,11 +198,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         MetodosPublicos.refrescarVentana(panelListaHistorial);
         MetodosPublicos.refrescarVentana(panelBarraBusqueda);
     }
-
-//    @Override
-//    public void mostrarVistaHistorialConHistorial(String historial, String nombre, String edad) {
-//        this.btnDescargarHistorialP = this.btnDescargar;
-//    }
+    
     public void mostrarVistaMiAgenda() {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelPrincipal);

@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
@@ -63,62 +64,42 @@ public class MedicoController extends PacienteController {
         }
     }
 
-    @Override
-    protected void estadoBotonesHistial(boolean estado) {
-        if(medico.btnHistorialMedicoPaciente.isEnabled()){
-            medico.btnHistorialMedicoPaciente.setEnabled(!estado);
-        }else if(!medico.btnHistorialMedicoPaciente.isEnabled()){
-            
-        }
-        pacienteI.btnHistorialCitas.setEnabled(!estado);
-        pacienteI.btnHistorialMedico.setEnabled(estado);
-    }
+//    @Override
+//    protected void estadoBotonesHistial(boolean estado) {
+//        if(medico.btnHistorialMedicoPaciente.isEnabled()){
+//            medico.btnHistorialMedicoPaciente.setEnabled(!estado);
+//        }else if(!medico.btnHistorialMedicoPaciente.isEnabled()){
+//            
+//        }
+//        pacienteI.btnHistorialCitas.setEnabled(!estado);
+//        pacienteI.btnHistorialMedico.setEnabled(estado);
+//    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
         this.medico = (MedicoInterfaz) pacienteI;
-//        if (e.getSource() == this.medico.btnHistorial) {
-//            habilitarBotonesHistorial(this.medico.btnHistorialCitas, this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialMedico);
-//            medico.btnHistorialCitas.doClick();
+        
+//        if (e.getSource() == this.medico.btnHistorialMedicoPaciente) {
+//            this.medico.mostrarFormularioHistorialMedicoPaciente();
+////            estadoBotonesHistial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
 //        }
 
-//        if (e.getSource() == this.medico.btnHistorialCitas) {
-//            habilitarBotonesHistorial(this.medico.btnHistorialCitas, this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialMedico);
-        ////            pacienteI.mostrarVistaHistorial();
-//        }
-        
-//        if (e.getSource() == this.medico.btnHistorialMedico) {
-//            habilitarBotonesHistorial(this.medico.btnHistorialMedico, this.medico.btnHistorialCitas, this.medico.btnHistorialMedicoPaciente);
-//            UsuarioDao usuDao = new UsuarioDao();
-//            this.historial = usuDao.historialMedico(medico.getUsuario().getIdUsuario());
-//            if (historial == null) {
-//                proceso("No tienes historial medico", false);
+//        if (e.getSource() == this.medico.btnBuscarIdHistorialPaciente) {
+////            estadoBotonesHistial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
+//            String idHistorial = medico.idHistorial.getText().trim();
+//            if (idHistorial.isBlank()) {
+//                JOptionPane.showMessageDialog(medico, "Por favor ingresa un numero de identificación");
 //            } else {
-//                proceso(historial, true);
+//                UsuarioDao usuDao = new UsuarioDao();
+//                this.historialPaciente = usuDao.historialMedicoPorId(idHistorial);
+//                if (historialPaciente == null) {
+//                    proceso("Este paciente no tiene un historial medico", false);
+//                } else {
+//                    proceso(historialPaciente, true);
+//                }
 //            }
 //        }
-        
-        if (e.getSource() == this.medico.btnHistorialMedicoPaciente) {
-            this.medico.mostrarFormularioHistorialMedicoPaciente();
-//            estadoBotonesHistial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
-        }
-
-        if (e.getSource() == this.medico.btnBuscarIdHistorialPaciente) {
-//            estadoBotonesHistial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
-            String idHistorial = medico.idHistorial.getText().trim();
-            if (idHistorial.isBlank()) {
-                JOptionPane.showMessageDialog(medico, "Por favor ingresa un numero de identificación");
-            } else {
-                UsuarioDao usuDao = new UsuarioDao();
-                this.historialPaciente = usuDao.historialMedicoPorId(idHistorial);
-                if (historialPaciente == null) {
-                    proceso("Este paciente no tiene un historial medico", false);
-                } else {
-                    proceso(historialPaciente, true);
-                }
-            }
-        }
 
         if (e.getSource() == this.medico.btnMiAgenda || e.getSource() == this.medico.btnVolverVerDetalles || e.getSource() == this.medico.btnNoReagendar) {
             this.medico.mostrarVistaMiAgenda();
@@ -203,22 +184,5 @@ public class MedicoController extends PacienteController {
             this.medico.btnConsultorio.setEnabled(false);
             this.medico.habilitarBotonesMenu(this.medico.btnConsultorio);
         }
-//        if (e.getSource() == this.medico.btnVerDetalles) {
-//            this.medico.mostrarDetallesCita();
-//            this.medico.btnMiAgenda.setEnabled(false);
-//            this.medico.habilitarBotonesMenu(this.medico.btnMiAgenda);
-//        }
-//        if (e.getSource() == this.medico.btnReagendarCita) {
-//            this.medico.mostrarVistaConfirmacionReagendar();
-//            this.medico.btnMisCitas.setEnabled(false);
-//            this.medico.btnHistorial.setEnabled(false);
-//            this.medico.btnComentarios.setEnabled(false);
-//            this.medico.btnNotificaciones.setEnabled(false);
-//            this.medico.btnMiAgenda.setEnabled(false);
-//            this.medico.btnConsultorio.setEnabled(false);
-//        }
-//        if (e.getSource() == this.medico.btnActReagendar) {
-//
-//        }
     }
 }
