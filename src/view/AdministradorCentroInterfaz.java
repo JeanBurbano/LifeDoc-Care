@@ -387,6 +387,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         //Se crean los campos
         campoNRS = MetodosPublicos.crearCampoTexto(); // campo para el número de registro sanitario
         campoNombreM = MetodosPublicos.crearCampoTexto(); // campo para el nombre del medicamento
+        MetodosPublicos.soloLetras(campoNombreM, 200);
         campoCantidad = MetodosPublicos.crearCampoTexto(); // campo para la cantidad
         MetodosPublicos.tamanoField(campoNRS, 14);
         campoTipoM = new JComboBox(); // combo vacío: el Controlador lo llenará con los tipos desde la BD
@@ -432,6 +433,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         campoCategoriaM.setPreferredSize(new Dimension(200, 35));
 
         campoStock = MetodosPublicos.crearCampoTexto();
+        MetodosPublicos.soloNumeros(campoStock, 1000);
         gbc.gridx = 0;
         gbc.gridy = 3;
         formuM.add(MetodosPublicos.crearCampoConEtiqueta("Stock:", campoStock), gbc);
@@ -499,9 +501,9 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
             }
         };
         tablaHorarioM.setRowHeight(36);
-        tablaHorarioM.getColumnModel().getColumn(3).setCellRenderer(
-                new BotonTablaRenderer("Asignar", PacienteInterfaz.COLOR_VERDE_ACENTO));
         tablaHorarioM.getColumnModel().getColumn(4).setCellRenderer(
+                new BotonTablaRenderer("Asignar", PacienteInterfaz.COLOR_VERDE_ACENTO));
+        tablaHorarioM.getColumnModel().getColumn(5).setCellRenderer(
                 new BotonTablaRenderer("Editar", PacienteInterfaz.COLOR_AZUL_CORPORATIVO));
         miscrollListaHorarioM = new JScrollPane(tablaHorarioM);
         miscrollListaHorarioM.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -589,6 +591,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
                 BorderFactory.createLineBorder(PacienteInterfaz.COLOR_VERDE_ACENTO, 1, true),
                 BorderFactory.createEmptyBorder(6, 10, 6, 10)
         ));
+        
         parteFija.add(MetodosPublicos.crearFila("Nombre del horario:", campoNombreHorario));
         parteFija.add(Box.createVerticalStrut(20));
 
@@ -829,7 +832,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     }
 
     /**
-     * Dibuja el botón "Asignar" en la columna de acción de la tabla de
+     * Dibuja el botón en la columna de acción de la tabla de
      * horarios.
      */
     private class BotonTablaRenderer extends JButton implements TableCellRenderer {

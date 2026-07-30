@@ -551,7 +551,7 @@ public class AdminCentroController extends PacienteController {
     }
 
     private void agregarListenerBotonesTabla() {
-        adminI.tablaHorarioM.addMouseListener(new java.awt.event.MouseAdapter() {
+        adminI.tablaHorarioM.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 int fila = adminI.tablaHorarioM.rowAtPoint(e.getPoint());
