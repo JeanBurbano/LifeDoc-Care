@@ -3,6 +3,7 @@ package controller;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 import model.UsuarioDao;
+import model.RegistroPersonasDao;
 import view.AdministradorDelSistemaInterfaz;
 
 public class AdministradorDelSistemaController extends PacienteController {
@@ -70,7 +71,7 @@ public class AdministradorDelSistemaController extends PacienteController {
 
     private void procesoBtnRol() {
         adminSistem.vistaUsuarios();
-        adminSistem.cargarUsuarios(usuarioDao.listar());
+        adminSistem.cargarUsuarios(new RegistroPersonasDao().listar());
         adminSistem.btnRol.setEnabled(false);
         adminSistem.habilitarBotonesMenu(adminSistem.btnRol);
     }

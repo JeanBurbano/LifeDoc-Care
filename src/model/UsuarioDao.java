@@ -36,38 +36,25 @@ public class UsuarioDao implements Crud<Paciente> {
             this.rs = ps.executeQuery();
 
             if (rs.next()) {
-                String tipoIdentificacion;
-                switch (rs.getInt("id_tipo_identificacion")) {
-                    case 1:
-                        tipoIdentificacion = "Registro civil";
-                        break;
-                    case 2:
-                        tipoIdentificacion = "Tarjeta de identidad";
-                        break;
-                    case 3:
-                        tipoIdentificacion = "Cedula de ciudadania";
-                        break;
-                    default:
-                        tipoIdentificacion = "Tarjeta de identidad";
-                        break;
-                }
                 usu = new Paciente(
                         rs.getInt("id_usuario"),
                         rs.getByte("id_rol"),
-                        tipoIdentificacion,
+                        rs.getByte("id_tipo_identificacion"),
                         rs.getString("numero_identificacion"),
                         rs.getString("primer_nombre"),
                         rs.getString("segundo_nombre"),
                         rs.getString("primer_apellido"),
                         rs.getString("segundo_apellido"),
                         rs.getString("correo_electronico"),
+                        "***********",
                         rs.getDate("fecha_nacimiento").toLocalDate(),
                         rs.getString("sexo_biologico"),
                         rs.getString("numero_celular"),
                         rs.getByte("edad"),
-                        rs.getBoolean("estado"),
                         rs.getString("sisben"),
-                        rs.getString("url_foto_perfil")
+                        rs.getBoolean("estado"),
+                        rs.getString("url_foto_perfil"),
+                        1
                 );
             }
         } catch (SQLException e) {
@@ -402,17 +389,17 @@ public class UsuarioDao implements Crud<Paciente> {
             if (rs.next()) {
                 p = new Paciente();
                 p.setIdUsuario(rs.getInt("id_usuario"));
-                p.setId_rol((byte) rs.getInt("id_rol"));
-                p.setTipoId(rs.getString("tipo_id"));
-                p.setNumeroId(rs.getString("numero_identificacion"));
+                p.setIdRol((byte) rs.getInt("id_rol"));
+                p.setTipoIdentificacion(rs.getString("tipo_id"));
+                p.setNumeroIdentificacion(rs.getString("numero_identificacion"));
                 p.setPrimerNombre(rs.getString("primer_nombre"));
                 p.setSegundoNombre(rs.getString("segundo_nombre"));
                 p.setPrimerApellido(rs.getString("primer_apellido"));
                 p.setSegundoApellido(rs.getString("segundo_apellido"));
-                p.setCorreoElectronico(rs.getString("correo_electronico"));
+                p.setCorreo(rs.getString("correo_electronico"));
                 p.setFechaNacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
                 p.setSexoBiologico(rs.getString("sexo_biologico"));
-                p.setNumeroTelefonico(rs.getString("numero_celular"));
+                p.setNumeroCelular(rs.getString("numero_celular"));
                 p.setEdad((byte) rs.getInt("edad"));
                 p.setSisben(rs.getString("sisben"));
                 p.setEstado(rs.getBoolean("estado"));
@@ -439,7 +426,7 @@ public class UsuarioDao implements Crud<Paciente> {
 
     @Override
     public List<Paciente> listar() {
-        List<Paciente> lista = new ArrayList<>();
+        List<Paciente> lista = null;
         String sql = "SELECT id_usuario, id_rol, primer_nombre, segundo_nombre, primer_apellido, "
                 + "segundo_apellido, edad, correo_electronico, numero_celular, estado "
                 + "FROM usuario";
@@ -484,12 +471,12 @@ public class UsuarioDao implements Crud<Paciente> {
     }
 
     @Override
-    public int setAgregar(Paciente tr) {
+    public int setAgregar(Paciente p) {
         return registrarUsuario(
-                tr.getId_rol(), Integer.parseInt(tr.getTipoId()), tr.getNumeroId(),
-                tr.getPrimerNombre(), tr.getSegundoNombre(), tr.getPrimerApellido(), tr.getSegundoApellido(),
-                tr.getCorreoElectronico(), tr.getContrasena(), tr.getFechaNacimiento(),
-                tr.getSexoBiologico(), tr.getNumeroTelefonico(), tr.getEdad(), tr.getSisben()
+                p.getIdRol(), Integer.parseInt(p.getTipoIdentificacion()), p.getNumeroIdentificacion(),
+                p.getPrimerNombre(), p.getSegundoNombre(), p.getPrimerApellido(), p.getSegundoApellido(),
+                p.getCorreo(), p.getContrasena(), p.getFechaNacimiento(),
+                p.getSexoBiologico(), p.getNumeroCelular(), p.getEdad(), String.valueOf(p.getSisben())
         );
     }
 
@@ -500,7 +487,7 @@ public class UsuarioDao implements Crud<Paciente> {
         try {
             this.con = conectar.getConection();
             this.ps = con.prepareStatement(sql);
-            ps.setBoolean(1, tr.getEstado());
+            ps.setBoolean(1, tr.isEstado());
             ps.setInt(2, tr.getIdUsuario());
             validador = ps.executeUpdate();
         } catch (SQLException e) {

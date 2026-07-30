@@ -15,6 +15,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -40,8 +42,8 @@ import model.MetodosPublicos;
 import static model.MetodosPublicos.estilizarBoton;
 import static model.MetodosPublicos.estilizarComboBox;
 import static model.MetodosPublicos.refrescarVentana;
-import static model.MetodosPublicos.vaciarPanel;
 import model.Paciente;
+import model.Usuario;
 
 public class OperarioInterfaz extends PacienteInterfaz {
 
@@ -72,15 +74,15 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
     public ArrayList<JButton> listaBotonesCancelarOpeario;
     public ArrayList<JButton> listaBotonesReagendarOpeario;
-    
+
     private Paciente pacienteConsultasActual;
 
-    public OperarioInterfaz(String nombreInterfaz, Paciente usuario) {
+    public OperarioInterfaz(String nombreInterfaz, Usuario usuario) {
         super(nombreInterfaz, usuario);
-        
+
         this.listaBotonesCancelarOpeario = new ArrayList<JButton>();
         this.listaBotonesReagendarOpeario = new ArrayList<JButton>();
-        
+
         this.btnAgendarCitas = new JButton("Paciente ", new ImageIcon("iconsP/schedule.png"));
         this.btnPagos = new JButton("Pagos ", new ImageIcon("iconsP/money-bag.png"));
         this.btnConsultas = new JButton("Consultas ", new ImageIcon("iconsP/done.png"));
@@ -93,8 +95,19 @@ public class OperarioInterfaz extends PacienteInterfaz {
         refrescarVentana(cuerpo1);
     }
 
+    private void bloquearBtn(JTextField campo) {
+        campo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent evt) {
+                if (campo.getText().isEmpty()) {
+                    btnAgendarCita.setEnabled(false);
+                }
+            }
+        });
+    }
+
     public void AgendarCita() {
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout(15, 15));
         cuerpo2.setBorder(new EmptyBorder(20, 40, 20, 40));
@@ -108,6 +121,8 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
         txtBuscarID = new JTextField(15);
         txtBuscarID.setFont(new Font("Arial", Font.PLAIN, 16));
+        MetodosPublicos.soloNumeros(txtBuscarID, 10);
+        bloquearBtn(txtBuscarID);
 
         btnBuscarPaciente = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
         estilizarBoton(btnBuscarPaciente, (byte) 5);
@@ -115,7 +130,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelBusqueda.add(lblBuscar);
         panelBusqueda.add(txtBuscarID);
         panelBusqueda.add(btnBuscarPaciente);
-        
+
         // Panel central
         JPanel panelCentral = new JPanel(new BorderLayout(15, 0));
         panelCentral.setOpaque(false);
@@ -158,6 +173,15 @@ public class OperarioInterfaz extends PacienteInterfaz {
         txtFechaNacimiento = new JTextField(20);
         txtSexo = new JTextField(20);
 
+        txtPrimerNombre.setEditable(false);
+        txtSegundoNombre.setEditable(false);
+        txtPrimerApellido.setEditable(false);
+        txtSegundoApellido.setEditable(false);
+        txtCorreo.setEditable(false);
+        txtTelefono.setEditable(false);
+        txtFechaNacimiento.setEditable(false);
+        txtSexo.setEditable(false);
+
         addFormField(panelFormulario, gbc, "Primer Nombre:", txtPrimerNombre, 0);
         addFormField(panelFormulario, gbc, "Segundo Nombre:", txtSegundoNombre, 1);
         addFormField(panelFormulario, gbc, "Primer Apellido:", txtPrimerApellido, 2);
@@ -170,28 +194,30 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelCentral.add(panelResumen, BorderLayout.WEST);
         panelCentral.add(panelFormulario, BorderLayout.CENTER);
 
+        btnAgendarCita.setEnabled(false);
         cuerpo2.add(panelBusqueda, BorderLayout.NORTH);
         cuerpo2.add(panelCentral, BorderLayout.CENTER);
         cuerpo2.add(btnAgendarCita, BorderLayout.SOUTH);
 
         refrescarVentana(cuerpo2);
-        
+
         btnBuscarPaciente.addActionListener(e -> buscarPaciente());
-        
+
     }
-    
+
     private void buscarPaciente() {
         String id = txtBuscarID.getText().trim();
         if (id.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this,
-                "Por favor ingrese un ID de paciente.",
-                "Campo vacío",
-                javax.swing.JOptionPane.WARNING_MESSAGE);
+                    "Por favor ingrese un ID de paciente.",
+                    "Campo vacío",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         controlador.buscarPaciente(id);
     }
+
     private void addFormField(JPanel panel, GridBagConstraints gbc, String label, JTextField field, int row) {
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -203,19 +229,18 @@ public class OperarioInterfaz extends PacienteInterfaz {
     public void cargarDatosPaciente(String id, String primerNombre, String segundoNombre,
             String primerApellido, String segundoApellido, String correo, String telefono,
             String fechaNac, String sexo) {
-        
-    // Aqui se arma el nombre completo del paciente que se busca, sin importar si no cuenta con segundo nombre o apellido
-            String nombreCompleto = primerNombre
+
+        // Aqui se arma el nombre completo del paciente que se busca, sin importar si no cuenta con segundo nombre o apellido
+        String nombreCompleto = primerNombre
                 + (segundoNombre != null && !segundoNombre.isEmpty() ? " " + segundoNombre : "")
                 + " " + primerApellido
                 + (segundoApellido != null && !segundoApellido.isEmpty() ? " " + segundoApellido : "");
 
         lblIDPaciente.setText("ID: " + id);
         lblNombrePaciente.setText("Nombre: " + nombreCompleto);
-        
-    // Se llenan tambien los campos del formulario para que el Operario
-    // pueda revisarlos antes de agendar la cita
-    
+
+        // Se llenan tambien los campos del formulario para que el Operario
+        // pueda revisarlos antes de agendar la cita
         txtPrimerNombre.setText(primerNombre);
         txtSegundoNombre.setText(segundoNombre);
         txtPrimerApellido.setText(primerApellido);
@@ -224,9 +249,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
         txtTelefono.setText(telefono);
         txtFechaNacimiento.setText(fechaNac);
         txtSexo.setText(sexo);
-        
+
     }
-    
+
     private String mapearMetodoPagoABD(String metodoCombo) {
         switch (metodoCombo) {
             case "Tarjeta débito":
@@ -240,13 +265,12 @@ public class OperarioInterfaz extends PacienteInterfaz {
                 return "Efectivo";
         }
     }
-    
-    // ---------------------------- MODULO DE PAGOS ----------------------------
 
+    // ---------------------------- MODULO DE PAGOS ----------------------------
     // Punto de entrada del botón "Pagos": muestra el buscador de paciente,
     // igual que en Consultas, para listar sus citas pendientes de pago.
     public void mostrarVistaPagos() {
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout(0, 15));
         cuerpo2.setBorder(new EmptyBorder(20, 40, 20, 40));
@@ -302,7 +326,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
             }
 
             List<DatosPagoCita> citasPendientes = controlador.buscarCitasPendientesPago(paciente.getIdUsuario());
-            vaciarPanel(panelListaPagos);
+            MetodosPublicos.vaciarPanel(panelListaPagos);
             if (citasPendientes.isEmpty()) {
                 JLabel lblSinPagos = new JLabel("Este paciente no tiene citas pendientes de pago.");
                 lblSinPagos.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -367,7 +391,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
     // Abre el panel de cobro (PanelPagos) para la cita elegida.
     private void mostrarPanelPagoParaCita(DatosPagoCita datosPago) {
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout());
         PanelPagos panelPagos = new PanelPagos(datosPago);
@@ -380,14 +404,14 @@ public class OperarioInterfaz extends PacienteInterfaz {
         public JPanel panelPagos;
         public JButton btnAceptar;
         public JComboBox cmbMetodoPago;
-        
+
         private int idCita;
         private DatosPagoCita datos;
         private String codigoFactura;
         private String fechaHoraFactura;
         private double valorConsulta;
         private double montoSubsidio;
-        private double valorNeto;   
+        private double valorNeto;
 
         public PanelPagos(DatosPagoCita datos) {
 
@@ -599,7 +623,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
             this.btnAceptar.setAlignmentX(Component.CENTER_ALIGNMENT);
 
             this.btnAceptar.addActionListener(e -> {
-                
+
                 String metodoSeleccionado = (String) this.cmbMetodoPago.getSelectedItem();
 
                 if ("Efectivo".equals(metodoSeleccionado)) {
@@ -705,14 +729,14 @@ public class OperarioInterfaz extends PacienteInterfaz {
             String especialidad, String nombreMedico, LocalDate fechaCita, java.time.LocalTime horaCita,
             double valorConsulta, double montoSubsidio, double valorNeto, String metodoPago) {
 
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout(25, 0));
         cuerpo2.setBorder(new EmptyBorder(20, 40, 20, 40));
 
         JPanel panelPrincipal = new JPanel(new BorderLayout(25, 0));
         panelPrincipal.setOpaque(false);
-        
+
         String fechaCitaTexto = fechaCita.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                 + " - " + horaCita.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"));
 
@@ -781,7 +805,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelFactura.add(lblValorNeto);
 
         // PANEL DERECHO: BOTONES DE PAGO
-        JPanel panelConfirmacion  = new JPanel();
+        JPanel panelConfirmacion = new JPanel();
         panelConfirmacion.setLayout(new BoxLayout(panelConfirmacion, BoxLayout.Y_AXIS));
         panelConfirmacion.setOpaque(false);
         panelConfirmacion.setPreferredSize(new Dimension(240, 0));
@@ -789,16 +813,16 @@ public class OperarioInterfaz extends PacienteInterfaz {
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
                 BorderFactory.createEmptyBorder(20, 20, 20, 20)
         ));
-        
+
         JLabel lblExito = new JLabel("Pago registrado correctamente");
         lblExito.setFont(new Font("Arial", Font.BOLD, 16));
         lblExito.setForeground(new Color(35, 105, 60));
         lblExito.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         JLabel lblMetodoUsado = new JLabel("Metodo de pago" + metodoPago);
         lblMetodoUsado.setFont(new Font("Arial", Font.PLAIN, 14));
         lblMetodoUsado.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         JButton btnDebito = new JButton("Tarjeta débito", new ImageIcon("iconsP/atm-card.png"));
         JButton btnCredito = new JButton("Tarjeta crédito", new ImageIcon("iconsP/atm-card.png"));
         JButton btnTransferencia = new JButton("Transferencia", new ImageIcon("iconsP/bank.png"));
@@ -817,20 +841,20 @@ public class OperarioInterfaz extends PacienteInterfaz {
         btnDebito.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnCredito.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnTransferencia.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         btnDebito.setPreferredSize(new Dimension(Integer.MAX_VALUE, 45));
         btnCredito.setPreferredSize(new Dimension(Integer.MAX_VALUE, 45));
         btnTransferencia.setPreferredSize(new Dimension(Integer.MAX_VALUE, 45));
 
         btnDebito.addActionListener(e -> mostrarModalTarjeta("Tarjeta Debito"));
-        btnCredito.addActionListener(e -> mostrarModalTarjeta( "Tarjeta Credito"));
+        btnCredito.addActionListener(e -> mostrarModalTarjeta("Tarjeta Credito"));
         btnTransferencia.addActionListener(e -> mostrarModalTransferencia());
-        
+
         JButton btnFinalizar = new JButton("Finalizar");
         estilizarBoton(btnFinalizar, (byte) 5);
         btnFinalizar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnFinalizar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
-        
+
         JButton btnDescargarFactura = new JButton("Descargar factura (PDF)", new ImageIcon("iconsP/descargar.png"));
         estilizarBoton(btnDescargarFactura, (byte) 4);
         btnDescargarFactura.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -857,15 +881,15 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
             String nombreArchivo = "factura_" + codigoFactura;
             CreadorPdf.constructorCreadorPdf(nombreArchivo, "Factura");
-            
+
         });
-        
+
         btnFinalizar.addActionListener(e -> {
             btnPagos.setEnabled(true);
             btnPagos.doClick();
-            
+
         });
-        
+
         panelConfirmacion.add(lblExito);
         panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 20)));
         panelConfirmacion.add(lblMetodoUsado);
@@ -880,7 +904,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelConfirmacion.add(btnDescargarFactura);
         panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 30)));
         panelConfirmacion.add(btnFinalizar);
- 
+
         panelPrincipal.add(panelFactura, BorderLayout.WEST);
         panelPrincipal.add(panelConfirmacion, BorderLayout.CENTER);
 
@@ -1035,9 +1059,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
                     "Pago con " + tituloModal.toLowerCase() + " confirmado",
                     "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
         }
-        
+
     }
-    
+
     // Ventana emergente para digitar los datos de la transferencia bancaria.
     private void mostrarModalTransferencia() {
         JPanel modal = new JPanel();
@@ -1067,14 +1091,13 @@ public class OperarioInterfaz extends PacienteInterfaz {
                     "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
+
     // -------------------------- MODULO CONSULTAS -----------------------------------
-    
     public void mostrarVistaConsultas() {
         this.pacienteConsultasActual = null;
         mostrarVistaAsistencia();
     }
-    
+
     private void mostrarVistaAsistencia() {
         construirVistaListaCitas(false);
     }
@@ -1082,9 +1105,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
     private void mostrarVistaGestionCitas() {
         construirVistaListaCitas(true);
     }
-    
+
     private void construirVistaListaCitas(boolean esGestionCitas) {
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new BorderLayout(0, 15));
         cuerpo2.setBorder(new EmptyBorder(20, 40, 20, 40));
@@ -1092,14 +1115,14 @@ public class OperarioInterfaz extends PacienteInterfaz {
         JPanel panelSuperior = new JPanel();
         panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
         panelSuperior.setOpaque(false);
-        
+
         JPanel panelSubMenu = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
         panelSubMenu.setOpaque(false);
         JButton btnAsistenciaTab = new JButton("Citas actuales");
         JButton btnGestionTab = new JButton("Gestión de citas");
         estilizarBoton(btnAsistenciaTab, (byte) 2);
         estilizarBoton(btnGestionTab, (byte) 2);
-        
+
         btnAsistenciaTab.setEnabled(esGestionCitas);
         btnGestionTab.setEnabled(!esGestionCitas);
 
@@ -1112,7 +1135,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 26));
         lblTitulo.setForeground(COLOR_AZUL_CORPORATIVO);
         lblTitulo.setBorder(new EmptyBorder(15, 0, 10, 0));
-        
+
         JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelBusqueda.setOpaque(false);
         JLabel lblBuscar = new JLabel("ID del Paciente: ");
@@ -1128,7 +1151,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelSuperior.add(panelSubMenu);
         panelSuperior.add(lblTitulo);
         panelSuperior.add(panelBusqueda);
-        
+
         JPanel panelListaCitas = new JPanel();
         panelListaCitas.setLayout(new BoxLayout(panelListaCitas, BoxLayout.Y_AXIS));
         panelListaCitas.setOpaque(false);
@@ -1138,7 +1161,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         scrollListaCitas.setOpaque(false);
         scrollListaCitas.getViewport().setOpaque(false);
         scrollListaCitas.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
-        
+
         btnBuscarConsultas.addActionListener(e -> {
             String id = txtBuscarIdConsultas.getText().trim();
             if (id.isEmpty()) {
@@ -1162,21 +1185,21 @@ public class OperarioInterfaz extends PacienteInterfaz {
         cuerpo2.add(scrollListaCitas, BorderLayout.CENTER);
 
         refrescarVentana(cuerpo2);
-        
+
         if (pacienteConsultasActual != null) {
-            txtBuscarIdConsultas.setText(pacienteConsultasActual.getNumeroId());
+            txtBuscarIdConsultas.setText(pacienteConsultasActual.getNumeroIdentificacion());
             cargarListaCitas(panelListaCitas, esGestionCitas);
         }
-        
+
     }
-    
+
     private void cargarListaCitas(JPanel panelListaCitas, boolean esGestionCitas) {
-        vaciarPanel(panelListaCitas);
+        MetodosPublicos.vaciarPanel(panelListaCitas);
         this.listaBotonesCancelarOpeario.clear();
         this.listaBotonesReagendarOpeario.clear();
-        
+
         Cita[] citas = controlador.listarCitasPorUsuario(pacienteConsultasActual.getIdUsuario());
-        
+
         if (citas.length == 0) {
             JLabel lblSinCitas = new JLabel("Este paciente no tiene citas activas.");
             lblSinCitas.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -1189,7 +1212,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         }
         refrescarVentana(panelListaCitas);
     }
-    
+
     private JPanel construirTarjetaCita(Cita cita, boolean esGestionCitas) {
         JPanel tarjeta = new JPanel(new BorderLayout());
         tarjeta.setOpaque(false);
@@ -1219,7 +1242,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelInfo.add(lblFecha);
         panelInfo.add(lblHora);
         panelInfo.add(lblMedico);
-        
+
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         panelBotones.setOpaque(false);
 
@@ -1235,10 +1258,10 @@ public class OperarioInterfaz extends PacienteInterfaz {
             btnReagendar.addActionListener(e -> mostrarVistaReagendarCita(cita));
             panelBotones.add(btnCancelar);
             panelBotones.add(btnReagendar);
-            
+
             this.listaBotonesCancelarOpeario.add(btnCancelar);
             this.listaBotonesReagendarOpeario.add(btnReagendar);
-            
+
         } else {
             JButton btnPacienteEnEspera = new JButton("Paciente en Espera", new ImageIcon("iconsP/bell.png"));
             estilizarBoton(btnPacienteEnEspera, (byte) 5);
@@ -1252,8 +1275,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         tarjeta.add(panelBotones, BorderLayout.EAST);
         return tarjeta;
     }
-    
-    
+
     private void cancelarCita(Cita cita) {
         int confirmacion = javax.swing.JOptionPane.showConfirmDialog(this,
                 "¿Desea cancelar esta cita?",
@@ -1280,9 +1302,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
                     javax.swing.JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void mostrarVistaReagendarCita(Cita citaAReagendar) {
-        vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(cuerpo2);
         cuerpo2.setOpaque(false);
         cuerpo2.setLayout(new GridBagLayout());
         cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));
@@ -1313,7 +1335,6 @@ public class OperarioInterfaz extends PacienteInterfaz {
         JComboBox cmbNuevaHora = new JComboBox();
         estilizarComboBox(cmbNuevaHora);
 
-        
         selectorNuevaFecha.addDateChangeListener(evento -> {
             LocalDate fechaElegida = evento.getNewDate();
             cmbNuevaHora.removeAllItems();
@@ -1359,9 +1380,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
                 return;
             }
             LocalTime nuevaHora = LocalTime.parse(horaSeleccionada);
-            
+
             int idMedico = citaAReagendar.getIdMedico();
-            
+
             int resultado = controlador.reagendarCita(citaAReagendar.getIdCita(), idMedico, nuevaFecha, nuevaHora);
 
             if (resultado == CitaDao.CONFLICTO_HORARIO) {
@@ -1393,7 +1414,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         cuerpo2.add(panelReagendar, new GridBagConstraints());
         refrescarVentana(cuerpo2);
     }
-    
+
     @Override
     public void habilitarBotonesMenu(JButton botonActivo) {
         super.habilitarBotonesMenu(botonActivo);

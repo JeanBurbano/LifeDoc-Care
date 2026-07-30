@@ -7,6 +7,8 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.Period;
@@ -34,11 +36,54 @@ import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MetodosPublicos {
 
+    //Esto es para los JTextField que solo aceptan numeros
+    public static void soloNumeros(JTextField campo, int longitudMaxima) {
+        campo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent evt) {
+                char tecla = evt.getKeyChar();
+                if (!Character.isDigit(tecla)) {
+                    evt.consume();
+                }
+                if (campo.getText().length() >= longitudMaxima) {
+                    evt.consume();
+                }
+            }
+        });
+    }
+
+    public static void soloLetras(JTextField campo, int longitudMaxima) {
+        campo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent evt) {
+                int key = evt.getKeyChar();
+
+                boolean mayusculas = key >= 65 && key <= 90;
+                boolean minusculas = key >= 97 && key <= 122;
+
+                if (!(mayusculas || minusculas)) evt.consume();
+                
+                if(campo.getText().length() >=longitudMaxima) evt.consume();
+                
+            }
+        });
+    }
+
+    public static void tamanoField(JTextField campo, int longitudMaxima) {
+        campo.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent evt) {
+                if (campo.getText().length() >= longitudMaxima) {
+                    evt.consume();
+                }
+            }
+        });
+    }
+
     public static byte calcularEdad(LocalDate fechaNacimiento) {
         if (fechaNacimiento == null) {
             return 0;
         }
-
         return (byte) Period.between(fechaNacimiento, LocalDate.now()).getYears();
     }
 
@@ -74,6 +119,7 @@ public class MetodosPublicos {
         boton.setFocusPainted(false);
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         boton.setOpaque(true);
+        boton.putClientProperty("JButton.buttonType", "roundRect");
 
         switch (estilo) {
             case 1://Botones del menu cuerpo1
