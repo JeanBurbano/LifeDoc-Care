@@ -167,7 +167,7 @@ public class PacienteController implements ActionListener {
         pacienteI.mostrarVistaNotificaciones();
     }
 
-    private void estadoBotonesHistial(boolean estado) {
+    protected void estadoBotonesHistial(boolean estado) {
         pacienteI.btnHistorialCitas.setEnabled(estado);
         pacienteI.btnHistorialMedico.setEnabled(!estado);
     }

@@ -11,6 +11,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.time.LocalDate;
 import java.time.Year;
@@ -30,7 +31,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
-import model.Paciente;
 import model.Usuario;
 
 public class PacienteInterfaz extends LayoutView {
@@ -266,7 +266,7 @@ public class PacienteInterfaz extends LayoutView {
 
         panelListaHistorial = new JPanel();
         panelListaHistorial.setLayout(new BoxLayout(panelListaHistorial, BoxLayout.Y_AXIS));
-        panelListaHistorial.setBorder(new EmptyBorder(0, 5, 0, 5));
+        panelListaHistorial.setBorder(new EmptyBorder(5, 5, 5, 5));
         panelListaHistorial.setOpaque(opaque);
 
         scrollHistorial = new JScrollPane(panelListaHistorial);
@@ -280,6 +280,10 @@ public class PacienteInterfaz extends LayoutView {
         panelHistorial.setLayout(new BorderLayout());
         panelHistorial.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 4));
         panelHistorial.setOpaque(opaque);
+        Dimension dimension = new Dimension(950, 550);
+        panelHistorial.setPreferredSize(dimension);
+        dimension = new Dimension(400, 200);
+        panelHistorial.setMaximumSize(dimension);
 
         areaHistorialMedico = new JTextArea();
         areaHistorialMedico.setOpaque(opaque);
@@ -317,7 +321,12 @@ public class PacienteInterfaz extends LayoutView {
         panelVistaHistorial.setOpaque(opaque);
         panelVistaHistorial.setBorder(new EmptyBorder(40, 40, 40, 40));
         panelVistaHistorial.add(panelLateralBotonesHistorial, BorderLayout.WEST);
-        panelVistaHistorial.add(panelHistorial, BorderLayout.CENTER);
+
+        JPanel wrapperHistorial = new JPanel(new GridBagLayout());
+        wrapperHistorial.setOpaque(opaque);
+        wrapperHistorial.add(panelHistorial);
+
+        panelVistaHistorial.add(wrapperHistorial, BorderLayout.CENTER);
 
         //Vista comentarios.
         campoAsunto = new JTextField();
@@ -567,22 +576,20 @@ public class PacienteInterfaz extends LayoutView {
     }
 
     public void agregarAlPanelHistorialCitas(JPanel titulo, String fecha, String hora, String nombreMedico, String estado) {
-        JPanel contenedor = new JPanel();
-        boolean activa = "Activa".equalsIgnoreCase(estado);
-        Color colorEstado = activa ? COLOR_VERDE_ACENTO : new Color(200, 60, 60);
+        JPanel targeta = new JPanel();
+        targeta.setLayout(new GridLayout(1, 2));
+        targeta.setBackground(Color.WHITE);
+        targeta.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        Dimension dimension = new Dimension(800, 205);
+        targeta.setMaximumSize(dimension);
+        dimension = new Dimension(300, 200);
+        targeta.setMinimumSize(dimension);
 
-        JPanel tarjeta = new PanelRound();
-        tarjeta.setBackground(Color.WHITE);
-        tarjeta.setLayout(new BorderLayout(15, 0));
-        tarjeta.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 2, true),
-                new EmptyBorder(15, 20, 15, 20)));
-        tarjeta.setAlignmentX(Component.LEFT_ALIGNMENT);
-        tarjeta.setMaximumSize(new Dimension(900, 140)); // techo real de alto, sin setMinimumSize
-
-        JPanel panelContenido = new JPanel();
-        panelContenido.setOpaque(false);
-        panelContenido.setLayout(new BoxLayout(panelContenido, BoxLayout.Y_AXIS));
+        JPanel parte1 = new JPanel();
+        parte1.setLayout(new BoxLayout(parte1, BoxLayout.Y_AXIS));
+        parte1.setOpaque(false);
         titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel lblFecha = new JLabel("Fecha: " + fecha);
@@ -597,42 +604,41 @@ public class PacienteInterfaz extends LayoutView {
         lblMedico.setFont(new Font("Arial", Font.PLAIN, 16));
         lblMedico.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        panelContenido.add(titulo);
-        panelContenido.add(Box.createVerticalStrut(4));
-        panelContenido.add(lblFecha);
-        panelContenido.add(lblHora);
-        panelContenido.add(lblMedico);
+        parte1.add(titulo);
+        parte1.add(lblFecha);
+        parte1.add(lblHora);
+        parte1.add(lblMedico);
 
         PanelRound insignia = new PanelRound();
         insignia.setRoundTopLeft(20);
         insignia.setRoundTopRight(20);
         insignia.setRoundBottomLeft(20);
         insignia.setRoundBottomRight(20);
-        insignia.setBackground(colorEstado);
+        insignia.setBackground(new Color(200, 60, 60));
         insignia.setLayout(new GridBagLayout());
         insignia.setPreferredSize(new Dimension(100, 30));
         JLabel lblEstado = new JLabel(estado);
         lblEstado.setForeground(Color.WHITE);
         lblEstado.setFont(new Font("Arial", Font.BOLD, 13));
+        lblEstado.setAlignmentY(Component.CENTER_ALIGNMENT);
+        lblEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
         insignia.add(lblEstado);
 
-        JPanel panelDerecha = new JPanel(new GridBagLayout());
-        panelDerecha.setOpaque(false);
-        panelDerecha.add(insignia);
+        JPanel parte2 = new JPanel();
+        parte2.setLayout(new FlowLayout(FlowLayout.RIGHT)); // RIGHT para que quede pegada al borde derecho
+        parte2.setOpaque(false);
+        parte2.add(insignia);
 
-        tarjeta.add(panelContenido, BorderLayout.CENTER);
-        tarjeta.add(panelDerecha, BorderLayout.EAST);
+        JPanel wrapperParte2 = new JPanel(new BorderLayout());
+        wrapperParte2.setOpaque(false);
+        wrapperParte2.add(parte2, BorderLayout.NORTH);
 
-        contenedor.setOpaque(false);
-        contenedor.setLayout(new BorderLayout());
-        contenedor.add(tarjeta, BorderLayout.CENTER);
-        Dimension dimension = new Dimension(800, 200);
-        contenedor.setSize(dimension);
-        contenedor.setMaximumSize(dimension);
-        dimension = new Dimension(300, 100);
-        contenedor.setMinimumSize(dimension);
-        this.panelListaHistorial.add(contenedor);
-        this.panelListaHistorial.add(Box.createVerticalStrut(10));
+        targeta.add(parte1);
+        targeta.add(wrapperParte2);
+
+        this.panelListaHistorial.add(targeta);
+        this.panelListaHistorial.add(Box.createVerticalStrut(8));
+        MetodosPublicos.refrescarVentana(scrollHistorial);
         MetodosPublicos.refrescarVentana(panelListaHistorial);
         MetodosPublicos.refrescarVentana(panelHistorial);
     }
