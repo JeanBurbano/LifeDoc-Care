@@ -11,13 +11,12 @@ import java.time.LocalDate;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Hashed;
 import model.MetodosPublicos;
 import model.RegistroPersonasDao;
 import model.Usuario;
 import model.UsuarioDao;
+
 import view.RegistroUsuariosInterfaz;
 
 public class RegistroUsuariosController implements ActionListener {
@@ -28,9 +27,11 @@ public class RegistroUsuariosController implements ActionListener {
     public static final int TI_REGISTRO_CIVIL = 1;
     public static final int TI_TARJETA_IDENTIDAD = 2;
     public static final int TI_CEDULA = 3;
+    private static final String RUTA_FOTO_DEFECTO = "fotosPerfil/fotoDefecto.png";
 
     private RegistroUsuariosInterfaz rI;
-    private String rutaImagen;
+    
+    private File archivoImagenSeleccionado;
 
     public RegistroUsuariosController(RegistroUsuariosInterfaz rI) {
         init(rI);
@@ -47,79 +48,136 @@ public class RegistroUsuariosController implements ActionListener {
         this.rI.btnSeleccionarFoto.addActionListener(this);
         MetodosPublicos.soloNumeros(rI.campoNumeroID, 10);
         MetodosPublicos.soloNumeros(rI.campoTelefono, 10);
-        rutaImagen = "fotosPerfil/fotoDefecto.png";
-    }
-
-    private String iE(boolean condicionInvalida, String valor, String mensaje) {
-        return condicionInvalida ? valor + mensaje : valor;
+        archivoImagenSeleccionado = null;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == rI.btnRegistrarse) {
             registrar();
-            return;
-        }
-
-        if (e.getSource() == rI.btnVolverA) {
+        } else if (e.getSource() == rI.btnVolverA) {
             volverALogin();
-            return;
-        }
-        if (e.getSource() == rI.btnSeleccionarFoto) {
+        } else if (e.getSource() == rI.btnSeleccionarFoto) {
             abrirVentanaGuardar();
-            return;
         }
     }
 
-    private String validacionesTodosCampoCompleto(int idTipoIdentificacion, String numeroIdentificacion, String primerNombre,
-            String primerApellido, String sexoBiologico, String correo, String contrasena, String grupoSisben, LocalDate fechaNacimiento) {
-        String mensaje = "";
-        mensaje = iE(idTipoIdentificacion < 0, mensaje, "Debe seleccionar un tipo de documento\n");
-        mensaje = iE(numeroIdentificacion.isEmpty(), mensaje, "El campo numero de identificacion esta vacio\n");
-        mensaje = iE(primerNombre.isEmpty(), mensaje, "El campo primer nombre esta vacio\n");
-        mensaje = iE(primerApellido.isEmpty(), mensaje, "El campo primer apellido esta vacio\n");
-        mensaje = iE(sexoBiologico.isEmpty() || sexoBiologico.equals("null"), mensaje, "Debe seleccionar el sexo biologico\n");
-        mensaje = iE(correo.isEmpty(), mensaje, "El campo correo esta vacio\n");
-        mensaje = iE(contrasena.isEmpty(), mensaje, "El campo contraseña esta vacio\n");
-        mensaje = iE(grupoSisben.isEmpty() || grupoSisben.equals("null"), mensaje, "Debe seleccionar el grupo Sisben\n");
-        mensaje = iE(fechaNacimiento == null, mensaje, "Debe seleccionar la fecha de nacimiento\n");
-        return mensaje;
+    private void registrar() {
+        int idTipoIdentificacion = rI.campoTipoId.getSelectedIndex();
+        String numeroIdentificacion = rI.campoNumeroID.getText().trim();
+        String primerNombre = rI.campoPrimerNombre.getText().trim();
+        String segundoNombre = rI.campoSegundoNombre.getText().trim();
+        String primerApellido = rI.campoPrimerApellido.getText().trim();
+        String segundoApellido = rI.campoSegundoApellido.getText().trim();
+        String sexoBiologico = String.valueOf(rI.comboSexo.getSelectedItem());
+        LocalDate fechaNacimiento = rI.datePickerNacimiento.getDate();
+        String correo = rI.campoCorreo.getText().trim();
+        String telefono = rI.campoTelefono.getText().trim();
+        String contrasena = new String(rI.campoContraseña.getPassword());
+        String grupoSisben = String.valueOf(rI.campoSisben.getSelectedItem());
+
+        String errores = validarFormularioRegistro(idTipoIdentificacion, numeroIdentificacion,
+                primerNombre, segundoNombre, primerApellido, segundoApellido, sexoBiologico,
+                correo, telefono, contrasena, grupoSisben, fechaNacimiento).obtenerMensaje();
+
+        if (!errores.isEmpty()) {
+            mostrarError(errores);
+            return;
+        }
+
+        if (existeUsuarioRegistrado(numeroIdentificacion, correo)) {
+            return;
+        }
+
+        guardarNuevoUsuario(idTipoIdentificacion, numeroIdentificacion, primerNombre, segundoNombre,
+                primerApellido, segundoApellido, sexoBiologico, correo, telefono, contrasena,
+                grupoSisben, fechaNacimiento);
     }
 
-    private String validacionesCriterios(String primerNombre, String segundoNombre, String primerApellido,
-            String segundoApellido, String numeroIdentificacion, String correo, String telefono, String contrasena) {
-        String mensaje = "";
+    protected Validador validarFormularioRegistro(int idTipoIdentificacion, String numeroIdentificacion,
+            String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String sexoBiologico, String correo, String telefono, String contrasena,
+            String grupoSisben, LocalDate fechaNacimiento) {
 
-        mensaje = iE(!MetodosPublicos.validarSoloLetras(primerNombre), mensaje,
-                "El primer nombre solo debe contener letras\n");
-        mensaje = iE(!segundoNombre.isEmpty() && !MetodosPublicos.validarSoloLetras(segundoNombre), mensaje,
-                "El segundo nombre solo debe contener letras\n");
-        mensaje = iE(!MetodosPublicos.validarSoloLetras(primerApellido), mensaje,
-                "El primer apellido solo debe contener letras\n");
-        mensaje = iE(!segundoApellido.isEmpty() && !MetodosPublicos.validarSoloLetras(segundoApellido), mensaje,
-                "El segundo apellido solo debe contener letras\n");
-        mensaje = iE(!MetodosPublicos.validarNumero(numeroIdentificacion)
-                || !MetodosPublicos.validarTamano(numeroIdentificacion, 8, 10), mensaje,
-                "El numero de identificacion debe tener entre 8 y 10 digitos\n");
-        mensaje = iE(!MetodosPublicos.validarFormatoCorreoGmail(correo), mensaje,
-                "El correo debe tener un formato valido de Gmail (ejemplo@gmail.com)\n");
+        Validador validador = new Validador();
+
+        validador.validar(() -> idTipoIdentificacion < 0,
+                "Debe seleccionar un tipo de documento\n");
+
+        validador.validar(() -> numeroIdentificacion.isEmpty(),
+                "El campo numero de identificacion esta vacio\n");
+        if (!numeroIdentificacion.isEmpty()) {
+            validador.validar(() -> !MetodosPublicos.validarNumero(numeroIdentificacion)
+                            || !MetodosPublicos.validarTamano(numeroIdentificacion, 8, 10),
+                    "El numero de identificacion debe tener entre 8 y 10 digitos\n");
+        }
+
+        validador.validar(() -> primerNombre.isEmpty(),
+                "El campo primer nombre está vacio\n");
+        if (!primerNombre.isEmpty()) {
+            validador.validar(() -> !MetodosPublicos.validarSoloLetras(primerNombre),
+                    "El primer nombre solo debe contener letras\n");
+        }
+
+        if (!segundoNombre.isEmpty()) {
+            validador.validar(() -> !MetodosPublicos.validarSoloLetras(segundoNombre),
+                    "El segundo nombre solo debe contener letras\n");
+        }
+
+        validador.validar(() -> primerApellido.isEmpty(),
+                "El campo primer apellido está vacio\n");
+        if (!primerApellido.isEmpty()) {
+            validador.validar(() -> !MetodosPublicos.validarSoloLetras(primerApellido),
+                    "El primer apellido solo debe contener letras\n");
+        }
+
+        if (!segundoApellido.isEmpty()) {
+            validador.validar(() -> !MetodosPublicos.validarSoloLetras(segundoApellido),
+                    "El segundo apellido solo debe contener letras\n");
+        }
+
+        validador.validar(() -> sexoBiologico.isEmpty() || sexoBiologico.equals("null"),
+                "Debe seleccionar el sexo biologico\n");
+
+        validador.validar(() -> correo.isEmpty(),
+                "El campo correo esta vacio\n");
+        if (!correo.isEmpty()) {
+            validador.validar(() -> !MetodosPublicos.validarFormatoCorreoGmail(correo),
+                    "El correo debe tener un formato valido de Gmail (ejemplo@gmail.com)\n");
+        }
 
         if (!telefono.isEmpty()) {
-            if (!MetodosPublicos.validarNumero(telefono)) {
-                mensaje += "El numero de telefono debe contener solo numeros\n";
-            } else if (telefono.length() != 10) {
-                mensaje += "El numero de telefono debe tener 10 digitos\n";
-            } else if (!String.valueOf(telefono.charAt(0)).equals("3")) {
-                mensaje += "El numero de telefono debe ser colombiano\n";
+            boolean soloNumeros = MetodosPublicos.validarNumero(telefono);
+            validador.validar(() -> !soloNumeros,
+                    "El numero de telefono debe contener solo numeros\n");
+            if (soloNumeros) {
+                validador.validar(() -> telefono.length() != 10,
+                        "El numero de telefono debe tener 10 dígitos\n");
+                if (telefono.length() == 10) {
+                    validador.validar(() -> telefono.charAt(0) != '3',
+                            "El numero de telefono debe ser colombiano\n");
+                }
             }
         }
 
-        mensaje = iE(!MetodosPublicos.validarContrasena(contrasena), mensaje,
-                "La contraseña debe incluir mayuscula, minuscula, numero y caracter especial ($ @ # % & * - _ ! ?)\n");
-        mensaje = iE(rI.campoSisben.getSelectedIndex() == 0, mensaje,
-                "Selecciona el grupo Sisben (o 'No aplica' si no estas registrado)\n");
+        validador.validar(() -> contrasena.isEmpty(),
+                "El campo contraseña está vacio\n");
+        if (!contrasena.isEmpty()) {
+            validador.validar(() -> !MetodosPublicos.validarContrasena(contrasena),
+                    "La contraseña debe incluir mayuscula, minuscula, numero y caracter especial ($ @ # % & * - _ ! ?)\n");
+        }
 
-        return mensaje;
+        validador.validar(() -> grupoSisben.isEmpty() || grupoSisben.equals("null"),
+                "Debe seleccionar el grupo Sisben o No aplica si no estás registrado\n");
+
+        validador.validar(() -> fechaNacimiento == null,
+                "Debe seleccionar la fecha de nacimiento\n");
+        if (fechaNacimiento != null) {
+            byte edad = MetodosPublicos.calcularEdad(fechaNacimiento);
+            validador.agregarSiNoVacio(validacionEdadTipoDocumento(edad, idTipoIdentificacion));
+        }
+
+        return validador;
     }
 
     protected String validacionEdadTipoDocumento(byte edad, int idTipoIdentificacion) {
@@ -128,7 +186,7 @@ public class RegistroUsuariosController implements ActionListener {
             if ((edad >= 0 && edad < 7) && idTipoIdentificacion != TI_REGISTRO_CIVIL) {
                 mensaje += "Para menores de 7 años el documento debe ser Registro Civil\n";
             } else if (edad >= 7 && edad < 18 && idTipoIdentificacion != TI_TARJETA_IDENTIDAD) {
-                mensaje += "Para menores de edad (7 a 17 años) el documento debe ser Tarjeta de Identidad\n";
+                mensaje += "Para menores de edad 7 a 17 años el documento debe ser Tarjeta de Identidad\n";
             } else if (edad > 17 && idTipoIdentificacion != TI_CEDULA) {
                 mensaje += "Para mayores de edad el documento debe ser Cedula de Ciudadania\n";
             }
@@ -138,78 +196,60 @@ public class RegistroUsuariosController implements ActionListener {
         return mensaje;
     }
 
-    private void registrar() {
-        int idTipoIdentificacion = rI.campoTipoId.getSelectedIndex();
-        String numeroIdentificacion = rI.campoNumeroID.getText().trim();
-        String primerNombre = rI.campoPrimerNombre.getText().trim();
-        String primerApellido = rI.campoPrimerApellido.getText().trim();
-        String sexoBiologico = String.valueOf(rI.comboSexo.getSelectedItem());
-        LocalDate fechaNacimiento = rI.datePickerNacimiento.getDate();
-        String correo = rI.campoCorreo.getText().trim();
-        String telefono = rI.campoTelefono.getText().trim();
-        String contrasena = new String(rI.campoContraseña.getPassword());
-        String grupoSisben = String.valueOf(rI.campoSisben.getSelectedItem());
+    private boolean existeUsuarioRegistrado(String numeroIdentificacion, String correo) {
+        StringBuilder mensaje = new StringBuilder();
 
-        boolean validador = ((idTipoIdentificacion > -1)
-                && (!numeroIdentificacion.isEmpty() && !primerNombre.isEmpty()
-                && !primerApellido.isEmpty() && !sexoBiologico.isEmpty() && !correo.isEmpty()
-                && !contrasena.isEmpty() && !grupoSisben.isEmpty())
-                && fechaNacimiento != null);
+        if (usuarioDao.validarCampoIdBs(numeroIdentificacion, "usuario", "id_usuario")) {
+            mensaje.append("Ya existe un usuario registrado con ese numero de identificacion\n");
+        }
+        if (usuarioDao.validarCampoIdBs(correo, "usuario", "correo_electronico")) {
+            mensaje.append("Ya existe un usuario registrado con ese Correo electronico\n");
+        }
 
-        if (validador) {
-            String segundoNombre = rI.campoSegundoNombre.getText().trim();
-            String segundoApellido = rI.campoSegundoApellido.getText().trim();
-            byte edad = MetodosPublicos.calcularEdad(fechaNacimiento);
-            System.out.println(edad);
-            String mensaje2 = validacionesCriterios(primerNombre, segundoNombre, primerApellido,
-                    segundoApellido, numeroIdentificacion, correo, telefono, contrasena);
-            mensaje2 += validacionEdadTipoDocumento(edad, idTipoIdentificacion);
-            if (!(mensaje2.isEmpty())) {
-                mostrarError(mensaje2);
-                return;
-            }
-            if (usuarioDao.validarCampoIdBs(numeroIdentificacion, "usuario", "id_usuario")) {
-                mensaje2 += "Ya existe un usuario registrado con ese numero de identificacion\n";
+        if (mensaje.length() > 0) {
+            mostrarError(mensaje.toString());
+            return true;
+        }
+        return false;
+    }
 
-            }
-            if (usuarioDao.validarCampoIdBs(correo, "usuario", "correo_electronico")) {
-                mensaje2 += "Ya existe un usuario registrado con ese Correo electronico\n";
-            }
-            if (!(mensaje2.isEmpty())) {
-                mostrarError(mensaje2);
-                return;
-            }
-            String sisben = String.valueOf(rI.campoSisben.getSelectedItem());
-            String contrasenaHashed = Hashed.hashPassword(contrasena);
-            Usuario usu = new Usuario(
-                    id,
-                    ID_ROL_PACIENTE,
-                    (byte) idTipoIdentificacion,
-                    numeroIdentificacion,
-                    primerNombre,
-                    segundoNombre,
-                    primerApellido,
-                    segundoApellido,
-                    correo,
-                    contrasenaHashed,
-                    fechaNacimiento,
-                    sexoBiologico,
-                    telefono,
-                    edad,
-                    sisben,
-                    true,
-                    rutaImagen);
-            int idUsuarioGenerado = new RegistroPersonasDao().setAgregar(usu);
-            if (idUsuarioGenerado > 0) {
-                JOptionPane.showMessageDialog(rI, "Cuenta creada correctamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
-                volverALogin();
-            } else {
-                mostrarError("No se pudo completar el registro. Intenta de nuevo");
-            }
+    private void guardarNuevoUsuario(int idTipoIdentificacion, String numeroIdentificacion,
+            String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String sexoBiologico, String correo, String telefono, String contrasena,
+            String grupoSisben, LocalDate fechaNacimiento) {
+
+        byte edad = MetodosPublicos.calcularEdad(fechaNacimiento);
+        String contrasenaHashed = Hashed.hashPassword(contrasena);
+        String rutaFotoParaGuardar = calcularRutaDestinoFoto();
+
+        Usuario usu = new Usuario(
+                id,
+                ID_ROL_PACIENTE,
+                (byte) idTipoIdentificacion,
+                numeroIdentificacion,
+                primerNombre,
+                segundoNombre,
+                primerApellido,
+                segundoApellido,
+                correo,
+                contrasenaHashed,
+                fechaNacimiento,
+                sexoBiologico,
+                telefono,
+                edad,
+                grupoSisben,
+                true,
+                rutaFotoParaGuardar);
+
+        int idUsuarioGenerado = new RegistroPersonasDao().setAgregar(usu);
+
+        if (idUsuarioGenerado > 0) {
+            copiarFotoPerfilSiCorresponde();
+            JOptionPane.showMessageDialog(rI, "Cuenta creada correctamente", "Registro exitoso",
+                    JOptionPane.INFORMATION_MESSAGE);
+            volverALogin();
         } else {
-            String mensaje = validacionesTodosCampoCompleto(idTipoIdentificacion, numeroIdentificacion, primerNombre,
-                    primerApellido, sexoBiologico, correo, contrasena, grupoSisben, fechaNacimiento);
-            mostrarError(mensaje);
+            mostrarError("No se pudo completar el registro Intenta de nuevo");
         }
     }
 
@@ -217,49 +257,54 @@ public class RegistroUsuariosController implements ActionListener {
         this.rI.dispose();
     }
 
-    private void mostrarError(String mensaje) {
+    protected void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(rI, mensaje, "Datos inválidos", JOptionPane.WARNING_MESSAGE);
     }
 
     protected void abrirVentanaGuardar() {
+        JFileChooser selector = VisorArchivos.nuevo()
+                .titulo("Selecciona una foto de perfil")
+                .agregarFiltro("Imagenes", "jpg", "jpeg", "png")
+                .modoSeleccion(JFileChooser.FILES_ONLY)
+                .construirChooser();
+
+        VisorArchivos.abrirYSeleccionar(selector, rI,
+                this::previsualizarImagenSeleccionada,
+                () -> JOptionPane.showMessageDialog(rI, "No se ha seleccionado ninguna imagen"));
+    }
+
+    private void previsualizarImagenSeleccionada(File archivo) {
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            ImageIcon imagenOriginal = new ImageIcon(archivo.getAbsolutePath());
+            Image imagenEscalada = imagenOriginal.getImage().getScaledInstance(
+                    rI.previsualizacionFoto.getWidth(), rI.previsualizacionFoto.getHeight(), Image.SCALE_SMOOTH);
+            rI.setImagen(new ImageIcon(imagenEscalada));
+            this.archivoImagenSeleccionado = archivo;
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(rI, "No se pudo cargar la imagen seleccionada");
+            this.archivoImagenSeleccionado = null;
+        }
+    }
+
+    private String calcularRutaDestinoFoto() {
+        if (archivoImagenSeleccionado == null) {
+            return RUTA_FOTO_DEFECTO;
+        }
+        return "fotosPerfil/" + archivoImagenSeleccionado.getName();
+    }
+
+    private void copiarFotoPerfilSiCorresponde() {
+        if (archivoImagenSeleccionado == null) {
+            return; 
+        }
+        try {
+            Files.copy(
+                    archivoImagenSeleccionado.toPath(),
+                    FileSystems.getDefault().getPath("fotosPerfil", archivoImagenSeleccionado.getName()),
+                    StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imagenes", "jpg", "png");
-        JFileChooser selectorArchivo = new JFileChooser("C:\\\\");
-        selectorArchivo.setMultiSelectionEnabled(false);
-        selectorArchivo.setFileFilter(filtro);
-        selectorArchivo.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        selectorArchivo.setDialogTitle("Selecciona un archivo");
-        int resultado = selectorArchivo.showOpenDialog(rI);
-        if (resultado == JFileChooser.CANCEL_OPTION) {
-            JOptionPane.showMessageDialog(rI, "No se ha seleccionado ninguna imagen");
-            return;
-        }
-        if (resultado == JFileChooser.APPROVE_OPTION) {
-            File nombreArchivo = selectorArchivo.getSelectedFile();
-            if (nombreArchivo == null || nombreArchivo.getName().isEmpty()) {
-                JOptionPane.showMessageDialog(rI, "Nombre de archivo incorrecto");
-            } else {
-                rutaImagen = String.valueOf(nombreArchivo.getParent()) + "/" + nombreArchivo.getName();
-                try {
-                    ImageIcon imagenOriginal = new ImageIcon(rutaImagen);
-                    Image imagenEscalada = imagenOriginal.getImage().getScaledInstance(rI.previsualizacionFoto.getWidth(),
-                            rI.previsualizacionFoto.getHeight(), Image.SCALE_SMOOTH);
-                    ImageIcon iconoEscalado = new ImageIcon(imagenEscalada);
-                    rI.setImagen(iconoEscalado);
-                    Files.copy(FileSystems.getDefault().getPath(rutaImagen),
-                            FileSystems.getDefault().getPath("fotosPerfil/" + nombreArchivo.getName()),
-                            StandardCopyOption.REPLACE_EXISTING);
-                    rutaImagen = "fotosPerfil/" + nombreArchivo.getName();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    rutaImagen = "";
-                }
-            }
-        }
-
     }
 }

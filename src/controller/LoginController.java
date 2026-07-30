@@ -3,12 +3,9 @@ package controller;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.Timer;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.Hashed;
@@ -30,12 +27,15 @@ public class LoginController implements ActionListener {
     //Variables static por que las van a compartir todas las intancias por ende su valor va aser el mismo y si cambia una cambia para todas
     private static final byte MAX_INTENTOS = 5;
     private static final int MINUTOS_BLOQUEO = 5;
+    private static final String SONIDO_BIENVENIDO = "bienvenido.wav";
+    private static final String SONIDO_BIENVENIDA = "bienvenida.wav";
+    private static final String SEXO_MASCULINO = "Masculino";
+
     //Variables de instancia
     private RecuperacionContrasenaInterfaz rc;
     private RegistroUsuariosInterfaz ur;
     private Login lg;
     private UsuarioDao usuDao = new UsuarioDao();
-    private Usuario usu;
     private byte c;
     private boolean bloqueado;
 
@@ -116,19 +116,118 @@ public class LoginController implements ActionListener {
         this.lg.titulo2.setEnabled(estado);
     }
 
-    private boolean estadito(String id, String contrasena) {
-        return MetodosPublicos.validarTamano(id, 8, 10) && (MetodosPublicos.validarTamano(contrasena, 8)
-                && MetodosPublicos.validarContrasena(contrasena));
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == lg.bIngresar) {
+            procesarIntentoDeIngreso();
+        } else if (e.getSource() == lg.bRegistar) {
+            abrirVistaRegistro();
+        }
     }
 
-    //Este metodo tadavi no se si ponerlo en el abirInterfaz para abrir las vistas sin problemas
-    private void verInterfaz(PacienteInterfaz p) {
-        p.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        p.setExtendedState(MAXIMIZED_BOTH);
-        p.setVisible(true);
+    private void procesarIntentoDeIngreso() {
+        estadoDeCosas(false);
+
+        String id = lg.getId();
+        String contrasena = lg.getPassword();
+
+        if (bloqueado || c >= MAX_INTENTOS) {
+            bloquearFormularioTemporalmente();
+            lg.limpiar();
+            return;
+        }
+
+        Validador validador = validarFormatoCredenciales(id, contrasena);
+        if (validador.tieneErrores()) {
+            registrarIntentoFallido();
+            JOptionPane.showMessageDialog(lg, validador.obtenerMensaje(), "Advertencia", JOptionPane.WARNING_MESSAGE);
+            estadoDeCosas(true);
+            lg.limpiar();
+            return;
+        }
+
+        intentarIniciarSesion(id, contrasena);
+        estadoDeCosas(true);
+        lg.limpiar();
     }
 
-    //Metodo reutilizable abre la interfaz correspondiente segun el rol del usuario que inicio sesion
+    private Validador validarFormatoCredenciales(String id, String contrasena) {
+        Validador validador = new Validador();
+
+        validador.validar(() -> id.isEmpty(), "Campo id es obligatorio.\n");
+        if (!id.isEmpty()) {
+            validador.validar(() -> !MetodosPublicos.validarNumero(id),
+                    "Campo id contiene caracteres invalidos.\n");
+            validador.validar(() -> !MetodosPublicos.validarTamano(id, 8, 10),
+                    "Campo id debe contener 8 o 10 caracteres.\n");
+        }
+
+        validador.validar(() -> contrasena.isEmpty(), "Campo Contrasena es obligatorio.\n");
+        if (!contrasena.isEmpty()) {
+            validador.validar(() -> !MetodosPublicos.validarTamano(contrasena, 8),
+                    "El campo contrasena debe contener como minimo 8 caracteres.\n");
+            validador.validar(() -> !MetodosPublicos.validarContrasena(contrasena),
+                    "La contrasena debe cumplir con estos parametros:\n"
+                    + "1 Mayuscula, 1 Minuscula, 1 Numero,\n"
+                    + "1 Simbolo permitido (@, #, $, %, &, *, -, _, !, ?).\n");
+        }
+
+        return validador;
+    }
+
+    private void intentarIniciarSesion(String id, String contrasena) {
+        Usuario usuario = new RegistroPersonasDao().getUsuario(id);
+
+        if (usuario == null) {
+            registrarIntentoFallido();
+            JOptionPane.showMessageDialog(lg, "El usuario no existe");
+            return;
+        }
+
+        if (!credencialesValidas(usuario, contrasena)) {
+            registrarIntentoFallido();
+            mostrarMotivoDeFalloDeIngreso(usuario, contrasena);
+            return;
+        }
+
+        c = 0;
+        ingresarComoUsuario(usuario);
+    }
+
+    private boolean credencialesValidas(Usuario usuario, String contrasena) {
+        return usuario.isEstado() && Hashed.verifyPassword(contrasena, usuario.getContrasena());
+    }
+
+    private void mostrarMotivoDeFalloDeIngreso(Usuario usuario, String contrasena) {
+        if (!Hashed.verifyPassword(contrasena, usuario.getContrasena())) {
+            JOptionPane.showMessageDialog(lg, "La contraseña es incorrecta");
+        } else if (!usuario.isEstado()) {
+            JOptionPane.showMessageDialog(lg, "El usuario esta inhabilitado");
+        }
+    }
+
+    private void ingresarComoUsuario(Usuario usuario) {
+        usuario.setContrasena("**@@@@$$$???<<>>");
+        reproducirSonidoDeBienvenida(usuario);
+        abrirInterfazSegunRol(usuario);
+    }
+
+    private void reproducirSonidoDeBienvenida(Usuario usuario) {
+        String sonido = SEXO_MASCULINO.equals(usuario.getSexoBiologico()) ? SONIDO_BIENVENIDO : SONIDO_BIENVENIDA;
+        MetodosPublicos.reproducirSonido(sonido);
+    }
+
+    private void registrarIntentoFallido() {
+        c++;
+    }
+
+    private void verInterfaz(javax.swing.JFrame frame) {
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame.setExtendedState(MAXIMIZED_BOTH);
+        frame.setVisible(true);
+    }
+
+    //Aqui abre la interfaz correspondiente segun el rol del usuario que inicio sesion
     private void abrirInterfazSegunRol(Usuario usuario) {
         switch (usuario.getIdRol()) {
             case 1:
@@ -162,7 +261,7 @@ public class LoginController implements ActionListener {
         }
     }
 
-    //Metodo reutilizable bloquea el formulario 5 minutos sin congelar la interfaz
+    //Metodo bloquea el formulario 5 minutos sin congelar la interfaz
     private void bloquearFormularioTemporalmente() {
         this.bloqueado = true;
         JOptionPane.showMessageDialog(lg, "Los has intentado muchas veces por favor espera " + MINUTOS_BLOQUEO + " minutos");
@@ -174,85 +273,5 @@ public class LoginController implements ActionListener {
         });
         temporizador.setRepeats(false);
         temporizador.start();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == lg.bIngresar) {
-            estadoDeCosas(false);
-            String id = lg.getId();
-            String contrasena = lg.getPassword();
-            if (c >= MAX_INTENTOS) {
-                bloquearFormularioTemporalmente();
-                this.lg.limpiar();
-            } else if (estadito(id, contrasena)) {
-                usu = new RegistroPersonasDao().getUsuario(id);
-                if (usu != null) {
-                    if (usu.isEstado() && Hashed.verifyPassword(contrasena, usu.getContrasena())) {
-                        usu.setContrasena(null);
-                        usu.setContrasena("**@@@@$$$???<<>>");
-                        c = 0;
-                        if (usu.getSexoBiologico().equals("Masculino")) {
-                            MetodosPublicos.reproducirSonido("bienvenido.wav");
-                        } else {
-                            MetodosPublicos.reproducirSonido("bienvenida.wav");
-                        }
-                        abrirInterfazSegunRol(usu);
-                    } else {
-                        if (!Hashed.verifyPassword(contrasena, usu.getContrasena())) {
-                            JOptionPane.showMessageDialog(lg, "contrasena incorrecta incorrecta");
-                        } else {
-                            if (!usu.isEstado()) {
-                                JOptionPane.showMessageDialog(lg, "El usuario esta inabilitado");
-                            } else {
-                                JOptionPane.showMessageDialog(lg, "La contrasena es incorrecta");
-                            }
-                        }
-                        c++;
-                    }
-                } else {
-                    c++;
-                    JOptionPane.showMessageDialog(lg, "El usuario no existe");
-                }
-                estadoDeCosas(true);
-                usu = null;
-                id = null;
-                contrasena = null;
-            } else {
-                String mensaje = "";
-                this.c++;
-                if (id.isEmpty()) {
-                    mensaje += "Campo id es obligatorio.\n";
-                } else {
-                    if (!MetodosPublicos.validarTamano(id, 8, 10)) {
-                        mensaje += "Campo id debe contener 8 o 10 caracteres.\n";
-                    }
-                    if (!MetodosPublicos.validarNumero(id)) {
-                        mensaje += "Campo id contiene caracteres invalidos.\n";
-                    }
-                }
-                if (contrasena.isEmpty()) {
-                    mensaje += "Campo Contrasena es obligatorio.\n";
-                } else {
-                    if (!MetodosPublicos.validarTamano(contrasena, 8)) {
-                        mensaje += "El campo contrasena debe dcontener como minimo 8 caracteres.\n";
-                    }
-                    if (!MetodosPublicos.validarContrasena(contrasena)) {
-                        mensaje += "La contrasena debe de cumplir con estos parametros\n"
-                                + "1 Mayuscula,\n"
-                                + "1 Minuscula\n"
-                                + "1 Numero\n"
-                                + "1 Simbolos permitidos @, #, $, %, &, *, -, _, !, ?.\n";
-                    }
-                }
-                JOptionPane.showMessageDialog(lg, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
-                estadoDeCosas(true);
-            }
-            lg.limpiar();
-        }
-
-        if (e.getSource() == lg.bRegistar) {
-            abrirVistaRegistro();
-        }
     }
 }
