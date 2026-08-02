@@ -41,7 +41,7 @@ public class MedicoController extends PacienteController {
         this.historialdao = new HistorialMedicoDao();
         this.medicodao = new MedicoDao();
         this.doc = medicodao.buscarIdMedico(medico.getUsuario().getIdUsuario());
-        
+
         this.medico.btnHistorialMedicoPaciente.addActionListener(this);
         this.medico.btnBuscarIdHistorialPaciente.addActionListener(this);
         this.medico.btnMiAgenda.addActionListener(this);
@@ -69,6 +69,76 @@ public class MedicoController extends PacienteController {
         }
     }
 
+    private void procesoCitasMiAgenda() {
+        this.medico.mostrarVistaMiAgenda();
+        this.medico.btnMiAgenda.setEnabled(false);
+        this.medico.habilitarBotonesMenu(this.medico.btnMiAgenda);
+        this.citas = citadao.listarPorMedico(doc.getId_medico());
+        if (citas == null || citas.length == 0) {
+            medico.panelPrincipal.add(new JLabel("No tienes citas asignadas"));
+            MetodosPublicos.refrescarVentana(medico.panelPrincipal);
+        } else {
+            for (Cita clave : citas) {
+                medico.citaVistaMiAgenda(clave.getEspecialidad(),
+                        clave.getFechaCita().toString(), clave.getHoraCita().toString(),
+                        clave.getNombrePaciente(), clave);
+            }
+        }
+    }
+
+    private void procesoCitasConsultorio() {
+        this.medico.mostrarVistaConsultorio();
+        this.medico.btnConsultorio.setEnabled(false);
+        this.medico.habilitarBotonesMenu(this.medico.btnConsultorio);
+        this.citasConsultorio = citadao.listarPorMedico(doc.getId_medico());
+        if (citasConsultorio == null || citasConsultorio.length == 0) {
+            medico.panelPrincipal.add(new JLabel("No tienes citas asignadas"));
+            MetodosPublicos.refrescarVentana(medico.panelPrincipal);
+        } else {
+            for (Cita clave : citasConsultorio) {
+                medico.citaVistaConsultorio(clave.getEspecialidad(),
+                        clave.getFechaCita().toString(), clave.getHoraCita().toString(),
+                        clave.getNombrePaciente(), clave);
+
+            }
+        }
+    }
+
+    private void procesoGuardarFicha() {
+        String diagnostico = medico.campoDiagnostico.getText().trim();
+        String medicamento = (String) medico.campoMedicamento.getSelectedItem();
+        String observaciones = medico.campoObservaciones.getText().trim();
+        String descripcion = "Diagnóstico: " + diagnostico + "\n\n"
+                + (medicamento != null && !medicamento.isBlank() ? "Medicamento: " + medicamento + "\n\n" : "")
+                + "Observaciones: " + observaciones;
+
+        if (diagnostico.isBlank()) {
+            JOptionPane.showMessageDialog(medico, "El campo diagnostico debe contener algo");
+        } else if (observaciones.isBlank()) {
+            JOptionPane.showMessageDialog(medico, "El campo descripción debe contener algo");
+        } else {
+            HistorialMedico historial = new HistorialMedico(
+                    medico.citaSeleccionada.getIdUsuario(),
+                    doc.getId_medico(),
+                    medico.citaSeleccionada.getIdCita(),
+                    medico.citaSeleccionada.getFechaCita(),
+                    LocalTime.now(),
+                    descripcion
+            );
+
+            boolean guardado = historialdao.agregar(historial);
+            if (guardado) {
+                historialdao.actualizarEstadoCita(medico.citaSeleccionada.getIdCita());
+                this.medico.mostrarVistaConfirmacionFichaGuardada();
+                medico.campoDiagnostico.setText("");
+                medico.campoMedicamento.setSelectedIndex(0);
+                medico.campoObservaciones.setText("");
+            } else {
+                JOptionPane.showMessageDialog(medico, "No se pudo guardar la ficha clínica, intenta nuevamente");
+            }
+        }
+    }
+
 //    @Override
 //    protected void estadoBotonesHistial(boolean estado) {
 //        if(medico.btnHistorialMedicoPaciente.isEnabled()){
@@ -79,15 +149,14 @@ public class MedicoController extends PacienteController {
 //        pacienteI.btnHistorialCitas.setEnabled(!estado);
 //        pacienteI.btnHistorialMedico.setEnabled(estado);
 //    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
         this.medico = (MedicoInterfaz) pacienteI;
-        
+
 //        if (e.getSource() == this.medico.btnHistorialMedicoPaciente) {
 //            this.medico.mostrarFormularioHistorialMedicoPaciente();
-////            estadoBotonesHistial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
+        ////            estadoBotonesHistial(this.medico.btnHistorialMedicoPaciente, this.medico.btnHistorialCitas, this.medico.btnHistorialMedico);
 //        }
 
 //        if (e.getSource() == this.medico.btnBuscarIdHistorialPaciente) {
@@ -106,89 +175,67 @@ public class MedicoController extends PacienteController {
 //            }
 //        }
 
-        if (e.getSource() == this.medico.btnMiAgenda || e.getSource() == this.medico.btnVolverVerDetalles || e.getSource() == this.medico.btnNoReagendar) {
-            this.medico.mostrarVistaMiAgenda();
-            this.medico.btnMiAgenda.setEnabled(false);
-            this.medico.habilitarBotonesMenu(this.medico.btnMiAgenda);
-            this.citas = citadao.listarPorMedico(doc.getId_medico());
-            System.out.println(doc.getId_medico());
-            if (citas == null || citas.length == 0) {
-                medico.panelPrincipal.add(new JLabel("No tienes citas asignadas"));
-                MetodosPublicos.refrescarVentana(medico.panelPrincipal);
-            } else {
-                for (Cita clave : citas) {
-                    medico.citaVistaMiAgenda(clave.getEspecialidad(),
-                            clave.getFechaCita().toString(), clave.getHoraCita().toString(),
-                            clave.getNombrePaciente(), clave);
-                }
-            }
+        if (e.getSource() == this.medico.btnMiAgenda) {
+            procesoCitasMiAgenda();
+            return;
         }
 
-        if (e.getSource() == this.medico.btnConsultorio || e.getSource() == this.medico.simboloRegresarConfirmacionP || e.getSource() == this.medico.btnNoAsistio || e.getSource() == this.medico.btnAceptarFicha) {
-            this.medico.mostrarVistaConsultorio();
-            this.medico.btnConsultorio.setEnabled(false);
-            this.medico.habilitarBotonesMenu(this.medico.btnConsultorio);
-            this.citasConsultorio = citadao.listarPorMedico(doc.getId_medico());
-            if (citasConsultorio == null || citasConsultorio.length == 0) {
-                medico.panelPrincipal.add(new JLabel("No tienes citas asignadas"));
-                MetodosPublicos.refrescarVentana(medico.panelPrincipal);
-            } else {
-                for (Cita clave : citasConsultorio) {
-                    medico.citaVistaConsultorio(clave.getEspecialidad(),
-                            clave.getFechaCita().toString(), clave.getHoraCita().toString(),
-                            clave.getNombrePaciente(), clave);
-
-                }
-            }
+        if (e.getSource() == this.medico.btnVolverVerDetalles) {
+            procesoCitasMiAgenda();
+            return;
         }
+
+        if (e.getSource() == this.medico.btnNoReagendar) {
+            procesoCitasMiAgenda();
+            return;
+        }
+        
+        if (e.getSource() == this.medico.btnActReagendar) {
+            this.medico.mostrarVistaReagendarCitaMiAgenda();
+            return;
+        }
+
+        if (e.getSource() == this.medico.btnConsultorio) {
+            procesoCitasConsultorio();
+            return;
+        }
+
+        if (e.getSource() == this.medico.simboloRegresarConfirmacionP) {
+            procesoCitasConsultorio();
+            return;
+        }
+
+        if (e.getSource() == this.medico.btnNoAsistio) {
+            procesoCitasConsultorio();
+            return;
+        }
+
+        if (e.getSource() == this.medico.btnAceptarFicha) {
+            procesoCitasConsultorio();
+            return;
+        }
+
         if (e.getSource() == this.medico.btnAsistio) {
             this.medico.mostrarVistaFichaClinica();
             nombreMedicamentos();
+            return;
         }
 
         if (e.getSource() == this.medico.btnNoAsistio) {
             historialdao.actualizarEstadoCita(medico.citaSeleccionada.getIdCita());
+            return;
         }
 
         if (e.getSource() == this.medico.btnGuardarFicha) {
-            String diagnostico = medico.campoDiagnostico.getText().trim();
-            String medicamento = (String) medico.campoMedicamento.getSelectedItem();
-            String observaciones = medico.campoObservaciones.getText().trim();
-            String descripcion = "Diagnóstico: " + diagnostico + "\n\n"
-                    + (medicamento != null && !medicamento.isBlank() ? "Medicamento: " + medicamento + "\n\n" : "")
-                    + "Observaciones: " + observaciones;
-
-            if (diagnostico.isBlank()) {
-                JOptionPane.showMessageDialog(medico, "El campo diagnostico debe contener algo");
-            } else if (observaciones.isBlank()) {
-                JOptionPane.showMessageDialog(medico, "El campo descripción debe contener algo");
-            } else {
-                HistorialMedico historial = new HistorialMedico(
-                        medico.citaSeleccionada.getIdUsuario(),
-                        doc.getId_medico(),
-                        medico.citaSeleccionada.getIdCita(),
-                        medico.citaSeleccionada.getFechaCita(),
-                        LocalTime.now(),
-                        descripcion
-                );
-
-                boolean guardado = historialdao.agregar(historial);
-                if (guardado) {
-                    historialdao.actualizarEstadoCita(medico.citaSeleccionada.getIdCita());
-                    this.medico.mostrarVistaConfirmacionFichaGuardada();
-                    medico.campoDiagnostico.setText("");
-                    medico.campoMedicamento.setSelectedIndex(0);
-                    medico.campoObservaciones.setText("");
-                } else {
-                    JOptionPane.showMessageDialog(medico, "No se pudo guardar la ficha clínica, intenta nuevamente");
-                }
-            }
+            procesoGuardarFicha();
+            return;
         }
 
         if (e.getSource() == this.medico.btnAceptarFicha) {
             this.medico.mostrarVistaConsultorio();
             this.medico.btnConsultorio.setEnabled(false);
             this.medico.habilitarBotonesMenu(this.medico.btnConsultorio);
+            return;
         }
     }
 }

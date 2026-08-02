@@ -36,7 +36,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
     public UsuarioDao usuarioDao;
     public JButton btnMisCitas, btnHistorial, btnComentarios, btnNotificaciones, btnMiAgenda, btnConsultorio,
             pruebaFicha, simboloRegresarConfirmacionP, btnAsistio, btnNoAsistio, btnGuardarFicha, btnAceptarFicha,
-            btnVolverVerDetalles, btnActReagendar, btnNoReagendar, btnHistorialMedicoPaciente, btnEstado,
+            btnVolverVerDetalles, btnActReagendar, btnNoReagendar, btnAcpReagendamiento, btnHistorialMedicoPaciente, btnEstado,
             btnBuscarIdHistorialPaciente, btnDescargarHistorialP;
     public JPanel panelPrincipal;
     public JTextField idHistorial;
@@ -64,6 +64,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         btnVolverVerDetalles = new JButton("Volver", new ImageIcon("iconsP/arrow-left.png"));
         btnActReagendar = new JButton("Aceptar", new ImageIcon("iconsP/accept.png"));
         btnNoReagendar = new JButton("Cancelar", new ImageIcon("iconsP/quejas.png"));
+        btnAcpReagendamiento = new JButton("Aceptar", new ImageIcon("iconsP/accept.png"));
         btnHistorialMedicoPaciente = new JButton("<html><center>Historial Médico<br>Paciente</center></html>", new ImageIcon("iconsP/paciente.png"));
         btnBuscarIdHistorialPaciente = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
 
@@ -112,6 +113,10 @@ public class MedicoInterfaz extends PacienteInterfaz {
         MetodosPublicos.estilizarBoton(btnNoReagendar, (byte) 5);
         btnNoReagendar.setBackground(Color.RED);
         btnNoReagendar.setPreferredSize(new Dimension(180, 40));
+
+        MetodosPublicos.estilizarBoton(btnAcpReagendamiento, (byte) 5);
+        btnAcpReagendamiento.setBackground(Color.RED);
+        btnAcpReagendamiento.setPreferredSize(new Dimension(180, 40));
 
         MetodosPublicos.estilizarBoton(btnHistorialMedicoPaciente, (byte) 2);
         btnHistorialMedicoPaciente.setMinimumSize(new Dimension(307, 100));
@@ -716,6 +721,39 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.panelPrincipal.add(btnActReagendar);
         this.panelPrincipal.add(separadorBotones);
         this.panelPrincipal.add(btnNoReagendar);
+        this.cuerpo2.add(panelPrincipal);
+
+        MetodosPublicos.refrescarVentana(panelPrincipal);
+        MetodosPublicos.refrescarVentana(cuerpo2);
+    }
+    
+    public void mostrarVistaReagendarCitaMiAgenda(){
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(panelPrincipal);
+
+        //se crea el panel donde se va a mostrar el mensaje de que el reagendamiento de la cita de un paciente fue aceptada
+        this.panelPrincipal.setLayout(new FlowLayout());
+        this.panelPrincipal.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
+                BorderFactory.createEmptyBorder(20, 60, 20, 80)));
+        this.panelPrincipal.setPreferredSize(new Dimension(800, 500));
+        this.cuerpo2.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 75));
+
+        JLabel tituloConfirmacion = new JLabel("Reagendamiento solicitado");
+        tituloConfirmacion.setFont(new Font("arial", Font.BOLD, 35));
+        tituloConfirmacion.setForeground(COLOR_AZUL_CORPORATIVO);
+        tituloConfirmacion.setBorder(new EmptyBorder(50, 0, 0, 0));
+
+        //se utiliza html para usar el br que es un salto de linea en el jlabel y el center es para centrar el texto
+        JLabel textoConfirmacion = new JLabel("<html><center>Se notificó al paciente para que seleccione una nueva fecha y hora"
+                + "<br>En cuanto lo haga, verás la cita actualizada en tu agenda.</center></html>");
+        textoConfirmacion.setFont(new Font("arial", Font.BOLD, 32));
+        textoConfirmacion.setForeground(COLOR_GRIS_SUBTITULO);
+        textoConfirmacion.setBorder(new EmptyBorder(50, 90, 50, 90));
+
+        this.panelPrincipal.add(tituloConfirmacion);
+        this.panelPrincipal.add(textoConfirmacion);
+        this.panelPrincipal.add(btnAcpReagendamiento);
         this.cuerpo2.add(panelPrincipal);
 
         MetodosPublicos.refrescarVentana(panelPrincipal);
