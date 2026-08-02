@@ -41,6 +41,40 @@ public class MedicoDao implements Crud<Medico> {
         return medicos;
     }
 
+    public Medico buscarIdMedico(int idUsuario) {
+        Medico m = null;
+        String sql = "SELECT id_medico, id_usuario, id_especialidad FROM medico WHERE id_usuario = ?";
+        try {
+            con = conectar.getConection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, idUsuario);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                m = new Medico();
+                m.setId_medico(rs.getInt("id_medico"));
+                m.setIdUsuario(rs.getInt("id_usuario"));
+                m.setEspecialidad(rs.getString("id_especialidad"));
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.toString(), "Error en la consulta", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.toString());
+            }
+        }
+        return m;
+    }
+
     @Override
     public List<Medico> listar() {
         List<Medico> medicos = new ArrayList<Medico>();

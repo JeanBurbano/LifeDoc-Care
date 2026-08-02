@@ -17,6 +17,7 @@ import model.HistorialMedicoDao;
 import model.Medicamentos;
 import model.MedicamentosDao;
 import model.Medico;
+import model.MedicoDao;
 import model.MetodosPublicos;
 import model.UsuarioDao;
 import view.MedicoInterfaz;
@@ -25,6 +26,7 @@ import view.Titulo;
 public class MedicoController extends PacienteController {
 
     private CitaDao citadao;
+    private MedicoDao medicodao;
     private Medico doc;
     private String historialPaciente, historial;
     protected Cita[] citas, citasConsultorio;
@@ -37,6 +39,9 @@ public class MedicoController extends PacienteController {
         super(medico);
         this.citadao = new CitaDao();
         this.historialdao = new HistorialMedicoDao();
+        this.medicodao = new MedicoDao();
+        this.doc = medicodao.buscarIdMedico(medico.getUsuario().getIdUsuario());
+        
         this.medico.btnHistorialMedicoPaciente.addActionListener(this);
         this.medico.btnBuscarIdHistorialPaciente.addActionListener(this);
         this.medico.btnMiAgenda.addActionListener(this);
@@ -105,7 +110,8 @@ public class MedicoController extends PacienteController {
             this.medico.mostrarVistaMiAgenda();
             this.medico.btnMiAgenda.setEnabled(false);
             this.medico.habilitarBotonesMenu(this.medico.btnMiAgenda);
-            this.citas = citadao.listarPorMedico(medico.getUsuario().getIdUsuario());
+            this.citas = citadao.listarPorMedico(doc.getId_medico());
+            System.out.println(doc.getId_medico());
             if (citas == null || citas.length == 0) {
                 medico.panelPrincipal.add(new JLabel("No tienes citas asignadas"));
                 MetodosPublicos.refrescarVentana(medico.panelPrincipal);
@@ -122,7 +128,7 @@ public class MedicoController extends PacienteController {
             this.medico.mostrarVistaConsultorio();
             this.medico.btnConsultorio.setEnabled(false);
             this.medico.habilitarBotonesMenu(this.medico.btnConsultorio);
-            this.citasConsultorio = citadao.listarPorMedico(medico.getUsuario().getIdUsuario());
+            this.citasConsultorio = citadao.listarPorMedico(doc.getId_medico());
             if (citasConsultorio == null || citasConsultorio.length == 0) {
                 medico.panelPrincipal.add(new JLabel("No tienes citas asignadas"));
                 MetodosPublicos.refrescarVentana(medico.panelPrincipal);
@@ -158,11 +164,11 @@ public class MedicoController extends PacienteController {
                 JOptionPane.showMessageDialog(medico, "El campo descripción debe contener algo");
             } else {
                 HistorialMedico historial = new HistorialMedico(
-                        medico.citaSeleccionada.getIdUsuario(), // id_usuario -> el paciente de la cita
-                        medico.getUsuario().getIdUsuario(), // id_medico -> el médico logueado
-                        medico.citaSeleccionada.getIdCita(), // id_cita -> la cita que se está atendiendo
-                        medico.citaSeleccionada.getFechaCita(), // dia -> el día de la cita
-                        LocalTime.now(), // hora -> el momento real en que se guarda
+                        medico.citaSeleccionada.getIdUsuario(),
+                        doc.getId_medico(),
+                        medico.citaSeleccionada.getIdCita(),
+                        medico.citaSeleccionada.getFechaCita(),
+                        LocalTime.now(),
                         descripcion
                 );
 

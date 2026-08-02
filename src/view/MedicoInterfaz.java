@@ -327,7 +327,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.panelPrincipal.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
                 BorderFactory.createEmptyBorder(0, 30, 5, 30)));
-        this.panelPrincipal.setPreferredSize(new Dimension(725, 563));
+        this.panelPrincipal.setPreferredSize(new Dimension(700, 563));
         this.cuerpo2.setLayout(new BorderLayout(30, 20));
 
         //se crea el otro panel donde va a contener los campos a ingresar por el medico para la ficha clinica
@@ -336,7 +336,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         panelDiagnostico.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
                 BorderFactory.createEmptyBorder(0, 30, 5, 30)));
-        panelDiagnostico.setPreferredSize(new Dimension(725, 563));
+        panelDiagnostico.setPreferredSize(new Dimension(700, 563));
         panelDiagnostico.setOpaque(false);
 
         //se crea dos paneles para dividir la informacion del paciente en dos columnas, derecha e izquierda
