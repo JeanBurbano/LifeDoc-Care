@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import model.EnvioCorreos;
 import model.MetodosPublicos;
-import model.UsuarioDao;
+import model.UsuDao;
 import view.RecuperacionContrasenaInterfaz;
 
 public class RecuperarContrasenaController implements ActionListener {
@@ -13,7 +13,7 @@ public class RecuperarContrasenaController implements ActionListener {
     RecuperacionContrasenaInterfaz p;
     private byte validador;
     private EnvioCorreos envioCorreos;
-    private UsuarioDao usuDao;
+    private UsuDao usuDao;
 
     private void agregarActionListener() {
         this.p.btnCorreo.addActionListener(this);
@@ -23,7 +23,7 @@ public class RecuperarContrasenaController implements ActionListener {
     }
 
     public RecuperarContrasenaController(RecuperacionContrasenaInterfaz p) {
-        this.usuDao = new UsuarioDao();
+        this.usuDao = new UsuDao();
         this.validador = 0;
         this.p = p;
         this.p.vistaMetodoDerecuperacion();

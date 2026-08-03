@@ -49,9 +49,6 @@ public class RegistroPersonalController extends RegistroUsuariosController {
         roles = rolDao.listar();
         roles.forEach(rol -> rpI.campoRol.addItem(rol.getNombreRol()));
     }
-<<<<<<< HEAD
-
-=======
     
     private void cargarComboEspecialidad() {
         rpI.especialidad.removeAllItems();
@@ -61,7 +58,6 @@ public class RegistroPersonalController extends RegistroUsuariosController {
         }
     }
     
->>>>>>> origin/luna
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == rpI.btnRegistrarse) {
@@ -72,9 +68,8 @@ public class RegistroPersonalController extends RegistroUsuariosController {
     }
 
     private void registrarPersonal() {
-<<<<<<< HEAD
         int idTipoIdentificacion = rpI.campoTipoId.getSelectedIndex() + 3;
-=======
+
         //  Validar el campo único/nuevo del personal (Rol)
         if (rpI.campoRol.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(rpI, "Selecciona un rol válido para el personal", "Datos inválidos", JOptionPane.WARNING_MESSAGE);
@@ -87,8 +82,7 @@ public class RegistroPersonalController extends RegistroUsuariosController {
         int idRol = (rolSeleccionado.equalsIgnoreCase("Medico") || rolSeleccionado.equalsIgnoreCase("Médico")) ? 3 : 4;
         
         // Para registrar el usuario base aprovechando la transacción de UsuarioDao
-        int idTipoIdentificacion = rpI.campoTipoId.getSelectedIndex() + 3; // 'Cedula Ciudadania' en BD es 3
->>>>>>> origin/luna
+        int idTipoIdentificacion = rpI.campoTipoId.getSelectedIndex() + 3; // Cedula Ciudadania en BD es 3
         String numeroIdentificacion = rpI.campoNumeroID.getText().trim();
         String primerNombre = rpI.campoPrimerNombre.getText().trim();
         String segundoNombre = rpI.campoSegundoNombre.getText().trim();
@@ -133,11 +127,9 @@ public class RegistroPersonalController extends RegistroUsuariosController {
                 edad,
                 sisben);
 
-<<<<<<< HEAD
         if (idUsuarioGenerado == -1) {
             mostrarError("No se pudo completar el registro del personal Verifique los datos introducidos");
             return;
-=======
         // Vincular con la tabla específica del rol si el usuario fue creado exitosamente
         if (idUsuarioGenerado != -1) {
             int resultado = 0;
@@ -160,7 +152,6 @@ public class RegistroPersonalController extends RegistroUsuariosController {
             }
         } else {
             JOptionPane.showMessageDialog(rpI, "No se pudo completar el registro del personal. Verifique los datos introducidos.", "Error de registro", JOptionPane.WARNING_MESSAGE);
->>>>>>> origin/luna
         }
 
         if (!vincularConTablaEspecifica(idRol, idUsuarioGenerado)) {

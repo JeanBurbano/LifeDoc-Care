@@ -1,7 +1,5 @@
 package model;
 
-import java.sql.Statement;
-import java.sql.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +14,101 @@ public class PacienteDao implements Crud<Paciente> {
     Connection con;
     PreparedStatement ps;
     ResultSet r;
+    
+         public Paciente buscarPorId(int idUsuario) {
+        Paciente p = null;
+        String sql = "SELECT u.id_usuario, u.id_rol, u.id_tipo_identificacion, u.numero_identificacion,"
+                + " u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido,u.correo_electronico,"
+                + " u.fecha_nacimiento, u.sexo_biologico, u.numero_celular, u.edad, u.sisben, u.estado, p.id_paciente"
+                + " FROM usuario u INNER JOIN paciente p ON u.id_usuario=p.id_usuario WHERE u.id_usuario = ?";
+        try {
+            con = conectar.getConection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, idUsuario);
+            r = ps.executeQuery();
+            if (r.next()) {
+                p = new Paciente(r.getInt("id_usuario"),
+                        r.getByte("id_rol"),
+                        r.getByte("id_tipo_identificacion"),
+                        r.getString("numero_identificacion"),
+                        r.getString("primer_nombre"),
+                        r.getString("segundo_nombre"),
+                        r.getString("primer_apellido"),
+                        r.getString("segundo_apellido"),
+                        r.getString("correo_electronico"),
+                        r.getDate("fecha_nacimiento").toLocalDate(),
+                        r.getString("sexo_biologico"),
+                        r.getString("numero_celular"),
+                        r.getByte("edad"),
+                        r.getString("sisben"),
+                        r.getBoolean("estado"),
+                        "fotosPerfil/fotoDefecto.png",
+                        r.getInt("id_paciente"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (r != null) {
+                    r.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return p;
+    }
+     
+    protected Paciente getUsuario(String numeroIdentifi) {
+        Paciente usu = null;
+
+        String sql = "SELECT id_usuario, id_rol, id_tipo_identificacion, "
+                + "numero_identificacion, primer_nombre, segundo_nombre, "
+                + "primer_apellido, segundo_apellido, correo_electronico, "
+                + "fecha_nacimiento, sexo_biologico, "
+                + "numero_celular, edad, sisben, estado, foto_perfil "
+                + "FROM usuario WHERE numero_identificacion = ?";
+
+        try {
+            con = conectar.getConection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, numeroIdentifi);
+
+            r = ps.executeQuery();
+
+            if (r.next()) {
+                usu = new Paciente(
+                        r.getInt("id_usuario"),
+                        r.getByte("id_rol"),
+                        r.getByte("id_tipo_identificacion"),
+                        r.getString("numero_identificacion"),
+                        r.getString("primer_nombre"),
+                        r.getString("segundo_nombre") == null ? "No aplica" : r.getString("segundo_nombre"),
+                        r.getString("primer_apellido"),
+                        r.getString("segundo_apellido") == null ? "No aplica" : r.getString("segundo_apellido"),
+                        r.getString("correo_electronico"),
+                        r.getDate("fecha_nacimiento").toLocalDate(),
+                        r.getString("sexo_biologico"),
+                        r.getString("numero_celular"),
+                        r.getByte("edad"),
+                        r.getString("sisben"),
+                        r.getBoolean("estado"),
+                        r.getString("foto_perfil")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return usu;
+    }
 
     @Override
     public List<Paciente> listar() {

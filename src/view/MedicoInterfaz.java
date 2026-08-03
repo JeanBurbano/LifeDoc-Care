@@ -7,7 +7,6 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -25,7 +24,7 @@ import javax.swing.border.EmptyBorder;
 import model.Cita;
 import model.MetodosPublicos;
 import model.Paciente;
-import model.UsuDao;
+import model.PacienteDao;
 import model.UsuarioDao;
 import model.UsuarioPublico;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
@@ -540,7 +539,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.cuerpo2.add(panelDiagnostico, BorderLayout.EAST);
 
         System.out.println("id_usuario buscado: " + this.citaSeleccionada.getIdUsuario());
-        Paciente paciente = new UsuDao().buscarPorId(this.citaSeleccionada.getIdUsuario());
+        Paciente paciente = new PacienteDao().buscarPorId(this.citaSeleccionada.getIdUsuario());
         System.out.println("Paciente encontrado: " + (paciente != null));
         if (paciente != null) {
             System.out.println("Nombre: " + paciente.getPrimerNombre());
@@ -948,7 +947,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         campoHora.setText(cita.getHoraCita().toString());
         campoPaciente.setText(cita.getNombrePaciente());
 
-        Paciente pacienteInfo = new UsuDao().buscarPorId(cita.getIdUsuario());
+        Paciente pacienteInfo = new PacienteDao().buscarPorId(cita.getIdUsuario());
         if (pacienteInfo != null) {
             campoNumeroId.setText(pacienteInfo.getNumeroIdentificacion());
         } else {

@@ -5,7 +5,6 @@
 package controller;
 
 import java.awt.Color;
-import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -21,7 +20,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import model.CategoriaMedicamento;
 import model.CategoriaMedicamentoDao;
@@ -32,19 +30,15 @@ import model.HorarioDao;
 import model.HorarioDia;
 import model.Medicamentos;
 import model.MedicamentosDao;
-import model.MedicoDao;
 import model.Medicos;
 import model.MedicosDao;
-import model.MetodosPublicos;
-import model.OperarioDao;
-import model.PersonalCentroDao;
-import model.RolDao;
 import model.SeleccionImagenes;
 
 import model.TipoMedicamento;
 import model.TipoMedicamentoDao;
+import model.UsuDao;
 import model.Usuario;
-import model.UsuarioDao;
+import model.UsuarioPublico;
 import view.ConstructorFilaHorario;
 import view.AdministradorCentroInterfaz;
 import view.RegistroPersonalInterfaz;
@@ -161,8 +155,8 @@ public class AdminCentroController extends PacienteController {
     }
     
     private void cargarPersonal() {
-    List<Usuario> personal = new UsuarioDao().listarPersonal();
-    for (Usuario u : personal) {
+    List<UsuarioPublico> personal = new UsuDao().listarPersonal();
+    for (UsuarioPublico u : personal) {
         adminI.listaPersonalR.addRow(new Object[]{
             u.getTipoIdentificacion(), u.getNumeroIdentificacion(),
             u.getPrimerNombre() + " " + u.getPrimerApellido(), u.getEdad(), u.getSexoBiologico(),

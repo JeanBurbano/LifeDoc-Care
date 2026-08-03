@@ -8,31 +8,73 @@ import java.util.List;
 
 public class UsuDao implements Crud<Usuario> {
 
+    private static final String[] TABLAS = {"usuario", "cita", "medico"};
+    private static final String[] COLUMNAS = {"id_usuario", "numero_identificacion", "correo_electronico"};
+
     public static Conexion conectar = new Conexion();
     java.sql.Connection con;
     PreparedStatement ps;
     ResultSet rs;
-    
-     public Paciente buscarPorId(int idUsuario) {
-        Paciente p = null;
-        String sql = "SELECT u.id_usuario, u.id_rol, u.id_tipo_identificacion, u.numero_identificacion,"
-                + " u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido,u.correo_electronico,"
-                + " u.fecha_nacimiento, u.sexo_biologico, u.numero_celular, u.edad, u.sisben, u.estado, p.id_paciente"
-                + " FROM usuario u INNER JOIN paciente p ON u.id_usuario=p.id_usuario WHERE u.id_usuario = ?";
+
+    public boolean validarCampoIdBs(String valorComparar, String tabla, String campo) {
+        boolean valor = false;
+        if (!(List.of(TABLAS).contains(tabla) && List.of(COLUMNAS).contains(campo))) {
+            return valor;
+        }
+
+        String sql = "SELECT EXISTS (SELECT 1 FROM " + tabla + " WHERE " + campo + " = ?) AS existe";
         try {
-            con = conectar.getConection();
-            ps = con.prepareStatement(sql);
-            ps.setInt(1, idUsuario);
-            rs = ps.executeQuery();
+            this.con = conectar.getConection();
+            this.ps = con.prepareStatement(sql);
+            this.ps.setString(1, valorComparar);
+            this.rs = ps.executeQuery();
             if (rs.next()) {
-                p = new Paciente(rs.getInt("id_usuario"),
+                valor = rs.getBoolean("existe");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    this.rs.close();
+                }
+                if (ps != null) {
+                    this.ps.close();
+                }
+                if (con != null) {
+                    this.con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return valor;
+    }
+
+    public List<UsuarioPublico> listarPersonal() {
+        List<UsuarioPublico> lista = new ArrayList<>();
+        String sql = "SELECT u.id_usuario, u.id_rol, u.id_tipo_identificacion, u.numero_identificacion, "
+                + "u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido, "
+                + "u.correo_electronico, u.fecha_nacimiento, u.sexo_biologico, u.numero_celular, "
+                + "u.edad, u.sisben, u.estado, f.url_foto_perfil "
+                + "FROM usuario u "
+                + "LEFT JOIN fotos_perfil f ON f.id_usuario = u.id_usuario AND f.es_actual = 1 "
+                + "WHERE u.id_rol IN (3, 4) "
+                + "ORDER BY u.primer_apellido, u.primer_nombre";
+        try {
+            this.con = conectar.getConection();
+            this.ps = con.prepareStatement(sql);
+            this.rs = ps.executeQuery();
+            while (rs.next()) {
+                UsuarioPublico u = new UsuarioPublico(
+                        rs.getInt("id_usuario"),
                         rs.getByte("id_rol"),
                         rs.getByte("id_tipo_identificacion"),
                         rs.getString("numero_identificacion"),
                         rs.getString("primer_nombre"),
-                        rs.getString("segundo_nombre"),
+                        nullASeguro(rs.getString("segundo_nombre")),
                         rs.getString("primer_apellido"),
-                        rs.getString("segundo_apellido"),
+                        nullASeguro(rs.getString("segundo_apellido")),
                         rs.getString("correo_electronico"),
                         rs.getDate("fecha_nacimiento").toLocalDate(),
                         rs.getString("sexo_biologico"),
@@ -40,10 +82,11 @@ public class UsuDao implements Crud<Usuario> {
                         rs.getByte("edad"),
                         rs.getString("sisben"),
                         rs.getBoolean("estado"),
-                        "fotosPerfil/fotoDefecto.png",
-                        rs.getInt("id_paciente"));
+                        rs.getString("url_foto_perfil")
+                );
+                lista.add(u);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -56,58 +99,17 @@ public class UsuDao implements Crud<Usuario> {
                 if (con != null) {
                     con.close();
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        return p;
+        return lista;
     }
-     
-    private Paciente getUsuario(String numeroIdentifi) {
-        Paciente usu = null;
 
-        String sql = "SELECT id_usuario, id_rol, id_tipo_identificacion, "
-                + "numero_identificacion, primer_nombre, segundo_nombre, "
-                + "primer_apellido, segundo_apellido, correo_electronico, "
-                + "fecha_nacimiento, sexo_biologico, "
-                + "numero_celular, edad, sisben, estado, foto_perfil "
-                + "FROM usuario WHERE numero_identificacion = ?";
-
-        try {
-            con = conectar.getConection();
-            ps = con.prepareStatement(sql);
-            ps.setString(1, numeroIdentifi);
-
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                usu = new Paciente(
-                        rs.getInt("id_usuario"),
-                        rs.getByte("id_rol"),
-                        rs.getByte("id_tipo_identificacion"),
-                        rs.getString("numero_identificacion"),
-                        rs.getString("primer_nombre"),
-                        rs.getString("segundo_nombre") == null ? "No aplica" : rs.getString("segundo_nombre"),
-                        rs.getString("primer_apellido"),
-                        rs.getString("segundo_apellido") == null ? "No aplica" : rs.getString("segundo_apellido"),
-                        rs.getString("correo_electronico"),
-                        rs.getDate("fecha_nacimiento").toLocalDate(),
-                        rs.getString("sexo_biologico"),
-                        rs.getString("numero_celular"),
-                        rs.getByte("edad"),
-                        rs.getString("sisben"),
-                        rs.getBoolean("estado"),
-                        rs.getString("foto_perfil")
-                );
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return usu;
+    private String nullASeguro(String valor) {
+        return valor == null ? "" : valor;
     }
-    
+
     public Usuario getUsuario(String numeroIdentifi, String contrasena) {
         Usuario usu = null;
 
@@ -126,7 +128,9 @@ public class UsuDao implements Crud<Usuario> {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                if (!Hashed.verifyPassword(contrasena, rs.getString("contrasena")))return usu;
+                if (!Hashed.verifyPassword(contrasena, rs.getString("contrasena"))) {
+                    return usu;
+                }
                 usu = new Usuario(
                         rs.getInt("id_usuario"),
                         rs.getByte("id_rol"),
@@ -162,7 +166,7 @@ public class UsuDao implements Crud<Usuario> {
             con = conectar.getConection();
             ps = con.prepareStatement(sql);
             ps.setInt(1, id);
-            r= ps.executeUpdate();
+            r = ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -179,7 +183,7 @@ public class UsuDao implements Crud<Usuario> {
         }
         return r;
     }
-    
+
     @Override
     public List<Usuario> listar() {
         List<Usuario> lista = new ArrayList<>();
@@ -234,9 +238,9 @@ public class UsuDao implements Crud<Usuario> {
         }
         return lista;
     }
-        
-    public int setAgregar(Operario p,String contrasena){
-         int idGenerado = -1;
+
+    public int setAgregar(Operario p, String contrasena) {
+        int idGenerado = -1;
         String sqlUsuario = "INSERT INTO usuario "
                 + "(id_rol, id_tipo_identificacion, numero_identificacion, primer_nombre, segundo_nombre, "
                 + "primer_apellido, segundo_apellido, correo_electronico, contrasena, fecha_nacimiento, "
@@ -248,7 +252,7 @@ public class UsuDao implements Crud<Usuario> {
         try {
             this.con = conectar.getConection();
             con.setAutoCommit(false);
-            
+
             this.ps = con.prepareStatement(sqlUsuario, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setInt(1, p.getIdTipoIdentificacion());
             ps.setString(2, p.getNumeroIdentificacion());
@@ -286,15 +290,23 @@ public class UsuDao implements Crud<Usuario> {
             e.printStackTrace();
             idGenerado = -1;
             try {
-                if (con != null) con.rollback();
+                if (con != null) {
+                    con.rollback();
+                }
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (psOperario != null) psOperario.close();
-                if (ps != null) ps.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (psOperario != null) {
+                    psOperario.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
                 if (con != null) {
                     con.setAutoCommit(true);
                     con.close();
@@ -305,8 +317,8 @@ public class UsuDao implements Crud<Usuario> {
         }
         return idGenerado;
     }
-    
-    public int setAgregar(Medico m,String contrasena,int idEspecialidad){
+
+    public int setAgregar(Medico m, String contrasena, int idEspecialidad) {
         int idGenerado = -1;
         String sqlUsuario = "INSERT INTO usuario "
                 + "(id_rol, id_tipo_identificacion, numero_identificacion, primer_nombre, segundo_nombre, "
@@ -358,15 +370,23 @@ public class UsuDao implements Crud<Usuario> {
             e.printStackTrace();
             idGenerado = -1;
             try {
-                if (con != null) con.rollback();
+                if (con != null) {
+                    con.rollback();
+                }
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (psMedico != null) psMedico.close();
-                if (ps != null) ps.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (psMedico != null) {
+                    psMedico.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
                 if (con != null) {
                     con.setAutoCommit(true);
                     con.close();
@@ -377,7 +397,7 @@ public class UsuDao implements Crud<Usuario> {
         }
         return idGenerado;
     }
-    
+
     @Override
     public int setAgregar(Usuario tr) {
         int r = 0;
@@ -408,8 +428,8 @@ public class UsuDao implements Crud<Usuario> {
             con.close();
             ps.close();
             //Agregar a la tabla paciente
-            Paciente usu = getUsuario(tr.getNumeroIdentificacion());
-            r = new PacienteDao().setAgregar(usu);  
+            Paciente usu = new PacienteDao().getUsuario(tr.getNumeroIdentificacion());
+            r = new PacienteDao().setAgregar(usu);
             return r;
         } catch (Exception e) {
             e.printStackTrace();
@@ -427,7 +447,7 @@ public class UsuDao implements Crud<Usuario> {
         }
         return r;
     }
-    
+
     @Override
     public int setActualizar(Usuario tr) {
         int r = 0;

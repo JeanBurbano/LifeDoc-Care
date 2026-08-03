@@ -18,41 +18,6 @@ public class UsuarioDao  {
     PreparedStatement ps;
     ResultSet rs;
 
-    public boolean validarCampoIdBs(String valorComparar, String tabla, String campo) {
-        boolean valor = false;
-        if (!(List.of(TABLAS).contains(tabla) && List.of(COLUMNAS).contains(campo))) {
-            return valor;
-        }
-
-        String sql = "SELECT EXISTS (SELECT 1 FROM " + tabla + " WHERE " + campo + " = ?) AS existe";
-        try {
-            this.con = conectar.getConection();
-            this.ps = con.prepareStatement(sql);
-            this.ps.setString(1, valorComparar);
-            this.rs = ps.executeQuery();
-            if (rs.next()) {
-                valor = rs.getBoolean("existe");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    this.rs.close();
-                }
-                if (ps != null) {
-                    this.ps.close();
-                }
-                if (con != null) {
-                    this.con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return valor;
-    }
-
     public byte sacarIdRol(String id, String contrasena) {
         byte idRol = -1;
         String sql = "SELECT id_rol FROM usuario WHERE numero_identificacion = ? AND contrasena = ?";
@@ -478,7 +443,6 @@ public class UsuarioDao  {
 //        return p;
 //    }
 
-<<<<<<< HEAD
 //    @Override
 //    public List<Paciente> listar() {
 //        List<Paciente> lista = null;
@@ -561,147 +525,102 @@ public class UsuarioDao  {
 //        int validador = 0;
 //        return validador;
 //    }
-=======
-    @Override
-    public List<Paciente> listar() {
-        List<Paciente> lista = null;
-        String sql = "SELECT id_usuario, id_rol, primer_nombre, segundo_nombre, primer_apellido, "
-                + "segundo_apellido, edad, correo_electronico, numero_celular, estado "
-                + "FROM usuario";
-
-        try {
-            this.con = conectar.getConection();
-            this.ps = con.prepareStatement(sql);
-            this.rs = ps.executeQuery();
-            while (rs.next()) {
-                Paciente p = new Paciente(
-                        rs.getInt("id_usuario"),
-                        rs.getByte("id_rol"),
-                        rs.getString("primer_nombre"),
-                        rs.getString("segundo_nombre"),
-                        rs.getString("primer_apellido"),
-                        rs.getString("segundo_apellido"),
-                        rs.getByte("edad"),
-                        rs.getString("correo_electronico"),
-                        rs.getString("numero_celular"),
-                        rs.getBoolean("estado")
-                );
-                lista.add(p);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return lista;
-    }
     
-    public List<Usuario> listarPersonal() {
-        List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT u.id_usuario, u.id_rol, u.id_tipo_identificacion, u.numero_identificacion, "
-                + "u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido, "
-                + "u.correo_electronico, u.fecha_nacimiento, u.sexo_biologico, u.numero_celular, "
-                + "u.edad, u.sisben, u.estado, f.url_foto_perfil "
-                + "FROM usuario u "
-                + "LEFT JOIN fotos_perfil f ON f.id_usuario = u.id_usuario AND f.es_actual = 1 "
-                + "WHERE u.id_rol IN (3, 4) "
-                + "ORDER BY u.primer_apellido, u.primer_nombre";
-        try {
-            this.con = conectar.getConection();
-            this.ps = con.prepareStatement(sql);
-            this.rs = ps.executeQuery();
-            while (rs.next()) {
-                Usuario u = new Usuario(
-                        rs.getInt("id_usuario"),
-                        rs.getByte("id_rol"),
-                        rs.getByte("id_tipo_identificacion"),
-                        rs.getString("numero_identificacion"),
-                        rs.getString("primer_nombre"),
-                        nullASeguro(rs.getString("segundo_nombre")), 
-                        rs.getString("primer_apellido"),
-                        nullASeguro(rs.getString("segundo_apellido")),
-                        rs.getString("correo_electronico"),
-                        "***********", // no se expone la contraseña real
-                        rs.getDate("fecha_nacimiento").toLocalDate(),
-                        rs.getString("sexo_biologico"),
-                        rs.getString("numero_celular"),
-                        rs.getByte("edad"),
-                        rs.getString("sisben"),
-                        rs.getBoolean("estado"),
-                        rs.getString("url_foto_perfil")
-                );
-                lista.add(u);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (con != null) con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return lista;
-    }
+//    @Override
+//    public List<Paciente> listar() {
+//        List<Paciente> lista = null;
+//        String sql = "SELECT id_usuario, id_rol, primer_nombre, segundo_nombre, primer_apellido, "
+//                + "segundo_apellido, edad, correo_electronico, numero_celular, estado "
+//                + "FROM usuario";
+//
+//        try {
+//            this.con = conectar.getConection();
+//            this.ps = con.prepareStatement(sql);
+//            this.rs = ps.executeQuery();
+//            while (rs.next()) {
+//                Paciente p = new Paciente(
+//                        rs.getInt("id_usuario"),
+//                        rs.getByte("id_rol"),
+//                        rs.getString("primer_nombre"),
+//                        rs.getString("segundo_nombre"),
+//                        rs.getString("primer_apellido"),
+//                        rs.getString("segundo_apellido"),
+//                        rs.getByte("edad"),
+//                        rs.getString("correo_electronico"),
+//                        rs.getString("numero_celular"),
+//                        rs.getBoolean("estado")
+//                );
+//                lista.add(p);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (rs != null) {
+//                    rs.close();
+//                }
+//                if (ps != null) {
+//                    ps.close();
+//                }
+//                if (con != null) {
+//                    con.close();
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return lista;
+//    }
     
-    private String nullASeguro(String valor) {
-        return valor == null ? "" : valor;
-    }
-
-    @Override
-    public int setAgregar(Paciente p) {
-        return registrarUsuario(
-                p.getIdRol(), Integer.parseInt(p.getTipoIdentificacion()), p.getNumeroIdentificacion(),
-                p.getPrimerNombre(), p.getSegundoNombre(), p.getPrimerApellido(), p.getSegundoApellido(),
-                p.getCorreo(), p.getContrasena(), p.getFechaNacimiento(),
-                p.getSexoBiologico(), p.getNumeroCelular(), p.getEdad(), String.valueOf(p.getSisben())
-        );
-    }
-
-    @Override
-    public int setActualizar(Paciente tr) {
-        int validador = 0;
-        String sql = "UPDATE usuario SET estado = ? WHERE id_usuario = ?";
-        try {
-            this.con = conectar.getConection();
-            this.ps = con.prepareStatement(sql);
-            ps.setBoolean(1, tr.isEstado());
-            ps.setInt(2, tr.getIdUsuario());
-            validador = ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return validador;
-    }
-
-    public int setEliminar(int id) {
-        int validador = 0;
-        return validador;
-    }
->>>>>>> origin/luna
+//    public List<Usuario> listarPersonal() {
+//        List<Usuario> lista = new ArrayList<>();
+//        String sql = "SELECT u.id_usuario, u.id_rol, u.id_tipo_identificacion, u.numero_identificacion, "
+//                + "u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido, "
+//                + "u.correo_electronico, u.fecha_nacimiento, u.sexo_biologico, u.numero_celular, "
+//                + "u.edad, u.sisben, u.estado, f.url_foto_perfil "
+//                + "FROM usuario u "
+//                + "LEFT JOIN fotos_perfil f ON f.id_usuario = u.id_usuario AND f.es_actual = 1 "
+//                + "WHERE u.id_rol IN (3, 4) "
+//                + "ORDER BY u.primer_apellido, u.primer_nombre";
+//        try {
+//            this.con = conectar.getConection();
+//            this.ps = con.prepareStatement(sql);
+//            this.rs = ps.executeQuery();
+//            while (rs.next()) {
+//                Usuario u = new Usuario(
+//                        rs.getInt("id_usuario"),
+//                        rs.getByte("id_rol"),
+//                        rs.getByte("id_tipo_identificacion"),
+//                        rs.getString("numero_identificacion"),
+//                        rs.getString("primer_nombre"),
+//                        nullASeguro(rs.getString("segundo_nombre")), 
+//                        rs.getString("primer_apellido"),
+//                        nullASeguro(rs.getString("segundo_apellido")),
+//                        rs.getString("correo_electronico"),
+//                        "***********", // no se expone la contraseña real
+//                        rs.getDate("fecha_nacimiento").toLocalDate(),
+//                        rs.getString("sexo_biologico"),
+//                        rs.getString("numero_celular"),
+//                        rs.getByte("edad"),
+//                        rs.getString("sisben"),
+//                        rs.getBoolean("estado"),
+//                        rs.getString("url_foto_perfil")
+//                );
+//                lista.add(u);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (rs != null) rs.close();
+//                if (ps != null) ps.close();
+//                if (con != null) con.close();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return lista;
+//    }
+    
+//    
 }

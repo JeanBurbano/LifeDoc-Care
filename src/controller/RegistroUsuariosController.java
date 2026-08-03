@@ -21,7 +21,7 @@ import view.RegistroUsuariosInterfaz;
 
 public class RegistroUsuariosController implements ActionListener {
 
-    private static UsuarioDao usuarioDao = new UsuarioDao();
+    private static UsuDao usuarioDao = new UsuDao();
     protected static int id = 0;
     private static final byte ID_ROL_PACIENTE = 5;
     public static final int TI_REGISTRO_CIVIL = 1;
