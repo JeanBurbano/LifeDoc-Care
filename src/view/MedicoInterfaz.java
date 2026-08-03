@@ -115,7 +115,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         btnNoReagendar.setPreferredSize(new Dimension(180, 40));
 
         MetodosPublicos.estilizarBoton(btnAcpReagendamiento, (byte) 5);
-        btnAcpReagendamiento.setBackground(Color.RED);
+        btnAcpReagendamiento.setBackground(COLOR_VERDE_ACENTO);
         btnAcpReagendamiento.setPreferredSize(new Dimension(180, 40));
 
         MetodosPublicos.estilizarBoton(btnHistorialMedicoPaciente, (byte) 2);
@@ -727,9 +727,11 @@ public class MedicoInterfaz extends PacienteInterfaz {
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
     
-    public void mostrarVistaReagendarCitaMiAgenda(){
+    public void mostrarVistaReagendarCitaMiAgenda(Cita cita){
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelPrincipal);
+        
+        this.citaSeleccionada = cita;
 
         //se crea el panel donde se va a mostrar el mensaje de que el reagendamiento de la cita de un paciente fue aceptada
         this.panelPrincipal.setLayout(new FlowLayout());
@@ -745,8 +747,8 @@ public class MedicoInterfaz extends PacienteInterfaz {
         tituloConfirmacion.setBorder(new EmptyBorder(50, 0, 0, 0));
 
         //se utiliza html para usar el br que es un salto de linea en el jlabel y el center es para centrar el texto
-        JLabel textoConfirmacion = new JLabel("<html><center>Se notificó al paciente para que seleccione una nueva fecha y hora"
-                + "<br>En cuanto lo haga, verás la cita actualizada en tu agenda.</center></html>");
+        JLabel textoConfirmacion = new JLabel("<html><center>Se notificó al paciente para que seleccione<br>una nueva fecha y hora, "
+                + "en cuanto lo haga, <br>verás la cita actualizada en tu agenda.</center></html>");
         textoConfirmacion.setFont(new Font("arial", Font.BOLD, 32));
         textoConfirmacion.setForeground(COLOR_GRIS_SUBTITULO);
         textoConfirmacion.setBorder(new EmptyBorder(50, 90, 50, 90));
@@ -837,6 +839,19 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.listaBotonesAtender.add(pruebaFicha);
         this.listaBotonesEstado.add(btnEstado);
         this.panelPrincipal.add(panelCita);
+    }
+    
+    public void sinCitas() {
+        MetodosPublicos.vaciarPanel(panelPrincipal);
+        JLabel sinCitas = new JLabel("No tienes citas asignadas", new ImageIcon("iconsP/emoji.png"), JLabel.CENTER);
+        sinCitas.setHorizontalTextPosition(JLabel.CENTER);
+        sinCitas.setVerticalTextPosition(JLabel.BOTTOM);
+        sinCitas.setFont(new Font("Arial", Font.BOLD, 20));
+        sinCitas.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelPrincipal.add(Box.createVerticalGlue());
+        panelPrincipal.add(sinCitas);
+        panelPrincipal.add(Box.createVerticalGlue());
+        MetodosPublicos.refrescarVentana(panelPrincipal);
     }
 
     public void mostrarDetallesCita(Cita cita) {

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -54,6 +55,7 @@ public class MedicoController extends PacienteController {
         this.medico.btnVolverVerDetalles.addActionListener(this);
         this.medico.btnActReagendar.addActionListener(this);
         this.medico.btnNoReagendar.addActionListener(this);
+        this.medico.btnAcpReagendamiento.addActionListener(this);
     }
 
     private void proceso(String mensaje, boolean valor) {
@@ -75,7 +77,7 @@ public class MedicoController extends PacienteController {
         this.medico.habilitarBotonesMenu(this.medico.btnMiAgenda);
         this.citas = citadao.listarPorMedico(doc.getId_medico());
         if (citas == null || citas.length == 0) {
-            medico.panelPrincipal.add(new JLabel("No tienes citas asignadas"));
+            medico.sinCitas();
             MetodosPublicos.refrescarVentana(medico.panelPrincipal);
         } else {
             for (Cita clave : citas) {
@@ -92,7 +94,7 @@ public class MedicoController extends PacienteController {
         this.medico.habilitarBotonesMenu(this.medico.btnConsultorio);
         this.citasConsultorio = citadao.listarPorMedico(doc.getId_medico());
         if (citasConsultorio == null || citasConsultorio.length == 0) {
-            medico.panelPrincipal.add(new JLabel("No tienes citas asignadas"));
+            medico.sinCitas();
             MetodosPublicos.refrescarVentana(medico.panelPrincipal);
         } else {
             for (Cita clave : citasConsultorio) {
@@ -191,7 +193,13 @@ public class MedicoController extends PacienteController {
         }
         
         if (e.getSource() == this.medico.btnActReagendar) {
-            this.medico.mostrarVistaReagendarCitaMiAgenda();
+            this.medico.mostrarVistaReagendarCitaMiAgenda(medico.citaSeleccionada);
+            return;
+        }
+        
+        if (e.getSource() == this.medico.btnAcpReagendamiento) {
+            historialdao.actualizarEstadoCita(medico.citaSeleccionada.getIdCita());
+            procesoCitasMiAgenda();
             return;
         }
 
@@ -201,11 +209,6 @@ public class MedicoController extends PacienteController {
         }
 
         if (e.getSource() == this.medico.simboloRegresarConfirmacionP) {
-            procesoCitasConsultorio();
-            return;
-        }
-
-        if (e.getSource() == this.medico.btnNoAsistio) {
             procesoCitasConsultorio();
             return;
         }
