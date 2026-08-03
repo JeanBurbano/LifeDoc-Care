@@ -15,7 +15,6 @@ import model.Hashed;
 import model.MetodosPublicos;
 import model.UsuDao;
 import model.Usuario;
-import model.UsuarioDao;
 
 import view.RegistroUsuariosInterfaz;
 
@@ -37,7 +36,6 @@ public class RegistroUsuariosController implements ActionListener {
         initField();
     }
 
-    //inicializa las variables necesarias para el contructor
     protected void init(RegistroUsuariosInterfaz rI) {
         this.rI = rI;
         this.rI.btnRegistrarse.addActionListener(this);
@@ -67,7 +65,7 @@ public class RegistroUsuariosController implements ActionListener {
     }
 
     private void registrar() {
-        byte idTipoIdentificacion = (byte) rI.campoTipoId.getSelectedIndex();
+        byte idTipoIdentificacion = obtenerTipoIdentificacion();
         String numeroIdentificacion = rI.campoNumeroID.getText().trim();
         String primerNombre = rI.campoPrimerNombre.getText().trim();
         String segundoNombre = rI.campoSegundoNombre.getText().trim();
@@ -80,10 +78,13 @@ public class RegistroUsuariosController implements ActionListener {
         String contrasena = new String(rI.campoContraseña.getPassword());
         String grupoSisben = String.valueOf(rI.campoSisben.getSelectedItem());
 
-        String errores = validarFormularioRegistro(idTipoIdentificacion, numeroIdentificacion,
+        Validador validador = validarFormularioRegistro(idTipoIdentificacion, numeroIdentificacion,
                 primerNombre, segundoNombre, primerApellido, segundoApellido, sexoBiologico,
-                correo, telefono, contrasena, grupoSisben, fechaNacimiento).obtenerErrores();
+                correo, telefono, contrasena, grupoSisben, fechaNacimiento);
 
+        validacionesEspecificas(validador);
+
+        String errores = validador.obtenerErrores();
         if (!errores.isEmpty()) {
             mostrarAdvertencia(errores);
             return;
@@ -94,8 +95,16 @@ public class RegistroUsuariosController implements ActionListener {
         }
 
         guardarNuevoUsuario(idTipoIdentificacion, numeroIdentificacion, primerNombre, segundoNombre,
-                primerApellido, segundoApellido, sexoBiologico, correo, contrasena,telefono,
+                primerApellido, segundoApellido, sexoBiologico, correo, contrasena, telefono,
                 grupoSisben, fechaNacimiento);
+    }
+
+    protected byte obtenerTipoIdentificacion() {
+        return (byte) rI.campoTipoId.getSelectedIndex();
+    }
+
+
+    protected void validacionesEspecificas(Validador validador) {
     }
 
     protected Validador validarFormularioRegistro(int idTipoIdentificacion, String numeroIdentificacion,
@@ -103,20 +112,15 @@ public class RegistroUsuariosController implements ActionListener {
             String sexoBiologico, String correo, String telefono, String contrasena,
             String grupoSisben, LocalDate fechaNacimiento) {
 
-        //creo mi instancia de la calse Validador para empecesar a concatener los errores si se encuentran
         Validador validador = new Validador();
-        //valido que alla selecionado una opcion de tipo de documento
         validador.validar(idTipoIdentificacion < 1,
                 "Debe seleccionar un tipo de documento\n");
-        //valido que numero de identificacion no este vacio
         validador.validar(numeroIdentificacion.isEmpty(), "El campo numero de identificacion esta vacio\n");
         if (!numeroIdentificacion.isEmpty()) {
-            //validar que numero de identificacion debe tener 8 0 10 digitos
             validador.validar(!MetodosPublicos.validarTamano(numeroIdentificacion, 8, 10),
                     "El numero de identificacion debe tener entre 8 y 10 digitos\n");
         }
-        //validar el campo primer nombre no este vacio
-        validador.validar(primerNombre.isEmpty(), "El campo primer nombre está vacio\n");
+        validador.validar(primerNombre.isEmpty(), "El campo primer nombre esta vacio\n");
         if (!primerNombre.isEmpty()) {
             validador.validar(!MetodosPublicos.validarTamano(primerNombre, 3), "El campo primer nombre debe contener 3 o mas caracteres\n");
         }
@@ -179,8 +183,8 @@ public class RegistroUsuariosController implements ActionListener {
         }
         return mensaje;
     }
-    
-   
+
+
     private boolean existeUsuarioRegistrado(String numeroIdentificacion, String correo) {
         boolean validador = false;
         Validador vali = new Validador();
@@ -203,6 +207,25 @@ public class RegistroUsuariosController implements ActionListener {
         String contrasenaHashed = Hashed.hashPassword(contrasena);
         String rutaFotoParaGuardar = calcularRutaDestinoFoto();
 
+        boolean registroExitoso = persistirUsuario(idTipoIdentificacion, numeroIdentificacion,
+                primerNombre, segundoNombre, primerApellido, segundoApellido, sexoBiologico,
+                correo, contrasenaHashed, telefono, grupoSisben, fechaNacimiento, rutaFotoParaGuardar);
+
+        if (registroExitoso) {
+            copiarFotoPerfilSiCorresponde();
+            JOptionPane.showMessageDialog(rI, "Cuenta creada correctamente", "Registro exitoso",
+                    JOptionPane.INFORMATION_MESSAGE);
+            volverALogin();
+        } else {
+            mostrarAdvertencia("No se pudo completar el registro Intenta de nuevo");
+        }
+    }
+    
+    protected boolean persistirUsuario(byte idTipoIdentificacion, String numeroIdentificacion,
+            String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String sexoBiologico, String correo, String contrasenaHashed, String telefono,
+            String grupoSisben, LocalDate fechaNacimiento, String rutaFotoParaGuardar) {
+
         Usuario usu = new Usuario(
                 id,
                 ID_ROL_PACIENTE,
@@ -221,19 +244,11 @@ public class RegistroUsuariosController implements ActionListener {
                 true,
                 rutaFotoParaGuardar);
 
-        int idUsuarioGenerado = new UsuDao().setAgregar(usu);
-        if (idUsuarioGenerado > 0) {
-            copiarFotoPerfilSiCorresponde();
-            JOptionPane.showMessageDialog(rI, "Cuenta creada correctamente", "Registro exitoso",
-                    JOptionPane.INFORMATION_MESSAGE);
-            volverALogin();
-        } else {
-            mostrarAdvertencia("No se pudo completar el registro Intenta de nuevo");
-        }
+        return new UsuDao().setAgregar(usu) > 0;
     }
-    
+
     private void limpiar(){
-        rI.campoPrimerNombre.setText(""); 
+        rI.campoPrimerNombre.setText("");
         rI.campoSegundoNombre.setText("");
         rI.campoPrimerApellido.setText("");
         rI.campoSegundoApellido.setText("");
@@ -246,19 +261,18 @@ public class RegistroUsuariosController implements ActionListener {
         rI.campoTipoId.setSelectedIndex(0);
         rI.datePickerNacimiento.setText("");
     }
-    
+
     private void volverALogin() {
         limpiar();
         rI.dispose();
     }
 
-    //muestra el mensaje de error
     protected void mostrarError(String mensaje) {
-        JOptionPane.showMessageDialog(rI, mensaje, "Datos inválidos", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(rI, mensaje, "Datos invalidos", JOptionPane.ERROR_MESSAGE);
     }
 
     protected void mostrarAdvertencia(String mensaje) {
-        JOptionPane.showMessageDialog(rI, mensaje, "Datos inválidos", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(rI, mensaje, "Datos invalidos", JOptionPane.WARNING_MESSAGE);
     }
 
     protected void abrirVentanaGuardar() {

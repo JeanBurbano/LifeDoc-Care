@@ -1,20 +1,18 @@
 package controller;
 
-import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 import model.Especialidad;
 import model.EspecialidadDao;
 import model.Medico;
 import model.MedicoDao;
+import model.MetodosPublicos;
 import model.Operario;
 import model.OperarioDao;
 import model.Rol;
 import model.RolDao;
-import model.UsuarioDao;
-
+import model.UsuDao;
 import view.RegistroPersonalInterfaz;
 
 public class RegistroPersonalController extends RegistroUsuariosController {
@@ -23,96 +21,93 @@ public class RegistroPersonalController extends RegistroUsuariosController {
     private static final int ID_ROL_OPERARIO = 4;
 
     private RegistroPersonalInterfaz rpI;
-    private UsuarioDao usuarioDao;
+    private UsuDao usuarioDao;
     private MedicoDao medicoDao;
     private OperarioDao operarioDao;
     private RolDao rolDao;
     private EspecialidadDao especialidadDao;
-
     private List<Rol> roles = new ArrayList<>();
-    private List<Especialidad> especialidad = new ArrayList<>();
+    private List<Especialidad> especialidades = new ArrayList<>();
 
     public RegistroPersonalController(RegistroPersonalInterfaz rpI) {
         super(rpI);
         this.rpI = rpI;
-        this.usuarioDao = new UsuarioDao();
+        this.usuarioDao = new UsuDao();
         this.medicoDao = new MedicoDao();
         this.operarioDao = new OperarioDao();
         this.rolDao = new RolDao();
         this.especialidadDao = new EspecialidadDao();
-
         cargarComboRoles();
+        cargarComboEspecialidad();
     }
 
     private void cargarComboRoles() {
         rpI.campoRol.removeAllItems();
+        rpI.campoRol.addItem("Seleccione un rol");
         roles = rolDao.listar();
         roles.forEach(rol -> rpI.campoRol.addItem(rol.getNombreRol()));
     }
-    
+
     private void cargarComboEspecialidad() {
         rpI.especialidad.removeAllItems();
-        List<Especialidad> listaEsp = especialidadDao.listar();
-        for (Especialidad e : listaEsp) {
-            rpI.campoRol.addItem(e.getNombreEsp());
-        }
+        rpI.especialidad.addItem("Seleccione una especialidad");
+        especialidades = especialidadDao.listar();
+        especialidades.forEach(e -> rpI.especialidad.addItem(e.getNombreEsp()));
     }
-    
+
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == rpI.btnRegistrarse) {
-            registrarPersonal();
-        } else if (e.getSource() == rpI.btnVolverA) {
-            super.actionPerformed(e);
+    protected byte obtenerTipoIdentificacion() {
+        return TI_CEDULA;
+    }
+
+    @Override
+    protected void validacionesEspecificas(Validador validador) {
+        Rol rolSeleccionado = obtenerRolSeleccionado();
+        validador.validar(rolSeleccionado == null, "Debe seleccionar un rol para el personal\n");
+
+        if (rolSeleccionado != null && rolSeleccionado.getIdRol() == ID_ROL_MEDICO) {
+            validador.validar(obtenerEspecialidadSeleccionada() == null,
+                    "Debe seleccionar una especialidad para el medico\n");
         }
     }
 
-    private void registrarPersonal() {
-        int idTipoIdentificacion = rpI.campoTipoId.getSelectedIndex() + 3;
+    @Override
+    protected boolean persistirUsuario(byte idTipoIdentificacion, String numeroIdentificacion,
+            String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+            String sexoBiologico, String correo, String contrasenaHashed, String telefono,
+            String grupoSisben, LocalDate fechaNacimiento, String rutaFotoParaGuardar) {
 
-        //  Validar el campo único/nuevo del personal (Rol)
-        if (rpI.campoRol.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(rpI, "Selecciona un rol válido para el personal", "Datos inválidos", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        String rolSeleccionado = String.valueOf(rpI.campoRol.getSelectedItem());
-        
-        // Asignamos el ID de rol correspondiente 
-        int idRol = (rolSeleccionado.equalsIgnoreCase("Medico") || rolSeleccionado.equalsIgnoreCase("Médico")) ? 3 : 4;
-        
-        // Para registrar el usuario base aprovechando la transacción de UsuarioDao
-        int idTipoIdentificacion = rpI.campoTipoId.getSelectedIndex() + 3; // Cedula Ciudadania en BD es 3
-        String numeroIdentificacion = rpI.campoNumeroID.getText().trim();
-        String primerNombre = rpI.campoPrimerNombre.getText().trim();
-        String segundoNombre = rpI.campoSegundoNombre.getText().trim();
-        String primerApellido = rpI.campoPrimerApellido.getText().trim();
-        String segundoApellido = rpI.campoSegundoApellido.getText().trim();
-        String sexoBiologico = String.valueOf(rpI.comboSexo.getSelectedItem());
-        LocalDate fechaNacimiento = rpI.datePickerNacimiento.getDate();
-        String correo = rpI.campoCorreo.getText().trim();
-        String telefono = rpI.campoTelefono.getText().trim();
-        String contrasena = new String(rpI.campoContraseña.getPassword());
-        String sisben = String.valueOf(rpI.campoSisben.getSelectedItem());
-        String rolSeleccionado = String.valueOf(rpI.campoRol.getSelectedItem());
-
-        Validador validador = validarFormularioRegistro(idTipoIdentificacion, numeroIdentificacion,
-                primerNombre, segundoNombre, primerApellido, segundoApellido, sexoBiologico,
-                correo, telefono, contrasena, sisben, fechaNacimiento);
-
-        validador.validar(rpI.campoRol.getSelectedIndex() == -1,
-                "Debe seleccionar un rol valido para el personal\n");
-
-        if (validador.tieneErrores()) {
-            mostrarError(validador.obtenerErrores());
-            return;
-        }
-
-        int idRol = calcularIdRol(rolSeleccionado);
+        Rol rolSeleccionado = obtenerRolSeleccionado();
         byte edad = MetodosPublicos.calcularEdad(fechaNacimiento);
 
-        int idUsuarioGenerado = usuarioDao.registrarUsuario(
-                idRol,
+        if (rolSeleccionado.getIdRol() == ID_ROL_MEDICO) {
+            Especialidad especialidadSeleccionada = obtenerEspecialidadSeleccionada();
+
+            Medico medico = new Medico(
+                    id,
+                    (byte) ID_ROL_MEDICO,
+                    idTipoIdentificacion,
+                    numeroIdentificacion,
+                    primerNombre,
+                    segundoNombre,
+                    primerApellido,
+                    segundoApellido,
+                    correo,
+                    fechaNacimiento,
+                    sexoBiologico,
+                    telefono,
+                    edad,
+                    grupoSisben,
+                    true,
+                    rutaFotoParaGuardar,
+                    especialidadSeleccionada.getNombreEsp());
+
+            return usuarioDao.setAgregar(medico, contrasenaHashed, especialidadSeleccionada.getIdEsp()) > 0;
+        }
+
+        Operario operario = new Operario(
+                id,
+                (byte) ID_ROL_OPERARIO,
                 idTipoIdentificacion,
                 numeroIdentificacion,
                 primerNombre,
@@ -120,67 +115,30 @@ public class RegistroPersonalController extends RegistroUsuariosController {
                 primerApellido,
                 segundoApellido,
                 correo,
-                contrasena,
                 fechaNacimiento,
                 sexoBiologico,
                 telefono,
                 edad,
-                sisben);
+                grupoSisben,
+                true,
+                rutaFotoParaGuardar);
 
-        if (idUsuarioGenerado == -1) {
-            mostrarError("No se pudo completar el registro del personal Verifique los datos introducidos");
-            return;
-        // Vincular con la tabla específica del rol si el usuario fue creado exitosamente
-        if (idUsuarioGenerado != -1) {
-            int resultado = 0;
-
-            if (idRol == 3) {
-                Medico m = new Medico();
-                m.setId_medico(idUsuarioGenerado);
-                resultado = medicoDao.setAgregar(m);
-            } else if (idRol == 4) {
-                Operario op = new Operario();
-                op.setId_usuario(idUsuarioGenerado);
-                resultado = operarioDao.setAgregar(op);
-            }
-
-            if (resultado > 0) {
-                JOptionPane.showMessageDialog(rpI, "Personal registrado exitosamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
-                this.rpI.dispose();
-            } else {
-                JOptionPane.showMessageDialog(rpI, "Error al guardar los datos específicos del personal", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(rpI, "No se pudo completar el registro del personal. Verifique los datos introducidos.", "Error de registro", JOptionPane.WARNING_MESSAGE);
-        }
-
-        if (!vincularConTablaEspecifica(idRol, idUsuarioGenerado)) {
-            mostrarError("Error al guardar los datos especificos del personal");
-            return;
-        }
-
-        JOptionPane.showMessageDialog(rpI, "Personal registrado exitosamente", "Registro exitoso",
-                JOptionPane.INFORMATION_MESSAGE);
-        this.rpI.dispose();
+        return usuarioDao.setAgregar(operario, contrasenaHashed) > 0;
     }
 
-    private int calcularIdRol(String rolSeleccionado) {
-        boolean esMedico = rolSeleccionado.equalsIgnoreCase("Medico") || rolSeleccionado.equalsIgnoreCase("Medico");
-        return esMedico ? ID_ROL_MEDICO : ID_ROL_OPERARIO;
+    private Rol obtenerRolSeleccionado() {
+        int indice = rpI.campoRol.getSelectedIndex();
+        if (indice < 1 || indice > roles.size()) {
+            return null;
+        }
+        return roles.get(indice - 1);
     }
 
-    private boolean vincularConTablaEspecifica(int idRol, int idUsuarioGenerado) {
-        if (idRol == ID_ROL_MEDICO) {
-            Medico m = new Medico();
-            m.setId_medico(idUsuarioGenerado);
-            return medicoDao.setAgregar(m) > 0;
+    private Especialidad obtenerEspecialidadSeleccionada() {
+        int indice = rpI.especialidad.getSelectedIndex();
+        if (indice < 1 || indice > especialidades.size()) {
+            return null;
         }
-        if (idRol == ID_ROL_OPERARIO) {
-            Operario op = new Operario();
-            op.setId_usuario(idUsuarioGenerado);
-            return operarioDao.setAgregar(op) > 0;
-        }
-        return false;
+        return especialidades.get(indice - 1);
     }
-    
 }
