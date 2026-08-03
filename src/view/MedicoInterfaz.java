@@ -40,10 +40,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
             btnBuscarIdHistorialPaciente, btnDescargarHistorialP;
     public JPanel panelPrincipal;
     public JTextField idHistorial;
-    public ArrayList<JButton> listaBotonesReagendar;
-    public ArrayList<JButton> listaBotonesVerDetalles;
-    public ArrayList<JButton> listaBotonesAtender;
-    public ArrayList<JButton> listaBotonesEstado;
+    public ArrayList<JButton> listaBotonesReagendar, listaBotonesVerDetalles, listaBotonesAtender, listaBotonesEstado;
     public JTextArea campoDiagnostico, campoObservaciones;
     public JTextField campoPrimerN, campoSegundoN, campoCorreo, campoFechaN, campoPrimerA, campoSegundoA, campoNumeroT,
             campoNumeroId;
@@ -212,7 +209,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
         this.panelPrincipal.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO),
-                BorderFactory.createEmptyBorder(0, 30, 5, 30)));
+                BorderFactory.createEmptyBorder(10, 30, 5, 30)));
         this.panelPrincipal.setPreferredSize(new Dimension(1455, 500));
         this.cuerpo2.setLayout(new BorderLayout());
         this.cuerpo2.setBorder(new EmptyBorder(10, 40, 40, 40));

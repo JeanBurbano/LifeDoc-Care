@@ -198,7 +198,6 @@ public class MedicoController extends PacienteController {
         }
         
         if (e.getSource() == this.medico.btnAcpReagendamiento) {
-            historialdao.actualizarEstadoCita(medico.citaSeleccionada.getIdCita());
             procesoCitasMiAgenda();
             return;
         }
@@ -226,6 +225,7 @@ public class MedicoController extends PacienteController {
 
         if (e.getSource() == this.medico.btnNoAsistio) {
             historialdao.actualizarEstadoCita(medico.citaSeleccionada.getIdCita());
+            procesoCitasConsultorio();
             return;
         }
 
