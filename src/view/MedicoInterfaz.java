@@ -470,8 +470,6 @@ public class MedicoInterfaz extends PacienteInterfaz {
         medicamento.setAlignmentX(Component.LEFT_ALIGNMENT);
         medicamento.setForeground(COLOR_AZUL_CORPORATIVO);
 
-        String listaMed[] = {""};
-        campoMedicamento = new JComboBox(listaMed);
         MetodosPublicos.crearComboEstilizado(campoMedicamento);
         campoComboBox(18, 270, 35, campoMedicamento);
         campoMedicamento.setAlignmentX(Component.LEFT_ALIGNMENT);

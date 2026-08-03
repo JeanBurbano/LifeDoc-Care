@@ -268,7 +268,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
     }
 
     // ---------------------------- MODULO DE PAGOS ----------------------------
-    // Punto de entrada del botón "Pagos": muestra el buscador de paciente,
+    // Punto de entrada del boton "Pagos": muestra el buscador de paciente,
     // igual que en Consultas, para listar sus citas pendientes de pago.
     public void mostrarVistaPagos() {
         MetodosPublicos.vaciarPanel(cuerpo2);
@@ -832,7 +832,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         estilizarBoton(btnCredito, (byte) 4);
         estilizarBoton(btnTransferencia, (byte) 4);
 
-        // Si ya se pagó en efectivo, no tiene sentido dejar que se abran
+        // Si ya se pago en efectivo, no tiene sentido dejar que se abran
         // los modales de tarjeta o transferencia, así que se bloquean.
         boolean pagoEnEfectivo = "Efectivo".equals(metodoPago);
         btnDebito.setEnabled(!pagoEnEfectivo);
@@ -881,7 +881,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
                     + "Método de pago: " + metodoPago;
 
             String nombreArchivo = "factura_" + codigoFactura;
-            CreadorPdf.constructorCreadorPdf(nombreArchivo, "Factura");
+            CreadorPdf.constructorCreadorPdf(nombreArchivo, "Factura", contenidoFactura);
 
         });
 
@@ -914,13 +914,13 @@ public class OperarioInterfaz extends PacienteInterfaz {
         refrescarVentana(cuerpo2);
     }
 
-    // Monto máximo que se puede recibir en efectivo
+    // Monto maximo que se puede recibir en efectivo
     private static final double MAXIMO_MONTO_EFECTIVO = 2_500_000;
 
-    // Ventanas emergentes, donde se mostrata como una espcie de modal para el metodo de pago de las tarjetas
+    // Ventanas emergentes, donde se mostrata como una especie de modal para el metodo de pago de las tarjetas
     // Ventana emergente para pago en efectivo: pide el monto recibido y
     // calcula el cambio a devolver en vivo mientras el operario escribe.
-    // Devuelve true si se confirmó con un monto válido, false si se canceló.
+    // Devuelve true si se confirmo con un monto valido, false si se cancelo.
     private boolean mostrarModalEfectivo(double valorAPagar) {
         JPanel modal = new JPanel();
         modal.setLayout(new BoxLayout(modal, BoxLayout.Y_AXIS));
@@ -1267,7 +1267,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
             JButton btnPacienteEnEspera = new JButton("Paciente en Espera", new ImageIcon("iconsP/bell.png"));
             estilizarBoton(btnPacienteEnEspera, (byte) 5);
             btnPacienteEnEspera.addActionListener(e -> {
-                // Pendiente: aquí se agregará la lógica específica de este botón.
+                // Pendiente la logica de este boton (se necesitaba conectar con otra interfaz, falto)
             });
             panelBotones.add(btnPacienteEnEspera);
         }

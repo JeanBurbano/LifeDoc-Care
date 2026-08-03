@@ -23,14 +23,22 @@ public class CreadorPdf {
     public CreadorPdf() {
     }
 
+    // Se mantiene igual para no romper el llamado que ya usa el historial clinico:
+    // usa "Historial Clínico" como titulo por defecto.
     public static void constructorCreadorPdf(String nombre, String mensaje) {
-        CreadorPdf creadorPdf = new CreadorPdf();
-        creadorPdf.setCrearPdf(nombre, mensaje);
+        constructorCreadorPdf(nombre, "Historial Clínico", mensaje);
     }
 
-    public void setCrearPdf(String nombre, String mensaje) {
+    // Version nueva: permite indicar el titulo del documento (ej. "Factura").
+    public static void constructorCreadorPdf(String nombre, String titulo, String mensaje) {
+        CreadorPdf creadorPdf = new CreadorPdf();
+        creadorPdf.setCrearPdf(nombre, titulo, mensaje);
+    }
+
+    public void setCrearPdf(String nombre, String titulo, String mensaje) {
         this.nombre = nombre;
-        //Abrir ventanita esa de java para elejir donde guardar
+
+        //Abrir ventanita esa de java para elegir donde guardar
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Guardar PDF");
         chooser.setSelectedFile(new File(nombre + ".pdf"));
@@ -62,10 +70,14 @@ public class CreadorPdf {
             Document documento = new Document();
             PdfWriter.getInstance(documento, archivoOut);
             documento.open();
-            Paragraph parrafo = new Paragraph("Historial Clínico\n"
-                    + "LifeDocCare" + mensaje);
-            parrafo.setAlignment(1);
+
+            Paragraph tituloParrafo = new Paragraph("LifeDocCare\n" + titulo + "\n\n");
+            tituloParrafo.setAlignment(1);
+            documento.add(tituloParrafo);
+
+            Paragraph parrafo = new Paragraph(mensaje);
             documento.add(parrafo);
+
             documento.close();
             JOptionPane.showMessageDialog(null, "PDF creado con éxito en:\n" + archivo.getAbsolutePath(), "", JOptionPane.INFORMATION_MESSAGE);
         } catch (FileNotFoundException ex) {
@@ -76,11 +88,9 @@ public class CreadorPdf {
     }
 
     public void getVisualizarPdf() {
-
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File("."));
         chooser.setFileFilter(new FileFilter() {
-
             @Override
             public boolean accept(File f) {
                 return f.getName().toLowerCase().endsWith("pdf") || f.isDirectory();
@@ -88,19 +98,14 @@ public class CreadorPdf {
 
             @Override
             public String getDescription() {
-
                 return "pdf File";
             }
         }
         );
         int r = chooser.showOpenDialog(chooser);
-
         if (r == JFileChooser.APPROVE_OPTION) {
-
             String nombre1 = chooser.getSelectedFile().getPath();
-
             try {
-
                 File path = new File(nombre1);
                 Desktop.getDesktop().open(path);
             } catch (Exception eio) {
