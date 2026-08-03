@@ -66,16 +66,16 @@ public class RegistroUsuariosController implements ActionListener {
 
     private void registrar() {
         byte idTipoIdentificacion = obtenerTipoIdentificacion();
-        String numeroIdentificacion = rI.campoNumeroID.getText().trim();
-        String primerNombre = rI.campoPrimerNombre.getText().trim();
-        String segundoNombre = rI.campoSegundoNombre.getText().trim();
-        String primerApellido = rI.campoPrimerApellido.getText().trim();
-        String segundoApellido = rI.campoSegundoApellido.getText().trim();
+        String numeroIdentificacion = rI.campoNumeroID.getText();
+        String primerNombre = rI.campoPrimerNombre.getText().toLowerCase();
+        String segundoNombre = rI.campoSegundoNombre.getText().toLowerCase();
+        String primerApellido = rI.campoPrimerApellido.getText().toLowerCase();
+        String segundoApellido = rI.campoSegundoApellido.getText().toLowerCase();
         String sexoBiologico = String.valueOf(rI.comboSexo.getSelectedItem());
         LocalDate fechaNacimiento = rI.datePickerNacimiento.getDate();
         String correo = rI.campoCorreo.getText().trim();
-        String telefono = rI.campoTelefono.getText().trim();
-        String contrasena = new String(rI.campoContraseña.getPassword());
+        String telefono = rI.campoTelefono.getText();
+        String contrasena = String.valueOf(rI.campoContraseña.getPassword()).trim();
         String grupoSisben = String.valueOf(rI.campoSisben.getSelectedItem());
 
         Validador validador = validarFormularioRegistro(idTipoIdentificacion, numeroIdentificacion,

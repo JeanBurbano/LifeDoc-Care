@@ -9,7 +9,7 @@ import view.AdministradorDelSistemaInterfaz;
 public class AdministradorDelSistemaController extends PacienteController {
 
     AdministradorDelSistemaInterfaz adminSistem;
-    private final UsuDao usuarioDao = new UsuDao();
+    private final UsuarioPublicoDao usuarioDao = new UsuarioPublicoDao();
 
     public AdministradorDelSistemaController(AdministradorDelSistemaInterfaz adminSistem) {
         super(adminSistem);
@@ -29,7 +29,7 @@ public class AdministradorDelSistemaController extends PacienteController {
         if (n == 0) {
             int idUsuario = (int) adminSistem.mDefaultTableModel.getValueAt(fila, 0);
             if (adminSistem.getUsuario().getIdUsuario() != idUsuario) {
-                boolean actualizado = (usuarioDao.habilitarUsuario(idUsuario) > 0);
+                boolean actualizado = (usuarioDao.setHabilitar(idUsuario) > 0);
                 if (actualizado) {
                     JOptionPane.showMessageDialog(adminSistem, "Usuario habilitado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     procesoBtnRol();

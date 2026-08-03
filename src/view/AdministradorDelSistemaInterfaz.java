@@ -105,13 +105,8 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
     public void cargarUsuarios(List<UsuarioPublico> usuarios) {
         mDefaultTableModel.setRowCount(0); //limpia filas no columnas
         for (UsuarioPublico p : usuarios) {
-            String segundoNombre = (p.getSegundoNombre() == null) ? "" : p.getSegundoNombre();
-            String segundoApellido = (p.getSegundoApellido() == null) ? "" : p.getSegundoApellido();
-            String nombreCompleto = String.join(" ",
-                    p.getPrimerNombre(), segundoNombre, p.getPrimerApellido(), segundoApellido)
-                    .replaceAll("\\s+", " ").trim();
-            String rol = (p.getIdRol() == 1) ? "Administrador del sistema" : p.getIdRol() == 2 ? "Administrador del centro"
-                    : p.getIdRol() == 3 ? "Medico" : p.getIdRol() == 4 ? "Operario" : "Paciente";
+            String nombreCompleto = p.getPrimerNombre()+" "+p.getPrimerApellido();
+            String rol = p.getRol();
             String estado = p.isEstado() ? "Activo" : "Deshabilitado";
             mDefaultTableModel.addRow(new Object[]{
                 p.getIdUsuario(), nombreCompleto, p.getEdad(), p.getCorreo(),

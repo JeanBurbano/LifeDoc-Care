@@ -1,6 +1,5 @@
 package controller;
 
-import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.Cita;
 import model.CreadorPdf;
 import model.MetodosPublicos;
@@ -32,7 +30,9 @@ public class PacienteController implements ActionListener {
 
     private String historial;
     private boolean estadoNotificacion;
-
+    
+    protected String nombreModi;
+    
     public PacienteController() {
 
     }
@@ -108,10 +108,8 @@ public class PacienteController implements ActionListener {
                 EditarPerfilInterfaz vista = new EditarPerfilInterfaz("Editar Perfil", usurio.getPrimerNombre(),
                         String.valueOf(usurio.getEdad()), usurio.getCorreo(), usurio.getNumeroCelular(),
                         usurio.getSexoBiologico(), String.valueOf(usurio.getFechaNacimiento()), String.valueOf(usurio.getSisben()), usurio.getFotoPerfil());
-                EditarPerfilController cedI = new EditarPerfilController(vista, usurio.getIdUsuario());
-                vista.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                vista.setExtendedState(MAXIMIZED_BOTH);
-                vista.setVisible(true);
+                EditarPerfilController cedI = new EditarPerfilController(vista, usurio.getIdUsuario(),nombreModi);
+                MetodosPublicos.abrirVentana(vista);
             }
         });
     }

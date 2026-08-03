@@ -122,15 +122,19 @@ public class UsuarioPublicoDao implements Crud<UsuarioPublico> {
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
+                String segundoNombre ="";
+                if(rs.getString("segundo_nombre") != null )segundoNombre = rs.getString("segundo_nombre");
+                String segundoApellido="";
+                if(rs.getString("segundo_apellido") != null )segundoNombre = rs.getString("segundo_apellido");
                 UsuarioPublico usu = new UsuarioPublico(
                         rs.getInt("id_usuario"),
                         rs.getByte("id_rol"),
                         rs.getByte("id_tipo_identificacion"),
                         rs.getString("numero_identificacion"),
                         rs.getString("primer_nombre"),
-                        rs.getString("segundo_nombre"),
+                        segundoNombre,
                         rs.getString("primer_apellido"),
-                        rs.getString("segundo_apellido"),
+                        segundoApellido,
                         rs.getString("correo_electronico"),
                         rs.getDate("fecha_nacimiento").toLocalDate(),
                         rs.getString("sexo_biologico"),
