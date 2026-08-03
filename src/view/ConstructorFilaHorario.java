@@ -28,40 +28,16 @@ public class ConstructorFilaHorario {
     private ConstructorFilaHorario() {
     }
 
-    /**
-     * Crea un combo de horas ya estilizado, usando el arreglo de horas
-     * recibido (generado con GeneradorHorarios.generarHoras()).
-     * @param horas arreglo de horas disponibles (ej. "07:00", "07:30"...)
-     * @return el JComboBox listo para usar
-     */
+    
     public static JComboBox construirComboHora(String[] horas) {
         JComboBox combo = new JComboBox<>(horas); //combo con las horas recibidas
         MetodosPublicos.crearComboEstilizado(combo);
         combo.setFont(new Font("Arial", Font.PLAIN, 12)); // fuente pequeña
-        combo.setPreferredSize(new Dimension(76, 28)); // tamaño fijo 
+        combo.setPreferredSize(new Dimension(110, 28)); // tamaño fijo 
         return combo;
     }
 
-    /**
-     * Construye la fila completa de un día del horario: checkbox,
-     * nombre del día, separador visual, combos de hora de inicio/fin
-     * de jornada y almuerzo, y la etiqueta de horas laborales.
-     * Los componentes creados se guardan en los arreglos recibidos, en
-     * la posición "indiceDia", para que la clase que llama a este
-     * método pueda acceder a ellos después (por ejemplo, para agregar
-     * un ActionListener desde el Controlador).
-     *
-     * @param indiceDia índice del día (0=Lunes...5=Sábado)
-     * @param diasSemana nombres de los días (ej. {"Lunes","Martes",...})
-     * @param horas arreglo de horas disponibles para los combos
-     * @param diaSemana arreglo de checkboxes (uno por día) a llenar
-     * @param horaInicio arreglo de combos de hora de inicio a llenar
-     * @param horaFin arreglo de combos de hora de fin a llenar
-     * @param almuerzoIni arreglo de combos de inicio de almuerzo a llenar
-     * @param almuerzoFin arreglo de combos de fin de almuerzo a llenar
-     * @param lblHoras arreglo de etiquetas de horas laborales a llenar
-     * @return el JPanel de la fila, ya armado
-     */
+    
     public static JPanel construirFilaDia(int indiceDia, String[] diasSemana, String[] horas,
             JCheckBox[] diaSemana, JComboBox[] horaInicio, JComboBox[] horaFin,
             JComboBox[] almuerzoIni, JComboBox[] almuerzoFin, JLabel[] lblHoras) {
@@ -129,18 +105,7 @@ public class ConstructorFilaHorario {
         return fila;
     }
 
-    /**
-     * Activa o desactiva los combos de hora de un día específico, y
-     * resetea la etiqueta de horas laborales cuando se desactiva.
-     *
-     * @param indiceDia índice del día a modificar
-     * @param activo true para habilitar los combos, false para deshabilitarlos
-     * @param horaInicio arreglo de combos de hora de inicio
-     * @param horaFin arreglo de combos de hora de fin
-     * @param almuerzoIni arreglo de combos de inicio de almuerzo
-     * @param almuerzoFin arreglo de combos de fin de almuerzo
-     * @param lblHoras arreglo de etiquetas de horas laborales
-     */
+    
     public static void atenuarFila(int indiceDia, boolean activo,
             JComboBox[] horaInicio, JComboBox[] horaFin,
             JComboBox[] almuerzoIni, JComboBox[] almuerzoFin, JLabel[] lblHoras) {

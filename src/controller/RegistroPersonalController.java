@@ -5,9 +5,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import model.Especialidad;
+import model.EspecialidadDao;
 import model.Medico;
 import model.MedicoDao;
-import model.MetodosPublicos;
 import model.Operario;
 import model.OperarioDao;
 import model.Rol;
@@ -26,8 +27,10 @@ public class RegistroPersonalController extends RegistroUsuariosController {
     private MedicoDao medicoDao;
     private OperarioDao operarioDao;
     private RolDao rolDao;
+    private EspecialidadDao especialidadDao;
 
     private List<Rol> roles = new ArrayList<>();
+    private List<Especialidad> especialidad = new ArrayList<>();
 
     public RegistroPersonalController(RegistroPersonalInterfaz rpI) {
         super(rpI);
@@ -36,6 +39,7 @@ public class RegistroPersonalController extends RegistroUsuariosController {
         this.medicoDao = new MedicoDao();
         this.operarioDao = new OperarioDao();
         this.rolDao = new RolDao();
+        this.especialidadDao = new EspecialidadDao();
 
         cargarComboRoles();
     }
@@ -45,7 +49,19 @@ public class RegistroPersonalController extends RegistroUsuariosController {
         roles = rolDao.listar();
         roles.forEach(rol -> rpI.campoRol.addItem(rol.getNombreRol()));
     }
+<<<<<<< HEAD
 
+=======
+    
+    private void cargarComboEspecialidad() {
+        rpI.especialidad.removeAllItems();
+        List<Especialidad> listaEsp = especialidadDao.listar();
+        for (Especialidad e : listaEsp) {
+            rpI.campoRol.addItem(e.getNombreEsp());
+        }
+    }
+    
+>>>>>>> origin/luna
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == rpI.btnRegistrarse) {
@@ -56,7 +72,23 @@ public class RegistroPersonalController extends RegistroUsuariosController {
     }
 
     private void registrarPersonal() {
+<<<<<<< HEAD
         int idTipoIdentificacion = rpI.campoTipoId.getSelectedIndex() + 3;
+=======
+        //  Validar el campo único/nuevo del personal (Rol)
+        if (rpI.campoRol.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(rpI, "Selecciona un rol válido para el personal", "Datos inválidos", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String rolSeleccionado = String.valueOf(rpI.campoRol.getSelectedItem());
+        
+        // Asignamos el ID de rol correspondiente 
+        int idRol = (rolSeleccionado.equalsIgnoreCase("Medico") || rolSeleccionado.equalsIgnoreCase("Médico")) ? 3 : 4;
+        
+        // Para registrar el usuario base aprovechando la transacción de UsuarioDao
+        int idTipoIdentificacion = rpI.campoTipoId.getSelectedIndex() + 3; // 'Cedula Ciudadania' en BD es 3
+>>>>>>> origin/luna
         String numeroIdentificacion = rpI.campoNumeroID.getText().trim();
         String primerNombre = rpI.campoPrimerNombre.getText().trim();
         String segundoNombre = rpI.campoSegundoNombre.getText().trim();
@@ -101,9 +133,34 @@ public class RegistroPersonalController extends RegistroUsuariosController {
                 edad,
                 sisben);
 
+<<<<<<< HEAD
         if (idUsuarioGenerado == -1) {
             mostrarError("No se pudo completar el registro del personal Verifique los datos introducidos");
             return;
+=======
+        // Vincular con la tabla específica del rol si el usuario fue creado exitosamente
+        if (idUsuarioGenerado != -1) {
+            int resultado = 0;
+
+            if (idRol == 3) {
+                Medico m = new Medico();
+                m.setId_medico(idUsuarioGenerado);
+                resultado = medicoDao.setAgregar(m);
+            } else if (idRol == 4) {
+                Operario op = new Operario();
+                op.setId_usuario(idUsuarioGenerado);
+                resultado = operarioDao.setAgregar(op);
+            }
+
+            if (resultado > 0) {
+                JOptionPane.showMessageDialog(rpI, "Personal registrado exitosamente", "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+                this.rpI.dispose();
+            } else {
+                JOptionPane.showMessageDialog(rpI, "Error al guardar los datos específicos del personal", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(rpI, "No se pudo completar el registro del personal. Verifique los datos introducidos.", "Error de registro", JOptionPane.WARNING_MESSAGE);
+>>>>>>> origin/luna
         }
 
         if (!vincularConTablaEspecifica(idRol, idUsuarioGenerado)) {
