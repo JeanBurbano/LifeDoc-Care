@@ -31,7 +31,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import model.MetodosPublicos;
-import model.Usuario;
+import model.UsuarioPublico;
 
 public class PacienteInterfaz extends LayoutView {
 
@@ -41,7 +41,7 @@ public class PacienteInterfaz extends LayoutView {
     public static final Color COLOR_GRIS_SUBTITULO = new Color(100, 120, 130);
 
     //Aqui creo los componentes que basicamente llevara todo
-    private Usuario usuario;
+    private UsuarioPublico usuario;
     private JPanel panelBienvenida;//Aqui creo el JPanel de bienbenida ejemplo:Bienbenido alejo! lifedoccare
     private JPanel panelSesionUsuario;//Aqui creo el JPanel que lelva el boton cerrar sesion y foto de perfil
     private PanelRound panelFotoPerfil;
@@ -105,12 +105,12 @@ public class PacienteInterfaz extends LayoutView {
     public JPanel panelHorarios;
     public JScrollPane scrollHorarios;
 
-    public PacienteInterfaz(String nombreInterfaz, Usuario usuario) {
+    public PacienteInterfaz(String nombreInterfaz, UsuarioPublico usuario) {
         super(nombreInterfaz);
         init(usuario);
     }
 
-    private void init(Usuario usuario) {
+    private void init(UsuarioPublico usuario) {
         boolean opaque = false;
         this.usuario = usuario;
 
@@ -147,7 +147,7 @@ public class PacienteInterfaz extends LayoutView {
         panelFotoPerfil.setRoundTopRight(radio);
         panelFotoPerfil.setRoundBottomLeft(radio);
         panelFotoPerfil.setRoundBottomRight(radio);
-        ImageIcon imagen = new ImageIcon(this.usuario.getFotoPeril());
+        ImageIcon imagen = new ImageIcon(this.usuario.getFotoPerfil());
         labelFotoPerfil = new JLabel();
         labelFotoPerfil.setPreferredSize(tamanoFijo);
         labelFotoPerfil.setMinimumSize(tamanoFijo);
@@ -1080,7 +1080,7 @@ public class PacienteInterfaz extends LayoutView {
         MetodosPublicos.refrescarVentana(panelHorarios);
     }
 
-    public Usuario getUsuario() {
+    public UsuarioPublico getUsuario() {
         return this.usuario;
     }
 }

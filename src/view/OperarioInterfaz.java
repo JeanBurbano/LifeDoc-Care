@@ -44,6 +44,7 @@ import static model.MetodosPublicos.estilizarComboBox;
 import static model.MetodosPublicos.refrescarVentana;
 import model.Paciente;
 import model.Usuario;
+import model.UsuarioPublico;
 
 public class OperarioInterfaz extends PacienteInterfaz {
 
@@ -77,7 +78,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
     private Paciente pacienteConsultasActual;
 
-    public OperarioInterfaz(String nombreInterfaz, Usuario usuario) {
+    public OperarioInterfaz(String nombreInterfaz, UsuarioPublico usuario) {
         super(nombreInterfaz, usuario);
 
         this.listaBotonesCancelarOpeario = new ArrayList<JButton>();

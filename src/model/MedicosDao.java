@@ -11,16 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import java.sql.SQLException;
+
 /**
  *
  * @author lunaa
  */
-public class MedicosDao implements Crud<Medicos>{
+public class MedicosDao implements Crud<Medicos> {
+
     public Conexion conectar = new Conexion();
     Connection con;
     PreparedStatement ps;
     ResultSet rs;
-    
+
     @Override
     public List<Medicos> listar() {
         List<Medicos> medico = new ArrayList<Medicos>();
@@ -28,21 +30,20 @@ public class MedicosDao implements Crud<Medicos>{
                 + " u.primer_apellido FROM medico m JOIN usuario u ON u.id_usuario = m.id_usuario "
                 + "JOIN especialidad e ON e.id_especialidad = m.id_especialidad "
                 + "WHERE u.estado = 1 ORDER BY m.id_medico;";
-        try{
+        try {
             con = conectar.getConection();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
-            
-            while(rs.next()){
-                Medicos m = new Medicos();
+
+            while (rs.next()) {
+                Medicos m = new Medicos(rs.getString(2));
                 m.setId_medico(rs.getInt(1));
-                m.setNumeroIdentificacion(rs.getString(2));
                 m.setEspecialidad(rs.getString(3));
                 m.setPrimerNombre(rs.getString(4));
                 m.setPrimerApellido(rs.getString(5));
                 medico.add(m);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
                     e.toString(),
                     "Error en la consulta" + e.getMessage(),
@@ -60,7 +61,7 @@ public class MedicosDao implements Crud<Medicos>{
         }
         return medico;
     }
-    
+
     @Override
     public int setAgregar(Medicos tr) {
         String sql = "INSERT INTO medico (id_usuario, id_especialidad) VALUES (?, ?)";
@@ -89,5 +90,5 @@ public class MedicosDao implements Crud<Medicos>{
             return 0;
         }
     }
-    
+
 }

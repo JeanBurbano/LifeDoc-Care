@@ -2,14 +2,14 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
-import model.UsuarioDao;
-import model.RegistroPersonasDao;
+import model.UsuDao;
+import model.UsuarioPublicoDao;
 import view.AdministradorDelSistemaInterfaz;
 
 public class AdministradorDelSistemaController extends PacienteController {
 
     AdministradorDelSistemaInterfaz adminSistem;
-    private final UsuarioDao usuarioDao = new UsuarioDao();
+    private final UsuDao usuarioDao = new UsuDao();
 
     public AdministradorDelSistemaController(AdministradorDelSistemaInterfaz adminSistem) {
         super(adminSistem);
@@ -29,7 +29,7 @@ public class AdministradorDelSistemaController extends PacienteController {
         if (n == 0) {
             int idUsuario = (int) adminSistem.mDefaultTableModel.getValueAt(fila, 0);
             if (adminSistem.getUsuario().getIdUsuario() != idUsuario) {
-                boolean actualizado = usuarioDao.habilitarUsuario(idUsuario);
+                boolean actualizado = (usuarioDao.habilitarUsuario(idUsuario) > 0);
                 if (actualizado) {
                     JOptionPane.showMessageDialog(adminSistem, "Usuario habilitado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     procesoBtnRol();
@@ -54,7 +54,7 @@ public class AdministradorDelSistemaController extends PacienteController {
         if (n == 0) {
             int idUsuario = (int) adminSistem.mDefaultTableModel.getValueAt(fila, 0);
             if (adminSistem.getUsuario().getIdUsuario() != idUsuario) {
-                boolean actualizado = usuarioDao.deshabilitarUsuario(idUsuario);
+                boolean actualizado = (usuarioDao.setEliminar(idUsuario) > 0);
                 if (actualizado) {
                     JOptionPane.showMessageDialog(adminSistem, "Usuario deshabilitado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     procesoBtnRol();
@@ -71,7 +71,7 @@ public class AdministradorDelSistemaController extends PacienteController {
 
     private void procesoBtnRol() {
         adminSistem.vistaUsuarios();
-        adminSistem.cargarUsuarios(new RegistroPersonasDao().listar());
+        adminSistem.cargarUsuarios(new UsuarioPublicoDao().listar());
         adminSistem.btnRol.setEnabled(false);
         adminSistem.habilitarBotonesMenu(adminSistem.btnRol);
     }

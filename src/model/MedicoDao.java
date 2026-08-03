@@ -28,11 +28,11 @@ public class MedicoDao implements Crud<Medico> {
             ps.setInt(1, idEspecialidad);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    medicos.add(new Medico(
-                            rs.getInt("id_medico"),
-                            rs.getString("primer_nombre"),
-                            rs.getString("primer_apellido")
-                    ));
+                    Medico medico = new Medico();
+                    rs.getInt("id_medico");
+                    rs.getString("primer_nombre");
+                    rs.getString("primer_apellido");
+                    medicos.add(medico);
                 }
             }
         } catch (SQLException e) {
@@ -54,9 +54,8 @@ public class MedicoDao implements Crud<Medico> {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Medico m = new Medico();
+                Medico m = new Medico(rs.getString(2));
                 m.setId_medico(rs.getInt(1));
-                m.setNumeroIdentificacion(rs.getString(2));
                 m.setEspecialidad(rs.getString(3));
                 m.setPrimerNombre(rs.getString(4));
                 m.setPrimerApellido(rs.getString(5));

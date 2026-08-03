@@ -74,11 +74,11 @@ public class RegistroPersonalController extends RegistroUsuariosController {
                 primerNombre, segundoNombre, primerApellido, segundoApellido, sexoBiologico,
                 correo, telefono, contrasena, sisben, fechaNacimiento);
 
-        validador.validar(() -> rpI.campoRol.getSelectedIndex() == -1,
+        validador.validar(rpI.campoRol.getSelectedIndex() == -1,
                 "Debe seleccionar un rol valido para el personal\n");
 
         if (validador.tieneErrores()) {
-            mostrarError(validador.obtenerMensaje());
+            mostrarError(validador.obtenerErrores());
             return;
         }
 
@@ -134,4 +134,5 @@ public class RegistroPersonalController extends RegistroUsuariosController {
         }
         return false;
     }
+    
 }

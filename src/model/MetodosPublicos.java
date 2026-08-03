@@ -7,6 +7,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -33,8 +34,16 @@ import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import view.PacienteInterfaz;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
+import javax.swing.JFrame;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class MetodosPublicos {
+
+    public static void abrirVentana(JFrame frame) {
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame.setExtendedState(MAXIMIZED_BOTH);
+        frame.setVisible(true);
+    }
 
     //Esto es para los JTextField que solo aceptan numeros
     public static void soloNumeros(JTextField campo, int longitudMaxima) {
@@ -61,10 +70,14 @@ public class MetodosPublicos {
                 boolean mayusculas = key >= 65 && key <= 90;
                 boolean minusculas = key >= 97 && key <= 122;
 
-                if (!(mayusculas || minusculas)) evt.consume();
-                
-                if(campo.getText().length() >=longitudMaxima) evt.consume();
-                
+                if (!(mayusculas || minusculas)) {
+                    evt.consume();
+                }
+
+                if (campo.getText().length() >= longitudMaxima) {
+                    evt.consume();
+                }
+
             }
         });
     }

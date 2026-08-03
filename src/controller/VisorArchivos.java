@@ -11,15 +11,25 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public final class VisorArchivos {
-    
+
+    //esto es por que no es una clase de la cual se van a necesitar creaar instancias new VisorArchivos()
     private VisorArchivos() {
-        
+
     }
-    
+
+    //solo para aclararle a mis companeros que 
+    /*
+    Builder es un patron de diseño creacional 
+    en Java que permite construir objetos complejos
+    paso a paso separando la construccion de su representacion final
+    es ideal para objetos con muchas propiedades o configuraciones opcionales
+    ya que resuelve problemas como los constructores telescopicos y mejora la
+    legibilidad del codigo mediante el encadenamiento de metodos.
+     */
     public static Builder nuevo() {
         return new Builder();
     }
-    
+
     public static File abrirYSeleccionar(JFileChooser selector, Component padre, Consumer<File> alSeleccionar, Runnable siCancela) {
         int r = selector.showOpenDialog(padre);
         if (r != JFileChooser.APPROVE_OPTION) {
@@ -29,58 +39,58 @@ public final class VisorArchivos {
             return null;
         }
         File archivo = selector.getSelectedFile();
-        if (archivo == null || archivo.getName().isEmpty()) {
+        if (archivo != null && !archivo.getName().isEmpty()) {
             if (alSeleccionar != null) {
                 alSeleccionar.accept(archivo);
             }
         }
         return archivo;
     }
-    
+
     public static class Builder {
-        
+
         private String directorioInicial = System.getProperty("user.home");
         private String titulo = "Selecciona un archivo";
         private boolean multipleSeleccion = false;
         private int modoSeleccion = JFileChooser.FILES_ONLY;
         private boolean mostrarTodosLosArchivos = false;
         private final List<FileFilter> filtros = new ArrayList<>();
-        
+
         public Builder directorioInicial(String ruta) {
             this.directorioInicial = ruta;
             return this;
         }
-        
+
         public Builder titulo(String titulo) {
             this.titulo = titulo;
             return this;
         }
-        
+
         public Builder multiSeleccion(boolean valor) {
             this.multipleSeleccion = valor;
             return this;
         }
-        
+
         public Builder modoSeleccion(int modoSeleccion) {
             this.modoSeleccion = modoSeleccion;
             return this;
         }
-        
+
         public Builder mostarTodosLosArchivos(boolean valor) {
             this.mostrarTodosLosArchivos = valor;
             return this;
         }
-        
+
         public Builder agregarFiltro(String descripcion, String... extensiones) {
             filtros.add(new FileNameExtensionFilter(descripcion, extensiones));
             return this;
         }
-        
+
         public Builder agregarFiltro(FileFilter filtro) {
             filtros.add(filtro);
             return this;
         }
-        
+
         private void aplicarLookAndFeelWindows() {
             try {
                 UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
@@ -92,7 +102,7 @@ public final class VisorArchivos {
                 }
             }
         }
-        
+
         public JFileChooser construirChooser() {
             aplicarLookAndFeelWindows();
             JFileChooser selector = new JFileChooser(directorioInicial);
@@ -100,13 +110,13 @@ public final class VisorArchivos {
             selector.setMultiSelectionEnabled(multipleSeleccion);
             selector.setFileSelectionMode(modoSeleccion);
             selector.setAcceptAllFileFilterUsed(mostrarTodosLosArchivos);
-            
+
             filtros.forEach(selector::addChoosableFileFilter);
             if (!filtros.isEmpty()) {
                 selector.setFileFilter(filtros.get(0));
             }
             return selector;
         }
-        
+
     }
 }

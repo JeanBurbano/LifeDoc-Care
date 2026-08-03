@@ -40,6 +40,7 @@ import javax.swing.table.TableCellRenderer;
 import model.MetodosPublicos;
 import model.Paciente;
 import model.Usuario;
+import model.UsuarioPublico;
 
 public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
@@ -143,7 +144,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     public JLabel lblHorarioSeleccionado; // muestra qué horario se está asignando
     public int filaHorarioSeleccionada; // fila de la tabla que se está asignando actualmente
 
-    public AdministradorCentroInterfaz(String nombreInterfaz, Usuario usuario) {
+    public AdministradorCentroInterfaz(String nombreInterfaz, UsuarioPublico usuario) {
         super(nombreInterfaz, usuario);
 
         //Generar las horas disponibles para los combos de horario

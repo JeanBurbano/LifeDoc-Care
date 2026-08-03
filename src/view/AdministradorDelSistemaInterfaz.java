@@ -16,8 +16,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import model.MetodosPublicos;
-
-import model.Usuario;
+import model.UsuarioPublico;
 
 public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
 
@@ -36,7 +35,7 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
         this.panelUsuarios.add(scrollPane, BorderLayout.CENTER);
     }
 
-    public AdministradorDelSistemaInterfaz(String nombreInterfaz, Usuario usuario) {
+    public AdministradorDelSistemaInterfaz(String nombreInterfaz, UsuarioPublico usuario) {
         super(nombreInterfaz, usuario);
         this.panelUsuarios = new JPanel();
         this.panelUsuarios.setLayout(new BorderLayout());
@@ -103,9 +102,9 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
         }
     }
 
-    public void cargarUsuarios(List<Usuario> usuarios) {
-        mDefaultTableModel.setRowCount(0); //Limpia filas no columnas
-        for (Usuario p : usuarios) {
+    public void cargarUsuarios(List<UsuarioPublico> usuarios) {
+        mDefaultTableModel.setRowCount(0); //limpia filas no columnas
+        for (UsuarioPublico p : usuarios) {
             String segundoNombre = (p.getSegundoNombre() == null) ? "" : p.getSegundoNombre();
             String segundoApellido = (p.getSegundoApellido() == null) ? "" : p.getSegundoApellido();
             String nombreCompleto = String.join(" ",

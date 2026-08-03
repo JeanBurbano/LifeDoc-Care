@@ -20,7 +20,7 @@ import model.Horario;
 import model.HorarioDao;
 import model.HorarioDia;
 import view.PacienteInterfaz;
-import model.Usuario;
+import model.UsuarioPublico;
 import model.CitaDao;
 import model.MedicoDao;
 import model.Medico;
@@ -46,7 +46,7 @@ public class GestorCitas {
 
     private final PacienteInterfaz pacienteI;
     private final PacienteController controller;
-    private final Usuario usu;
+    private final UsuarioPublico usu;
     private final CitaDao citaDao;
     private final MedicoDao medicoDao;
     private final HorarioDao horarioDao;

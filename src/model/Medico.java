@@ -2,7 +2,7 @@ package model;
 
 import java.time.LocalDate;
 
-public class Medico extends Usuario {
+public class Medico extends UsuarioPublico {
 
     private int id_usuarioM;
     private int id_medico;
@@ -12,20 +12,22 @@ public class Medico extends Usuario {
 
     }
 
-    public Medico(int id_usuario, byte id_rol, byte tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
-            String correo, String contrasena, LocalDate fechaNacimiento, String sexoBiologico, String numeroTelefonico, byte edad, String sisben, boolean estado, String fotoPerfil, String especialidad) {
+    public Medico(String numeroIdentificacion) {
+        super(numeroIdentificacion);
+    }
+
+    public Medico(int id_usuario, byte id_rol, byte tipoId, String numeroId, String primerNombre, String segundoNombre,
+            String primerApellido, String segundoApellido, String correo, LocalDate fechaNacimiento, String sexoBiologico,
+            String numeroTelefonico, byte edad, String sisben, boolean estado, String fotoPerfil, String especialidad) {
+
         super(id_usuario, id_rol, tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
-                correo, contrasena, fechaNacimiento, sexoBiologico, numeroTelefonico, edad, sisben, estado,
+                correo, fechaNacimiento, sexoBiologico, numeroTelefonico, edad, sisben, estado,
                 fotoPerfil);
+        
         this.id_usuarioM = id_usuario;
         this.especialidad = especialidad;
     }
-
-    public Medico(int id_medico, String primerNombre, String primerApellido) {
-        super(primerNombre, primerApellido);
-        this.id_medico = id_medico;
-    }
-
+    
     public void setEspecialidad(String especialidad) {
         this.especialidad = especialidad;
     }

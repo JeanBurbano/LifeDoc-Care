@@ -16,56 +16,56 @@ public class OperarioDao implements Crud<Operario>{
             
     public List<Operario> listarOp() {
         List<Operario> operarios = new ArrayList<>();
-        String sql = "SELECT o.id_operario, u.primer_nombre, u.primer_apellido "
-                   + "FROM operario o "
-                   + "JOIN usuario u ON u.id_usuario = o.id_usuario "
-                   + "WHERE u.estado = 1 "
-                   + "ORDER BY u.primer_apellido, u.primer_nombre";
-        
-        try {
-            con = conectar.getConection();
-            ps = con.prepareStatement(sql);
-            
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    operarios.add(new Operario(
-                        rs.getInt("id_operario"),
-                        rs.getString("primer_nombre"),
-                        rs.getString("primer_apellido")
-                    ));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        String sql = "SELECT o.id_operario, u.primer_nombre, u.primer_apellido "
+//                   + "FROM operario o "
+//                   + "JOIN usuario u ON u.id_usuario = o.id_usuario "
+//                   + "WHERE u.estado = 1 "
+//                   + "ORDER BY u.primer_apellido, u.primer_nombre";
+//        
+//        try {
+//            con = conectar.getConection();
+//            ps = con.prepareStatement(sql);
+//            
+//            try (ResultSet rs = ps.executeQuery()) {
+//                while (rs.next()) {
+//                    operarios.add(new Operario(
+//                        rs.getInt("id_operario"),
+//                        rs.getString("primer_nombre"),
+//                        rs.getString("primer_apellido")
+//                    ));
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
         return operarios;
     }
     
     @Override
     public List<Operario> listar() {
         List<Operario> operarios = new ArrayList<>();
-        String sql = "SELECT o.id_operario, u.primer_nombre, u.primer_apellido "
-                   + "FROM operario o "
-                   + "JOIN usuario u ON u.id_usuario = o.id_usuario "
-                   + "WHERE u.estado = 1 "  
-                   + "ORDER BY u.primer_apellido, u.primer_nombre";
-        
-        try {
-            con = conectar.getConection();
-            ps = con.prepareStatement(sql);
-            
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    operarios.add(new Operario(
-                        rs.getInt("id_operario"),
-                        rs.getString("primer_nombre"),
-                        rs.getString("primer_apellido")
-                    ));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        String sql = "SELECT o.id_operario, u.primer_nombre, u.primer_apellido "
+//                   + "FROM operario o "
+//                   + "JOIN usuario u ON u.id_usuario = o.id_usuario "
+//                   + "WHERE u.estado = 1 "  
+//                   + "ORDER BY u.primer_apellido, u.primer_nombre";
+//        
+//        try {
+//            con = conectar.getConection();
+//            ps = con.prepareStatement(sql);
+//            
+//            try (ResultSet rs = ps.executeQuery()) {
+//                while (rs.next()) {
+//                    operarios.add(new Operario(
+//                        rs.getInt("id_operario"),
+//                        rs.getString("primer_nombre"),
+//                        rs.getString("primer_apellido")
+//                    ));
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
         return operarios;
     }
 

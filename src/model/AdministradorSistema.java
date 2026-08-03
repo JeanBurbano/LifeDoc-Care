@@ -1,5 +1,5 @@
 package model;
 
-public class AdministradorSistema extends Usuario{
+public class AdministradorSistema {
     
 }

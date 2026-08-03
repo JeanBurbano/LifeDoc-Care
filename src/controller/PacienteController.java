@@ -13,7 +13,7 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import model.Cita;
 import model.CreadorPdf;
 import model.MetodosPublicos;
-import model.Usuario;
+import model.UsuarioPublico;
 import model.UsuarioDao;
 import view.EditarPerfilInterfaz;
 import view.PacienteInterfaz;
@@ -21,7 +21,7 @@ import view.PacienteInterfaz;
 public class PacienteController implements ActionListener {
 
     //variables
-    private Usuario usurio;
+    private UsuarioPublico usurio;
 
     protected PacienteInterfaz pacienteI;
     private GestorCitas gestorCita;
@@ -107,7 +107,7 @@ public class PacienteController implements ActionListener {
             public void mouseClicked(MouseEvent e) {
                 EditarPerfilInterfaz vista = new EditarPerfilInterfaz("Editar Perfil", usurio.getPrimerNombre(),
                         String.valueOf(usurio.getEdad()), usurio.getCorreo(), usurio.getNumeroCelular(),
-                        usurio.getSexoBiologico(), String.valueOf(usurio.getFechaNacimiento()), String.valueOf(usurio.getSisben()), usurio.getFotoPeril());
+                        usurio.getSexoBiologico(), String.valueOf(usurio.getFechaNacimiento()), String.valueOf(usurio.getSisben()), usurio.getFotoPerfil());
                 EditarPerfilController cedI = new EditarPerfilController(vista, usurio.getIdUsuario());
                 vista.setDefaultCloseOperation(EXIT_ON_CLOSE);
                 vista.setExtendedState(MAXIMIZED_BOTH);

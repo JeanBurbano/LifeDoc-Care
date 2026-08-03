@@ -25,9 +25,9 @@ import javax.swing.border.EmptyBorder;
 import model.Cita;
 import model.MetodosPublicos;
 import model.Paciente;
-import model.PacienteDao;
-import model.Usuario;
+import model.UsuDao;
 import model.UsuarioDao;
+import model.UsuarioPublico;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
 public class MedicoInterfaz extends PacienteInterfaz {
@@ -51,7 +51,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
 
     ;
 
-    public MedicoInterfaz(String nombreInterfaz, Usuario usuario) {
+    public MedicoInterfaz(String nombreInterfaz, UsuarioPublico usuario) {
         super(nombreInterfaz, usuario);
         this.usuarioDao = new UsuarioDao();
         this.btnMiAgenda = new JButton("Mi Agenda", new ImageIcon("iconsP/schedule.png"));
@@ -173,7 +173,6 @@ public class MedicoInterfaz extends PacienteInterfaz {
         campo.setBackground(Color.WHITE);
     }
 
-  
     public void mostrarFormularioHistorialMedicoPaciente() {
         MetodosPublicos.vaciarPanel(panelListaHistorial);
         MetodosPublicos.vaciarPanel(panelBarraBusqueda);
@@ -543,7 +542,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         this.cuerpo2.add(panelDiagnostico, BorderLayout.EAST);
 
         System.out.println("id_usuario buscado: " + this.citaSeleccionada.getIdUsuario());
-        Paciente paciente = usuarioDao.buscarPorId(this.citaSeleccionada.getIdUsuario());
+        Paciente paciente = new UsuDao().buscarPorId(this.citaSeleccionada.getIdUsuario());
         System.out.println("Paciente encontrado: " + (paciente != null));
         if (paciente != null) {
             System.out.println("Nombre: " + paciente.getPrimerNombre());
@@ -903,7 +902,7 @@ public class MedicoInterfaz extends PacienteInterfaz {
         campoHora.setText(cita.getHoraCita().toString());
         campoPaciente.setText(cita.getNombrePaciente());
 
-        Paciente pacienteInfo = usuarioDao.buscarPorId(cita.getIdUsuario());
+        Paciente pacienteInfo = new UsuDao().buscarPorId(cita.getIdUsuario());
         if (pacienteInfo != null) {
             campoNumeroId.setText(pacienteInfo.getNumeroIdentificacion());
         } else {

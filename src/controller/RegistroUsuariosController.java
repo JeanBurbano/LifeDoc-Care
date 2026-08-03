@@ -13,7 +13,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import model.Hashed;
 import model.MetodosPublicos;
-import model.RegistroPersonasDao;
+import model.UsuDao;
 import model.Usuario;
 import model.UsuarioDao;
 
@@ -30,17 +30,14 @@ public class RegistroUsuariosController implements ActionListener {
     private static final String RUTA_FOTO_DEFECTO = "fotosPerfil/fotoDefecto.png";
 
     private RegistroUsuariosInterfaz rI;
-    
     private File archivoImagenSeleccionado;
 
     public RegistroUsuariosController(RegistroUsuariosInterfaz rI) {
         init(rI);
-        MetodosPublicos.soloLetras(this.rI.campoPrimerNombre, 30);
-        MetodosPublicos.soloLetras(this.rI.campoSegundoNombre, 30);
-        MetodosPublicos.soloLetras(this.rI.campoPrimerApellido, 30);
-        MetodosPublicos.soloLetras(this.rI.campoSegundoApellido, 30);
+        initField();
     }
 
+    //inicializa las variables necesarias para el contructor
     protected void init(RegistroUsuariosInterfaz rI) {
         this.rI = rI;
         this.rI.btnRegistrarse.addActionListener(this);
@@ -49,6 +46,13 @@ public class RegistroUsuariosController implements ActionListener {
         MetodosPublicos.soloNumeros(rI.campoNumeroID, 10);
         MetodosPublicos.soloNumeros(rI.campoTelefono, 10);
         archivoImagenSeleccionado = null;
+    }
+
+    protected void initField() {
+        MetodosPublicos.soloLetras(rI.campoPrimerNombre, 30);
+        MetodosPublicos.soloLetras(rI.campoSegundoNombre, 30);
+        MetodosPublicos.soloLetras(rI.campoPrimerApellido, 30);
+        MetodosPublicos.soloLetras(rI.campoSegundoApellido, 30);
     }
 
     @Override
@@ -63,7 +67,7 @@ public class RegistroUsuariosController implements ActionListener {
     }
 
     private void registrar() {
-        int idTipoIdentificacion = rI.campoTipoId.getSelectedIndex();
+        byte idTipoIdentificacion = (byte) rI.campoTipoId.getSelectedIndex();
         String numeroIdentificacion = rI.campoNumeroID.getText().trim();
         String primerNombre = rI.campoPrimerNombre.getText().trim();
         String segundoNombre = rI.campoSegundoNombre.getText().trim();
@@ -78,10 +82,10 @@ public class RegistroUsuariosController implements ActionListener {
 
         String errores = validarFormularioRegistro(idTipoIdentificacion, numeroIdentificacion,
                 primerNombre, segundoNombre, primerApellido, segundoApellido, sexoBiologico,
-                correo, telefono, contrasena, grupoSisben, fechaNacimiento).obtenerMensaje();
+                correo, telefono, contrasena, grupoSisben, fechaNacimiento).obtenerErrores();
 
         if (!errores.isEmpty()) {
-            mostrarError(errores);
+            mostrarAdvertencia(errores);
             return;
         }
 
@@ -90,7 +94,7 @@ public class RegistroUsuariosController implements ActionListener {
         }
 
         guardarNuevoUsuario(idTipoIdentificacion, numeroIdentificacion, primerNombre, segundoNombre,
-                primerApellido, segundoApellido, sexoBiologico, correo, telefono, contrasena,
+                primerApellido, segundoApellido, sexoBiologico, correo, contrasena,telefono,
                 grupoSisben, fechaNacimiento);
     }
 
@@ -99,79 +103,59 @@ public class RegistroUsuariosController implements ActionListener {
             String sexoBiologico, String correo, String telefono, String contrasena,
             String grupoSisben, LocalDate fechaNacimiento) {
 
+        //creo mi instancia de la calse Validador para empecesar a concatener los errores si se encuentran
         Validador validador = new Validador();
-
-        validador.validar(() -> idTipoIdentificacion < 0,
+        //valido que alla selecionado una opcion de tipo de documento
+        validador.validar(idTipoIdentificacion < 1,
                 "Debe seleccionar un tipo de documento\n");
-
-        validador.validar(() -> numeroIdentificacion.isEmpty(),
-                "El campo numero de identificacion esta vacio\n");
+        //valido que numero de identificacion no este vacio
+        validador.validar(numeroIdentificacion.isEmpty(), "El campo numero de identificacion esta vacio\n");
         if (!numeroIdentificacion.isEmpty()) {
-            validador.validar(() -> !MetodosPublicos.validarNumero(numeroIdentificacion)
-                            || !MetodosPublicos.validarTamano(numeroIdentificacion, 8, 10),
+            //validar que numero de identificacion debe tener 8 0 10 digitos
+            validador.validar(!MetodosPublicos.validarTamano(numeroIdentificacion, 8, 10),
                     "El numero de identificacion debe tener entre 8 y 10 digitos\n");
         }
-
-        validador.validar(() -> primerNombre.isEmpty(),
-                "El campo primer nombre está vacio\n");
+        //validar el campo primer nombre no este vacio
+        validador.validar(primerNombre.isEmpty(), "El campo primer nombre está vacio\n");
         if (!primerNombre.isEmpty()) {
-            validador.validar(() -> !MetodosPublicos.validarSoloLetras(primerNombre),
-                    "El primer nombre solo debe contener letras\n");
+            validador.validar(!MetodosPublicos.validarTamano(primerNombre, 3), "El campo primer nombre debe contener 3 o mas caracteres\n");
         }
 
         if (!segundoNombre.isEmpty()) {
-            validador.validar(() -> !MetodosPublicos.validarSoloLetras(segundoNombre),
-                    "El segundo nombre solo debe contener letras\n");
+            validador.validar(!MetodosPublicos.validarTamano(segundoNombre, 3), "El campo segundo nombre debe contener 3 o mas caracteres\n");
         }
 
-        validador.validar(() -> primerApellido.isEmpty(),
-                "El campo primer apellido está vacio\n");
+        validador.validar(primerApellido.isEmpty(), "El campo primer apellido está vacio\n");
         if (!primerApellido.isEmpty()) {
-            validador.validar(() -> !MetodosPublicos.validarSoloLetras(primerApellido),
-                    "El primer apellido solo debe contener letras\n");
+            validador.validar(!MetodosPublicos.validarTamano(primerApellido, 3), "El campo primer apellido debe contener 3 o mas caracteres\n");
         }
 
         if (!segundoApellido.isEmpty()) {
-            validador.validar(() -> !MetodosPublicos.validarSoloLetras(segundoApellido),
-                    "El segundo apellido solo debe contener letras\n");
+            validador.validar(!MetodosPublicos.validarTamano(segundoApellido, 3), "El campo segundo apellido debe contener 3 o mas caracteres\n");
         }
 
-        validador.validar(() -> sexoBiologico.isEmpty() || sexoBiologico.equals("null"),
-                "Debe seleccionar el sexo biologico\n");
+        validador.validar(sexoBiologico.isEmpty(), "Debe seleccionar el sexo biologico\n");
 
-        validador.validar(() -> correo.isEmpty(),
-                "El campo correo esta vacio\n");
+        validador.validar(correo.isEmpty(), "El campo correo esta vacio\n");
+
         if (!correo.isEmpty()) {
-            validador.validar(() -> !MetodosPublicos.validarFormatoCorreoGmail(correo),
-                    "El correo debe tener un formato valido de Gmail (ejemplo@gmail.com)\n");
+            validador.validar(!MetodosPublicos.validarFormatoCorreoGmail(correo), "El correo debe tener un formato valido de Gmail ejemplo@gmail.com\n");
         }
 
         if (!telefono.isEmpty()) {
-            boolean soloNumeros = MetodosPublicos.validarNumero(telefono);
-            validador.validar(() -> !soloNumeros,
-                    "El numero de telefono debe contener solo numeros\n");
-            if (soloNumeros) {
-                validador.validar(() -> telefono.length() != 10,
-                        "El numero de telefono debe tener 10 dígitos\n");
-                if (telefono.length() == 10) {
-                    validador.validar(() -> telefono.charAt(0) != '3',
-                            "El numero de telefono debe ser colombiano\n");
-                }
-            }
+            validador.validar(telefono.length() != 10, "El numero de telefono debe tener 10 dígitos\n");
+            validador.validar(telefono.charAt(0) != '3', "El numero de telefono debe ser colombiano\n");
         }
 
-        validador.validar(() -> contrasena.isEmpty(),
-                "El campo contraseña está vacio\n");
+        validador.validar(contrasena.isEmpty(), "El campo contraseña está vacio\n");
         if (!contrasena.isEmpty()) {
-            validador.validar(() -> !MetodosPublicos.validarContrasena(contrasena),
+            validador.validar(!MetodosPublicos.validarContrasena(contrasena),
                     "La contraseña debe incluir mayuscula, minuscula, numero y caracter especial ($ @ # % & * - _ ! ?)\n");
         }
 
-        validador.validar(() -> grupoSisben.isEmpty() || grupoSisben.equals("null"),
-                "Debe seleccionar el grupo Sisben o No aplica si no estás registrado\n");
+        validador.validar(grupoSisben.isEmpty(), "Debe seleccionar el grupo Sisben o No aplica si no estás registrado\n");
 
-        validador.validar(() -> fechaNacimiento == null,
-                "Debe seleccionar la fecha de nacimiento\n");
+        validador.validar(fechaNacimiento == null, "Debe seleccionar la fecha de nacimiento\n");
         if (fechaNacimiento != null) {
             byte edad = MetodosPublicos.calcularEdad(fechaNacimiento);
             validador.agregarSiNoVacio(validacionEdadTipoDocumento(edad, idTipoIdentificacion));
@@ -183,7 +167,7 @@ public class RegistroUsuariosController implements ActionListener {
     protected String validacionEdadTipoDocumento(byte edad, int idTipoIdentificacion) {
         String mensaje = "";
         if (edad > -1 && edad < 117) {
-            if ((edad >= 0 && edad < 7) && idTipoIdentificacion != TI_REGISTRO_CIVIL) {
+            if ((edad < 7) && idTipoIdentificacion != TI_REGISTRO_CIVIL) {
                 mensaje += "Para menores de 7 años el documento debe ser Registro Civil\n";
             } else if (edad >= 7 && edad < 18 && idTipoIdentificacion != TI_TARJETA_IDENTIDAD) {
                 mensaje += "Para menores de edad 7 a 17 años el documento debe ser Tarjeta de Identidad\n";
@@ -195,37 +179,34 @@ public class RegistroUsuariosController implements ActionListener {
         }
         return mensaje;
     }
-
+    
+   
     private boolean existeUsuarioRegistrado(String numeroIdentificacion, String correo) {
-        StringBuilder mensaje = new StringBuilder();
-
-        if (usuarioDao.validarCampoIdBs(numeroIdentificacion, "usuario", "id_usuario")) {
-            mensaje.append("Ya existe un usuario registrado con ese numero de identificacion\n");
+        boolean validador = false;
+        Validador vali = new Validador();
+        vali.validar(usuarioDao.validarCampoIdBs(numeroIdentificacion, "usuario", "numero_identificacion"),
+                "Ya existe un usuario registrado con ese numero de identificacion\n");
+        vali.validar(usuarioDao.validarCampoIdBs(correo, "usuario", "correo_electronico"),
+                "Ya existe un usuario registrado con ese Correo electronico\n");
+        if (vali.tieneErrores()) {
+            mostrarAdvertencia(vali.obtenerErrores());
+            validador = true;
         }
-        if (usuarioDao.validarCampoIdBs(correo, "usuario", "correo_electronico")) {
-            mensaje.append("Ya existe un usuario registrado con ese Correo electronico\n");
-        }
-
-        if (mensaje.length() > 0) {
-            mostrarError(mensaje.toString());
-            return true;
-        }
-        return false;
+        return validador;
     }
 
-    private void guardarNuevoUsuario(int idTipoIdentificacion, String numeroIdentificacion,
+    private void guardarNuevoUsuario(byte idTipoIdentificacion, String numeroIdentificacion,
             String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
-            String sexoBiologico, String correo, String telefono, String contrasena,
+            String sexoBiologico, String correo, String contrasena, String telefono,
             String grupoSisben, LocalDate fechaNacimiento) {
 
-        byte edad = MetodosPublicos.calcularEdad(fechaNacimiento);
         String contrasenaHashed = Hashed.hashPassword(contrasena);
         String rutaFotoParaGuardar = calcularRutaDestinoFoto();
 
         Usuario usu = new Usuario(
                 id,
                 ID_ROL_PACIENTE,
-                (byte) idTipoIdentificacion,
+                idTipoIdentificacion,
                 numeroIdentificacion,
                 primerNombre,
                 segundoNombre,
@@ -236,28 +217,47 @@ public class RegistroUsuariosController implements ActionListener {
                 fechaNacimiento,
                 sexoBiologico,
                 telefono,
-                edad,
                 grupoSisben,
                 true,
                 rutaFotoParaGuardar);
 
-        int idUsuarioGenerado = new RegistroPersonasDao().setAgregar(usu);
-
+        int idUsuarioGenerado = new UsuDao().setAgregar(usu);
         if (idUsuarioGenerado > 0) {
             copiarFotoPerfilSiCorresponde();
             JOptionPane.showMessageDialog(rI, "Cuenta creada correctamente", "Registro exitoso",
                     JOptionPane.INFORMATION_MESSAGE);
             volverALogin();
         } else {
-            mostrarError("No se pudo completar el registro Intenta de nuevo");
+            mostrarAdvertencia("No se pudo completar el registro Intenta de nuevo");
         }
     }
-
+    
+    private void limpiar(){
+        rI.campoPrimerNombre.setText(""); 
+        rI.campoSegundoNombre.setText("");
+        rI.campoPrimerApellido.setText("");
+        rI.campoSegundoApellido.setText("");
+        rI.campoCorreo.setText("");
+        rI.campoTelefono.setText("");
+        rI.campoContraseña.setText("");
+        rI.campoSisben.setSelectedIndex(0);
+        rI.comboSexo.setSelectedIndex(0);
+        rI.campoNumeroID.setText("");
+        rI.campoTipoId.setSelectedIndex(0);
+        rI.datePickerNacimiento.setText("");
+    }
+    
     private void volverALogin() {
-        this.rI.dispose();
+        limpiar();
+        rI.dispose();
     }
 
+    //muestra el mensaje de error
     protected void mostrarError(String mensaje) {
+        JOptionPane.showMessageDialog(rI, mensaje, "Datos inválidos", JOptionPane.ERROR_MESSAGE);
+    }
+
+    protected void mostrarAdvertencia(String mensaje) {
         JOptionPane.showMessageDialog(rI, mensaje, "Datos inválidos", JOptionPane.WARNING_MESSAGE);
     }
 
@@ -268,9 +268,7 @@ public class RegistroUsuariosController implements ActionListener {
                 .modoSeleccion(JFileChooser.FILES_ONLY)
                 .construirChooser();
 
-        VisorArchivos.abrirYSeleccionar(selector, rI,
-                this::previsualizarImagenSeleccionada,
-                () -> JOptionPane.showMessageDialog(rI, "No se ha seleccionado ninguna imagen"));
+        VisorArchivos.abrirYSeleccionar(selector, rI,this::previsualizarImagenSeleccionada,() -> JOptionPane.showMessageDialog(rI, "No se ha seleccionado ninguna imagen"));
     }
 
     private void previsualizarImagenSeleccionada(File archivo) {
@@ -296,7 +294,7 @@ public class RegistroUsuariosController implements ActionListener {
 
     private void copiarFotoPerfilSiCorresponde() {
         if (archivoImagenSeleccionado == null) {
-            return; 
+            return;
         }
         try {
             Files.copy(

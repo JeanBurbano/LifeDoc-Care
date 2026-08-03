@@ -147,27 +147,30 @@ public class Login extends JFrame {
     }
 
     public String getId() {
-        return this.id.getText();
+        return id.getText();
     }
 
     public String getPassword() {
-        return String.valueOf(this.password.getPassword());
+        return String.valueOf(password.getPassword());
     }
 
     public void cambioEstado(byte n) {
         if (n == 1) {
-            this.password.setEchoChar((char) 0);
+            password.setEchoChar((char) 0);
         } else {
             password.setEchoChar('*');
         }
     }
 
     public JTextField getField() {
-        return this.id;
+        return id;
+    }
+    public JTextField getFieldPassword(){
+        return password;
     }
 
     public void limpiar() {
-        this.id.setText("");
-        this.password.setText("");
+        id.setText("");
+        password.setText("");
     }
 }

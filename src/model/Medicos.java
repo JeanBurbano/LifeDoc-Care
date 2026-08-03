@@ -10,7 +10,7 @@ import java.time.LocalDate;
  *
  * @author lunaa
  */
-public class Medicos extends Usuario {
+public class Medicos extends UsuarioPublico {
 
     private int id_usuarioM;
     private int id_medico;
@@ -19,20 +19,23 @@ public class Medicos extends Usuario {
     public Medicos() {
     }
 
+    public Medicos(String numeroIdentificacion) {
+        super(numeroIdentificacion);
+    }
+
     public Medicos(int id_usuario, byte id_rol, byte tipoId, String numeroId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
-            String correo, String contrasena, LocalDate fechaNacimiento, String sexoBiologico, String numeroTelefonico, byte edad, String sisben, boolean estado, String fotoPerfil, String especialidad) {
+            String correo, LocalDate fechaNacimiento, String sexoBiologico, String numeroTelefonico, byte edad, String sisben, boolean estado, String fotoPerfil, String especialidad) {
         super(id_usuario, id_rol, tipoId, numeroId, primerNombre, segundoNombre, primerApellido, segundoApellido,
-                correo, contrasena, fechaNacimiento, sexoBiologico, numeroTelefonico, edad, sisben, estado,
+                correo, fechaNacimiento, sexoBiologico, numeroTelefonico, edad, sisben, estado,
                 fotoPerfil);
         this.id_usuarioM = id_usuario;
         this.especialidad = especialidad;
     }
 
-    public Medicos(int id_medico, String primerNombre, String primerApellido) {
-        super(primerNombre, primerApellido);
-        this.id_medico = id_medico;
-    }
-
+//    public Medicos(int id_medico, String primerNombre, String primerApellido) {
+//        super(primerNombre, primerApellido);
+//        this.id_medico = id_medico;
+//    }
     public void setEspecialidad(String especialidad) {
         this.especialidad = especialidad;
     }

@@ -1,13 +1,63 @@
 package model;
 
+import java.sql.Statement;
+import java.sql.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
 
-public class PacienteDao {
+public class PacienteDao implements Crud<Paciente> {
 
     public Conexion conectar = new Conexion();
+
+    Connection con;
+    PreparedStatement ps;
+    ResultSet r;
+
+    @Override
+    public List<Paciente> listar() {
+        List<Paciente> pacientes = new ArrayList<>();
+        return pacientes;
+    }
+
+    @Override
+    public int setAgregar(Paciente p) {
+        int resultado = 0;
+        String sql = "INSERT INTO paciente(id_usuario) VALUES (?)";
+        try {
+            con = conectar.getConection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, p.getIdUsuario());
+            resultado = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(con != null){
+                    con.close();
+                }
+                if(ps != null){
+                   ps.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return resultado;
+    }
+
+    @Override
+    public int setActualizar(Paciente tr) {
+        return 0;
+    }
+
+    @Override
+    public int setEliminar(int id) {
+        return 0;
+    }
 
     public Paciente buscarPorId(String numeroIdentificacion) {
         Paciente paciente = null;
@@ -43,7 +93,6 @@ public class PacienteDao {
                             rs.getString("primer_apellido"),
                             rs.getString("segundo_apellido") == null ? "No aplica" : rs.getString("segundo_apellido"),
                             rs.getString("correo_electronico"),
-                            "************",
                             rs.getDate("fecha_nacimiento").toLocalDate(),
                             rs.getString("sexo_biologico"),
                             rs.getString("numero_celular"),

@@ -5,80 +5,25 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 
-public class UsuarioDao implements Crud<Paciente> {
+public class UsuarioDao  {
+
+    private static final String[] TABLAS = {"usuario", "cita", "medico"};
+    private static final String[] COLUMNAS = {"id_usuario" , "numero_identificacion", "correo_electronico"};
 
     public Conexion conectar = new Conexion();
+
     Connection con;
     PreparedStatement ps;
     ResultSet rs;
 
-    public UsuarioDao() {
-
-    }
-
-    public Paciente login(String id, String contrasena) {
-        Paciente usu = null;
-        String sql = "SELECT u.id_usuario, u.id_rol, u.id_tipo_identificacion, u.numero_identificacion, u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido, u.correo_electronico, u.fecha_nacimiento, u.sexo_biologico, u.numero_celular, u.edad, u.estado, u.sisben, f.url_foto_perfil "
-                + "FROM usuario AS u "
-                + "LEFT JOIN fotos_perfil AS f "
-                + "     ON f.id_usuario = u.id_usuario AND f.es_actual = 1 "
-                + "WHERE u.numero_identificacion = ? AND u.contrasena = ?";
-
-        try {
-            this.con = conectar.getConection();
-            this.ps = con.prepareStatement(sql);
-            this.ps.setString(1, id);
-            this.ps.setString(2, contrasena);
-            this.rs = ps.executeQuery();
-
-            if (rs.next()) {
-                usu = new Paciente(
-                        rs.getInt("id_usuario"),
-                        rs.getByte("id_rol"),
-                        rs.getByte("id_tipo_identificacion"),
-                        rs.getString("numero_identificacion"),
-                        rs.getString("primer_nombre"),
-                        rs.getString("segundo_nombre"),
-                        rs.getString("primer_apellido"),
-                        rs.getString("segundo_apellido"),
-                        rs.getString("correo_electronico"),
-                        "***********",
-                        rs.getDate("fecha_nacimiento").toLocalDate(),
-                        rs.getString("sexo_biologico"),
-                        rs.getString("numero_celular"),
-                        rs.getByte("edad"),
-                        rs.getString("sisben"),
-                        rs.getBoolean("estado"),
-                        rs.getString("url_foto_perfil"),
-                        1
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    this.rs.close();
-                }
-                if (ps != null) {
-                    this.ps.close();
-                }
-                if (con != null) {
-                    this.con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return usu;
-    }
-
     public boolean validarCampoIdBs(String valorComparar, String tabla, String campo) {
         boolean valor = false;
+        if (!(List.of(TABLAS).contains(tabla) && List.of(COLUMNAS).contains(campo))) {
+            return valor;
+        }
+
         String sql = "SELECT EXISTS (SELECT 1 FROM " + tabla + " WHERE " + campo + " = ?) AS existe";
         try {
             this.con = conectar.getConection();
@@ -256,56 +201,6 @@ public class UsuarioDao implements Crud<Paciente> {
         return validador;
     }
 
-    public boolean habilitarUsuario(int idUsuario) {
-        boolean actualizado = false;
-        String sql = "UPDATE usuario SET estado = 1 WHERE id_usuario = ? AND estado = 0";
-        try {
-            this.con = conectar.getConection();
-            this.ps = con.prepareStatement(sql);
-            ps.setInt(1, idUsuario);
-            actualizado = ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return actualizado;
-    }
-
-    public boolean deshabilitarUsuario(int idUsuario) {
-        boolean actualizado = false;
-        String sql = "UPDATE usuario SET estado = 0 WHERE id_usuario = ? AND estado = 1";
-        try {
-            this.con = conectar.getConection();
-            this.ps = con.prepareStatement(sql);
-            ps.setInt(1, idUsuario);
-            actualizado = ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return actualizado;
-    }
-
     public String historialMedico(int id_usuario) {
         String historial = null;
         String sql = "SELECT descripcion FROM historial_medico WHERE id_usuario = ?";
@@ -372,143 +267,139 @@ public class UsuarioDao implements Crud<Paciente> {
         return historial;
     }
 
-    public Paciente buscarPorId(int idUsuario) {
-        Paciente p = null;
-        String sql = "SELECT u.id_usuario, u.id_rol, ti.nombre_tipo_identificacion AS tipo_id, "
-                + "u.numero_identificacion, u.primer_nombre, u.segundo_nombre, u.primer_apellido, "
-                + "u.segundo_apellido, u.correo_electronico, u.fecha_nacimiento, u.sexo_biologico, "
-                + "u.numero_celular, u.edad, u.sisben, u.estado "
-                + "FROM usuario u "
-                + "JOIN tipo_identificacion ti ON u.id_tipo_identificacion = ti.id_tipo_identificacion "
-                + "WHERE u.id_usuario = ?";
-        try {
-            con = conectar.getConection();
-            ps = con.prepareStatement(sql);
-            ps.setInt(1, idUsuario);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                p = new Paciente();
-                p.setIdUsuario(rs.getInt("id_usuario"));
-                p.setIdRol((byte) rs.getInt("id_rol"));
-                p.setTipoIdentificacion(rs.getString("tipo_id"));
-                p.setNumeroIdentificacion(rs.getString("numero_identificacion"));
-                p.setPrimerNombre(rs.getString("primer_nombre"));
-                p.setSegundoNombre(rs.getString("segundo_nombre"));
-                p.setPrimerApellido(rs.getString("primer_apellido"));
-                p.setSegundoApellido(rs.getString("segundo_apellido"));
-                p.setCorreo(rs.getString("correo_electronico"));
-                p.setFechaNacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
-                p.setSexoBiologico(rs.getString("sexo_biologico"));
-                p.setNumeroCelular(rs.getString("numero_celular"));
-                p.setEdad((byte) rs.getInt("edad"));
-                p.setSisben(rs.getString("sisben"));
-                p.setEstado(rs.getBoolean("estado"));
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.toString(), "Error en la consulta", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e.toString());
-            }
-        }
-        return p;
-    }
+//    public Paciente buscarPorId(int idUsuario) {
+//        Paciente p = null;
+//        String sql = "SELECT u.id_usuario, u.id_rol, ti.nombre_tipo_identificacion AS tipo_id, "
+//                + "u.numero_identificacion, u.primer_nombre, u.segundo_nombre, u.primer_apellido, "
+//                + "u.segundo_apellido, u.correo_electronico, u.fecha_nacimiento, u.sexo_biologico, "
+//                + "u.numero_celular, u.edad, u.sisben, u.estado "
+//                + "FROM usuario u "
+//                + "JOIN tipo_identificacion ti ON u.id_tipo_identificacion = ti.id_tipo_identificacion "
+//                + "WHERE u.id_usuario = ?";
+//        try {
+//            con = conectar.getConection();
+//            ps = con.prepareStatement(sql);
+//            ps.setInt(1, idUsuario);
+//            rs = ps.executeQuery();
+//            if (rs.next()) {
+//                p = new Paciente(
+//                        rs.getInt("id_usuario"),
+//                        rs.getByte("id_rol"),
+//                        rs.getString("tipo_id"),
+//                        rs.getString("numero_identificacion"),
+//                        rs.getString("primer_nombre"),
+//                        rs.getString("segundo_nombre"),
+//                        rs.getString("primer_apellido"),
+//                        rs.getString("segundo_apellido"),
+//                        rs.getString("correo_electronico"),
+//                        rs.getDate("fecha_nacimiento").toLocalDate(),
+//                        rs.getString("sexo_biologico"),
+//                        rs.getString("numero_celular"),
+//                        rs.getInt("edad"),
+//                        rs.getString("sisben"),
+//                        rs.getBoolean("estado"),
+//                        rs.getString(""));
+//            }
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, e.toString(), "Error en la consulta", JOptionPane.ERROR_MESSAGE);
+//        } finally {
+//            try {
+//                if (rs != null) {
+//                    rs.close();
+//                }
+//                if (ps != null) {
+//                    ps.close();
+//                }
+//                if (con != null) {
+//                    con.close();
+//                }
+//            } catch (Exception e) {
+//                JOptionPane.showMessageDialog(null, e.toString());
+//            }
+//        }
+//        return p;
+//    }
 
-    @Override
-    public List<Paciente> listar() {
-        List<Paciente> lista = null;
-        String sql = "SELECT id_usuario, id_rol, primer_nombre, segundo_nombre, primer_apellido, "
-                + "segundo_apellido, edad, correo_electronico, numero_celular, estado "
-                + "FROM usuario";
-
-        try {
-            this.con = conectar.getConection();
-            this.ps = con.prepareStatement(sql);
-            this.rs = ps.executeQuery();
-            while (rs.next()) {
-                Paciente p = new Paciente(
-                        rs.getInt("id_usuario"),
-                        rs.getByte("id_rol"),
-                        rs.getString("primer_nombre"),
-                        rs.getString("segundo_nombre"),
-                        rs.getString("primer_apellido"),
-                        rs.getString("segundo_apellido"),
-                        rs.getByte("edad"),
-                        rs.getString("correo_electronico"),
-                        rs.getString("numero_celular"),
-                        rs.getBoolean("estado")
-                );
-                lista.add(p);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return lista;
-    }
-
-    @Override
-    public int setAgregar(Paciente p) {
-        return registrarUsuario(
-                p.getIdRol(), Integer.parseInt(p.getTipoIdentificacion()), p.getNumeroIdentificacion(),
-                p.getPrimerNombre(), p.getSegundoNombre(), p.getPrimerApellido(), p.getSegundoApellido(),
-                p.getCorreo(), p.getContrasena(), p.getFechaNacimiento(),
-                p.getSexoBiologico(), p.getNumeroCelular(), p.getEdad(), String.valueOf(p.getSisben())
-        );
-    }
-
-    @Override
-    public int setActualizar(Paciente tr) {
-        int validador = 0;
-        String sql = "UPDATE usuario SET estado = ? WHERE id_usuario = ?";
-        try {
-            this.con = conectar.getConection();
-            this.ps = con.prepareStatement(sql);
-            ps.setBoolean(1, tr.isEstado());
-            ps.setInt(2, tr.getIdUsuario());
-            validador = ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return validador;
-    }
-
-    public int setEliminar(int id) {
-        int validador = 0;
-        return validador;
-    }
+//    @Override
+//    public List<Paciente> listar() {
+//        List<Paciente> lista = null;
+//        String sql = "SELECT id_usuario, id_rol, primer_nombre, segundo_nombre, primer_apellido, "
+//                + "segundo_apellido, edad, correo_electronico, numero_celular, estado "
+//                + "FROM usuario";
+//
+//        try {
+//            this.con = conectar.getConection();
+//            this.ps = con.prepareStatement(sql);
+//            this.rs = ps.executeQuery();
+//            while (rs.next()) {
+//                Paciente p = new Paciente(
+//                        rs.getInt("id_usuario"),
+//                        rs.getByte("id_rol"),
+//                        rs.getString("primer_nombre"),
+//                        rs.getString("segundo_nombre"),
+//                        rs.getString("primer_apellido"),
+//                        rs.getString("segundo_apellido"),
+//                        rs.getByte("edad"),
+//                        rs.getString("correo_electronico"),
+//                        rs.getString("numero_celular"),
+//                        rs.getBoolean("estado")
+//                );
+//                lista.add(p);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (rs != null) {
+//                    rs.close();
+//                }
+//                if (ps != null) {
+//                    ps.close();
+//                }
+//                if (con != null) {
+//                    con.close();
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return lista;
+//    }
+//
+//    @Override
+//    public int setAgregar(Paciente p) {
+//
+//    }
+//
+//    @Override
+//    public int setActualizar(Paciente tr) {
+//        int validador = 0;
+//        String sql = "UPDATE usuario SET estado = ? WHERE id_usuario = ?";
+//        try {
+//            this.con = conectar.getConection();
+//            this.ps = con.prepareStatement(sql);
+//            ps.setBoolean(1, tr.isEstado());
+//            ps.setInt(2, tr.getIdUsuario());
+//            validador = ps.executeUpdate();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (ps != null) {
+//                    ps.close();
+//                }
+//                if (con != null) {
+//                    con.close();
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return validador;
+//    }
+//
+//    public int setEliminar(int id) {
+//        int validador = 0;
+//        return validador;
+//    }
 }
