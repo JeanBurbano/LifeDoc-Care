@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import static java.awt.Frame.MAXIMIZED_BOTH;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -21,6 +22,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -35,9 +37,18 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
 import view.PacienteInterfaz;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 import javax.swing.JFrame;
+import javax.swing.KeyStroke;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class MetodosPublicos {
+
+    public static void blooquearcopiarPegar(JTextField field) {
+        InputMap inputMap = field.getInputMap(JTextField.WHEN_FOCUSED);
+        // Bloquear Copiar (Ctrl + C)
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "none");
+        // Bloquear Pegar (Ctrl + V)
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK), "none");
+    }
 
     public static void abrirVentana(JFrame frame) {
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -47,6 +58,7 @@ public class MetodosPublicos {
 
     //Esto es para los JTextField que solo aceptan numeros
     public static void soloNumeros(JTextField campo, int longitudMaxima) {
+        blooquearcopiarPegar(campo);
         campo.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent evt) {
@@ -62,6 +74,7 @@ public class MetodosPublicos {
     }
 
     public static void soloLetras(JTextField campo, int longitudMaxima) {
+        blooquearcopiarPegar(campo);
         campo.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent evt) {
@@ -83,6 +96,7 @@ public class MetodosPublicos {
     }
 
     public static void tamanoField(JTextField campo, int longitudMaxima) {
+        blooquearcopiarPegar(campo);
         campo.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent evt) {

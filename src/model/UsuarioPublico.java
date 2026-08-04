@@ -69,16 +69,16 @@ public class UsuarioPublico implements SegunRol {
 
     //constructor por si solo necesita uno que otro atributo para listar 
     public UsuarioPublico() {
-        this.numeroIdentificacion = null;
+        this.numeroIdentificacion = "0";
         this.fechaNacimiento = null;
-        this.sexoBiologico = null;
+        this.sexoBiologico = "No aplica";
     }
 
     //constructor por si solo necesita uno que otro atributo y el numero identificacion
     public UsuarioPublico(String numeroIdentificacion) {
         this.numeroIdentificacion = numeroIdentificacion;
         this.fechaNacimiento = null;
-        this.sexoBiologico = null;
+        this.sexoBiologico = "No aplica";
     }
 
     //constructor completo
