@@ -310,13 +310,11 @@ public class AdminCentroController extends PacienteController {
         }
         for (int i = 0; i < adminI.horaInicio.length; i++) {
             if (e.getSource() == adminI.horaInicio[i]) {
-                actualizarComboFin(i); // la hora fin se recalcula según la nueva hora de inicio
-            }
-            if (e.getSource() == adminI.horaInicio[i] || e.getSource() == adminI.horaFin[i]) {
-                actualizarComboAlmuerzoIni(i); // el rango de almuerzo depende de inicio y fin de jornada
+                actualizarComboFin(i);
+                actualizarComboAlmuerzoIni(i); 
             }
             if (e.getSource() == adminI.almuerzoIni[i]) {
-                actualizarComboAlmuerzoFin(i); // el fin del almuerzo se fija a +1 hora automáticamente
+                actualizarComboAlmuerzoFin(i);
             }
             if (e.getSource() == adminI.horaInicio[i] || e.getSource() == adminI.horaFin[i]
                     || e.getSource() == adminI.almuerzoIni[i] || e.getSource() == adminI.almuerzoFin[i]) {
@@ -383,10 +381,7 @@ public class AdminCentroController extends PacienteController {
         adminI.dialogoVistaPreviaHorario.setVisible(true);
     }
 
-    /**
-     * Filtra el combo hora Fin para que solo muestre horas después de la hora
-     * de inicio elegida.
-     */
+    
     private void actualizarComboFin(int i) {
         String horaIniStr = (String) adminI.horaInicio[i].getSelectedItem();
         if (horaIniStr == null) {
@@ -403,35 +398,20 @@ public class AdminCentroController extends PacienteController {
         adminI.horaFin[i].setModel(new DefaultComboBoxModel(disponibles.toArray()));
     }
 
-    /**
-     * Filtra el combo almuerzo Inicio para que solo muestre horas dentro del
-     * rango de la jornada (entre hora inicio y hora fin).
-     */
+    
     private void actualizarComboAlmuerzoIni(int i) {
+       
         String horaIniStr = (String) adminI.horaInicio[i].getSelectedItem();
-        String horaFinStr = (String) adminI.horaFin[i].getSelectedItem();
-        if (horaIniStr == null || horaFinStr == null) {
-            return;
-        }
+        if (horaIniStr == null) return;
 
         LocalTime horaIni = LocalTime.parse(horaIniStr);
-        LocalTime horaFin = LocalTime.parse(horaFinStr);
+        String almIniStr = horaIni.plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        List<String> disponibles = new ArrayList<>();
-        for (String hora : AdministradorCentroInterfaz.HORAS) {
-            LocalTime h = LocalTime.parse(hora);
-            if (!h.isBefore(horaIni) && !h.isAfter(horaFin)) { // dentro del rango [horaIni, horaFin]
-                disponibles.add(hora);
-            }
-        }
-        adminI.almuerzoIni[i].setModel(new DefaultComboBoxModel(disponibles.toArray()));
+        adminI.almuerzoIni[i].setModel(new DefaultComboBoxModel(new String[]{almIniStr}));
+    
     }
 
-    /**
-     * El almuerzo dura exactamente 1 hora entonces al elegir la hora de inicio
-     * del almuerzo, el combo almuerzo fin solo muestra esa única opción, sin
-     * dejar elegir nada más.
-     */
+    
     private void actualizarComboAlmuerzoFin(int i) {
         String almIniStr = (String) adminI.almuerzoIni[i].getSelectedItem();
         if (almIniStr == null) {
@@ -444,9 +424,7 @@ public class AdminCentroController extends PacienteController {
         adminI.almuerzoFin[i].setModel(new DefaultComboBoxModel(new String[]{almFinStr}));
     }
 
-    /**
-     * Arma el objeto Horario a partir del formulario y lo guarda en la BD.
-     */
+    
     private void guardarHorario() {
         Horario h = new Horario();
         h.setNombre(adminI.campoNombreHorario.getText());
@@ -455,6 +433,18 @@ public class AdminCentroController extends PacienteController {
         List<HorarioDia> dias = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             if (adminI.diaSemana[i].isSelected()) {
+                LocalTime ini = LocalTime.parse((String) adminI.horaInicio[i].getSelectedItem());
+                LocalTime fin = LocalTime.parse((String) adminI.horaFin[i].getSelectedItem());
+                long minutosJornada = Duration.between(ini, fin).toMinutes();
+
+                if (minutosJornada < 300) { // 300 minutos = 5 horas
+                    JOptionPane.showMessageDialog(null,
+                            "El día " + HorarioDao.indiceANombreDia(i)
+                            + " debe tener mínimo 5 horas de diferencia entre la hora de inicio y la hora de fin.",
+                            "Horario inválido", JOptionPane.WARNING_MESSAGE);
+                    return; // se detiene el guardado, ningún día se guarda
+                }
+
                 dias.add(new HorarioDia(
                         HorarioDao.indiceANombreDia(i),
                         (String) adminI.horaInicio[i].getSelectedItem(),
