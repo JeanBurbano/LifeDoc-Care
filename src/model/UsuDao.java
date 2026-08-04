@@ -8,13 +8,63 @@ import java.util.List;
 
 public class UsuDao implements Crud<Usuario> {
 
-    private static final String[] TABLAS = {"usuario", "cita", "medico","medicamento"};
-    private static final String[] COLUMNAS = {"id_usuario", "numero_identificacion", "correo_electronico","n_registro_sanitario"};
+    private static final String[] TABLAS = {"usuario", "cita", "medico", "medicamento"};
+    private static final String[] COLUMNAS = {"id_usuario", "numero_identificacion", "correo_electronico", "n_registro_sanitario"};
 
     public static Conexion conectar = new Conexion();
     java.sql.Connection con;
     PreparedStatement ps;
     ResultSet rs;
+
+    public boolean actualizarContrasenaPorCorreo(String correo, String contrasenaHasheada) {
+        String sql = "UPDATE usuario SET contrasena = ? WHERE correo_electronico = ?";
+        try {
+            con = conectar.getConection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, contrasenaHasheada);
+            ps.setString(2, correo);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean actualizarContrasenaPorNumeroCelular(String numeroCelular, String contrasenaHasheada) {
+        String sql = "UPDATE usuario SET contrasena = ? WHERE numero_celular = ?";
+        try {
+            con = conectar.getConection();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, contrasenaHasheada);
+            ps.setString(2, numeroCelular);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public boolean validarCampoIdBs(String valorComparar, String tabla, String campo) {
         boolean valor = false;

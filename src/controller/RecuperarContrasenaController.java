@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import model.EnvioCorreos;
+import model.Hashed;
 import model.MetodosPublicos;
 import model.UsuDao;
 import view.RecuperacionContrasenaInterfaz;
@@ -11,6 +12,8 @@ import view.RecuperacionContrasenaInterfaz;
 public class RecuperarContrasenaController implements ActionListener {
 
     RecuperacionContrasenaInterfaz p;
+    private String correo;
+    private String numeroCelular;
     private byte validador;
     private EnvioCorreos envioCorreos;
     private UsuDao usuDao;
@@ -42,18 +45,19 @@ public class RecuperarContrasenaController implements ActionListener {
         }
         if (e.getSource() == this.p.btnContinuar) {
             if (validador == 1) {
-                String correo = p.field.getText().trim();
-                if (correo.isEmpty()) {
+                String correoIngresado = p.field.getText().trim();
+                if (correoIngresado.isEmpty()) {
                     JOptionPane.showMessageDialog(p, "El campo correo electronico es obligatorio");
-                } else if (!MetodosPublicos.validarFormatoCorreoGmail(correo)) {
+                } else if (!MetodosPublicos.validarFormatoCorreoGmail(correoIngresado)) {
                     JOptionPane.showMessageDialog(p, "El correo debe tener el formato .....@gmail.com");
-                } else if (!usuDao.validarCampoIdBs(correo, "usuario", "correo_electronico")) {
+                } else if (!usuDao.validarCampoIdBs(correoIngresado, "usuario", "correo_electronico")) {
                     JOptionPane.showMessageDialog(p, "El corre no esta disponible");
                 } else {
                     this.envioCorreos = new EnvioCorreos(p);
                     boolean enviado = envioCorreos.enviarCorreoRecuperacion();
                     if (enviado) {
-                        this.p.codigoAutenticacion("Correo", correo);
+                        this.correo = correoIngresado;
+                        this.p.codigoAutenticacion("Correo", correoIngresado);
                         this.p.field.setText("");
                         this.validador = 3;
                     } else {
@@ -61,18 +65,22 @@ public class RecuperarContrasenaController implements ActionListener {
                     }
                 }
             } else if (validador == 2) {
-                if (!p.field.getText().isEmpty() && (MetodosPublicos.validarNumero(p.field.getText()) && p.field.getText().length() == 10)) {
-                    this.p.codigoAutenticacion("SMS", this.p.field.getText());
+                String numeroIngresado = p.field.getText().trim();
+                if (numeroIngresado.isEmpty() || !MetodosPublicos.validarNumero(numeroIngresado) || numeroIngresado.length() != 10) {
+                    JOptionPane.showMessageDialog(p, "Ingrese un numero de celular valido (10 digitos)");
+                } else if (!usuDao.validarCampoIdBs(numeroIngresado, "usuario", "numero_celular")) {
+                    JOptionPane.showMessageDialog(p, "El numero no esta disponible");
+                } else {
+                    this.numeroCelular = numeroIngresado;
+                    this.p.codigoAutenticacion("SMS", numeroIngresado);
                     this.p.field.setText("");
                     this.validador = 3;
-                } else {
-                    JOptionPane.showMessageDialog(p, "Ingrese un numero de celular valido (10 digitos)");
                 }
             } else if (validador == 3) {
                 String codigoIngresado = p.field.getText().trim();
                 if (codigoIngresado.isEmpty()) {
                     JOptionPane.showMessageDialog(p, "El campo codigo de verificacion es obligatorio");
-                } else if (envioCorreos == null || envioCorreos.getNumeroAzar() == null) {
+                } else if (envioCorreos == null || envioCorreos.codigoExpirado()) {
                     JOptionPane.showMessageDialog(p, "El codigo ha expirado, solicite uno nuevo");
                     this.p.vistaMetodoDerecuperacion();
                     this.validador = 0;
@@ -89,9 +97,20 @@ public class RecuperarContrasenaController implements ActionListener {
                         && (MetodosPublicos.validarContrasena(p.contrasena.getText())
                         && MetodosPublicos.validarTamano(p.contrasena.getText(), 8))
                         && String.valueOf(p.contrasenaVeri.getPassword()).equals(p.contrasena.getText())) {
-                    this.p.field.setText("");
-                    this.p.dispose();
-                    this.validador = 0;
+
+                    String contrasenaHasheada = Hashed.hashPassword(p.contrasena.getText());
+                    boolean actualizado = actualizarContrasenaUsuario(contrasenaHasheada);
+
+                    if (actualizado) {
+                        JOptionPane.showMessageDialog(p, "Contraseña actualizada correctamente");
+                        this.correo = null;
+                        this.numeroCelular = null;
+                        this.p.field.setText("");
+                        this.p.dispose();
+                        this.validador = 0;
+                    } else {
+                        JOptionPane.showMessageDialog(p, "No se pudo actualizar la contraseña, intente nuevamente");
+                    }
                 } else if (p.contrasena.getText().isEmpty() && String.valueOf(p.contrasenaVeri.getPassword()).isEmpty()) {
                     JOptionPane.showMessageDialog(p, "Los campos son obligatorios");
                 } else {
@@ -130,9 +149,21 @@ public class RecuperarContrasenaController implements ActionListener {
                 if (envioCorreos != null) {
                     envioCorreos.eliminarValorNumeroAzar();
                 }
+                this.correo = null;
+                this.numeroCelular = null;
                 this.p.vistaMetodoDerecuperacion();
                 this.validador = 0;
             }
         }
+    }
+
+    private boolean actualizarContrasenaUsuario(String contrasenaHasheada) {
+        if (correo != null && !correo.isEmpty()) {
+            return usuDao.actualizarContrasenaPorCorreo(correo, contrasenaHasheada);
+        }
+        if (numeroCelular != null && !numeroCelular.isEmpty()) {
+            return usuDao.actualizarContrasenaPorNumeroCelular(numeroCelular, contrasenaHasheada);
+        }
+        return false;
     }
 }
