@@ -60,6 +60,8 @@ public class AdminCentroController extends PacienteController {
     private List<Medicamentos> medicamentosActuales = new ArrayList<>();
     private List<Usuario> personalCentro = new ArrayList<>();
 
+    UsuDao usudao;
+
     public AdminCentroController(AdministradorCentroInterfaz adminI) {
         super(adminI);
 
@@ -254,6 +256,13 @@ public class AdminCentroController extends PacienteController {
                     "Dato inválido", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
+        boolean b = usudao.validarCampoIdBs(adminI.campoNRS.getText(), "medicamento", "n_registro_sanitario");
+        if (b) {
+            JOptionPane.showMessageDialog(null, "Ya existe un medicamento registrado con \nel numero de registro sanitario ingresado");
+            return;
+        }
+
         int stock = Integer.parseInt(textoStock);
 
         TipoMedicamento tipo = (TipoMedicamento) adminI.campoTipoM.getSelectedItem();
@@ -311,7 +320,7 @@ public class AdminCentroController extends PacienteController {
         for (int i = 0; i < adminI.horaInicio.length; i++) {
             if (e.getSource() == adminI.horaInicio[i]) {
                 actualizarComboFin(i);
-                actualizarComboAlmuerzoIni(i); 
+                actualizarComboAlmuerzoIni(i);
             }
             if (e.getSource() == adminI.almuerzoIni[i]) {
                 actualizarComboAlmuerzoFin(i);
@@ -381,7 +390,6 @@ public class AdminCentroController extends PacienteController {
         adminI.dialogoVistaPreviaHorario.setVisible(true);
     }
 
-    
     private void actualizarComboFin(int i) {
         String horaIniStr = (String) adminI.horaInicio[i].getSelectedItem();
         if (horaIniStr == null) {
@@ -398,20 +406,21 @@ public class AdminCentroController extends PacienteController {
         adminI.horaFin[i].setModel(new DefaultComboBoxModel(disponibles.toArray()));
     }
 
-    
     private void actualizarComboAlmuerzoIni(int i) {
-       
         String horaIniStr = (String) adminI.horaInicio[i].getSelectedItem();
-        if (horaIniStr == null) return;
+        String horaFinStr = (String) adminI.horaFin[i].getSelectedItem();
+        if (horaIniStr == null || horaFinStr == null) {
+            return;
+        }
 
         LocalTime horaIni = LocalTime.parse(horaIniStr);
+        LocalTime horaFin = LocalTime.parse(horaFinStr);
         String almIniStr = horaIni.plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"));
 
         adminI.almuerzoIni[i].setModel(new DefaultComboBoxModel(new String[]{almIniStr}));
-    
+
     }
 
-    
     private void actualizarComboAlmuerzoFin(int i) {
         String almIniStr = (String) adminI.almuerzoIni[i].getSelectedItem();
         if (almIniStr == null) {
@@ -419,12 +428,11 @@ public class AdminCentroController extends PacienteController {
         }
 
         LocalTime almIni = LocalTime.parse(almIniStr);
-        String almFinStr = almIni.plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"));
+        String almFinStr = almIni.plusHours(2).format(DateTimeFormatter.ofPattern("HH:mm"));
 
         adminI.almuerzoFin[i].setModel(new DefaultComboBoxModel(new String[]{almFinStr}));
     }
 
-    
     private void guardarHorario() {
         Horario h = new Horario();
         h.setNombre(adminI.campoNombreHorario.getText());
@@ -537,7 +545,7 @@ public class AdminCentroController extends PacienteController {
     private void agregarListenerBotonesTabla() {
         adminI.tablaHorarioM.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 int fila = adminI.tablaHorarioM.rowAtPoint(e.getPoint());
                 int columna = adminI.tablaHorarioM.columnAtPoint(e.getPoint());
                 if (fila < 0) {
@@ -547,12 +555,33 @@ public class AdminCentroController extends PacienteController {
                 if (columna == COLUMNA_ASIGNAR) {
                     abrirAsignacion(fila);
                 } else if (columna == COLUMNA_EDITAR) {
-                    editarHorario(fila);
+
                 } else if (columna == COLUMNA_ESTADO) {
                     alternarEstadoHorario(fila);
                 }
             }
         });
+    }
+
+    private void alternarEstadoHorario(int fila) {
+        Horario h = horariosActuales.get(fila);
+        HorarioDao dao = new HorarioDao();
+
+        if (h.isEstado()) {
+
+            dao.deshabilitar(h.getId());
+            JOptionPane.showMessageDialog(null, "Horario deshabilitado correctamente.",
+                    "Horario deshabilitado", JOptionPane.INFORMATION_MESSAGE);
+
+        } else {
+            dao.habilitar(h.getId());
+            JOptionPane.showMessageDialog(null, "Horario habilitado correctamente.",
+                    "Horario Habilitao", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        adminI.mostrarVistaHorarioMedicoApartado();
+        cargarHorarios();
+        agregarListenerBotonesTabla();
     }
 
     private void abrirAsignacion(int fila) {
@@ -592,11 +621,11 @@ public class AdminCentroController extends PacienteController {
 
         Horario horario = horariosActuales.get(filaHorario);
         Medicos medico = medicosActuales.get(indiceMedico);
-        int idConsultorioSeleccionado = consultoriosActuales.get(indiceConsultorio).getIdConsultorio(); // <-- aquí sale
+        int idConsultorioSeleccionado = consultoriosActuales.get(indiceConsultorio).getIdConsultorio();
         int mes = LocalDate.now().getMonthValue();
         int anio = LocalDate.now().getYear();
 
-        int n = new HorarioDao().asignarMedico(filaHorario, indiceConsultorio, mes, anio, indiceMedico);
+        int n = new HorarioDao().asignarMedico(horario.getId(), idConsultorioSeleccionado, mes, anio, medico.getId_medico());
         if (n > 0) {
 
             JOptionPane.showMessageDialog(null,
@@ -610,28 +639,9 @@ public class AdminCentroController extends PacienteController {
         adminI.dialogoAsignarMedico.dispose();
     }
 
-    private void editarHorario(int fila) {
-        // Pendiente,me falta setActualizar en HorarioDao
-    }
-
-    private void alternarEstadoHorario(int fila) {
-        Horario h = horariosActuales.get(fila);
-        HorarioDao dao = new HorarioDao();
-
-        if (h.isEstado()) {
-            dao.deshabilitar(h.getId());
-        } else {
-            dao.habilitar(h.getId());
-        }
-
-        adminI.mostrarVistaHorarioMedicoApartado();
-        cargarHorarios();
-        agregarListenerBotonesTabla();
-    }
-
     private void manejarTablaHorarios(ActionEvent e) {
         if (e.getSource() == adminI.btnConfirmarAsignacion) {
-            confirmarAsignacionMedico(adminI.filaHorarioSeleccionada); // ajusta al nombre real de tu atributo de fila
+            confirmarAsignacionMedico(adminI.filaHorarioSeleccionada);
         }
         if (e.getSource() == adminI.btnCancelarAsignacion) {
             adminI.dialogoAsignarMedico.dispose();
