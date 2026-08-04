@@ -1,5 +1,7 @@
 package controller;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,8 @@ import model.UsuDao;
 import view.RegistroPersonalInterfaz;
 
 public class RegistroPersonalController extends RegistroUsuariosController {
-
+    
+    public static final int INDICE_MEDICO = 1;
     private static final int ID_ROL_MEDICO = 3;
     private static final int ID_ROL_OPERARIO = 4;
 
@@ -39,6 +42,8 @@ public class RegistroPersonalController extends RegistroUsuariosController {
         this.especialidadDao = new EspecialidadDao();
         cargarComboRoles();
         cargarComboEspecialidad();
+        habilitarEspecilidadM(false);
+        EventoEspecialidad();
     }
 
     private void cargarComboRoles() {
@@ -69,6 +74,31 @@ public class RegistroPersonalController extends RegistroUsuariosController {
             validador.validar(obtenerEspecialidadSeleccionada() == null,
                     "Debe seleccionar una especialidad para el medico\n");
         }
+    }
+    
+    protected void EventoEspecialidad(){
+        rpI.campoRol.addItemListener(new ItemListener(){
+            @Override
+            public void itemStateChanged(ItemEvent e){
+                if(e.getStateChange() == ItemEvent.SELECTED){
+                    
+                    int indiceSeleccionado = rpI.campoRol.getSelectedIndex();
+                    
+                    if(indiceSeleccionado == INDICE_MEDICO){
+                        habilitarEspecilidadM(true);
+                        
+                    }else{
+                        habilitarEspecilidadM(false);
+                        
+                    }
+                    
+                }
+            }
+        });
+    }
+    
+    protected void habilitarEspecilidadM(boolean v){
+        rpI.especialidad.setEnabled(v);
     }
 
     @Override
@@ -125,6 +155,7 @@ public class RegistroPersonalController extends RegistroUsuariosController {
 
         return usuarioDao.setAgregar(operario, contrasenaHashed) > 0;
     }
+   
 
     private Rol obtenerRolSeleccionado() {
         int indice = rpI.campoRol.getSelectedIndex();
@@ -141,4 +172,6 @@ public class RegistroPersonalController extends RegistroUsuariosController {
         }
         return especialidades.get(indice - 1);
     }
+    
+    
 }

@@ -10,10 +10,12 @@ import model.MetodosPublicos;
 
 public class RegistroPersonalInterfaz extends RegistroUsuariosInterfaz{
     
+    
     public JComboBox<String> campoRol;
     public JComboBox<String> especialidad;
     private static final String[] ARREGLO_ID_PERSONAL = {"Cedula Ciudadania"};
     private JScrollPane scroll;
+    
     
     public RegistroPersonalInterfaz(String nombre){
         super(nombre);
@@ -28,6 +30,7 @@ public class RegistroPersonalInterfaz extends RegistroUsuariosInterfaz{
         
         this.especialidad = new JComboBox<>();
         MetodosPublicos.crearComboEstilizado(especialidad);
+        especialidad.setEnabled(false);
         
         GridBagConstraints gbDatos = new GridBagConstraints();
         gbDatos.insets = new Insets(0, 0, 0, 30);

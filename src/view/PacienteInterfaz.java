@@ -506,6 +506,7 @@ public class PacienteInterfaz extends LayoutView {
     //Aqui creo el metodo que me permitiria vizualizar en el JPanel cuerpo2 el apartado de mis citas
     public void mostrarVistaMisCitas() {
         MetodosPublicos.vaciarPanel(cuerpo2);
+        cuerpo2.setLayout(new BorderLayout());
         cuerpo2.setBorder(new EmptyBorder(0, 0, 0, 0));
         cuerpo2.add(panelVistaMiscitas, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);

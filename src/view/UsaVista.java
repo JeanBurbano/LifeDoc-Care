@@ -14,4 +14,5 @@ public class UsaVista {
         "3001234567", (byte)17, "A1", true);
         MetodosPublicos.abrirVentana(util);
     }
+    
 }

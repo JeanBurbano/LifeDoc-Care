@@ -50,6 +50,7 @@ public class PersonalCentroDao implements Crud<PersonalCentro>{
                 p.setNumeroCelular(rs.getString("numero_celular"));
                 p.setSisben(rs.getString("sisben"));
                 p.setEstado(rs.getBoolean("estado"));
+                p.setFotoPerfil(rs.getString("foto_perfil"));
                 lista.add(p);
             }
         } catch (SQLException e) {
