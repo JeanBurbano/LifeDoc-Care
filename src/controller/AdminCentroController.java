@@ -320,6 +320,8 @@ public class AdminCentroController extends PacienteController {
         for (int i = 0; i < adminI.horaInicio.length; i++) {
             if (e.getSource() == adminI.horaInicio[i]) {
                 actualizarComboFin(i);
+            }
+            if (e.getSource() == adminI.horaInicio[i] || e.getSource() == adminI.horaFin[i]) {
                 actualizarComboAlmuerzoIni(i);
             }
             if (e.getSource() == adminI.almuerzoIni[i]) {
@@ -403,6 +405,11 @@ public class AdminCentroController extends PacienteController {
                 disponibles.add(hora);
             }
         }
+
+        String horaFinActual = (String) adminI.horaFin[i].getSelectedItem();
+        if (horaFinActual != null && disponibles.contains(horaFinActual)) {
+            return;
+        }
         adminI.horaFin[i].setModel(new DefaultComboBoxModel(disponibles.toArray()));
     }
 
@@ -412,13 +419,22 @@ public class AdminCentroController extends PacienteController {
         if (horaIniStr == null || horaFinStr == null) {
             return;
         }
-        if (horaIniStr == null) return;
 
         LocalTime horaIni = LocalTime.parse(horaIniStr);
         LocalTime horaFin = LocalTime.parse(horaFinStr);
-        String almIniStr = horaIni.plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        adminI.almuerzoIni[i].setModel(new DefaultComboBoxModel(new String[]{almIniStr}));
+        LocalTime limiteInferior = horaIni.plusHours(1);
+        LocalTime limiteSuperior = horaFin.minusHours(1);
+
+        List<String> disponibles = new ArrayList<>();
+        for (String hora : AdministradorCentroInterfaz.HORAS) {
+            LocalTime h = LocalTime.parse(hora);
+            if (!h.isBefore(limiteInferior) && !h.isAfter(limiteSuperior)) {
+                disponibles.add(hora);
+            }
+        }
+
+        adminI.almuerzoIni[i].setModel(new DefaultComboBoxModel(disponibles.toArray()));
 
     }
 
@@ -429,7 +445,7 @@ public class AdminCentroController extends PacienteController {
         }
 
         LocalTime almIni = LocalTime.parse(almIniStr);
-        String almFinStr = almIni.plusHours(2).format(DateTimeFormatter.ofPattern("HH:mm"));
+        String almFinStr = almIni.plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"));
 
         adminI.almuerzoFin[i].setModel(new DefaultComboBoxModel(new String[]{almFinStr}));
     }
