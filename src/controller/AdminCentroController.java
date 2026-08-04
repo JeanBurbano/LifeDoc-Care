@@ -60,6 +60,8 @@ public class AdminCentroController extends PacienteController {
     private List<Medicamentos> medicamentosActuales = new ArrayList<>();
     private List<Usuario> personalCentro = new ArrayList<>();
 
+    UsuDao usudao;
+
     public AdminCentroController(AdministradorCentroInterfaz adminI) {
         super(adminI);
 
@@ -254,6 +256,13 @@ public class AdminCentroController extends PacienteController {
                     "Dato inválido", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
+        boolean b = usudao.validarCampoIdBs(adminI.campoNRS.getText(), "medicamento", "n_registro_sanitario");
+        if (b) {
+            JOptionPane.showMessageDialog(null, "Ya existe un medicamento registrado con \nel numero de registro sanitario ingresado");
+            return;
+        }
+
         int stock = Integer.parseInt(textoStock);
 
         TipoMedicamento tipo = (TipoMedicamento) adminI.campoTipoM.getSelectedItem();
@@ -310,13 +319,11 @@ public class AdminCentroController extends PacienteController {
         }
         for (int i = 0; i < adminI.horaInicio.length; i++) {
             if (e.getSource() == adminI.horaInicio[i]) {
-                actualizarComboFin(i); // la hora fin se recalcula según la nueva hora de inicio
-            }
-            if (e.getSource() == adminI.horaInicio[i] || e.getSource() == adminI.horaFin[i]) {
-                actualizarComboAlmuerzoIni(i); // el rango de almuerzo depende de inicio y fin de jornada
+                actualizarComboFin(i);
+                actualizarComboAlmuerzoIni(i);
             }
             if (e.getSource() == adminI.almuerzoIni[i]) {
-                actualizarComboAlmuerzoFin(i); // el fin del almuerzo se fija a +1 hora automáticamente
+                actualizarComboAlmuerzoFin(i);
             }
             if (e.getSource() == adminI.horaInicio[i] || e.getSource() == adminI.horaFin[i]
                     || e.getSource() == adminI.almuerzoIni[i] || e.getSource() == adminI.almuerzoFin[i]) {
@@ -383,10 +390,6 @@ public class AdminCentroController extends PacienteController {
         adminI.dialogoVistaPreviaHorario.setVisible(true);
     }
 
-    /**
-     * Filtra el combo hora Fin para que solo muestre horas después de la hora
-     * de inicio elegida.
-     */
     private void actualizarComboFin(int i) {
         String horaIniStr = (String) adminI.horaInicio[i].getSelectedItem();
         if (horaIniStr == null) {
@@ -403,10 +406,6 @@ public class AdminCentroController extends PacienteController {
         adminI.horaFin[i].setModel(new DefaultComboBoxModel(disponibles.toArray()));
     }
 
-    /**
-     * Filtra el combo almuerzo Inicio para que solo muestre horas dentro del
-     * rango de la jornada (entre hora inicio y hora fin).
-     */
     private void actualizarComboAlmuerzoIni(int i) {
         String horaIniStr = (String) adminI.horaInicio[i].getSelectedItem();
         String horaFinStr = (String) adminI.horaFin[i].getSelectedItem();
@@ -416,22 +415,12 @@ public class AdminCentroController extends PacienteController {
 
         LocalTime horaIni = LocalTime.parse(horaIniStr);
         LocalTime horaFin = LocalTime.parse(horaFinStr);
+        String almIniStr = horaIni.plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        List<String> disponibles = new ArrayList<>();
-        for (String hora : AdministradorCentroInterfaz.HORAS) {
-            LocalTime h = LocalTime.parse(hora);
-            if (!h.isBefore(horaIni) && !h.isAfter(horaFin)) { // dentro del rango [horaIni, horaFin]
-                disponibles.add(hora);
-            }
-        }
-        adminI.almuerzoIni[i].setModel(new DefaultComboBoxModel(disponibles.toArray()));
+        adminI.almuerzoIni[i].setModel(new DefaultComboBoxModel(new String[]{almIniStr}));
+
     }
 
-    /**
-     * El almuerzo dura exactamente 1 hora entonces al elegir la hora de inicio
-     * del almuerzo, el combo almuerzo fin solo muestra esa única opción, sin
-     * dejar elegir nada más.
-     */
     private void actualizarComboAlmuerzoFin(int i) {
         String almIniStr = (String) adminI.almuerzoIni[i].getSelectedItem();
         if (almIniStr == null) {
@@ -439,14 +428,11 @@ public class AdminCentroController extends PacienteController {
         }
 
         LocalTime almIni = LocalTime.parse(almIniStr);
-        String almFinStr = almIni.plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"));
+        String almFinStr = almIni.plusHours(2).format(DateTimeFormatter.ofPattern("HH:mm"));
 
         adminI.almuerzoFin[i].setModel(new DefaultComboBoxModel(new String[]{almFinStr}));
     }
 
-    /**
-     * Arma el objeto Horario a partir del formulario y lo guarda en la BD.
-     */
     private void guardarHorario() {
         Horario h = new Horario();
         h.setNombre(adminI.campoNombreHorario.getText());
@@ -455,6 +441,18 @@ public class AdminCentroController extends PacienteController {
         List<HorarioDia> dias = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             if (adminI.diaSemana[i].isSelected()) {
+                LocalTime ini = LocalTime.parse((String) adminI.horaInicio[i].getSelectedItem());
+                LocalTime fin = LocalTime.parse((String) adminI.horaFin[i].getSelectedItem());
+                long minutosJornada = Duration.between(ini, fin).toMinutes();
+
+                if (minutosJornada < 300) { // 300 minutos = 5 horas
+                    JOptionPane.showMessageDialog(null,
+                            "El día " + HorarioDao.indiceANombreDia(i)
+                            + " debe tener mínimo 5 horas de diferencia entre la hora de inicio y la hora de fin.",
+                            "Horario inválido", JOptionPane.WARNING_MESSAGE);
+                    return; // se detiene el guardado, ningún día se guarda
+                }
+
                 dias.add(new HorarioDia(
                         HorarioDao.indiceANombreDia(i),
                         (String) adminI.horaInicio[i].getSelectedItem(),
@@ -547,7 +545,7 @@ public class AdminCentroController extends PacienteController {
     private void agregarListenerBotonesTabla() {
         adminI.tablaHorarioM.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 int fila = adminI.tablaHorarioM.rowAtPoint(e.getPoint());
                 int columna = adminI.tablaHorarioM.columnAtPoint(e.getPoint());
                 if (fila < 0) {
@@ -557,12 +555,33 @@ public class AdminCentroController extends PacienteController {
                 if (columna == COLUMNA_ASIGNAR) {
                     abrirAsignacion(fila);
                 } else if (columna == COLUMNA_EDITAR) {
-                    editarHorario(fila);
+
                 } else if (columna == COLUMNA_ESTADO) {
                     alternarEstadoHorario(fila);
                 }
             }
         });
+    }
+
+    private void alternarEstadoHorario(int fila) {
+        Horario h = horariosActuales.get(fila);
+        HorarioDao dao = new HorarioDao();
+
+        if (h.isEstado()) {
+
+            dao.deshabilitar(h.getId());
+            JOptionPane.showMessageDialog(null, "Horario deshabilitado correctamente.",
+                    "Horario deshabilitado", JOptionPane.INFORMATION_MESSAGE);
+
+        } else {
+            dao.habilitar(h.getId());
+            JOptionPane.showMessageDialog(null, "Horario habilitado correctamente.",
+                    "Horario Habilitao", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        adminI.mostrarVistaHorarioMedicoApartado();
+        cargarHorarios();
+        agregarListenerBotonesTabla();
     }
 
     private void abrirAsignacion(int fila) {
@@ -602,11 +621,11 @@ public class AdminCentroController extends PacienteController {
 
         Horario horario = horariosActuales.get(filaHorario);
         Medicos medico = medicosActuales.get(indiceMedico);
-        int idConsultorioSeleccionado = consultoriosActuales.get(indiceConsultorio).getIdConsultorio(); // <-- aquí sale
+        int idConsultorioSeleccionado = consultoriosActuales.get(indiceConsultorio).getIdConsultorio();
         int mes = LocalDate.now().getMonthValue();
         int anio = LocalDate.now().getYear();
 
-        int n = new HorarioDao().asignarMedico(filaHorario, indiceConsultorio, mes, anio, indiceMedico);
+        int n = new HorarioDao().asignarMedico(horario.getId(), idConsultorioSeleccionado, mes, anio, medico.getId_medico());
         if (n > 0) {
 
             JOptionPane.showMessageDialog(null,
@@ -620,28 +639,9 @@ public class AdminCentroController extends PacienteController {
         adminI.dialogoAsignarMedico.dispose();
     }
 
-    private void editarHorario(int fila) {
-        // Pendiente,me falta setActualizar en HorarioDao
-    }
-
-    private void alternarEstadoHorario(int fila) {
-        Horario h = horariosActuales.get(fila);
-        HorarioDao dao = new HorarioDao();
-
-        if (h.isEstado()) {
-            dao.deshabilitar(h.getId());
-        } else {
-            dao.habilitar(h.getId());
-        }
-
-        adminI.mostrarVistaHorarioMedicoApartado();
-        cargarHorarios();
-        agregarListenerBotonesTabla();
-    }
-
     private void manejarTablaHorarios(ActionEvent e) {
         if (e.getSource() == adminI.btnConfirmarAsignacion) {
-            confirmarAsignacionMedico(adminI.filaHorarioSeleccionada); // ajusta al nombre real de tu atributo de fila
+            confirmarAsignacionMedico(adminI.filaHorarioSeleccionada);
         }
         if (e.getSource() == adminI.btnCancelarAsignacion) {
             adminI.dialogoAsignarMedico.dispose();
