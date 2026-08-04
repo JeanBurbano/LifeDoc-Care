@@ -88,7 +88,7 @@ spring-security-crypto-6.4.4.jar — Módulo de criptografía de Spring Security
 - y un montón de cosas mas.
 
 ## AYUDA DE AGENTES 
--Claude.
--Chat gpt.
--Gemini - imagenes.
+- Claude.
+- Chat gpt.
+- Gemini - imagenes.
 
