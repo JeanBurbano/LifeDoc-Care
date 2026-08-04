@@ -434,7 +434,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         campoCategoriaM.setPreferredSize(new Dimension(200, 35));
 
         campoStock = MetodosPublicos.crearCampoTexto();
-        MetodosPublicos.soloNumeros(campoStock, 1000);
+        MetodosPublicos.soloNumeros(campoStock, 3);
         gbc.gridx = 0;
         gbc.gridy = 3;
         formuM.add(MetodosPublicos.crearCampoConEtiqueta("Stock:", campoStock), gbc);

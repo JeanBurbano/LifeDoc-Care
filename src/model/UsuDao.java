@@ -56,9 +56,8 @@ public class UsuDao implements Crud<Usuario> {
         String sql = "SELECT u.id_usuario, u.id_rol, u.id_tipo_identificacion, u.numero_identificacion, "
                 + "u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido, "
                 + "u.correo_electronico, u.fecha_nacimiento, u.sexo_biologico, u.numero_celular, "
-                + "u.edad, u.sisben, u.estado, f.url_foto_perfil "
+                + "u.edad, u.sisben, u.estado, u.foto_perfil "
                 + "FROM usuario u "
-                + "LEFT JOIN fotos_perfil f ON f.id_usuario = u.id_usuario AND f.es_actual = 1 "
                 + "WHERE u.id_rol IN (3, 4) "
                 + "ORDER BY u.primer_apellido, u.primer_nombre";
         try {
@@ -82,7 +81,7 @@ public class UsuDao implements Crud<Usuario> {
                         rs.getByte("edad"),
                         rs.getString("sisben"),
                         rs.getBoolean("estado"),
-                        rs.getString("url_foto_perfil")
+                        rs.getString("foto_perfil")
                 );
                 lista.add(u);
             }
