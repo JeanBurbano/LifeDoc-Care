@@ -59,8 +59,8 @@ public class LifeDocCare {
         // toda la ap
         UIManager.put("ScrollBar.thumbColor", new Color(0, 79, 124, 120));
         //Color del thumb del scrollbar el cuarto parametro 120 es el canal
-        //alfa transparencia de 0 a 255. Con 120 queda semi transparente
-        //para que no se vea tan solido pesado sobre el fondo. 
+        //alfa transparencia de 0 a 255 Con 120 queda semi transparente
+        //para que no se vea tan solido pesado sobre el fondo
     }
 
     static class InicializadorApp extends SwingWorker<Login, Integer> {

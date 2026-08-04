@@ -22,7 +22,7 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
 
     private final static String ARREGLO_COLUMNAS[] = {"Id", "Nombre Completo", "Edad", "Correo", "Numero Celular", "Rol", "Estado"};
     public JPanel panelUsuarios, panelBotones;
-    public JButton btnRol, btnHabilitar, btnDesabilitar, btnLimpiar;
+    public JButton btnRol, btnHabilitar, btnDesabilitar, btnLimpiar,btnUsuarioTargeta;
     public DefaultTableModel mDefaultTableModel;
     public JTable tabla;
 
@@ -37,26 +37,28 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
 
     public AdministradorDelSistemaInterfaz(String nombreInterfaz, UsuarioPublico usuario) {
         super(nombreInterfaz, usuario);
-        this.panelUsuarios = new JPanel();
-        this.panelUsuarios.setLayout(new BorderLayout());
-        this.panelUsuarios.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
-        this.panelUsuarios.setOpaque(false);
+        panelUsuarios = new JPanel();
+        panelUsuarios.setLayout(new BorderLayout());
+        panelUsuarios.setBorder(BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO));
+        panelUsuarios.setOpaque(false);
 
-        this.tabla = new JTable();
-        this.tabla.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
-        this.tabla.setFont(new Font("Tahoma", Font.PLAIN, 12));
-        this.tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //Solo una fila a la vez
-        this.tabla.getTableHeader().setReorderingAllowed(false);
+        tabla = new JTable();
+        tabla.getTableHeader().setFont(new Font("Verdana", Font.BOLD, 14));
+        tabla.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //Solo una fila a la vez
+        tabla.getTableHeader().setReorderingAllowed(false);
 
-        this.btnRol = new JButton("Usuarios", new ImageIcon("iconsP/friends.png"));
-        this.btnHabilitar = new JButton("Habilitar ", new ImageIcon("iconsP/accept.png"));
+        btnRol = new JButton("Usuarios", new ImageIcon("iconsP/friends.png"));
+        btnHabilitar = new JButton("Habilitar ", new ImageIcon("iconsP/accept.png"));
         MetodosPublicos.estilizarBoton(btnHabilitar, (byte) 7);
-        this.btnDesabilitar = new JButton("Desabilitar ", new ImageIcon("iconsP/quejas.png"));
+        btnDesabilitar = new JButton("Desabilitar ", new ImageIcon("iconsP/quejas.png"));
         MetodosPublicos.estilizarBoton(btnDesabilitar, (byte) 6);
-        this.btnLimpiar = new JButton("Limpiar ", new ImageIcon("iconsP/clean.png"));
+        btnLimpiar = new JButton("Limpiar ", new ImageIcon("iconsP/clean.png"));
         MetodosPublicos.estilizarBoton(btnLimpiar, (byte) 1);
-        this.btnLimpiar.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+        btnLimpiar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnUsuarioTargeta = new JButton("Tarjeta",new ImageIcon("iconsP/carta.png"));
+        MetodosPublicos.estilizarBoton(btnUsuarioTargeta, (byte) 1);
+        btnUsuarioTargeta.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.panelBotones = new JPanel();
         this.panelBotones.setOpaque(false);
         this.panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.Y_AXIS));
@@ -66,6 +68,8 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
         this.panelBotones.add(btnDesabilitar);
         this.panelBotones.add(Box.createVerticalStrut(20));
         this.panelBotones.add(btnLimpiar);
+        this.panelBotones.add(Box.createVerticalStrut(20));
+        this.panelBotones.add(btnUsuarioTargeta);
         super.agregarBotonCuerpo1(btnRol);
 
         mDefaultTableModel = new DefaultTableModel() {
