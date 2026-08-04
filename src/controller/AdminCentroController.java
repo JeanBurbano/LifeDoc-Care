@@ -412,6 +412,7 @@ public class AdminCentroController extends PacienteController {
         if (horaIniStr == null || horaFinStr == null) {
             return;
         }
+        if (horaIniStr == null) return;
 
         LocalTime horaIni = LocalTime.parse(horaIniStr);
         LocalTime horaFin = LocalTime.parse(horaFinStr);
