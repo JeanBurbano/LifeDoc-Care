@@ -14,8 +14,8 @@ public class PacienteDao implements Crud<Paciente> {
     Connection con;
     PreparedStatement ps;
     ResultSet r;
-    
-         public Paciente buscarPorId(int idUsuario) {
+
+    public Paciente buscarPorId(int idUsuario) {
         Paciente p = null;
         String sql = "SELECT u.id_usuario, u.id_rol, u.id_tipo_identificacion, u.numero_identificacion,"
                 + " u.primer_nombre, u.segundo_nombre, u.primer_apellido, u.segundo_apellido,u.correo_electronico,"
@@ -27,14 +27,16 @@ public class PacienteDao implements Crud<Paciente> {
             ps.setInt(1, idUsuario);
             r = ps.executeQuery();
             if (r.next()) {
+                String segundoNombre = r.getString("segundo_nombre") == null ? "No aplica" : r.getString("segundo_nombre");
+                String segundoApellido = r.getString("segundo_apellido") == null ? "No aplica" : r.getString("segundo_apellido");
                 p = new Paciente(r.getInt("id_usuario"),
                         r.getByte("id_rol"),
                         r.getByte("id_tipo_identificacion"),
                         r.getString("numero_identificacion"),
                         r.getString("primer_nombre"),
-                        r.getString("segundo_nombre"),
+                        segundoNombre,
                         r.getString("primer_apellido"),
-                        r.getString("segundo_apellido"),
+                        segundoApellido,
                         r.getString("correo_electronico"),
                         r.getDate("fecha_nacimiento").toLocalDate(),
                         r.getString("sexo_biologico"),
@@ -64,7 +66,7 @@ public class PacienteDao implements Crud<Paciente> {
         }
         return p;
     }
-     
+
     protected Paciente getUsuario(String numeroIdentifi) {
         Paciente usu = null;
 
@@ -129,11 +131,11 @@ public class PacienteDao implements Crud<Paciente> {
             e.printStackTrace();
         } finally {
             try {
-                if(con != null){
+                if (con != null) {
                     con.close();
                 }
-                if(ps != null){
-                   ps.close();
+                if (ps != null) {
+                    ps.close();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

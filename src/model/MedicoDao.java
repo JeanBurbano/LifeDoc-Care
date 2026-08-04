@@ -29,9 +29,9 @@ public class MedicoDao implements Crud<Medico> {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Medico medico = new Medico();
-                    rs.getInt("id_medico");
-                    rs.getString("primer_nombre");
-                    rs.getString("primer_apellido");
+                    medico.setId_medico(rs.getInt("id_medico"));
+                    medico.setPrimerNombre(rs.getString("primer_nombre"));
+                    medico.setPrimerApellido(rs.getString("primer_apellido"));
                     medicos.add(medico);
                 }
             }

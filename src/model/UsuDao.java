@@ -8,8 +8,8 @@ import java.util.List;
 
 public class UsuDao implements Crud<Usuario> {
 
-    private static final String[] TABLAS = {"usuario", "cita", "medico"};
-    private static final String[] COLUMNAS = {"id_usuario", "numero_identificacion", "correo_electronico"};
+    private static final String[] TABLAS = {"usuario", "cita", "medico","medicamento"};
+    private static final String[] COLUMNAS = {"id_usuario", "numero_identificacion", "correo_electronico","n_registro_sanitario"};
 
     public static Conexion conectar = new Conexion();
     java.sql.Connection con;
