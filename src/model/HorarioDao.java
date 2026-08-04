@@ -114,14 +114,15 @@ public class HorarioDao implements Crud<Horario> {
         return listaHorarios;
     }
 
-    public int asignarMedico(int idHorario, int idMedico, int idConsultorio, int mes, int anio) {
-        String sql = "UPDATE horarios SET id_medico = ?, id_consultorio = ?, mes = ?, anio = ? WHERE id_horario = ?";
+    public int asignarMedico(int idHorario,int idConsultorio, int mes, int anio, int idMedico) {
+        String sql = "UPDATE medico SET id_horario = ?, id_consultorio = ?, mes_horario = ?, anio_horario = ? WHERE id_medico = ?";
         try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, idMedico);
+            ps.setInt(1, idHorario);
             ps.setInt(2, idConsultorio);
             ps.setInt(3, mes);
             ps.setInt(4, anio);
-            ps.setInt(5, idHorario);
+            ps.setInt(5, idMedico);
+            
             return ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

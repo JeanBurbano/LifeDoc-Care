@@ -48,8 +48,8 @@ public class AdminCentroController extends PacienteController {
     AdministradorCentroInterfaz adminI;
 
     // Columnas de la tabla de horarios
-    private static final int COLUMNA_ASIGNAR = 3;
-    private static final int COLUMNA_EDITAR = 4;
+    private static final int COLUMNA_ASIGNAR = 4;
+    private static final int COLUMNA_EDITAR = 5;
     private static final int COLUMNA_ESTADO = 6;
 
     private List<Horario> horariosActuales = new ArrayList<>();
@@ -153,17 +153,17 @@ public class AdminCentroController extends PacienteController {
             vistaPersonal.setVisible(true);
         }
     }
-    
+
     private void cargarPersonal() {
-    List<UsuarioPublico> personal = new UsuDao().listarPersonal();
-    for (UsuarioPublico u : personal) {
-        adminI.listaPersonalR.addRow(new Object[]{
-            u.getTipoIdentificacion(), u.getNumeroIdentificacion(),
-            u.getPrimerNombre() + " " + u.getPrimerApellido(), u.getEdad(), u.getSexoBiologico(),
-            u.getCorreo(), u.getNumeroCelular(), u.getRol(), "" 
-        });
+        List<UsuarioPublico> personal = new UsuDao().listarPersonal();
+        for (UsuarioPublico u : personal) {
+            adminI.listaPersonalR.addRow(new Object[]{
+                u.getTipoIdentificacion(), u.getNumeroIdentificacion(),
+                u.getPrimerNombre() + " " + u.getPrimerApellido(), u.getEdad(), u.getSexoBiologico(),
+                u.getCorreo(), u.getNumeroCelular(), u.getRol(), ""
+            });
+        }
     }
-}
 
     //inventario de medicamentos 
     private void manejarApartadoMedicamento(ActionEvent e) {
@@ -239,7 +239,7 @@ public class AdminCentroController extends PacienteController {
                     "Campos incompletos", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         String nrs = adminI.campoNRS.getText().trim();
         if (nrs.length() != 14) {
             JOptionPane.showMessageDialog(null,
@@ -260,9 +260,9 @@ public class AdminCentroController extends PacienteController {
         CategoriaMedicamento categoria = (CategoriaMedicamento) adminI.campoCategoriaM.getSelectedItem();
 
         Medicamentos m = new Medicamentos();
-        m.setnRegistroSanitario(adminI.campoNRS.getText().trim());
-        m.setNombre(adminI.campoNombreM.getText().trim());
-        m.setDescripcion(adminI.campoDescripcionMedicamento.getText().trim());
+        m.setnRegistroSanitario(adminI.campoNRS.getText().trim().toLowerCase());
+        m.setNombre(adminI.campoNombreM.getText().trim().toLowerCase());
+        m.setDescripcion(adminI.campoDescripcionMedicamento.getText().trim().toLowerCase());
         m.setFechaVencimiento(adminI.campoFechaVencimiento.getDate());
         m.setCantidad(adminI.campoCantidad.getText().trim());
         m.setIdTipoMedicamento(tipo.getIdTipoMedicamento());
@@ -604,13 +604,19 @@ public class AdminCentroController extends PacienteController {
         Medicos medico = medicosActuales.get(indiceMedico);
         int idConsultorioSeleccionado = consultoriosActuales.get(indiceConsultorio).getIdConsultorio(); // <-- aquí sale
         int mes = LocalDate.now().getMonthValue();
-        int anio = java.time.LocalDate.now().getYear();
+        int anio = LocalDate.now().getYear();
 
-        new HorarioDao().asignarMedico(horario.getId(), medico.getId_medico(), idConsultorioSeleccionado, mes, anio);
-        JOptionPane.showMessageDialog(null,
-                "Horario \"" + horario.getNombre() + "\" asignado a " + medico.getPrimerNombre() + " " + medico.getPrimerApellido() + ".",
-                "Asignación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+        int n = new HorarioDao().asignarMedico(filaHorario, indiceConsultorio, mes, anio, indiceMedico);
+        if (n > 0) {
 
+            JOptionPane.showMessageDialog(null,
+                    "Horario \"" + horario.getNombre() + "\" asignado a " + medico.getPrimerNombre() + " " + medico.getPrimerApellido() + ".",
+                    "Asignación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "El horario \"" + horario.getNombre() + "\" asignado a " + medico.getPrimerNombre() + " " + medico.getPrimerApellido() + ".",
+                    "No se pudo asignar correctamente", JOptionPane.INFORMATION_MESSAGE);
+        }
         adminI.dialogoAsignarMedico.dispose();
     }
 

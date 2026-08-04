@@ -29,6 +29,7 @@ public class PersonalCentro {
     private LocalDateTime fechaRegistro;
     private String sisben;
     private boolean estado;
+    private String fotoPerfil;
     
     public PersonalCentro() {}
     
@@ -166,6 +167,14 @@ public class PersonalCentro {
 
     public void setEstado(boolean estado) {
         this.estado = estado;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
     
     
