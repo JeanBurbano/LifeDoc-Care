@@ -1,4 +1,5 @@
-package lifedoccare;
+package view;
+
 
 import com.formdev.flatlaf.FlatLightLaf;
 import controller.LoginController;
@@ -19,7 +20,7 @@ public class LifeDocCare {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            //El tema look y field se configura antes de crear cualquier ventana.
+            // El tema (Look & Feel) se configura ANTES de crear cualquier ventana
             configurarTema();
 
             PantallaDeCarga carga = new PantallaDeCarga();
@@ -29,40 +30,39 @@ public class LifeDocCare {
         });
     }
 
+    /**
+     * Configura el Look & Feel (FlatLaf) y los estilos globales de UIManager.
+     * Debe ejecutarse en el EDT, antes de instanciar cualquier componente Swing.
+     */
     private static void configurarTema() {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Le dice a Swing que dibuje la barra de título con el Look & Feel
+        // en vez del estilo nativo del sistema operativo (así todo se ve consistente)
         JFrame.setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
 
-        UIManager.put("Button.arc", 15);//Esto se supone que redondea las esquinas de todos los JButton de la app 15px de radio
+        // Estilos globales de componentes
+        UIManager.put("Button.arc", 15);
         UIManager.put("Component.arc", 15);
-        //Redondea las esquinas de componentes genericos que no tienen su propia
-        //propiedad de arc ejp JComboBox JSpinner es un valor por defecto general
-        UIManager.put("ProgressBar.arc", 15);//Redondea las esquinas de los JProgressBar
-        UIManager.put("TextComponent.arc", 10);//Redondea las esquinas de los campos de texto
-        UIManager.put("ScrollBar.width", 12);//Ancho en pixeles de la barra de scroll
-        UIManager.put("ScrollBar.thumbArc", 999);//Redondea las esquinas del thumb que es la parte que ase arratra con el mouse dentro del scrollbar
+        UIManager.put("ProgressBar.arc", 15);
+        UIManager.put("TextComponent.arc", 10);
+        UIManager.put("ScrollBar.width", 12);
+        UIManager.put("ScrollBar.thumbArc", 999);
         UIManager.put("ScrollBar.trackArc", 999);
-        //Lo mismo de arriba pero para en est acaso es el track osea el fondo/riel por donde se desliza el
-        // thumb tambien queda completamente redondeado.
         UIManager.put("Component.focusColor", new Color(0, 79, 124));
-        //Color del anillo o resaltado que aparece alrededor de un componente
-        //cuando tiene el foco ejp cuando haces clic en un JTextField o le das
-        //Tab este es un azul oscuro (0, 79, 124).
         UIManager.put("Component.borderColor", new Color(0, 79, 124));
-        // Color del borde normal sin foco de los componentes campos de texto
-        // combos etc etc usa el mismo azul para mantener una supuesta consistencia visual en
-        // toda la ap
         UIManager.put("ScrollBar.thumbColor", new Color(0, 79, 124, 120));
-        //Color del thumb del scrollbar el cuarto parametro 120 es el canal
-        //alfa transparencia de 0 a 255. Con 120 queda semi transparente
-        //para que no se vea tan solido pesado sobre el fondo. 
     }
 
+    /**
+     * Worker que crea las vistas de la aplicación en segundo plano
+     * mientras se muestra el progreso en la pantalla de carga.
+     */
     static class InicializadorApp extends SwingWorker<Login, Integer> {
 
         private final PantallaDeCarga carga;
@@ -75,7 +75,7 @@ public class LifeDocCare {
         protected Login doInBackground() throws Exception {
             avanzarProgresoSuave(0, 20);
 
-            //Creo la vista principal que seria el login
+            // Creo la vista principal, que sería el login
             Login lg = new Login();
             avanzarProgresoSuave(20, 50);
 
@@ -91,16 +91,20 @@ public class LifeDocCare {
             return lg;
         }
 
+        /**
+         * Avanza la barra de progreso número por número entre "desde" y "hasta",
+         * dando un efecto de deslizamiento suave en vez de saltos bruscos.
+         */
         private void avanzarProgresoSuave(int desde, int hasta) throws InterruptedException {
             for (int i = desde; i <= hasta; i++) {
                 publish(i);
-                Thread.sleep(20);//Controla la velocidad del deslizamiento
+                Thread.sleep(15); // controla la velocidad del deslizamiento
             }
         }
 
         @Override
         protected void process(java.util.List<Integer> chunks) {
-            //Se ejecuta en el edt actualiza la barra con el ultimo valor publicado
+            // Se ejecuta en el EDT: actualiza la barra con el último valor publicado
             int ultimo = chunks.get(chunks.size() - 1);
             carga.setProgreso(ultimo);
         }
@@ -108,7 +112,7 @@ public class LifeDocCare {
         @Override
         protected void done() {
             try {
-                Login lg = get();//Obtiene lo que devolvió doInBackground()
+                Login lg = get(); // Obtiene lo que devolvió doInBackground()
 
                 lg.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -116,7 +120,7 @@ public class LifeDocCare {
                 lg.setSize(dimension.width, dimension.height);
                 lg.setVisible(true);
 
-                carga.cerrar();//Cierra la pantalla de carga cuando el login ya esta listo
+                carga.cerrar(); // Cierra la pantalla de carga cuando el login ya está listo
 
             } catch (Exception e) {
                 e.printStackTrace();
