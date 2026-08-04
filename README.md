@@ -74,18 +74,18 @@ JDBC — Java Database Connectivity, la API estándar de Java para ejecutar SQL 
 spring-security-crypto-6.4.4.jar — Módulo de criptografía de Spring Security (independiente del resto del framework Spring). Ofrece utilidades para hashing de contraseñas (BCrypt, Argon2, etc.) y cifrado. Dado que en tu proyecto hay contraseñas en texto plano en la BD, esta librería sería la solución ideal para implementar el hashing seguro que pide el objetivo 1 del proyecto ("autenticación con contraseña segura").
 
 ## Webgrafía 
--https://docs.oracle.com/javase/8/docs/api/
--https://stackoverflow.com/questions
--https://www.youtube.com/watch?v=sL1s4YyONSg&t=8s
--https://www.youtube.com/watch?v=nEkM1sA1z7g&t=90s
--https://www.youtube.com/watch?v=hIBEmpV30Ao&t=148s
--https://www.youtube.com/watch?v=EpKZw0NNCUA&t=4s
--https://www.youtube.com/watch?v=uaPB1el-M0k
--https://www.youtube.com/watch?v=l8zdauUWv9g&t=1518s
--https://www.youtube.com/watch?v=UmoryILvQ_Q&t=217s
--https://www.youtube.com/watch?v=8hMWNGGg_OI
--https://www.youtube.com/watch?v=h2Zb56eVgIM
-y un montón de cosas mas.
+- https://docs.oracle.com/javase/8/docs/api/
+- https://stackoverflow.com/questions
+- https://www.youtube.com/watch?v=sL1s4YyONSg&t=8s
+- https://www.youtube.com/watch?v=nEkM1sA1z7g&t=90s
+- https://www.youtube.com/watch?v=hIBEmpV30Ao&t=148s
+- https://www.youtube.com/watch?v=EpKZw0NNCUA&t=4s
+- https://www.youtube.com/watch?v=uaPB1el-M0k
+- https://www.youtube.com/watch?v=l8zdauUWv9g&t=1518s
+- https://www.youtube.com/watch?v=UmoryILvQ_Q&t=217s
+- https://www.youtube.com/watch?v=8hMWNGGg_OI
+- https://www.youtube.com/watch?v=h2Zb56eVgIM
+- y un montón de cosas mas.
 
 ## AYUDA DE AGENTES 
 -Claude.
