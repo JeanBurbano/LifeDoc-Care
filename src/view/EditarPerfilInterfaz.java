@@ -35,10 +35,9 @@ public class EditarPerfilInterfaz extends JFrame {
     public JTextField fielNombre, fieldEdad, fieldCorreo, fieldTelefono, fieldSexo, fieldFechaN, fieldGrupoS;
     public JPanel contenedor2, cuerpo2, encabezado, panelBotones;
 
-    public EditarPerfilInterfaz(String nombreInterfaz, String nombre, String edad, String correo,
+    public EditarPerfilInterfaz(String nombre, String edad, String correo,
             String telefono, String sexo, String fechan, String grupos, String ruta) {
-        //nombre interfaz
-        super(nombreInterfaz);
+        this.setUndecorated(true);
         //el contenedor del JFrame
         this.contenedor = getContentPane();
         //el contenedor que va dentro del otro contedor
@@ -64,9 +63,9 @@ public class EditarPerfilInterfaz extends JFrame {
         JPanel panelBoton = new JPanel();
         panelBoton.setLayout(new FlowLayout());
         panelBoton.setOpaque(false);
-        this.volver = new JButton("Volver", new ImageIcon("iconsP/arrow-left.png"));
+        volver = new JButton("Volver", new ImageIcon("iconsP/arrow-left.png"));
         MetodosPublicos.estilizarBoton(volver, (byte) 1);
-        this.volver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        volver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         panelBoton.add(volver);
 
         this.encabezado.add(panelBienvenida, BorderLayout.WEST);

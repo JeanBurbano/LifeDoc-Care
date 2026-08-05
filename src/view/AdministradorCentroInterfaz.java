@@ -332,8 +332,6 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         tablaMedicamentoR.getColumnModel().getColumn(2).setPreferredWidth(150);
         tablaMedicamentoR.getColumnModel().getColumn(3).setPreferredWidth(250);
         tablaMedicamentoR.getColumnModel().getColumn(8).setCellRenderer(new BotonEstadoRenderer());
-
-        tablaMedicamentoR.getColumnModel().getColumn(8).setCellRenderer(new BotonEstadoRenderer());
         tablaMedicamentoR.getTableHeader().setReorderingAllowed(false); //elimina que las tablas se reorganicen
         miscrollListaMedicamento = new JScrollPane(tablaMedicamentoR);
         miscrollListaMedicamento.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -506,6 +504,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
                 new BotonTablaRenderer("Asignar", PacienteInterfaz.COLOR_VERDE_ACENTO));
         tablaHorarioM.getColumnModel().getColumn(5).setCellRenderer(
                 new BotonTablaRenderer("Editar", PacienteInterfaz.COLOR_AZUL_CORPORATIVO));
+        tablaHorarioM.getColumnModel().getColumn(6).setCellRenderer(new BotonEstadoHorarioRenderer());
         miscrollListaHorarioM = new JScrollPane(tablaHorarioM);
         miscrollListaHorarioM.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         miscrollListaHorarioM.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -832,10 +831,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
     }
 
-    /**
-     * Dibuja el botón en la columna de acción de la tabla de
-     * horarios.
-     */
+    
     private class BotonTablaRenderer extends JButton implements TableCellRenderer {
 
         public BotonTablaRenderer(String texto, Color color) {
@@ -858,7 +854,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     
     private class BotonEstadoHorarioRenderer extends JButton implements TableCellRenderer {
         public BotonEstadoHorarioRenderer() {
-            setFont(new Font("Arial", Font.BOLD, 12));
+            setFont(new Font("Arial", Font.BOLD, 16));
             setContentAreaFilled(false);
             setBorderPainted(false);
             setFocusPainted(false);

@@ -138,8 +138,10 @@ public class GestorCitas {
         pacienteI.construirPanelVistaHistorial();
         pacienteI.vaciarPanel();
         if (hashSetCitasNoActivas.isEmpty()) {
+            pacienteI.barraBusqueda.setEnabled(false);
             pacienteI.mostrarMensajeHistorialVacio();
         } else {
+            pacienteI.barraBusqueda.setEnabled(true);
             for (Cita clave : hashSetCitasNoActivas) {
                 pacienteI.agregarAlPanelHistorialCitas(
                         new Titulo("Cita ", clave.getEspecialidad(), 30).getPanelTitulo(),

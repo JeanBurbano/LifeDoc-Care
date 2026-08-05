@@ -57,8 +57,7 @@ public class RegistroUsuariosInterfaz extends LayoutView {
     public JLabel previsualizacionFoto;
     public JButton btnSeleccionarFoto;
     
-    public RegistroUsuariosInterfaz(String nombreInterfaz) {
-        super(nombreInterfaz);
+    public RegistroUsuariosInterfaz() {
         
         encabezado.setBorder(new EmptyBorder(40, 40, 0, 40));
         encabezado.setLayout(new BorderLayout());

@@ -31,11 +31,15 @@ public class EnvioCorreos {
             + "Si usted no solicito este cambio, ignore este mensaje y su contrasena actual seguira siendo valida.\n\n"
             + "Atentamente,\nEquipo LifeDoc-Care  La bestia Alejandro Vanegas Tu papa";
 
+    //Duracion maxima del codigo en milisegundos 10 minutos
+    private static final long DURACION_CODIGO_MS = 10 * 60 * 1000;
+
     private String emailTo;
     private Properties properties;
     private Session session;
     private MimeMessage mimeMessage;
     private Integer numeroAzar;
+    private long expiracionMillis;
 
     public EnvioCorreos(RecuperacionContrasenaInterfaz ri) {
         this.ri = ri;
@@ -46,7 +50,8 @@ public class EnvioCorreos {
         this.emailTo = this.ri.field.getText().trim();
 
         Random random = new Random();
-        this.numeroAzar = random.nextInt(9000) + 1000; // 1000 - 9999
+        this.numeroAzar = random.nextInt(9000) + 1000; //1000 - 9999
+        this.expiracionMillis = System.currentTimeMillis() + DURACION_CODIGO_MS;
         String contenidoFinal = CONTENIDO_TO + numeroAzar + CONTENIDO_PIE;
 
         properties.put("mail.smtp.host", "smtp.gmail.com");
@@ -56,8 +61,8 @@ public class EnvioCorreos {
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
-        //Se usa un Authenticator para que la sesion quede autenticada de una vez.
-        //asi Transport.send(mimeMessage) ya sabe con que credenciales conectarse.
+        //Se usa un authenticator para que la sesion quede autenticada de una vez
+        //asi transport sendmimemessage ya sabe con que credenciales conectarse
         session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -101,6 +106,11 @@ public class EnvioCorreos {
 
     public Integer getNumeroAzar() {
         return numeroAzar;
+    }
+
+    //Indica si el codigo ya no es valido expirado o eliminado
+    public boolean codigoExpirado() {
+        return numeroAzar == null || System.currentTimeMillis() > expiracionMillis;
     }
 
     public void eliminarValorNumeroAzar() {

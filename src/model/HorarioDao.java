@@ -33,7 +33,7 @@ public class HorarioDao implements Crud<Horario> {
                 + "hd.dia_semana, hd.hora_inicio, hd.hora_fin, hd.descanso_inicio, hd.descanso_fin "
                 + "FROM horarios h "
                 + "LEFT JOIN horario_dias hd ON hd.id_horarios = h.id_horario "
-                + "WHERE h.id_medico = ?";
+                + "WHERE m.id_medico = ?";
         Horario horario = null;
         try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idMedico);
@@ -217,5 +217,28 @@ public class HorarioDao implements Crud<Horario> {
     public static String indiceANombreDia(int indice) {
         return NOMBRES_DIAS[indice];
     }
+    
+    public boolean horarioTieneCitasActivas(int idHorario) {
+    String sql = "SELECT COUNT(*) AS total_citas " +
+                 "FROM cita c " +
+                 "INNER JOIN medico m ON c.id_Medico = m.id_medico " +
+                 "WHERE m.id_horario = ? AND c.estado = 1";
+
+    try (Connection con = conectar.getConection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, idHorario);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("total_citas") > 0;
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false; // is falla la consulta, no se puede inhabilitar
+}
 
 }

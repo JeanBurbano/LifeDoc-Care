@@ -1,10 +1,16 @@
 package controller;
 
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
-import model.UsuDao;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+import model.MetodosPublicos;
+import model.UsuarioPublico;
 import model.UsuarioPublicoDao;
 import view.AdministradorDelSistemaInterfaz;
+import view.UsuarioListadoInterfaz;
 
 public class AdministradorDelSistemaController extends PacienteController {
 
@@ -13,10 +19,11 @@ public class AdministradorDelSistemaController extends PacienteController {
 
     public AdministradorDelSistemaController(AdministradorDelSistemaInterfaz adminSistem) {
         super(adminSistem);
-        adminSistem.btnRol.addActionListener(this);
-        adminSistem.btnHabilitar.addActionListener(this);
-        adminSistem.btnDesabilitar.addActionListener(this);
-        adminSistem.btnLimpiar.addActionListener(this);
+        this.adminSistem.btnRol.addActionListener(this);
+        this.adminSistem.btnHabilitar.addActionListener(this);
+        this.adminSistem.btnDesabilitar.addActionListener(this);
+        this.adminSistem.btnLimpiar.addActionListener(this);
+        this.adminSistem.btnUsuarioTargeta.addActionListener(this);
     }
 
     private void habilitarUsuarioSeleccionado() {
@@ -88,6 +95,20 @@ public class AdministradorDelSistemaController extends PacienteController {
         this.adminSistem.btnDesabilitar.setEnabled(true);
     }
 
+    protected void procesoBtnUsuario() {
+        Thread hiloVistaTargeta = new Thread(() -> {
+            UsuarioListadoInterfaz util = new UsuarioListadoInterfaz("Usuarios Del sistema");
+            List<UsuarioPublico> lista = new ArrayList<>(new UsuarioPublicoDao().listar());
+            for (UsuarioPublico usu : lista) {
+                util.agregarTarjetaUsuario(usu.getFotoPerfil(), usu.getRol(), usu.getTipoIdentificacion(), usu.getNumeroIdentificacion(),
+                        usu.getPrimerNombre(), usu.getPrimerApellido(), usu.getCorreo(), usu.getFechaNacimiento(), usu.getSexoBiologico(),
+                        usu.getNumeroCelular(), usu.getEdad(), usu.getSisben(), usu.isEstado());
+            }
+            MetodosPublicos.abrirVentanaDisPoseOnClose(util);
+        });
+        hiloVistaTargeta.start();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
@@ -108,6 +129,9 @@ public class AdministradorDelSistemaController extends PacienteController {
         if (e.getSource() == adminSistem.btnLimpiar) {
             adminSistem.mDefaultTableModel.setRowCount(0); //Solo vacía la vista no toca base
             return;                                        //de datos pero igual le hacemos la broma a la instru paula
+        }
+        if (e.getSource() == adminSistem.btnUsuarioTargeta) {
+            procesoBtnUsuario();
         }
     }
 }

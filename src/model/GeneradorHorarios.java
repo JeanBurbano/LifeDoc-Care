@@ -27,6 +27,9 @@ public class GeneradorHorarios {
         List<String> lista = new ArrayList<>(); // lista temporal para ir agregando las horas
         for (int h = 7; h <= 17; h++) { // recorre cada hora desde las 7 hasta las 17
             for (int m : new int[]{0, 30}) { // dentro de cada hora, agrega el minuto 0 y el 30
+                if (h == 17 && m == 30) {
+                continue; 
+                }
                 lista.add(String.format("%02d:%02d", h, m)); // formatea como "07:00", "07:30", etc.
             }
         }
