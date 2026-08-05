@@ -38,6 +38,7 @@ import view.PacienteInterfaz;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class MetodosPublicos {
@@ -54,6 +55,12 @@ public class MetodosPublicos {
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         frame.setExtendedState(MAXIMIZED_BOTH);
         frame.setVisible(true);
+    }
+
+    public static void abrirVentanaDisPoseOnClose(JFrame ventana) {
+        ventana.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        ventana.setExtendedState(MAXIMIZED_BOTH);
+        ventana.setVisible(true);
     }
 
     //Esto es para los JTextField que solo aceptan numeros

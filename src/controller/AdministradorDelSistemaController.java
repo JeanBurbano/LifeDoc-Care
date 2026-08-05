@@ -1,9 +1,11 @@
 package controller;
 
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import model.MetodosPublicos;
 import model.UsuarioPublico;
 import model.UsuarioPublicoDao;
@@ -92,16 +94,19 @@ public class AdministradorDelSistemaController extends PacienteController {
         deshabilitarUsuarioSeleccionado();
         this.adminSistem.btnDesabilitar.setEnabled(true);
     }
-    
-    protected void procesoBtnUsuario(){
-        UsuarioListadoInterfaz util = new UsuarioListadoInterfaz();
-        List<UsuarioPublico> lista = new ArrayList<>(new UsuarioPublicoDao().listar());
-        for(UsuarioPublico usu:lista){
-            util.agregarTarjetaUsuario(usu.getFotoPerfil(), usu.getRol(),usu.getTipoIdentificacion(), usu.getNumeroIdentificacion(),
-                usu.getPrimerNombre(), usu.getPrimerApellido(), usu.getCorreo(), usu.getFechaNacimiento(), usu.getSexoBiologico(),
-                usu.getNumeroCelular(), usu.getEdad(), usu.getSisben(), usu.isEstado());
-        }
-        MetodosPublicos.abrirVentana(util);
+
+    protected void procesoBtnUsuario() {
+        Thread hiloVistaTargeta = new Thread(() -> {
+            UsuarioListadoInterfaz util = new UsuarioListadoInterfaz("Usuarios Del sistema");
+            List<UsuarioPublico> lista = new ArrayList<>(new UsuarioPublicoDao().listar());
+            for (UsuarioPublico usu : lista) {
+                util.agregarTarjetaUsuario(usu.getFotoPerfil(), usu.getRol(), usu.getTipoIdentificacion(), usu.getNumeroIdentificacion(),
+                        usu.getPrimerNombre(), usu.getPrimerApellido(), usu.getCorreo(), usu.getFechaNacimiento(), usu.getSexoBiologico(),
+                        usu.getNumeroCelular(), usu.getEdad(), usu.getSisben(), usu.isEstado());
+            }
+            MetodosPublicos.abrirVentanaDisPoseOnClose(util);
+        });
+        hiloVistaTargeta.start();
     }
 
     @Override
@@ -125,7 +130,7 @@ public class AdministradorDelSistemaController extends PacienteController {
             adminSistem.mDefaultTableModel.setRowCount(0); //Solo vacía la vista no toca base
             return;                                        //de datos pero igual le hacemos la broma a la instru paula
         }
-        if(e.getSource() == adminSistem.btnUsuarioTargeta){
+        if (e.getSource() == adminSistem.btnUsuarioTargeta) {
             procesoBtnUsuario();
         }
     }

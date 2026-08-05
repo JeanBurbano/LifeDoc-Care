@@ -359,7 +359,8 @@ public class UsuarioDao  {
 
     public String historialMedicoPorId(String id_usuario) {
         String historial = null;
-        String sql = "SELECT descripcion FROM historial_medico WHERE id_usuario = ?";
+        String sql = "SELECT descripcion FROM historial_medico INNER JOIN usuario "
+                + "ON historial_medico.id_usuario = usuario.id_usuario WHERE numero_identificacion = ?";
 
         try {
             con = conectar.getConection();
