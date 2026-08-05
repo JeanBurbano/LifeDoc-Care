@@ -33,7 +33,7 @@ public class RecuperacionContrasenaInterfaz extends JFrame {
     public JButton flecha, btnCorreo, btnSms, btnContinuar;
 
     public RecuperacionContrasenaInterfaz() {
-        super("Recuperacion Contrasena");
+        this.setUndecorated(true);
         this.fondo = new JLabel(new ImageIcon("fondo2.png"));
         this.fondo.setOpaque(true);
         this.fondo.setLayout(new GridBagLayout());

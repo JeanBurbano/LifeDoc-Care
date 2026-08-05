@@ -17,8 +17,7 @@ public class RegistroPersonalInterfaz extends RegistroUsuariosInterfaz{
     private JScrollPane scroll;
     
     
-    public RegistroPersonalInterfaz(String nombre){
-        super(nombre);
+    public RegistroPersonalInterfaz(){
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
         this.tituloCreacion.setText("Registrar Personal del centro");

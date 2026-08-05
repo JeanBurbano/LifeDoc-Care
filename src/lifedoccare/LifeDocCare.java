@@ -82,7 +82,7 @@ public class LifeDocCare {
             RecuperacionContrasenaInterfaz rc = new RecuperacionContrasenaInterfaz();
             avanzarProgresoSuave(50, 70);
 
-            RegistroUsuariosInterfaz ur = new RegistroUsuariosInterfaz("Registro");
+            RegistroUsuariosInterfaz ur = new RegistroUsuariosInterfaz();
             avanzarProgresoSuave(70, 85);
 
             LoginController clg = new LoginController(lg, rc, ur);

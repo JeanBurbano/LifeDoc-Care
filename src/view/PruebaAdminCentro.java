@@ -20,7 +20,7 @@ public class PruebaAdminCentro {
      */
     public static void main(String[] args) {
 //        AdministradorCentroInterfaz i = new AdministradorCentroInterfaz("alejandra cossio", "Administrador del Centro", "anonymous.png");
-        RegistroUsuariosInterfaz i = new RegistroUsuariosInterfaz("Registro");
+        RegistroUsuariosInterfaz i = new RegistroUsuariosInterfaz();
         i.setVisible(true);
         i.setDefaultCloseOperation(EXIT_ON_CLOSE);
         i.setExtendedState(MAXIMIZED_BOTH);

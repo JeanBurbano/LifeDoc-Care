@@ -18,7 +18,9 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Insets;
+import javax.swing.JButton;
 import model.MetodosPublicos;
 import static view.PacienteInterfaz.COLOR_AZUL_CORPORATIVO;
 
@@ -27,15 +29,24 @@ public class UsuarioListadoInterfaz extends LayoutView {
     JPanel contedorTarjeta;
     private static final int TAMANO_FOTO = 90;
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public JButton volver;
 
-    public UsuarioListadoInterfaz(String nombreInterfaz) {
-        super(nombreInterfaz);
-
+    public UsuarioListadoInterfaz() {
+        this.setUndecorated(true);
+        super.encabezado.setLayout(new BorderLayout());
         JPanel panelTitulo = new Titulo("LifeDoc", "Care", 20).getPanelTitulo();
+        panelTitulo.setOpaque(false);
+        volver = new JButton("CERRAR", new ImageIcon("iconsP/quejas.png"));
+        MetodosPublicos.estilizarBoton(volver, (byte) 6);
+        volver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        volver.addActionListener(e ->{
+            this.dispose();
+        });
         JLabel usuarios = new JLabel("Usuarios de LifeDoc Care");
         usuarios.setOpaque(false);
-        usuarios.setFont(new Font("Arial",Font.BOLD,20));
-        encabezado.add(panelTitulo);
+        usuarios.setFont(new Font("Arial", Font.BOLD, 20));
+        encabezado.add(panelTitulo, BorderLayout.WEST);
+        encabezado.add(volver,BorderLayout.EAST);
         cuerpo1.add(usuarios);
 
         contedorTarjeta = new JPanel();
@@ -76,7 +87,7 @@ public class UsuarioListadoInterfaz extends LayoutView {
         tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
         tarjeta.setBackground(Color.WHITE);
         tarjeta.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO,1),
+                BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 1),
                 BorderFactory.createEmptyBorder(16, 16, 16, 16)));
         tarjeta.setAlignmentX(Component.LEFT_ALIGNMENT);
         tarjeta.setMaximumSize(new Dimension(260, 320));
@@ -106,7 +117,9 @@ public class UsuarioListadoInterfaz extends LayoutView {
     }
 
     private JLabel construirFoto(String fotoPerfil) {
-        if(fotoPerfil == null || fotoPerfil.isEmpty()) fotoPerfil = "fotosPerfil/fotoDefecto.png";
+        if (fotoPerfil == null || fotoPerfil.isEmpty()) {
+            fotoPerfil = "fotosPerfil/fotoDefecto.png";
+        }
         ImageIcon iconoOriginal = new ImageIcon(fotoPerfil);
         Image imagenEscalada = iconoOriginal.getImage()
                 .getScaledInstance(TAMANO_FOTO, TAMANO_FOTO, Image.SCALE_SMOOTH);
@@ -185,7 +198,7 @@ public class UsuarioListadoInterfaz extends LayoutView {
         contenedor.add(estadoLabel);
         return contenedor;
     }
-    
+
     private static class WrapLayout extends FlowLayout {
 
         WrapLayout(int align, int hgap, int vgap) {

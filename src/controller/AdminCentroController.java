@@ -150,7 +150,7 @@ public class AdminCentroController extends PacienteController {
     //apartado de personal del centro
     private void manejarApartadoPersonal(ActionEvent e) {
         if (e.getSource() == adminI.btnregistrarPersonal) {
-            RegistroPersonalInterfaz vistaPersonal = new RegistroPersonalInterfaz("Registro de Personal");
+            RegistroPersonalInterfaz vistaPersonal = new RegistroPersonalInterfaz();
             RegistroPersonalController controller = new RegistroPersonalController(vistaPersonal);
             vistaPersonal.setVisible(true);
         }

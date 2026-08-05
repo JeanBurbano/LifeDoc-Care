@@ -6,7 +6,7 @@ import model.MetodosPublicos;
 public class UsaVista {
 
     public static void main(String[] args) {
-        UsuarioListadoInterfaz util = new UsuarioListadoInterfaz("ddd");
+        UsuarioListadoInterfaz util = new UsuarioListadoInterfaz();
 
         util.agregarTarjetaUsuario("fotosPerfil/fotoDefecto.png", "Médico", "Cedula de Ciudadania", "1020304050",
                 "Camila", "Torres", "camila@gmail.com", LocalDate.now(), "Femenino",

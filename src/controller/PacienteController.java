@@ -105,7 +105,7 @@ public class PacienteController implements ActionListener {
         pacienteI.labelFotoPerfil.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                EditarPerfilInterfaz vista = new EditarPerfilInterfaz("Editar Perfil", usurio.getPrimerNombre(),
+                EditarPerfilInterfaz vista = new EditarPerfilInterfaz(usurio.getPrimerNombre(),
                         String.valueOf(usurio.getEdad()), usurio.getCorreo(), usurio.getNumeroCelular(),
                         usurio.getSexoBiologico(), String.valueOf(usurio.getFechaNacimiento()), String.valueOf(usurio.getSisben()), usurio.getFotoPerfil());
                 EditarPerfilController cedI = new EditarPerfilController(vista, usurio.getIdUsuario(),nombreModi);
