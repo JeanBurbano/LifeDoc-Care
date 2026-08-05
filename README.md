@@ -1,6 +1,6 @@
 # LifeDoc Care — Sistema de Citas Médicas
 
-Sistema de control y agendamiento de citas médicas para un centro de salud, desarrollado en Java (Swing) con NetBeans y MySQL.
+Sistema de control y agendamiento de citas médicas para un centro de medico, desarrollado en Java (Swing) con NetBeans y MySQL.
 
 ## Descripción general
 
@@ -8,11 +8,13 @@ LifeDoc Care es una aplicación de escritorio que administra citas médicas, his
 
 ## Objetivos clave
 
-- **Autenticación segura**, con validación de contraseñas mediante expresiones regulares (nivel de exigencia medio).
-- **Módulo de citas médicas**: registro, consulta y cancelación, con validación para evitar citas duplicadas el mismo día.
-- **Historia clínica**: anotaciones médicas, exportación a PDF y almacenamiento de la imagen del paciente en la base de datos.
-- **Facturación**, calculada según la categoría del afiliado y su edad.
-- **Herencia y polimorfismo**: la clase `Medico` se especializa en las subclases `MedicoGeneral` y `MedicoEspecialista`, donde el especialista recibe una bonificación en el salario. (Esta jerarquía explica la existencia de clases `Medico`/`Medicos` relacionadas dentro del proyecto).
+- **Autenticación supuestamente segura**
+- **Módulo de citas médicas**
+- **Historia clínica**
+- **Facturación**
+- **Herencia y polimorfismo**
+- **Notificaciones**
+- **Foro**
 
 ## Requisito de diseño obligatorio
 
@@ -123,10 +125,7 @@ Videos de apoyo (tutoriales y referencias en YouTube):
 - [Video 23](https://www.youtube.com/watch?v=j9i2i--xRGw)
 - [Video 24](https://www.youtube.com/watch?v=X5llkhXOYIA)
 
-*(Se revisaron todos los enlaces del listado original: no había duplicados, y se conservaron todos).*
-
 ## Apoyo de agentes de IA
-
 - Claude
 - ChatGPT
 - Gemini (generación de imágenes)
