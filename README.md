@@ -73,7 +73,22 @@ JDBC — Java Database Connectivity, la API estándar de Java para ejecutar SQL 
 ## Seguridad
 spring-security-crypto-6.4.4.jar — Módulo de criptografía de Spring Security (independiente del resto del framework Spring). Ofrece utilidades para hashing de contraseñas (BCrypt, Argon2, etc.) y cifrado. Dado que en tu proyecto hay contraseñas en texto plano en la BD, esta librería sería la solución ideal para implementar el hashing seguro que pide el objetivo 1 del proyecto ("autenticación con contraseña segura").
 
+## Recursos Visuales
+
+- https://dribbble.com/
+- https://co.pinterest.com/
+  
+##1. Paginas de descarga recursos visuales y creación de paneles 
+
+- https://www.figma.com
+- https://gqinformatica.com/herramientas/visualizador-tamanos-imagen-online-calculadora-dimensiones-ratios/
+- https://www.flaticon.com/
+- https://www.myinstants.com/es/index/co/
+- https://freesound.org/
+- https://speechgen.io/
+
 ## Webgrafía 
+
 - https://docs.oracle.com/javase/8/docs/api/
 - https://stackoverflow.com/questions
 - https://www.youtube.com/watch?v=sL1s4YyONSg&t=8s
@@ -85,6 +100,21 @@ spring-security-crypto-6.4.4.jar — Módulo de criptografía de Spring Security
 - https://www.youtube.com/watch?v=UmoryILvQ_Q&t=217s
 - https://www.youtube.com/watch?v=8hMWNGGg_OI
 - https://www.youtube.com/watch?v=h2Zb56eVgIM
+- https://www.youtube.com/watch?v=GwjUKVeVtCo
+- https://www.youtube.com/watch?v=Ryf5icqLSKk
+- https://www.youtube.com/watch?v=fVGOwiEyyj4
+- https://www.youtube.com/watch?v=ZggjlwLzrxg
+- https://www.youtube.com/watch?v=jjM4Q6MBKQY
+- https://www.youtube.com/watch?v=sW4FyA-z5Yg&t=850s
+- https://www.youtube.com/watch?v=gx_iVi67fjE
+- https://www.youtube.com/watch?v=aZng9YPL4-s
+- https://www.youtube.com/watch?v=Z6uvh7xM-m0&t=62s
+- https://www.youtube.com/watch?v=uINUPW3xGpE
+- https://www.youtube.com/watch?v=xvvMSJ3nfT8
+- https://www.youtube.com/watch?v=UtoKA2IzE2M
+- https://www.youtube.com/watch?v=SPpditsfY1o
+- https://www.youtube.com/watch?v=j9i2i--xRGw
+- https://www.youtube.com/watch?v=X5llkhXOYIA
 - y un montón de cosas mas.
 
 ## AYUDA DE AGENTES 
