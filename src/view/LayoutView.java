@@ -39,6 +39,11 @@ public abstract class LayoutView extends JFrame {
         super(nombreVentana);
         init();
     }
+    
+    public LayoutView() {
+        this.setUndecorated(true);
+        init();
+    }
 
     private void init() {
         boolean opaque = true;

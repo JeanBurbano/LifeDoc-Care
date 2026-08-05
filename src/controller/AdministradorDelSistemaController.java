@@ -94,7 +94,7 @@ public class AdministradorDelSistemaController extends PacienteController {
     }
     
     protected void procesoBtnUsuario(){
-        UsuarioListadoInterfaz util = new UsuarioListadoInterfaz("Usuarios Del sistema");
+        UsuarioListadoInterfaz util = new UsuarioListadoInterfaz();
         List<UsuarioPublico> lista = new ArrayList<>(new UsuarioPublicoDao().listar());
         for(UsuarioPublico usu:lista){
             util.agregarTarjetaUsuario(usu.getFotoPerfil(), usu.getRol(),usu.getTipoIdentificacion(), usu.getNumeroIdentificacion(),
