@@ -309,4 +309,14 @@ public class RegistroUsuariosInterfaz extends LayoutView {
         MetodosPublicos.vaciarPanel(previsualizacionFoto);
         previsualizacionFoto.setIcon(imagen);
     }
+    
+    @Override
+    public  void agregarBotonCuerpo1(JButton boton){
+         
+    }
+    
+    @Override
+    public  void habilitarBotonesMenu(JButton botonActivo){
+        
+    }
 }

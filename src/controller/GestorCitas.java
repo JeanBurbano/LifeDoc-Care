@@ -190,6 +190,9 @@ public class GestorCitas {
 
     //engancha el calendario para que cada vez que se elija una fecha se
     //calculen las horas disponibles de ese dia
+    //esta cosa de aca me obliga utilizar los 2 metodos aunque solo 
+    //necesito uno por que segun lo que se leyo en la documentacion de 
+    //ese calendario esos metodos son abstractos entonces por ende toca sobreescribir
     private void agregarListenerCalendario() {
         pacienteI.calendario.addCalendarListener(new CalendarListener() {
             @Override

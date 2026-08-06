@@ -39,14 +39,14 @@ public class UsuarioListadoInterfaz extends LayoutView {
         volver = new JButton("CERRAR", new ImageIcon("iconsP/quejas.png"));
         MetodosPublicos.estilizarBoton(volver, (byte) 6);
         volver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        volver.addActionListener(e ->{
+        volver.addActionListener(e -> {
             this.dispose();
         });
         JLabel usuarios = new JLabel("Usuarios de LifeDoc Care");
         usuarios.setOpaque(false);
         usuarios.setFont(new Font("Arial", Font.BOLD, 20));
         encabezado.add(panelTitulo, BorderLayout.WEST);
-        encabezado.add(volver,BorderLayout.EAST);
+        encabezado.add(volver, BorderLayout.EAST);
         cuerpo1.add(usuarios);
 
         contedorTarjeta = new JPanel();
@@ -197,6 +197,16 @@ public class UsuarioListadoInterfaz extends LayoutView {
 
         contenedor.add(estadoLabel);
         return contenedor;
+    }
+
+    @Override
+    public void agregarBotonCuerpo1(JButton boton) {
+
+    }
+
+    @Override
+    public void habilitarBotonesMenu(JButton botonActivo) {
+
     }
 
     private static class WrapLayout extends FlowLayout {
