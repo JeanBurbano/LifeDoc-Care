@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
@@ -96,4 +97,7 @@ public abstract class LayoutView extends JFrame {
 
         fondoVentana.add(scrollFormulario, BorderLayout.CENTER);
     }
+    
+    public abstract void agregarBotonCuerpo1(JButton boton);
+    public abstract void habilitarBotonesMenu(JButton botonActivo);
 }

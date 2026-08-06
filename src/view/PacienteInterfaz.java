@@ -457,8 +457,9 @@ public class PacienteInterfaz extends LayoutView {
         MetodosPublicos.refrescarVentana(panelHistorial);
         MetodosPublicos.refrescarVentana(areaHistorialMedico);
     }
-
+    
     //Aqui creo el metodo para habilitar o desabilitar botones del paciente.
+    @Override
     public void habilitarBotonesMenu(JButton botonActivo) {
         botonActivo.setEnabled(false);
         if (botonActivo != btnMisCitas && !btnMisCitas.isEnabled()) {
@@ -476,6 +477,7 @@ public class PacienteInterfaz extends LayoutView {
     }
 
     //Aqui creo el metodo que nos va a servir para agregar un JButton al cuerpo1 que seria el panel para los botones
+    @Override
     public void agregarBotonCuerpo1(JButton boton) {
         MetodosPublicos.estilizarBoton(boton, (byte) 1);
         cuerpo1.add(boton);
