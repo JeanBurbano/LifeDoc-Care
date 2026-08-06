@@ -436,6 +436,7 @@ public class AdminCentroController extends PacienteController {
         }
 
         adminI.almuerzoIni[i].setModel(new DefaultComboBoxModel(disponibles.toArray()));
+        
 
     }
 
