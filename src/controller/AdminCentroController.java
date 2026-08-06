@@ -31,6 +31,7 @@ import model.HorarioDao;
 import model.HorarioDia;
 import model.Medicamentos;
 import model.MedicamentosDao;
+import model.MedicoDao;
 import model.Medicos;
 import model.MedicosDao;
 import model.SeleccionImagenes;
@@ -70,6 +71,7 @@ public class AdminCentroController extends PacienteController {
         this.adminI.btnPersonalCentro.addActionListener(this);
         this.adminI.btnInventarioMedicamentos.addActionListener(this);
         this.adminI.btnHorarioMedico.addActionListener(this);
+        this.adminI.btnReportes.addActionListener(this);
 
         //botones de apartados
         this.adminI.btnregistrarPersonal.addActionListener(this);
@@ -116,6 +118,12 @@ public class AdminCentroController extends PacienteController {
             adminI.habilitarBotonesMenu(adminI.btnHorarioMedico);
             cargarHorarios();
             agregarListenerBotonesTabla();
+        }
+        if (e.getSource() == adminI.btnReportes) {
+            
+            adminI.btnReportes.setEnabled(false);
+            adminI.habilitarBotonesMenu(adminI.btnReportes);
+            
         }
     }
 
@@ -588,31 +596,39 @@ public class AdminCentroController extends PacienteController {
         HorarioDao dao = new HorarioDao();
 
         if (h.isEstado()) {
-            int respuesta = JOptionPane.showConfirmDialog(null, "Desea deshabilitar este horario?",
+            int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea deshabilitar este horario?",
                     "Deshabilitar horario", JOptionPane.YES_NO_OPTION);
-            if(respuesta == JOptionPane.YES_OPTION){
-                boolean tieneCitas = new CitaDao().medicoTieneCitasActivas(h.getIdMedico());
-                if(tieneCitas){
+            if (respuesta == JOptionPane.YES_OPTION) {
+
+               
+                List<Integer> medicosAsignados = new MedicoDao().listarMedicosPorHorario(h.getId());
+                boolean algunoConCitas = false;
+                for (int idMedico : medicosAsignados) {
+                    if (new CitaDao().medicoTieneCitasActivas(idMedico)) {
+                        algunoConCitas = true;
+                        break; // encontrar uno para bloquear
+                    }
+                }
+
+                if (algunoConCitas) {
                     JOptionPane.showMessageDialog(null,
-                        "No se puede inhabilitar este horario. \nEl médico asignado tiene citas activas.",
-                        "Inhabilitación no permitida", JOptionPane.WARNING_MESSAGE);
+                            "No se puede inhabilitar este horario. \nEl médico asignado tiene citas activas.",
+                            "Inhabilitación no permitida", JOptionPane.WARNING_MESSAGE);
                     return;
-                }else{
+                } else {
                     dao.deshabilitar(h.getId());
-                JOptionPane.showMessageDialog(null, "Horario deshabilitado correctamente.",
-                        "Horario deshabilitado", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Horario deshabilitado correctamente.",
+                            "Horario deshabilitado", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
-
         } else {
-            int respuesta = JOptionPane.showConfirmDialog(null, "Desea habilitar este horario?",
+            int respuesta = JOptionPane.showConfirmDialog(null, "¿Desea habilitar este horario?",
                     "habilitar horario", JOptionPane.YES_NO_OPTION);
-            if(respuesta == JOptionPane.YES_OPTION){
+            if (respuesta == JOptionPane.YES_OPTION) {
                 dao.habilitar(h.getId());
                 JOptionPane.showMessageDialog(null, "Horario habilitado correctamente.",
-                    "Horario Habilitao", JOptionPane.INFORMATION_MESSAGE);
+                        "Horario Habilitado", JOptionPane.INFORMATION_MESSAGE);
             }
-            
         }
 
         adminI.mostrarVistaHorarioMedicoApartado();

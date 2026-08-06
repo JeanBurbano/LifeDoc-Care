@@ -179,7 +179,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         btnCrearHorario.setFont(new Font("Arial", Font.BOLD, 20));
         btnCrearHorario.setBackground(PacienteInterfaz.COLOR_VERDE_ACENTO);
         btnCrearHorario.setForeground(Color.WHITE);
-        btnCrearHorario.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        btnCrearHorario.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         //Botón para volver (usado dentro del formulario de horario)
         this.btnVolver = new JButton("← Volver");
@@ -216,6 +216,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         btnregistrarPersonal.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnAñadirMedicamento.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnCrearHorario.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnReportes.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     //Habilitar e inhabilitar los botones
@@ -233,6 +234,9 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
         if (botonActivo != btnHorarioMedico && !btnHorarioMedico.isEnabled()) {
             this.btnHorarioMedico.setEnabled(true);
+        }
+        if (botonActivo != btnReportes && !btnReportes.isEnabled()) {
+            this.btnReportes.setEnabled(true);
         }
     }
 
@@ -456,7 +460,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         contenido.add(panelImagen, BorderLayout.EAST); // el panel de imagen va a la derecha
 
         // Botón para guardar el medicamento, debajo del formulario 
-        JPanel panelBotonGuardar = new JPanel(new FlowLayout(java.awt.FlowLayout.RIGHT));
+        JPanel panelBotonGuardar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelBotonGuardar.setOpaque(false);
         panelBotonGuardar.add(btnGuardarMedicamento);
         contenido.add(panelBotonGuardar, BorderLayout.SOUTH);
@@ -573,7 +577,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
         //Sección 1: Información básica del horario
         JPanel seccionInfo = new JPanel(new BorderLayout(8, 0));
-        seccionInfo.setLayout(new java.awt.FlowLayout(FlowLayout.LEFT));
+        seccionInfo.setLayout(new FlowLayout(FlowLayout.LEFT));
         seccionInfo.setOpaque(false);
         seccionInfo.setAlignmentX(Component.LEFT_ALIGNMENT);
         seccionInfo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
@@ -609,7 +613,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
 
         //Sección 2: Días de la semana
         JPanel seccionDias = new JPanel(new BorderLayout(8, 0));
-        seccionDias.setLayout(new java.awt.FlowLayout(FlowLayout.LEFT));
+        seccionDias.setLayout(new FlowLayout(FlowLayout.LEFT));
         seccionDias.setOpaque(false);
         seccionDias.setAlignmentX(Component.LEFT_ALIGNMENT);
         seccionDias.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
@@ -652,7 +656,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         JScrollPane scrollDias = new JScrollPane(panelDias);
         scrollDias.setBorder(BorderFactory.createEmptyBorder());
         scrollDias.setOpaque(false); // sin fondo propio
-        scrollDias.getViewport().setOpaque(false); // el viewport es el que realmente pinta el fondo gris; se quita aquí
+        scrollDias.getViewport().setOpaque(false); // el viewport es el que realmente pinta el fondo gris entonces se quita aquí
         scrollDias.getVerticalScrollBar().setUnitIncrement(14); // scroll más suave con la rueda del mouse
 
         // Contenedor que junta la parte fija (arriba) y el scroll de días (abajo) 

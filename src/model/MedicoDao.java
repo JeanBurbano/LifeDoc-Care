@@ -195,4 +195,20 @@ public class MedicoDao implements Crud<Medico> {
             return 0;
         }
     }
+    
+    public List<Integer> listarMedicosPorHorario(int idHorario) {
+        List<Integer> medicos = new ArrayList<>();
+        String sql = "SELECT id_medico FROM medico WHERE id_horario = ?";
+        try (Connection con = conectar.getConection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idHorario);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    medicos.add(rs.getInt("id_medico"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return medicos;
+    }
 }

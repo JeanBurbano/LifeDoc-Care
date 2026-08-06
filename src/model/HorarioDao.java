@@ -31,7 +31,8 @@ public class HorarioDao implements Crud<Horario> {
     public Horario obtenerPorMedico(int idMedico) {
         String sql = "SELECT h.id_horario, h.nombre, h.color_etiqueta, h.fecha_creacion, "
                 + "hd.dia_semana, hd.hora_inicio, hd.hora_fin, hd.descanso_inicio, hd.descanso_fin "
-                + "FROM horarios h "
+                + "FROM medico m "
+                + "JOIN horarios h ON h.id_horario = m.id_horarios"
                 + "LEFT JOIN horario_dias hd ON hd.id_horarios = h.id_horario "
                 + "WHERE m.id_medico = ?";
         Horario horario = null;
