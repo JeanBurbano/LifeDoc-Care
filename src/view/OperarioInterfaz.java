@@ -43,7 +43,6 @@ import static model.MetodosPublicos.estilizarBoton;
 import static model.MetodosPublicos.estilizarComboBox;
 import static model.MetodosPublicos.refrescarVentana;
 import model.Paciente;
-import model.Usuario;
 import model.UsuarioPublico;
 
 public class OperarioInterfaz extends PacienteInterfaz {
@@ -124,6 +123,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         txtBuscarID.setFont(new Font("Arial", Font.PLAIN, 16));
         MetodosPublicos.soloNumeros(txtBuscarID, 10);
         bloquearBtn(txtBuscarID);
+        MetodosPublicos.soloNumeros(txtBuscarID, 10);
 
         btnBuscarPaciente = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
         estilizarBoton(btnBuscarPaciente, (byte) 5);
@@ -201,7 +201,11 @@ public class OperarioInterfaz extends PacienteInterfaz {
         cuerpo2.add(btnAgendarCita, BorderLayout.SOUTH);
 
         refrescarVentana(cuerpo2);
-
+        MetodosPublicos.soloLetras(txtPrimerNombre, 30);
+        MetodosPublicos.soloLetras(txtSegundoNombre, 30);
+        MetodosPublicos.soloLetras(txtPrimerApellido, 30);
+        MetodosPublicos.soloLetras(txtSegundoApellido, 30);
+        MetodosPublicos.soloNumeros(txtTelefono, 10);
         btnBuscarPaciente.addActionListener(e -> buscarPaciente());
 
     }
@@ -215,7 +219,13 @@ public class OperarioInterfaz extends PacienteInterfaz {
                     javax.swing.JOptionPane.WARNING_MESSAGE);
             return;
         }
-
+        if (!MetodosPublicos.validarNumero(id) || !MetodosPublicos.validarTamano(id, 8, 10)) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "El ID debe ser numérico y tener 8 o 10 dígitos (cédula válida).",
+                    "ID inválido",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         controlador.buscarPaciente(id);
     }
 
@@ -233,9 +243,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
         // Aqui se arma el nombre completo del paciente que se busca, sin importar si no cuenta con segundo nombre o apellido
         String nombreCompleto = primerNombre
-                + (segundoNombre != null && !segundoNombre.isEmpty() ? " " + segundoNombre : "")
+                + (!segundoNombre.equals("No aplica") ? " " + segundoNombre : "")
                 + " " + primerApellido
-                + (segundoApellido != null && !segundoApellido.isEmpty() ? " " + segundoApellido : "");
+                + (!segundoApellido.equals("No aplica") ? " " + segundoApellido : "");
 
         lblIDPaciente.setText("ID: " + id);
         lblNombrePaciente.setText("Nombre: " + nombreCompleto);
@@ -291,6 +301,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         lblBuscar.setFont(new Font("Arial", Font.BOLD, 16));
         JTextField txtBuscarIdPagos = new JTextField(15);
         txtBuscarIdPagos.setFont(new Font("Arial", Font.PLAIN, 16));
+        MetodosPublicos.soloNumeros(txtBuscarIdPagos, 10);
         JButton btnBuscarPagos = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
         estilizarBoton(btnBuscarPagos, (byte) 5);
         panelBusqueda.add(lblBuscar);
@@ -316,6 +327,13 @@ public class OperarioInterfaz extends PacienteInterfaz {
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "Por favor ingrese un ID de paciente.",
                         "Campo vacío", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (!MetodosPublicos.validarNumero(id) || !MetodosPublicos.validarTamano(id, 8, 10)) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "El ID debe ser numérico y tener 8 o 10 dígitos (cédula válida).",
+                        "ID inválido",
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             }
             Paciente paciente = controlador.buscarPacientePorId(id);
@@ -779,9 +797,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
         // SEPARADOR
         JPanel separador2 = new JPanel();
-        separador1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
-        separador1.setPreferredSize(new Dimension(0, 1));
-        separador1.setBackground(new Color(200, 210, 220));
+        separador2.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        separador2.setPreferredSize(new Dimension(0, 1));
+        separador2.setBackground(new Color(200, 210, 220));
         panelFactura.add(separador2);
 
         panelFactura.add(new JLabel("DETALLE DE LA CITA"));
@@ -793,9 +811,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
         // SEPARADOR
         JPanel separador3 = new JPanel();
-        separador1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
-        separador1.setPreferredSize(new Dimension(0, 1));
-        separador1.setBackground(new Color(200, 210, 220));
+        separador3.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        separador3.setPreferredSize(new Dimension(0, 1));
+        separador3.setBackground(new Color(200, 210, 220));
         panelFactura.add(separador3);
 
         panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -894,7 +912,6 @@ public class OperarioInterfaz extends PacienteInterfaz {
         panelConfirmacion.add(lblExito);
         panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 20)));
         panelConfirmacion.add(lblMetodoUsado);
-        panelConfirmacion.add(lblMetodoUsado);
         panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 20)));
         panelConfirmacion.add(btnDebito);
         panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 12)));
@@ -932,7 +949,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         lblValorAPagar.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JTextField txtMontoRecibido = MetodosPublicos.crearCampoTexto();
-
+        MetodosPublicos.soloNumeros(txtMontoRecibido, 10);
         // Filtro que solo deja escribir dígitos (0-9)
         javax.swing.text.AbstractDocument documentoMonto = (javax.swing.text.AbstractDocument) txtMontoRecibido.getDocument();
         documentoMonto.setDocumentFilter(new javax.swing.text.DocumentFilter() {
@@ -983,14 +1000,17 @@ public class OperarioInterfaz extends PacienteInterfaz {
                 }
             }
 
+            @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) {
                 recalcular();
             }
 
+            @Override
             public void removeUpdate(javax.swing.event.DocumentEvent e) {
                 recalcular();
             }
 
+            @Override
             public void changedUpdate(javax.swing.event.DocumentEvent e) {
                 recalcular();
             }
@@ -1043,7 +1063,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
         JTextField txtNumero = MetodosPublicos.crearCampoTexto();
         JTextField txtFecha = MetodosPublicos.crearCampoTexto();
         JTextField txtCodigo = MetodosPublicos.crearCampoTexto();
-
+        MetodosPublicos.soloNumeros(txtNumero, 16);
+        MetodosPublicos.tamanoField(txtFecha, 5);
+        MetodosPublicos.soloNumeros(txtCodigo, 3);
         modal.add(MetodosPublicos.crearSeparador(tituloModal));
         modal.add(Box.createRigidArea(new Dimension(0, 15)));
         modal.add(MetodosPublicos.crearCampoConEtiqueta("Número de tarjeta", txtNumero));
@@ -1143,6 +1165,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         lblBuscar.setFont(new Font("Arial", Font.BOLD, 16));
         JTextField txtBuscarIdConsultas = new JTextField(15);
         txtBuscarIdConsultas.setFont(new Font("Arial", Font.PLAIN, 16));
+        MetodosPublicos.soloNumeros(txtBuscarIdConsultas, 10);
         JButton btnBuscarConsultas = new JButton("Buscar", new ImageIcon("iconsP/magnifying-glass.png"));
         estilizarBoton(btnBuscarConsultas, (byte) 5);
         panelBusqueda.add(lblBuscar);
@@ -1169,6 +1192,13 @@ public class OperarioInterfaz extends PacienteInterfaz {
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "Por favor ingrese un ID de paciente.",
                         "Campo vacío", javax.swing.JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (!MetodosPublicos.validarNumero(id) || !MetodosPublicos.validarTamano(id, 8, 10)) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "El ID debe ser numérico y tener 8 o 10 dígitos (cédula válida).",
+                        "ID inválido",
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
                 return;
             }
             Paciente paciente = controlador.buscarPacientePorId(id);
@@ -1266,9 +1296,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         } else {
             JButton btnPacienteEnEspera = new JButton("Paciente en Espera", new ImageIcon("iconsP/bell.png"));
             estilizarBoton(btnPacienteEnEspera, (byte) 5);
-            btnPacienteEnEspera.addActionListener(e -> {
-                // Pendiente la logica de este boton (se necesitaba conectar con otra interfaz, falto)
-            });
+            
             panelBotones.add(btnPacienteEnEspera);
         }
 

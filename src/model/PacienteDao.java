@@ -67,7 +67,7 @@ public class PacienteDao implements Crud<Paciente> {
         return p;
     }
 
-    protected Paciente getUsuario(String numeroIdentifi) {
+    public Paciente getUsuario(String numeroIdentifi) {
         Paciente usu = null;
 
         String sql = "SELECT id_usuario, id_rol, id_tipo_identificacion, "
@@ -162,7 +162,7 @@ public class PacienteDao implements Crud<Paciente> {
                 + "u.edad, u.estado, u.sisben, p.id_paciente "
                 + "FROM usuario u "
                 + "JOIN paciente p ON p.id_usuario = u.id_usuario "
-                + "WHERE u.numero_identificacion = ? AND u.id_rol = 5";
+                + "WHERE u.numero_identificacion = ? AND u.id_rol = 5 AND u.estado = 1";
 
         Connection con = conectar.getConection();
         if (con == null) {

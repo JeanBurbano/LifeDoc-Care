@@ -15,17 +15,18 @@ public class MedicoDao implements Crud<Medico> {
     PreparedStatement ps;
     ResultSet rs;
 
-    public List<Medico> listarPorEspecialidad(int idEspecialidad) {
+    public List<Medico> listarPorEspecialidad(int idEspecialidad,int idUsuario) {
         List<Medico> medicos = new ArrayList<>();
         String sql = "SELECT m.id_medico, u.primer_nombre, u.primer_apellido "
                 + "FROM medico m "
                 + "JOIN usuario u ON u.id_usuario = m.id_usuario "
-                + "WHERE m.id_especialidad = ? AND u.estado = 1 "
-                + "ORDER BY u.primer_apellido, u.primer_nombre";
+                + "WHERE m.id_especialidad = ? AND u.estado = 1 AND u.Id_usuario != ?"
+                + " ORDER BY u.primer_apellido, u.primer_nombre";
         try {
             con = conectar.getConection();
             ps = con.prepareStatement(sql);
             ps.setInt(1, idEspecialidad);
+            ps.setInt(2, idUsuario);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Medico medico = new Medico();

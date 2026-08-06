@@ -52,6 +52,7 @@ public class PacienteController implements ActionListener {
         agregaMauseClick();
         agregarActionListener();
         estadoNotificacion = true;
+
     }
 
     protected void vaciarListasBotones() {
@@ -100,7 +101,7 @@ public class PacienteController implements ActionListener {
             }
         });
     }
-
+    
     private void agregaMauseClick() {
         pacienteI.labelFotoPerfil.addMouseListener(new MouseAdapter() {
             @Override
