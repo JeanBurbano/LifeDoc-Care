@@ -23,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import model.CategoriaMedicamento;
 import model.CategoriaMedicamentoDao;
+import model.CitaDao;
 import model.Consultorio;
 import model.ConsultorioDao;
 import model.Horario;
@@ -448,6 +449,7 @@ public class AdminCentroController extends PacienteController {
         String almFinStr = almIni.plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm"));
 
         adminI.almuerzoFin[i].setModel(new DefaultComboBoxModel(new String[]{almFinStr}));
+        
     }
 
     private void guardarHorario() {
@@ -585,15 +587,31 @@ public class AdminCentroController extends PacienteController {
         HorarioDao dao = new HorarioDao();
 
         if (h.isEstado()) {
-
-            dao.deshabilitar(h.getId());
-            JOptionPane.showMessageDialog(null, "Horario deshabilitado correctamente.",
-                    "Horario deshabilitado", JOptionPane.INFORMATION_MESSAGE);
+            int respuesta = JOptionPane.showConfirmDialog(null, "Desea deshabilitar este horario?",
+                    "Deshabilitar horario", JOptionPane.YES_NO_OPTION);
+            if(respuesta == JOptionPane.YES_OPTION){
+                boolean tieneCitas = new CitaDao().medicoTieneCitasActivas(h.getIdMedico());
+                if(tieneCitas){
+                    JOptionPane.showMessageDialog(null,
+                        "No se puede inhabilitar este horario. \nEl médico asignado tiene citas activas.",
+                        "Inhabilitación no permitida", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }else{
+                    dao.deshabilitar(h.getId());
+                JOptionPane.showMessageDialog(null, "Horario deshabilitado correctamente.",
+                        "Horario deshabilitado", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
 
         } else {
-            dao.habilitar(h.getId());
-            JOptionPane.showMessageDialog(null, "Horario habilitado correctamente.",
+            int respuesta = JOptionPane.showConfirmDialog(null, "Desea habilitar este horario?",
+                    "habilitar horario", JOptionPane.YES_NO_OPTION);
+            if(respuesta == JOptionPane.YES_OPTION){
+                dao.habilitar(h.getId());
+                JOptionPane.showMessageDialog(null, "Horario habilitado correctamente.",
                     "Horario Habilitao", JOptionPane.INFORMATION_MESSAGE);
+            }
+            
         }
 
         adminI.mostrarVistaHorarioMedicoApartado();

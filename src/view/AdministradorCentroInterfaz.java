@@ -48,6 +48,7 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
     public JButton btnPersonalCentro; //Abre la vista de personal del centro
     public JButton btnInventarioMedicamentos; //Abre la vista de inventario de medicamentos
     public JButton btnHorarioMedico; //Abre la vista de horarios médicos
+    public JButton btnReportes; //Abre la vista de reportes
 
     //Botones dentro de cada apartado
     public JButton btnregistrarPersonal; //Abre el formulario para registrar personal nuevo
@@ -154,10 +155,12 @@ public class AdministradorCentroInterfaz extends PacienteInterfaz {
         this.btnPersonalCentro = new JButton("Personal del Centro", new ImageIcon("iconsP/friends.png"));
         this.btnInventarioMedicamentos = new JButton("Inventario de Medicamentos", new ImageIcon("iconsP/pildora.png"));
         this.btnHorarioMedico = new JButton("Horarios Médicos", new ImageIcon("iconsP/horario.png"));
+        this.btnReportes = new JButton("Reportes", new ImageIcon("iconsP/report.png"));
         // Se agregan al cuerpo1 heredado
         super.agregarBotonCuerpo1(btnPersonalCentro);
         super.agregarBotonCuerpo1(btnInventarioMedicamentos);
         super.agregarBotonCuerpo1(btnHorarioMedico);
+        super.agregarBotonCuerpo1(btnReportes);
 
         //Botón para registrar personal
         this.btnregistrarPersonal = new JButton("Registrar Personal", new ImageIcon("iconsP/avatar.png"));

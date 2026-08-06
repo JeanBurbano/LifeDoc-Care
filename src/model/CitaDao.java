@@ -281,4 +281,21 @@ public class CitaDao implements Crud<Cita> {
             return 0;
         }
     }
+    
+    public boolean medicoTieneCitasActivas(int idMedico){
+        boolean tieneCitas = false;
+        String sql = "SELECT EXIST(SELECT 1 FROM cita WHERE id_Medico = ? NAD estado = 1) AS EXISTE";
+        try(Connection con = conectar.getConection(); 
+            PreparedStatement ps = con.prepareStatement(sql)){
+            ps.setInt(1, idMedico);
+            try(ResultSet rs = ps.executeQuery()){
+                if(rs.next()){
+                    tieneCitas = rs.getBoolean("existe");
+                }
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return tieneCitas;
+    }
 }
