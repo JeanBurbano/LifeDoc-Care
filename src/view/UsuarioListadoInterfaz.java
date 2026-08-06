@@ -90,8 +90,8 @@ public class UsuarioListadoInterfaz extends LayoutView {
                 BorderFactory.createLineBorder(COLOR_AZUL_CORPORATIVO, 1),
                 BorderFactory.createEmptyBorder(16, 16, 16, 16)));
         tarjeta.setAlignmentX(Component.LEFT_ALIGNMENT);
+        tarjeta.setSize(new Dimension(260, 320));
         tarjeta.setMaximumSize(new Dimension(260, 320));
-        tarjeta.setMinimumSize(new Dimension(240, 300));
 
         JPanel fotoContenedor = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         fotoContenedor.setOpaque(false);

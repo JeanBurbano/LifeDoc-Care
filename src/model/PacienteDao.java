@@ -162,7 +162,7 @@ public class PacienteDao implements Crud<Paciente> {
                 + "u.edad, u.estado, u.sisben, p.id_paciente "
                 + "FROM usuario u "
                 + "JOIN paciente p ON p.id_usuario = u.id_usuario "
-                + "WHERE u.numero_identificacion = ? AND u.id_rol = 5";
+                + "WHERE u.numero_identificacion = ? AND u.id_rol = 5 AND u.estado = 1";
 
         Connection con = conectar.getConection();
         if (con == null) {

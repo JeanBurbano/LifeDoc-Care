@@ -457,7 +457,7 @@ public class PacienteInterfaz extends LayoutView {
         MetodosPublicos.refrescarVentana(panelHistorial);
         MetodosPublicos.refrescarVentana(areaHistorialMedico);
     }
-    
+
     //Aqui creo el metodo para habilitar o desabilitar botones del paciente.
     @Override
     public void habilitarBotonesMenu(JButton botonActivo) {
@@ -516,6 +516,7 @@ public class PacienteInterfaz extends LayoutView {
 
     public void mostrarVistaHistorial() {
         MetodosPublicos.vaciarPanel(cuerpo2);
+        cuerpo2.setLayout(new BorderLayout());
         cuerpo2.setBorder(new EmptyBorder(0, 0, 0, 0));
         cuerpo2.add(panelVistaHistorial, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);
@@ -523,6 +524,7 @@ public class PacienteInterfaz extends LayoutView {
 
     public void mostrarVistaComentarios() {
         MetodosPublicos.vaciarPanel(cuerpo2);
+        cuerpo2.setLayout(new BorderLayout());
         cuerpo2.setBorder(new EmptyBorder(0, 0, 0, 0));
         cuerpo2.add(panelVistaComentarios, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);
@@ -892,6 +894,29 @@ public class PacienteInterfaz extends LayoutView {
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
+    public void mostrarVistaSeleccionMedico() {
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        MetodosPublicos.vaciarPanel(panelSeleccionConsulta);
+
+        Titulo titulo = new Titulo("Agendamiento de ", "Cita");
+        JLabel descripcion = new JLabel("No se Encontraron Medicos Asociados");
+        descripcion.setFont(new Font("Arial", Font.BOLD, 22));
+        descripcion.setForeground(Color.BLACK);
+        descripcion.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel panelTitulo = titulo.getPanelTitulo();
+        panelTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        this.panelSeleccionConsulta.add(panelTitulo);
+        this.panelSeleccionConsulta.add(descripcion);
+        this.panelSeleccionConsulta.add(Box.createRigidArea(new Dimension(0, 25)));
+
+        this.cuerpo2.setLayout(new GridBagLayout());
+        this.cuerpo2.setBorder(new EmptyBorder(40, 40, 40, 40));
+        this.cuerpo2.add(panelSeleccionConsulta, new GridBagConstraints());
+        MetodosPublicos.refrescarVentana(panelSeleccionConsulta);
+        MetodosPublicos.refrescarVentana(cuerpo2);
+    }
+
     public void mostrarVistaSeleccionMedico(String[] medicos, ArrayList listaBotonesMedicos) {
         MetodosPublicos.vaciarPanel(cuerpo2);
         MetodosPublicos.vaciarPanel(panelSeleccionConsulta);
@@ -1081,6 +1106,19 @@ public class PacienteInterfaz extends LayoutView {
         lbl.setFont(new Font("Arial", Font.BOLD, 16));
         panelHorarios.add(lbl);
         MetodosPublicos.refrescarVentana(panelHorarios);
+    }
+    
+    public void mostrarMensajeHistorialVacio(String mensaje) {
+        MetodosPublicos.vaciarPanel(panelListaHistorial);
+        JLabel lbl = new JLabel(mensaje, new ImageIcon("iconsP/info.png"), JLabel.CENTER);
+        lbl.setHorizontalTextPosition(JLabel.CENTER);
+        lbl.setVerticalTextPosition(JLabel.BOTTOM);
+        lbl.setFont(new Font("Arial", Font.BOLD, 20));
+        lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panelListaHistorial.add(Box.createVerticalGlue());
+        panelListaHistorial.add(lbl);
+        panelListaHistorial.add(Box.createVerticalGlue());
+        MetodosPublicos.refrescarVentana(panelListaHistorial);
     }
 
     public UsuarioPublico getUsuario() {

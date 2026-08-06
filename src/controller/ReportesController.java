@@ -6,19 +6,25 @@ import java.awt.event.ActionListener;
 import model.GestorEstadisticas;
 import javax.swing.JPanel;
 import java.util.List;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import model.EstadisticaCitas;
 import model.EstadisticasCitasModel;
+import model.UsuarioPublico;
+import model.UsuarioPublicoDao;
 
 public class ReportesController implements ActionListener {
 
-    ReportesInterfaz rI = new ReportesInterfaz();
+    protected ReportesInterfaz rI = new ReportesInterfaz();
     int totalAgendadas, totalConfirmadas, totalCanceladas, totalReagendadas, totalAtendidas;
+    private UsuarioPublicoDao usuDao;
+    List<UsuarioPublico> listausuarios;
 
     public ReportesController(ReportesInterfaz rI) {
         this.rI = rI;
         agregarActionListener();
+        usuDao = new UsuarioPublicoDao();
     }
 
     public void agregarActionListener() {
@@ -62,6 +68,48 @@ public class ReportesController implements ActionListener {
         }.execute();
     }
 
+    public void procesobtnUsuarioSisben() {
+
+        new SwingWorker<Void, Void>() {
+
+            int cA = 0, cB = 0, cC = 0, cD = 0, cN = 0;
+
+            @Override
+            protected Void doInBackground() {
+
+                listausuarios = new ArrayList<>(usuDao.listar());
+
+                for (UsuarioPublico usu : listausuarios) {
+                    switch (usu.getSisben()) {
+                        case "A":
+                            cA++;
+                            break;
+                        case "B":
+                            cB++;
+                            break;
+                        case "C":
+                            cC++;
+                            break;
+                        case "D":
+                            cD++;
+                            break;
+                        default:
+                            cN++;
+                            break;
+                    }
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                rI.cargarGraficoSisben(cA, cB, cC, cD, cN);
+            }
+
+        }.execute();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == rI.btnCerrar) {
@@ -70,8 +118,7 @@ public class ReportesController implements ActionListener {
         }
         if (e.getSource() == rI.btnUsuSisben) {
             rI.habilitarBotonesMenu(rI.btnUsuSisben);
-            rI.vaciarPanelCuerpo2();
-            JOptionPane.showMessageDialog(null, "Esta en proceso");
+            procesobtnUsuarioSisben();
             return;
         }
         if (e.getSource() == rI.btnInfoCitas) {

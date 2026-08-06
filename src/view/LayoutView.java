@@ -34,13 +34,14 @@ public abstract class LayoutView extends JFrame {
     public JPanel encabezado;
     public JPanel cuerpo1;
     public JPanel cuerpo2;
+    public JScrollPane jscrollCuerpo1;
 
     public LayoutView(String nombreVentana) {
         //Nombre de la ventana
         super(nombreVentana);
         init();
     }
-    
+
     public LayoutView() {
         this.setUndecorated(true);
         init();
@@ -74,6 +75,12 @@ public abstract class LayoutView extends JFrame {
         //Cuerpo1 es el panel de botones
         cuerpo1 = new JPanel();
         cuerpo1.setOpaque(!opaque);
+        jscrollCuerpo1 = new JScrollPane(cuerpo1, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jscrollCuerpo1.setOpaque(!opaque);
+        jscrollCuerpo1.getViewport().setOpaque(!opaque);
+        jscrollCuerpo1.setBorder(null);
+        jscrollCuerpo1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         //cuerpo2 panel donde cambia la vista
         cuerpo2 = new JPanel();
         cuerpo2.setOpaque(!opaque);
@@ -81,7 +88,7 @@ public abstract class LayoutView extends JFrame {
         JPanel panelSuperior = new JPanel(new BorderLayout());
         panelSuperior.setOpaque(!opaque);
         panelSuperior.add(encabezado, BorderLayout.NORTH);
-        panelSuperior.add(cuerpo1, BorderLayout.SOUTH);
+        panelSuperior.add(jscrollCuerpo1, BorderLayout.SOUTH);
 
         panelContenido = new JPanel(new BorderLayout());
         panelContenido.setBorder(new EmptyBorder(5, 10, 0, 10));
@@ -97,7 +104,8 @@ public abstract class LayoutView extends JFrame {
 
         fondoVentana.add(scrollFormulario, BorderLayout.CENTER);
     }
-    
+
     public abstract void agregarBotonCuerpo1(JButton boton);
+
     public abstract void habilitarBotonesMenu(JButton botonActivo);
 }
