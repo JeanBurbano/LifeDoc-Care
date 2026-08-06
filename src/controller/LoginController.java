@@ -36,6 +36,7 @@ public class LoginController implements ActionListener, SegunRol {
     private UsuarioPublico usuario;
     private byte c;
     private boolean bloqueado;
+    private Validador validador = new Validador();
 
     //Controlador
     public LoginController(Login lg, RecuperacionContrasenaInterfaz rc, RegistroUsuariosInterfaz ur) {
@@ -135,12 +136,13 @@ public class LoginController implements ActionListener, SegunRol {
             return;
         }
 
-        Validador validador = validarFormatoCredenciales(id, contrasena);
+        validador = validarFormatoCredenciales(id, contrasena);
         if (validador.tieneErrores()) {
             registrarIntentoFallido();
             JOptionPane.showMessageDialog(lg, validador.obtenerErrores(), "Advertencia", JOptionPane.WARNING_MESSAGE);
             estadoDeCosas(true);
             lg.limpiar();
+            validador.vaciarStringBuilder();
             return;
         }
 
@@ -150,27 +152,27 @@ public class LoginController implements ActionListener, SegunRol {
     }
 
     private Validador validarFormatoCredenciales(String id, String contrasena) {
-        Validador validador = new Validador();
+        Validador validador1 = new Validador();
 
-        validador.validar(id.isEmpty(), "Campo id es obligatorio.\n");
+        validador1.validar(id.isEmpty(), "Campo id es obligatorio.\n");
         if (!id.isEmpty()) {
-            validador.validar(!MetodosPublicos.validarNumero(id),
+            validador1.validar(!MetodosPublicos.validarNumero(id),
                     "Campo id contiene caracteres invalidos.\n");
-            validador.validar(!MetodosPublicos.validarTamano(id, 8, 10),
+            validador1.validar(!MetodosPublicos.validarTamano(id, 8, 10),
                     "Campo id debe contener 8 o 10 numeros.\n");
         }
 
-        validador.validar(contrasena.isEmpty(), "Campo Contrasena es obligatorio.\n");
+        validador1.validar(contrasena.isEmpty(), "Campo Contrasena es obligatorio.\n");
         if (!contrasena.isEmpty()) {
-            validador.validar(!MetodosPublicos.validarTamano(contrasena, 8),
+            validador1.validar(!MetodosPublicos.validarTamano(contrasena, 8),
                     "El campo contrasena debe contener como minimo 8 caracteres.\n");
-            validador.validar(!MetodosPublicos.validarContrasena(contrasena),
+            validador1.validar(!MetodosPublicos.validarContrasena(contrasena),
                     "La contrasena debe cumplir con estos parametros:\n"
                     + "1 Mayuscula, 1 Minuscula, 1 Numero,\n"
                     + "1 Simbolo permitido (@, #, $, %, &, *, -, _, !, ?).\n");
         }
 
-        return validador;
+        return validador1;
     }
 
     private void intentarIniciarSesion(String id, String contrasena) {

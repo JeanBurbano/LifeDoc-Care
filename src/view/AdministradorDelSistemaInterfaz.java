@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import model.MetodosPublicos;
 import model.UsuarioPublico;
 
@@ -30,6 +32,10 @@ public class AdministradorDelSistemaInterfaz extends PacienteInterfaz {
         for (String clave : ARREGLO_COLUMNAS) {
             mDefaultTableModel.addColumn(clave);
         }
+        JTableHeader diseñoColumnaTab = tabla.getTableHeader();
+        diseñoColumnaTab.setFont(new Font("arial", Font.BOLD, 14));
+        diseñoColumnaTab.setForeground(Color.WHITE);
+        diseñoColumnaTab.setBackground(PacienteInterfaz.COLOR_AZUL_CORPORATIVO);
         this.tabla.setModel(mDefaultTableModel);
         JScrollPane scrollPane = new JScrollPane(tabla);
         this.panelUsuarios.add(scrollPane, BorderLayout.CENTER);

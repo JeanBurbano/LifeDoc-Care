@@ -17,8 +17,6 @@ import model.HorarioDao;
 import model.HorarioDia;
 import model.Paciente;
 import model.PacienteDao;
-import static model.MetodosPublicos.refrescarVentana;
-import static model.MetodosPublicos.vaciarPanel;
 import view.OperarioInterfaz;
 import view.Titulo;
 

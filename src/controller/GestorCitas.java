@@ -4,6 +4,10 @@ import com.github.lgooddatepicker.optionalusertools.CalendarListener;
 import com.github.lgooddatepicker.zinternaltools.CalendarSelectionEvent;
 import com.github.lgooddatepicker.zinternaltools.YearMonthChangeEvent;
 import java.awt.event.ActionEvent;
+import java.text.Normalizer;
+import java.util.Collection;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -133,6 +137,71 @@ public class GestorCitas {
         }
     }
 
+    protected void agregarEventoDeTeclaABuscarCita() {
+        MetodosPublicos.soloLetras(pacienteI.barraBusqueda, 20);
+        pacienteI.barraBusqueda.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filtrarCitasHistorial();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filtrarCitasHistorial();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filtrarCitasHistorial();
+            }
+        });
+    }
+
+    //se ejecuta con cada cambio en la barra de busqueda (escribir, borrar, pegar)
+    private void filtrarCitasHistorial() {
+        String texto = pacienteI.barraBusqueda.getText().trim();
+        pacienteI.vaciarPanel();
+
+        if (texto.length() <= 2) {
+            mostrarCitasEnHistorial(hashSetCitasNoActivas);
+            return;
+        }
+
+        String textoNormalizado = normalizarTexto(texto);
+        List<Cita> coincidencias = new ArrayList<>();
+        for (Cita clave : hashSetCitasNoActivas) {
+            String campoBusqueda = normalizarTexto(clave.getNombreMedico() + " " + clave.getEspecialidad());
+            if (campoBusqueda.contains(textoNormalizado)) {
+                coincidencias.add(clave);
+            }
+        }
+
+        if (coincidencias.isEmpty()) {
+            pacienteI.mostrarMensajeHistorialVacio("No se encontraron citas para \"" + texto + "\"");
+        } else {
+            mostrarCitasEnHistorial(coincidencias);
+        }
+    }
+
+    //pinta cualquier coleccion de citas en panelListaHistorial se reutiliza abajo en procesoBtnHistorialCitas
+    private void mostrarCitasEnHistorial(Collection<Cita> citas) {
+        for (Cita clave : citas) {
+            pacienteI.agregarAlPanelHistorialCitas(
+                    new Titulo("Cita ", clave.getEspecialidad(), 30).getPanelTitulo(),
+                    clave.getFechaCita().toString(),
+                    clave.getHoraCita().toString(),
+                    "Dr(a). " + clave.getNombreMedico(),
+                    "No Activa");
+        }
+    }
+
+    //quita tildes y pasa a minusculas para comparar sin importar acentos mayusculas
+    private String normalizarTexto(String texto) {
+        String sinTildes = Normalizer.normalize(texto, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+        return sinTildes.toLowerCase();
+    }
+
     //recorre unicamente las citas no vigentes (historial)
     protected void procesoBtnHistorialCitas() {
         pacienteI.construirPanelVistaHistorial();
@@ -142,14 +211,7 @@ public class GestorCitas {
             pacienteI.mostrarMensajeHistorialVacio();
         } else {
             pacienteI.barraBusqueda.setEnabled(true);
-            for (Cita clave : hashSetCitasNoActivas) {
-                pacienteI.agregarAlPanelHistorialCitas(
-                        new Titulo("Cita ", clave.getEspecialidad(), 30).getPanelTitulo(),
-                        clave.getFechaCita().toString(),
-                        clave.getHoraCita().toString(),
-                        "Dr(a). " + clave.getNombreMedico(),
-                        "No Activa");
-            }
+            mostrarCitasEnHistorial(hashSetCitasNoActivas);
         }
     }
 
@@ -162,13 +224,19 @@ public class GestorCitas {
         medicoSeleccionado = null;
         horarioMedicoSeleccionado = null;
         controller.listaBotonesMedicos.clear();
-        medicosListados = new ArrayList<>(medicoDao.listarPorEspecialidad(n));
-        String[] nombreMedicos = new String[medicosListados.size()];
-        for (int i = 0; i < medicosListados.size(); i++) {
-            nombreMedicos[i] = medicosListados.get(i).getPrimerNombre() + " " + medicosListados.get(i).getPrimerApellido();
+        medicosListados = new ArrayList<>(medicoDao.listarPorEspecialidad(n, pacienteI.getUsuario().getIdUsuario()));
+        if (medicosListados.isEmpty() && medicosListados == null) {
+            String[] nombreMedicos = new String[medicosListados.size()];
+            for (int i = 0; i < medicosListados.size(); i++) {
+                System.out.println(medicosListados.get(i).getIdUsuario());
+                System.out.println(pacienteI.getUsuario().getIdUsuario());
+                nombreMedicos[i] = medicosListados.get(i).getPrimerNombre() + " " + medicosListados.get(i).getPrimerApellido();
+            }
+            pacienteI.mostrarVistaSeleccionMedico(nombreMedicos, controller.listaBotonesMedicos);
+            asignarListenerBotonesMedicos();
+        } else {
+            pacienteI.mostrarVistaSeleccionMedico();
         }
-        pacienteI.mostrarVistaSeleccionMedico(nombreMedicos, controller.listaBotonesMedicos);
-        asignarListenerBotonesMedicos();
     }
 
     private void asignarListenerBotonesMedicos() {

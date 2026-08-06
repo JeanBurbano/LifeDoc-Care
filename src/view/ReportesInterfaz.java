@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -33,8 +34,8 @@ public class ReportesInterfaz extends LayoutView {
     public static final ImageIcon imagenOriginal = new ImageIcon("graficos.png");
 
     JPanel panelContenedorGraficosCitas;
-    public JButton btnCerrar, btnUsuSisben, btnInfoCitas, btnAtencionMedica, btnFinancieros,btnDescargarInfoCitasReportes;
-    
+    public JButton btnCerrar, btnUsuSisben, btnInfoCitas, btnAtencionMedica, btnFinancieros, btnDescargarInfoCitasReportes;
+
     public ReportesInterfaz() {
         super.encabezado.setLayout(new BorderLayout());
         JPanel titulo = new Titulo("Reportes", " Graficos").getPanelTitulo();
@@ -109,15 +110,23 @@ public class ReportesInterfaz extends LayoutView {
         return panel;
     }
 
-    public JPanel crearGraficoCitas(int canceladas, int reagendadas) {
-        DefaultPieDataset dataset = new DefaultPieDataset();
-        dataset.setValue("Canceladas", canceladas);
-        dataset.setValue("Reagendadas", reagendadas);
+    public JPanel crearGraficoCitas(int cA, int cB, int cC, int cD, int cN) {
+        DefaultPieDataset datos = new DefaultPieDataset();
+        datos.setValue("Grupo A", cA);
+        datos.setValue("Grupo B", cB);
+        datos.setValue("Grupo C", cC);
+        datos.setValue("Grupo D", cD);
+        datos.setValue("Sin sisben", cN);
 
-        JFreeChart chart = ChartFactory.createPieChart("Citas Canceladas vs Reagendadas", dataset);
+        JFreeChart chart = ChartFactory.createPieChart("Usuarios de LifeDoc Care",//Nombre del diagrama
+                datos,//datos
+                true,//nombre de la categoria
+                true,//herramientas
+                false);//generacion url
 
         ChartPanel chartPanel = new ChartPanel(chart);
-
+        chartPanel.setMouseWheelEnabled(true);
+        chartPanel.setPreferredSize(new Dimension(648, 416));
         JPanel contenedor = new JPanel(new BorderLayout());
         contenedor.add(chartPanel, BorderLayout.CENTER);
         return contenedor;
@@ -170,13 +179,29 @@ public class ReportesInterfaz extends LayoutView {
         MetodosPublicos.vaciarPanel(panelContenedorGraficosCitas);
         estaditica.setOpaque(false);
         panelContenedorGraficosCitas.add(Box.createVerticalStrut(30));
-        panelContenedorGraficosCitas.add(new Titulo("Reportes ","Citas").getPanelTitulo());
+        panelContenedorGraficosCitas.add(new Titulo("Reportes ", "Citas").getPanelTitulo());
         panelContenedorGraficosCitas.add(panel);
         panelContenedorGraficosCitas.add(Box.createVerticalStrut(30));
         panelContenedorGraficosCitas.add(estaditica);
         super.cuerpo2.add(panelContenedorGraficosCitas, BorderLayout.CENTER);
         MetodosPublicos.refrescarVentana(cuerpo2);
         MetodosPublicos.refrescarVentana(panelContenedorGraficosCitas);
+    }
+
+    public void cargarGraficoSisben(int cA, int cB, int cC, int cD, int cN) {
+        MetodosPublicos.vaciarPanel(cuerpo2);
+        JPanel panelContodo = new JPanel();
+        panelContodo.setLayout(new BoxLayout(panelContodo,BoxLayout.Y_AXIS));
+        panelContodo.setOpaque(false);
+        JPanel titulo = new Titulo("Diagrama Circular"," Sisben",30).getPanelTitulo();
+        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel panel = crearGraficoCitas(cA, cB, cC, cD, cN);
+        panelContodo.add(Box.createVerticalStrut(40));
+        panelContodo.add(titulo);
+        panelContodo.add(Box.createVerticalStrut(40));
+        panelContodo.add(panel);
+        super.cuerpo2.add(panelContodo, BorderLayout.CENTER);
+        MetodosPublicos.refrescarVentana(cuerpo2);
     }
 
     public void vaciarPanelCuerpo2() {
