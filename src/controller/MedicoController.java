@@ -1,6 +1,5 @@
 package controller;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -143,7 +142,7 @@ public class MedicoController extends PacienteController {
         pacienteI.btnHistorialCitas.setEnabled(activo != pacienteI.btnHistorialCitas);
         pacienteI.btnHistorialMedico.setEnabled(activo != pacienteI.btnHistorialMedico);
     }
-    
+
     private void proceso(String mensaje, boolean valor, String nombrePaciente, String edadPaciente) {
         medico.mostrarVistaHistorialConHistorial(mensaje, nombrePaciente, edadPaciente);
         medico.btnDescargar.setEnabled(valor);
@@ -157,9 +156,9 @@ public class MedicoController extends PacienteController {
             Paciente pacienteBuscado = new PacienteDao().getUsuario(idHistorial);
             if (pacienteBuscado == null) {
                 JOptionPane.showMessageDialog(medico, "No se encontró ningún paciente con ese número de identificación");
-            } else if (pacienteBuscado.getNumeroIdentificacion().equalsIgnoreCase(this.medico.getUsuario().getNumeroIdentificacion())){
+            } else if (pacienteBuscado.getNumeroIdentificacion().equalsIgnoreCase(this.medico.getUsuario().getNumeroIdentificacion())) {
                 JOptionPane.showMessageDialog(medico, "No se puede buscar tu mismo historial medico, ve a Historial Medico");
-            }else {
+            } else {
                 UsuarioDao usuDao = new UsuarioDao();
                 this.historialPaciente = usuDao.historialMedicoPorId(idHistorial);
 
