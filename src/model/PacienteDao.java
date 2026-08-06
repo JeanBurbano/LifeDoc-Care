@@ -67,7 +67,7 @@ public class PacienteDao implements Crud<Paciente> {
         return p;
     }
 
-    protected Paciente getUsuario(String numeroIdentifi) {
+    public Paciente getUsuario(String numeroIdentifi) {
         Paciente usu = null;
 
         String sql = "SELECT id_usuario, id_rol, id_tipo_identificacion, "

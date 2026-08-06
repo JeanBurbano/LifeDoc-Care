@@ -154,10 +154,12 @@ public class MedicoController extends PacienteController {
         if (idHistorial.isBlank()) {
             JOptionPane.showMessageDialog(medico, "Por favor ingresa un numero de identificación");
         } else {
-            Paciente pacienteBuscado = new PacienteDao().buscarPorId(idHistorial);
+            Paciente pacienteBuscado = new PacienteDao().getUsuario(idHistorial);
             if (pacienteBuscado == null) {
                 JOptionPane.showMessageDialog(medico, "No se encontró ningún paciente con ese número de identificación");
-            } else {
+            } else if (pacienteBuscado.getNumeroIdentificacion().equalsIgnoreCase(this.medico.getUsuario().getNumeroIdentificacion())){
+                JOptionPane.showMessageDialog(medico, "No se puede buscar tu mismo historial medico, ve a Historial Medico");
+            }else {
                 UsuarioDao usuDao = new UsuarioDao();
                 this.historialPaciente = usuDao.historialMedicoPorId(idHistorial);
 
