@@ -65,7 +65,7 @@ public class PacienteController implements ActionListener {
     }
 
     protected void agregarListenerBotonesCancelar(int i, Cita clave) {
-        listaBotonesCancelar.get(i).addActionListener((ActionEvent e) -> {
+        listaBotonesCancelar.get(i).addActionListener(e -> {
             if (gestorCita.tieneAntelacionSuficiente(clave)) {
                 int r = JOptionPane.showConfirmDialog(pacienteI, "Estás seguro de cancelar esta cita", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 if (r == 0) {
@@ -87,11 +87,11 @@ public class PacienteController implements ActionListener {
     }
 
     protected void agregarListenerBotonesReagendar(int i, Cita clave) {
-        listaBotonesReagendar.get(i).addActionListener((ActionEvent e) -> {
+        listaBotonesReagendar.get(i).addActionListener(e -> {
             if (gestorCita.tieneAntelacionSuficiente(clave)) {
                 int r = JOptionPane.showConfirmDialog(pacienteI, "Estás seguro de reagendar esta cita", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 if (r == 0) {
-                    //esta en elaboracion
+                    JOptionPane.showMessageDialog(pacienteI, "No joda ahora que estamos en elaboracion ombre ");
                 } else {
                     JOptionPane.showMessageDialog(pacienteI, "No decidiste reagendar la cita.");
                 }

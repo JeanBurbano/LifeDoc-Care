@@ -21,4 +21,8 @@ public class Validador {
     public String obtenerErrores() {
         return errores.toString();
     }
+    
+    public void vaciarStringBuilder(){
+        errores.setLength(0);
+    }
 }

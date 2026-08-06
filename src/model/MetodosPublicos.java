@@ -42,12 +42,13 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class MetodosPublicos {
-
+    
+    //Metodos Publicos de burbano
     public static void blooquearcopiarPegar(JTextField field) {
         InputMap inputMap = field.getInputMap(JTextField.WHEN_FOCUSED);
-        // Bloquear Copiar (Ctrl + C)
+        //Bloquear Copiar (Ctrl + C)
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK), "none");
-        // Bloquear Pegar (Ctrl + V)
+        //Bloquear Pegar (Ctrl + V)
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK), "none");
     }
 
@@ -309,7 +310,8 @@ public class MetodosPublicos {
         }
         return texto.matches("^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ ]+$");
     }
-
+    
+    //Metodos publicos luna
     //Aqui para estilizar formularios
     /**
      * Crea un JTextField ya estilizado (fuente y borde verde) listo para usarse
