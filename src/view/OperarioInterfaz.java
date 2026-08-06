@@ -43,7 +43,6 @@ import static model.MetodosPublicos.estilizarBoton;
 import static model.MetodosPublicos.estilizarComboBox;
 import static model.MetodosPublicos.refrescarVentana;
 import model.Paciente;
-import model.Usuario;
 import model.UsuarioPublico;
 
 public class OperarioInterfaz extends PacienteInterfaz {
@@ -779,9 +778,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
         // SEPARADOR
         JPanel separador2 = new JPanel();
-        separador1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
-        separador1.setPreferredSize(new Dimension(0, 1));
-        separador1.setBackground(new Color(200, 210, 220));
+        separador2.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        separador2.setPreferredSize(new Dimension(0, 1));
+        separador2.setBackground(new Color(200, 210, 220));
         panelFactura.add(separador2);
 
         panelFactura.add(new JLabel("DETALLE DE LA CITA"));
@@ -793,9 +792,9 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
         // SEPARADOR
         JPanel separador3 = new JPanel();
-        separador1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
-        separador1.setPreferredSize(new Dimension(0, 1));
-        separador1.setBackground(new Color(200, 210, 220));
+        separador3.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        separador3.setPreferredSize(new Dimension(0, 1));
+        separador3.setBackground(new Color(200, 210, 220));
         panelFactura.add(separador3);
 
         panelFactura.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -893,7 +892,6 @@ public class OperarioInterfaz extends PacienteInterfaz {
 
         panelConfirmacion.add(lblExito);
         panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 20)));
-        panelConfirmacion.add(lblMetodoUsado);
         panelConfirmacion.add(lblMetodoUsado);
         panelConfirmacion.add(Box.createRigidArea(new Dimension(0, 20)));
         panelConfirmacion.add(btnDebito);
@@ -1266,9 +1264,7 @@ public class OperarioInterfaz extends PacienteInterfaz {
         } else {
             JButton btnPacienteEnEspera = new JButton("Paciente en Espera", new ImageIcon("iconsP/bell.png"));
             estilizarBoton(btnPacienteEnEspera, (byte) 5);
-            btnPacienteEnEspera.addActionListener(e -> {
-                // Pendiente la logica de este boton (se necesitaba conectar con otra interfaz, falto)
-            });
+            
             panelBotones.add(btnPacienteEnEspera);
         }
 
