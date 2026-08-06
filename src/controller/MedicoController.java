@@ -56,11 +56,6 @@ public class MedicoController extends PacienteController {
         this.medico.btnAcpReagendamiento.addActionListener(this);
     }
 
-    private void proceso(String mensaje, boolean valor, String nombrePaciente, String edadPaciente) {
-        medico.mostrarVistaHistorialConHistorial(mensaje, nombrePaciente, edadPaciente);
-        medico.btnDescargar.setEnabled(valor);
-    }
-
     private void nombreMedicamentos() {
         nombresM = new MedicamentosDao().listarNombres();
         for (Medicamentos m : nombresM) {
@@ -148,6 +143,37 @@ public class MedicoController extends PacienteController {
         pacienteI.btnHistorialCitas.setEnabled(activo != pacienteI.btnHistorialCitas);
         pacienteI.btnHistorialMedico.setEnabled(activo != pacienteI.btnHistorialMedico);
     }
+    
+    private void proceso(String mensaje, boolean valor, String nombrePaciente, String edadPaciente) {
+        medico.mostrarVistaHistorialConHistorial(mensaje, nombrePaciente, edadPaciente);
+        medico.btnDescargar.setEnabled(valor);
+    }
+
+    private void procesoHistorialMedicoPaciente() {
+        String idHistorial = medico.idHistorial.getText().trim();
+        if (idHistorial.isBlank()) {
+            JOptionPane.showMessageDialog(medico, "Por favor ingresa un numero de identificación");
+        } else {
+            Paciente pacienteBuscado = new PacienteDao().buscarPorId(idHistorial);
+            if (pacienteBuscado == null) {
+                JOptionPane.showMessageDialog(medico, "No se encontró ningún paciente con ese número de identificación");
+            } else {
+                UsuarioDao usuDao = new UsuarioDao();
+                this.historialPaciente = usuDao.historialMedicoPorId(idHistorial);
+
+                String nombrePaciente = pacienteBuscado.getPrimerNombre() + " " + pacienteBuscado.getPrimerApellido();
+                String edadPaciente = String.valueOf(
+                        Period.between(pacienteBuscado.getFechaNacimiento(), LocalDate.now()).getYears());
+
+                if (historialPaciente == null) {
+                    proceso("Este paciente no tiene un historial medico", false, nombrePaciente, edadPaciente);
+                } else {
+                    proceso(historialPaciente, true, nombrePaciente, edadPaciente);
+                }
+            }
+        }
+        return;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -156,29 +182,7 @@ public class MedicoController extends PacienteController {
 
         if (e.getSource() == this.medico.btnBuscarIdHistorialPaciente) {
             activarSeccionHistorial(this.medico.btnHistorialMedicoPaciente);
-            String idHistorial = medico.idHistorial.getText().trim();
-            if (idHistorial.isBlank()) {
-                JOptionPane.showMessageDialog(medico, "Por favor ingresa un numero de identificación");
-            } else {
-                Paciente pacienteBuscado = new PacienteDao().buscarPorId(idHistorial);
-                if (pacienteBuscado == null) {
-                    JOptionPane.showMessageDialog(medico, "No se encontró ningún paciente con esa identificación");
-                } else {
-                    UsuarioDao usuDao = new UsuarioDao();
-                    this.historialPaciente = usuDao.historialMedicoPorId(idHistorial);
-
-                    String nombrePaciente = pacienteBuscado.getPrimerNombre() + " " + pacienteBuscado.getPrimerApellido();
-                    String edadPaciente = String.valueOf(
-                            Period.between(pacienteBuscado.getFechaNacimiento(), LocalDate.now()).getYears());
-
-                    if (historialPaciente == null) {
-                        proceso("Este paciente no tiene un historial medico", false, nombrePaciente, edadPaciente);
-                    } else {
-                        proceso(historialPaciente, true, nombrePaciente, edadPaciente);
-                    }
-                }
-            }
-            return;
+            procesoHistorialMedicoPaciente();
         }
 
         if (e.getSource() == this.medico.btnMiAgenda) {
