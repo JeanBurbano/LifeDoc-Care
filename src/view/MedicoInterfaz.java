@@ -957,6 +957,11 @@ public class MedicoInterfaz extends PacienteInterfaz {
         campoPaciente.setEditable(false);
         campoNumeroId.setEditable(false);
 
+        campoFecha.setOpaque(false);
+        campoHora.setOpaque(false);
+        campoPaciente.setOpaque(false);
+        campoNumeroId.setOpaque(false);
+
         MetodosPublicos.refrescarVentana(panelPrincipal);
         MetodosPublicos.refrescarVentana(cuerpo2);
     }
